@@ -1,0 +1,319 @@
+﻿@using WepApp.Models
+@{
+    ViewData["Title"] = "İstek/Öneri Durum Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        <div class="card" style="margin-top: 70px;">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>İstek/Öneri Durumları</span>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                    <i class="fas fa-plus"></i> Yeni Durum Ekle
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="durumTablosu">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">Sıra</th>
+                                <th>Durum Adı</th>
+                                <th>Eklenme Tarihi</th>
+                                <th style="width: 150px;">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.IstekOneriDurumlar != null && ViewBag.IstekOneriDurumlar.Count > 0)
+                            {
+                                foreach (var item in ViewBag.IstekOneriDurumlar)
+                                {
+                                    <tr data-id="@item.Id">
+                                        <td class="text-center">
+                                            <span class="badge bg-secondary">@item.Sira</span>
+                                        </td>
+                                        <td><strong>@item.Adi</strong></td>
+                                        <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>
+                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id, '@item.Adi.Replace("'", "\\'")', @item.Sira)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.Adi.Replace("'", "\\'")')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center py-4">
+                                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                        <p>Henüz istek/öneri durumu eklenmemiş.</p>
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                                            İlk Durumu Ekle
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Sıralamayı Kaydet butonu ve sürükle-bırak özelliği tamamen kaldırıldı -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ekle Modal -->
+<div class="modal fade" id="ekleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Ekle","AdminIstekOneriDurum")" method="post" id="ekleForm">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni İstek/Öneri Durumu Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Durum Adı *</label>
+                        <input type="text" class="form-control" name="Adi" id="Adi"
+                               placeholder="Ör: Beklemede, İnceleniyor, Çözüldü, Reddedildi"
+                               required oninput="kontrolEtAdi()">
+                        <div id="adiMesaj" class="form-text"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Sıra Numarası</label>
+                        <input type="number" class="form-control" name="Sira" id="Sira"
+                               min="1" value="" oninput="kontrolEtSira()">
+                        <div id="siraMesaj" class="form-text">
+                            <small class="text-muted">Boş bırakırsanız otomatik sıralanacaktır.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary" disabled>Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Düzenle Modal -->
+<div class="modal fade" id="duzenleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Guncelle","AdminIstekOneriDurum")" method="post" id="duzenleForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="editId">
+                <div class="modal-header">
+                    <h5 class="modal-title">İstek/Öneri Durumu Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Durum Adı *</label>
+                        <input type="text" class="form-control" name="Adi" id="editAdi" required oninput="kontrolEtAdi(true)">
+                        <div id="editAdiMesaj" class="form-text"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Sıra Numarası *</label>
+                        <input type="number" class="form-control" name="Sira" id="editSira" min="1" required oninput="kontrolEtSira(true)">
+                        <div id="editSiraMesaj" class="form-text"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary" disabled>Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Sil Modal -->
+<div class="modal fade" id="silModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Sil","AdminIstekOneriDurum")" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="silId">
+                <div class="modal-header">
+                    <h5 class="modal-title">Silme Onayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong id="silAdiGoster"></strong> durumunu pasif yapmak istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><small>Bu işlem geri alınamaz.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <!-- jQuery UI sortable tamamen kaldırıldı -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            let adiGecerli = false;
+            let siraGecerli = true;
+            let duzenleme = false;
+
+            window.kontrolEtAdi = function (duzenle = false) {
+                const input = duzenle ? $('#editAdi') : $('#Adi');
+                const mesaj = duzenle ? $('#editAdiMesaj') : $('#adiMesaj');
+                const val = input.val().trim();
+                const istekOneriDurumId = duzenle ? $('#editId').val() : null;
+
+                if (val === '') {
+                    mesaj.html('<small class="text-muted">Durum adı giriniz.</small>');
+                    adiGecerli = false;
+                } else if (val.length < 2) {
+                    mesaj.html('<small class="text-warning">En az 2 karakter.</small>');
+                    adiGecerli = false;
+                } else {
+                    fetch(`@Url.Action("AdiKontrol", "AdminIstekOneriDurum")?adi=${encodeURIComponent(val)}&istekOneriDurumId=${istekOneriDurumId || ''}`)
+                        .then(r => r.json())
+                        .then(d => {
+                            if (d.success) {
+                                mesaj.html(`<small class="text-success">${d.message}</small>`);
+                                adiGecerli = true;
+                            } else {
+                                mesaj.html(`<small class="text-danger">${d.message}</small>`);
+                                adiGecerli = false;
+                            }
+                            guncelleButon();
+                        })
+                        .catch(() => {
+                            mesaj.html('<small class="text-danger">Kontrol hatası.</small>');
+                            adiGecerli = false;
+                            guncelleButon();
+                        });
+                    return;
+                }
+                guncelleButon();
+            };
+
+            window.kontrolEtSira = function (duzenle = false) {
+                const input = duzenle ? $('#editSira') : $('#Sira');
+                const mesaj = duzenle ? $('#editSiraMesaj') : $('#siraMesaj');
+                const val = parseInt(input.val());
+                const istekOneriDurumId = duzenle ? $('#editId').val() : null;
+
+                if (duzenle) {
+                    if (isNaN(val) || val < 1) {
+                        mesaj.html('<small class="text-danger">Geçerli bir sıra numarası giriniz.</small>');
+                        siraGecerli = false;
+                    } else {
+                        fetch(`@Url.Action("SiraKontrol", "AdminIstekOneriDurum")?sira=${val}&istekOneriDurumId=${istekOneriDurumId || ''}`)
+                            .then(r => r.json())
+                            .then(d => {
+                                if (d.success) {
+                                    mesaj.html(`<small class="text-success">${d.message}</small>`);
+                                    siraGecerli = true;
+                                } else {
+                                    mesaj.html(`<small class="text-danger">${d.message}</small>`);
+                                    siraGecerli = false;
+                                }
+                                guncelleButon();
+                            });
+                        return;
+                    }
+                } else {
+                    if (val && val < 1) {
+                        mesaj.html('<small class="text-danger">Sıra numarası 1 veya daha büyük olmalıdır.</small>');
+                        siraGecerli = false;
+                    } else {
+                        siraGecerli = true;
+                    }
+                }
+                guncelleButon();
+            };
+
+            function guncelleButon() {
+                const modal = duzenleme ? '#duzenleModal' : '#ekleModal';
+                if (duzenleme) {
+                    $(modal).find('button[type="submit"]').prop('disabled', !(adiGecerli && siraGecerli));
+                } else {
+                    $(modal).find('button[type="submit"]').prop('disabled', !adiGecerli);
+                }
+            }
+
+            window.duzenleGetir = function (id, adi, sira) {
+                $('#editId').val(id);
+                $('#editAdi').val(adi);
+                $('#editSira').val(sira);
+                duzenleme = true;
+                adiGecerli = true;
+                siraGecerli = true;
+                guncelleButon();
+                kontrolEtAdi(true);
+                kontrolEtSira(true);
+                const modal = new bootstrap.Modal(document.getElementById('duzenleModal'));
+                modal.show();
+            };
+
+            window.silOnay = function (id, adi) {
+                $('#silId').val(id);
+                $('#silAdiGoster').text(adi);
+                const modal = new bootstrap.Modal(document.getElementById('silModal'));
+                modal.show();
+            };
+
+            function showAlert(type, message) {
+                const alert = `<div class="alert alert-${type} alert-dismissible fade show position-fixed" style="top: 20px; right: 20px; z-index: 9999;">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>`;
+                $('body').append(alert);
+                setTimeout(() => $('.alert').last().alert('close'), 5000);
+            }
+
+            // Modal sıfırlama
+            $('#ekleModal').on('show.bs.modal', function () {
+                duzenleme = false;
+                adiGecerli = false;
+                siraGecerli = true;
+                $('#Adi').val('');
+                $('#Sira').val('');
+                $('#adiMesaj').empty();
+                $('#siraMesaj').html('<small class="text-muted">Boş bırakırsanız otomatik sıralanacaktır.</small>');
+                guncelleButon();
+            });
+
+            $('#duzenleModal').on('show.bs.modal', function () {
+                duzenleme = true;
+            });
+
+            // Mevcut alert'leri otomatik kapat
+            setTimeout(() => {
+                $('.alert').each(function () {
+                    bootstrap.Alert.getOrCreateInstance(this).close();
+                });
+            }, 5000);
+        });
+    </script>
+}

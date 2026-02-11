@@ -1,0 +1,362 @@
+﻿
+.alt-paket.bagimli-alt {
+    background-color: #f1f8e9 !important;
+}
+
+.alt-paket.bagimsiz-alt {
+    background-color: #e8f4fd !important;
+}
+/* Sağ panel - Seçilenler tablosu için kritik kurallar (EN ALTA KONULDU) */
+#secilenItemler .paket-item,
+#secilenItemler .grup-item {
+    background-color: transparent !important;
+    border-left: none !important;
+}
+/* Sadece paketle gelen modüller yeşil olsun */
+#secilenItemler .bagimli-modul {
+    background-color: #c8e6c9 !important; /* Belirgin ama soft yeşil */
+    border-left: 6px solid #43a047 !important;
+}
+
+    #secilenItemler .bagimli-modul:hover {
+        background-color: #a5d6a7 !important;
+    }
+/* Bağımsız eklenen modüller tamamen renksiz kalsın */
+#secilenItemler .bagimsiz-modul {
+    background-color: transparent !important; /* Beyaz / renksiz */
+    border-left: none !important;
+}
+
+.teklif-container {
+    margin-top: 73px;
+    height: calc(100vh - 80px);
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.split-panel {
+    height: 100%;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #d1d3e2;
+    border-radius: 8px;
+}
+
+.left-panel {
+    border-right: 2px solid #d1d3e2;
+}
+
+.panel-header {
+    background: #2e2e5d;
+    color: #ffffff;
+    padding: 1rem;
+    margin: -1rem -1rem 1rem -1rem;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.paket-list {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #d1d3e2;
+    border-radius: 6px;
+    background: #ffffff;
+}
+
+.paket-item {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e4e6ef;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    position: relative;
+    font-size: 0.85rem;
+    line-height: 1.2;
+}
+
+    .paket-item:hover {
+        background-color: #f5f6fa;
+    }
+
+    .paket-item.secili {
+        background-color: #e6f4ea;
+        border-left: 4px solid #28a745;
+    }
+
+    .paket-item.grup-secili-paket {
+        background-color: #e6f4ea;
+        border-left: 4px solid #28a745;
+    }
+
+.grup-item {
+    background: #f8f9fc !important;
+    font-weight: 600;
+    color: #2e2e5d;
+    border-left: 4px solid #2e2e5d !important;
+    font-size: 0.9rem;
+    padding: 6px 10px !important;
+}
+
+    .grup-item.secili {
+        background: #e3f2fd !important;
+        border-left: 4px solid #1976d2 !important;
+    }
+
+.alt-paket {
+    padding-left: 25px !important;
+    background: #ffffff;
+    font-weight: normal;
+    font-size: 0.8rem;
+}
+
+.paket-table {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 30px;
+    align-items: center;
+    padding: 4px 8px;
+    gap: 6px;
+    font-size: 0.8rem;
+}
+
+.paket-table-header {
+    background: #f1f3f9;
+    font-weight: 600;
+    color: #2e2e5d;
+    padding: 8px 10px;
+    border-bottom: 2px solid #d1d3e2;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 30px;
+    gap: 6px;
+    font-size: 0.8rem;
+}
+
+.remove-btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #dc3545;
+    color: white;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.paket-item:hover .remove-btn {
+    opacity: 1;
+}
+
+.secilen-itemler-container {
+    max-height: 450px;
+    overflow-y: auto;
+    border: 1px solid #d1d3e2;
+    border-radius: 6px;
+    background: #ffffff;
+}
+
+.secilen-paket-table {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr 0.8fr 1.4fr 1.1fr 1.2fr 32px;
+    gap: 6px;
+    align-items: center;
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    line-height: 1.1;
+}
+
+.secilen-paket-header {
+    background: #f1f3f9;
+    font-weight: 600;
+    color: #2e2e5d;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 1fr 1.3fr 0.8fr 1.4fr 1.1fr 1.2fr 32px;
+    gap: 6px;
+    align-items: center;
+    padding: 6px 8px;
+    font-size: 0.75rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 1.5rem;
+    color: #6c757d;
+    font-size: 0.8rem;
+}
+
+.discount-input, .miktar-input, .grup-indirim-input {
+    width: 50px;
+    padding: 3px;
+    font-size: 0.75rem;
+    border: 1px solid #d1d3e2;
+    border-radius: 4px;
+}
+
+.grup-indirim-satiri {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    font-size: 0.75rem;
+    padding: 6px 10px;
+}
+
+.musteri-lisans-section {
+    background: #e8f4fd;
+    border: 1px solid #b8daff;
+}
+
+.teklif-no-section {
+    background: #e6f7e6;
+    border: 1px solid #c3e6cb;
+}
+
+.aciklama-section {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+.musteri-lisans-section, .teklif-no-section, .aciklama-section {
+    border-radius: 6px;
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
+    font-size: 0.85rem;
+}
+
+.grup-indirim-badge, .kampanya-badge, .fiyat-oran-badge, .item-type-badge {
+    padding: 1px 4px;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    margin-left: 6px;
+    color: white;
+}
+
+.grup-indirim-badge {
+    background: #ff6b6b;
+}
+
+.kampanya-badge {
+    background: #28a745;
+}
+
+.fiyat-oran-badge {
+    background: #17a2b8;
+}
+
+.item-type-badge {
+    background: #6c757d;
+}
+
+.teklif-no-display {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #2e2e5d;
+    background: #ffffff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #d1d3e2;
+    min-width: 130px;
+    text-align: center;
+}
+
+.form-row-compact {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.8rem;
+    align-items: end;
+    font-size: 0.85rem;
+}
+
+.paket-list::-webkit-scrollbar, .secilen-itemler-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.paket-list::-webkit-scrollbar-track, .secilen-itemler-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.paket-list::-webkit-scrollbar-thumb, .secilen-itemler-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+    .paket-list::-webkit-scrollbar-thumb:hover, .secilen-itemler-container::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+
+.fiyat-ozet-tablo {
+    background: #fff;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    width: 100%;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+}
+
+    .fiyat-ozet-tablo table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.75rem;
+    }
+
+    .fiyat-ozet-tablo th {
+        background: #f4f4f4;
+        padding: 6px;
+        text-align: left;
+        border-bottom: 2px solid #ccc;
+        font-size: 0.75rem;
+    }
+
+    .fiyat-ozet-tablo td {
+        padding: 6px;
+        border-bottom: 1px solid #eee;
+        font-size: 0.75rem;
+    }
+
+    .fiyat-ozet-tablo .net-row td {
+        background: #fafafa;
+        font-weight: bold;
+        border-top: 2px solid #ccc;
+    }
+
+.btn-tablo {
+    margin-top: 12px;
+    width: 100%;
+    padding: 8px;
+    background: #28a745;
+    border: none;
+    color: white;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    cursor: not-allowed;
+}
+
+    .btn-tablo:not(:disabled) {
+        cursor: pointer;
+        background: #218838;
+    }
+
+.kampanya-fiyati {
+    color: #28a745 !important;
+    font-weight: 700 !important;
+}
+
+.normal-fiyati {
+    color: #495057;
+    font-weight: 600;
+}
+
+h5, h6 {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.panel-header h4 {
+    font-size: 1.1rem;
+}
+

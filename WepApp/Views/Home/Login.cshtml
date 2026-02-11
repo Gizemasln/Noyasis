@@ -1,0 +1,218 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB YÖNETİM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 26px;
+        }
+
+        .login-form {
+            animation: fadeIn 0.4s ease;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 14px;
+            margin: 12px 0;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+
+            button:hover {
+                transform: translateY(-2px);
+            }
+
+        .alert {
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+
+            .alert.error {
+                background: #fee2e2;
+                color: #991b1b;
+                border: 1px solid #fecaca;
+            }
+
+        /* GİRİŞ YAP butonunun altında aynı stilde Anasayfa bağlantısı */
+        .home-link {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+            .home-link:hover {
+                background: #667eea;
+                color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            }
+
+        keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        media (max-width: 480px) {
+            .container
+
+        {
+            margin: 20px;
+            padding: 30px;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>WEB YÖNETİM</h2>
+
+        <!-- Sadece Kurumsal (Admin) Giriş -->
+        <form id="girisForm">
+            <input type="hidden" name="tip" id="tip" value="0">
+
+            <div class="login-form" id="form-kurumsal">
+                <input type="text" name="KullaniciAdi_kurumsal" placeholder="Kullanıcı Adı" required>
+                <input type="password" name="Sifre_kurumsal" placeholder="Şifre" required>
+            </div>
+
+            <div class="alert error" id="hataMesaji"></div>
+
+            <button type="submit">GİRİŞ YAP</button>
+
+            <!-- GİRİŞ YAP butonunun hemen altında Anasayfa bağlantısı -->
+            <a href="/Home/Index" class="home-link">
+                <i class="fas fa-home"></i> Anasayfa
+            </a>
+        </form>
+    </div>
+
+    <script>
+        const hataMesaji = document.getElementById('hataMesaji');
+        const girisForm = document.getElementById('girisForm');
+
+        girisForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            hataMesaji.style.display = 'none';
+
+            const kullaniciAdi = girisForm.querySelector('input[type="text"]').value;
+            const sifre = girisForm.querySelector('input[type="password"]').value;
+
+            if (!kullaniciAdi || !sifre) {
+                hataMesaji.textContent = 'Kullanıcı adı ve şifre zorunludur.';
+                hataMesaji.style.display = 'block';
+                return;
+            }
+
+            const girisVerisi = {
+                KullaniciAdi: kullaniciAdi,
+                Sifre: sifre,
+                tip: 0
+            };
+
+            try {
+                const response = await fetch('/Login/Giris', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(girisVerisi)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Sunucu hatası: ' + response.status);
+                }
+
+                const result = await response.json();
+                if (result.success) {
+                    window.location.href = result.redirect;
+                } else {
+                    hataMesaji.textContent = result.message || 'Giriş başarısız.';
+                    hataMesaji.style.display = 'block';
+                }
+            } catch (err) {
+                console.error('Giriş hatası:', err);
+                hataMesaji.textContent = 'Sunucu hatası. Lütfen tekrar deneyin.';
+                hataMesaji.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

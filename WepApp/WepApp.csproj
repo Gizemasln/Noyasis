@@ -1,0 +1,104 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\WebAdminTheme\Bolum3\**" />
+    <Compile Remove="wwwroot\WebAdminTheme\TeknikKadro\**" />
+    <Content Remove="wwwroot\WebAdminTheme\Bolum3\**" />
+    <Content Remove="wwwroot\WebAdminTheme\TeknikKadro\**" />
+    <EmbeddedResource Remove="wwwroot\WebAdminTheme\Bolum3\**" />
+    <EmbeddedResource Remove="wwwroot\WebAdminTheme\TeknikKadro\**" />
+    <None Remove="wwwroot\WebAdminTheme\Bolum3\**" />
+    <None Remove="wwwroot\WebAdminTheme\TeknikKadro\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\Raporlar\Sozlesme.rdlc" />
+    <Content Remove="wwwroot\Raporlar\Teklif.rdlc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="wwwroot\Raporlar\Sozlesme.rdlc" />
+    <EmbeddedResource Include="wwwroot\Raporlar\Teklif.rdlc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNetCore.Reporting" Version="2.1.0" />
+    <PackageReference Include="EntityFramework" Version="6.5.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
+    <PackageReference Include="Microsoft.ReportingServices.ReportViewerControl.WebForms" Version="150.1652.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGenerators.Mvc" Version="9.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NSwag.ApiDescription.Client" Version="14.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="QuestPDF" Version="2025.7.4" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
+    <PackageReference Include="System.Collections" Version="4.3.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
+    <PackageReference Include="System.Drawing.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.IO" Version="4.3.0" />
+    <PackageReference Include="System.Linq" Version="4.3.0" />
+    <PackageReference Include="System.Linq.Expressions" Version="4.3.0" />
+    <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
+    <PackageReference Include="System.Net.Security" Version="4.3.2" />
+    <PackageReference Include="System.Security.Permissions" Version="9.0.0" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="6.0.0" />
+    <PackageReference Include="System.ServiceModel.Federation" Version="8.1.1" />
+    <PackageReference Include="System.ServiceModel.Http" Version="8.1.1" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="8.1.1" />
+    <PackageReference Include="System.ServiceModel.Security" Version="6.0.0" />
+    <PackageReference Include="System.Text.Json" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\WebAdminTheme\AnaSayfaBanner\Buyuk\" />
+    <Folder Include="wwwroot\WebAdminTheme\AnaSayfaBanner\Kucuk\" />
+    <Folder Include="wwwroot\WebAdminTheme\Hakkimizda\Buyuk\" />
+    <Folder Include="wwwroot\WebAdminTheme\Hakkimizda\Kucuk\" />
+    <Folder Include="wwwroot\WebAdminTheme\IK\" />
+    <Folder Include="wwwroot\WebAdminTheme\logo\" />
+    <Folder Include="wwwroot\WebAdminTheme\imza\" />
+    <Folder Include="wwwroot\WebAdminTheme\BayiSozlesme\" />
+    <Folder Include="wwwroot\WebAdminTheme\MusteriSozlesme\" />
+    <Folder Include="wwwroot\WebAdminTheme\Arge\" />
+    <Folder Include="wwwroot\WebAdminTheme\SozlesmeDokumanlar\" />
+    <Folder Include="wwwroot\WebAdminTheme\Sertifika\" />
+    <Folder Include="wwwroot\WebAdminTheme\Sponsor\Buyuk\" />
+    <Folder Include="wwwroot\WebAdminTheme\Sponsor\Kucuk\" />
+    <Folder Include="wwwroot\WebAdminTheme\UrunGaleri\Buyuk\" />
+    <Folder Include="wwwroot\WebAdminTheme\UrunGaleri\Kucuk\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WinAppReport\WinAppReport.csproj" />
+  </ItemGroup>
+
+</Project>

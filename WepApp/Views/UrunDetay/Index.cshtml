@@ -1,0 +1,351 @@
+﻿@using WepApp.Models
+@using WepApp.Models
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutWebUI.cshtml";
+}
+<main class="main">
+
+    <!-- Page Title -->
+    <div class="page-title">
+        <div class="heading">
+            <div class="container">
+                <div class="row d-flex justify-content-center text-center">
+                    <div class="col-lg-8">
+                        <h1>@ViewBag.Urun.Adi</h1>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="breadcrumbs">
+            <div class="container">
+                <ol>
+                    <li><a href="/Home">Home</a></li>
+                    <li class="#">@ViewBag.Urun.Adi</li>
+                </ol>
+            </div>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-10">
+
+                <!-- Blog Details Section -->
+                <section id="blog-details" class="blog-details section">
+                    <div class="container">
+
+                        <article class="article">
+
+                            <!-- Büyük Slider -->
+                            <div id="urunSlider" class="carousel slide post-img mb-3" data-bs-ride="carousel">
+                                <div class="carousel-indicators">
+                                    @for (int i = 0; i < ViewBag.Urun.UrunGaleri.Count; i++)
+                                    {
+                                        <button type="button" data-bs-target="#urunSlider" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-label="Slide @(i + 1)"></button>
+                                    }
+                                </div>
+                                <div class="carousel-inner">
+                                    @for (int i = 0; i < ViewBag.Urun.UrunGaleri.Count; i++)
+                                    {
+                                        var galeri = ViewBag.Urun.UrunGaleri[i];
+                                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                                            <a href="@galeri.FotografBuyuk" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="@galeri.FotografBuyuk">
+                                                <img src="@galeri.FotografBuyuk" alt="@ViewBag.Urun.Adi" class="img-fluid d-block w-100 main-carousel-img">
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#urunSlider" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#urunSlider" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+
+                            <!-- Küçük Sabit Boyutlu Slider -->
+                            @if (ViewBag.Urun.UrunGaleri.Count > 1)
+                            {
+                                <div id="urunThumbSlider" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        @{
+                                            int thumbItemsPerSlide = 4; // Her slaytta 4 küçük resim
+                                            int thumbSlideCount = (int)Math.Ceiling((double)ViewBag.Urun.UrunGaleri.Count / thumbItemsPerSlide);
+                                        }
+
+                                        @for (int slideIndex = 0; slideIndex < thumbSlideCount; slideIndex++)
+                                        {
+                                            <div class="carousel-item @(slideIndex == 0 ? "active" : "")">
+                                                <div class="row g-2">
+                                                    @for (int i = slideIndex * thumbItemsPerSlide; i < (slideIndex + 1) * thumbItemsPerSlide && i < ViewBag.Urun.UrunGaleri.Count; i++)
+                                                    {
+                                                        var galeri = ViewBag.Urun.UrunGaleri[i];
+                                                        <div class="col-3">
+                                                            <a href="#" data-bs-target="#urunSlider" data-bs-slide-to="@i" class="d-block">
+                                                                <img src="@galeri.FotografBuyuk" alt="@ViewBag.Urun.Adi" class="img-fluid fixed-thumb-img">
+                                                            </a>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+
+                                    @if (thumbSlideCount > 1)
+                                    {
+                                        <button class="carousel-control-prev thumb-control" type="button" data-bs-target="#urunThumbSlider" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next thumb-control" type="button" data-bs-target="#urunThumbSlider" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                    }
+                                </div>
+                            }
+
+                            <h2 class="title mt-4">@ViewBag.Urun.Adi</h2>
+
+                            @Html.Raw(ViewBag.Urun.Aciklama)
+
+                        </article>
+
+                    </div>
+                </section>
+                <section id="comment-form" class="comment-form section">
+                    <div class="container">
+
+                        <form id="teklifForm" action="@Url.Action("Kaydet", "UrunDetay", new { id = ViewBag.Urun.Id })" method="post" enctype="multipart/form-data">
+
+                            <h4>Bu Ürün İçin Teklif Formu</h4>
+                            <p>E-posta adresiniz yayınlanmayacaktır. Zorunlu alanlar * ile işaretlenmiştir.</p>
+                            <div class="row">
+                                <div class="col-md-6 form-group mb-3">
+                                    <input name="AdiSoyadi" type="text" class="form-control" placeholder="Adı Soyadı*" required>
+                                </div>
+                                <div class="col-md-6 form-group mb-3">
+                                    <input name="Telefon" type="text" class="form-control" placeholder="Telefon">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 form-group mb-3">
+                                    <input name="Eposta" type="email" class="form-control" placeholder="E-posta*" required>
+                                </div>
+                                <div class="col-md-6 form-group mb-3">
+                                    <!-- Website alanı modelde yok, kaldırıldı -->
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 form-group mb-3">
+                                    <textarea name="Aciklama" class="form-control" placeholder="Teklif Açıklama*" rows="5" required></textarea>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" id="submitBtn" class="btn btn-primary">Teklif Gönder</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </section><!-- /Comment Form Section -->
+
+            </div>
+
+
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">@ViewBag.Urun.Adi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" alt="@ViewBag.Urun.Adi" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<!-- Modal HTML - Sadece başarılı durumda gösterilecek -->
+@if (ViewData["Basarili"] as bool? == true)
+{
+    <div id="successModal" class="modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+        <div style="background:white; max-width:500px; width:90%; margin:0 auto; padding:40px; border-radius:15px; text-align:center; position:relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+            <button id="closeModal" style="position:absolute; top:10px; right:15px; background:none; border:none; font-size:24px; cursor:pointer; color:#999; padding:0;">&times;</button>
+            <div style="font-size:48px; color:#28a745; margin-bottom:20px;">&#10004;</div>
+            <h4 style="color:#333; margin-bottom:10px;">Teklifiniz başarıyla gönderildi!</h4>
+            <p style="color:#666; margin:0;">Teşekkür ederiz, en kısa sürede sizinle iletişime geçeceğiz.</p>
+        </div>
+    </div>
+}
+
+<style>
+    .main-carousel-img {
+        width: 100%;
+        height: 400px; /* Sabit yükseklik, orijinal boyutlar ne olursa olsun aynı boyutta görüntülenecek */
+        object-fit: cover; /* Farklı boyutlardaki görselleri kırpıp aynı boyuta sığdır */
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .main-carousel-img:hover {
+            transform: scale(1.02);
+        }
+
+    .fixed-thumb-img {
+        width: 100%;
+        height: 80px;
+        object-fit: cover;
+        border: 2px solid #dee2e6;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .fixed-thumb-img:hover {
+            border-color: #007bff;
+            transform: scale(1.05);
+        }
+
+    #urunThumbSlider {
+        margin-top: 10px;
+    }
+
+    .thumb-control {
+        width: 30px;
+        height: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+    }
+
+        .thumb-control .carousel-control-prev-icon,
+        .thumb-control .carousel-control-next-icon {
+            width: 15px;
+            height: 15px;
+        }
+
+    .carousel-item .row {
+        margin: 0 -5px;
+    }
+
+    .carousel-item .col-3 {
+        padding: 0 5px;
+    }
+</style>
+
+<script>
+    // Modal image handler
+    var imageModal = document.getElementById('imageModal');
+    imageModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var imageUrl = button.getAttribute('data-bs-image');
+        var modalImage = document.getElementById('modalImage');
+        modalImage.src = imageUrl;
+    });
+
+    // Büyük slider değiştiğinde küçük slider'ı da güncelle
+    var urunSlider = document.getElementById('urunSlider');
+    var urunThumbSlider = document.getElementById('urunThumbSlider');
+
+    if (urunSlider && urunThumbSlider) {
+        urunSlider.addEventListener('slide.bs.carousel', function (event) {
+            var activeIndex = event.to;
+            var thumbItemsPerSlide = 4;
+            var thumbSlideIndex = Math.floor(activeIndex / thumbItemsPerSlide);
+
+            var thumbCarousel = new bootstrap.Carousel(urunThumbSlider);
+            thumbCarousel.to(thumbSlideIndex);
+        });
+    }
+
+    // Küçük slider'daki linklere tıklandığında büyük slider'ı güncelle
+    var thumbLinks = document.querySelectorAll('#urunThumbSlider a');
+    thumbLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var slideTo = this.getAttribute('data-bs-slide-to');
+
+            var mainCarousel = new bootstrap.Carousel(urunSlider);
+            mainCarousel.to(parseInt(slideTo));
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Form submit engelleme - birden fazla göndermeyi önle
+        var form = document.getElementById("teklifForm");
+        var submitBtn = document.getElementById("submitBtn");
+        var modal = document.getElementById("successModal");
+        var isSubmitting = false;
+
+        if (form) {
+            form.addEventListener("submit", function(e) {
+                if (isSubmitting) {
+                    e.preventDefault();
+                    return false;
+                }
+                isSubmitting = true;
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = "Gönderiliyor...";
+                }
+            });
+        }
+
+        // Modal varsa kapatma işlemlerini ayarla
+        if (modal) {
+            // Formu temizle
+            if (form) {
+                form.reset();
+            }
+
+            // Otomatik kapatma - 4 saniye sonra
+            setTimeout(function() {
+                closeModal();
+            }, 4000);
+
+            // Kapatma butonu - manuel kapatma
+            var closeBtn = document.getElementById("closeModal");
+            if (closeBtn) {
+                closeBtn.addEventListener("click", function(e) {
+                    e.stopPropagation();
+                    closeModal();
+                });
+            }
+
+            // Dışarı tıklama ile kapatma
+            modal.addEventListener("click", function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        }
+
+        function closeModal() {
+            if (modal) {
+                modal.style.display = "none";
+            }
+            // Submit durumunu sıfırla (tekrar gönderme için)
+            isSubmitting = false;
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = "Teklif Gönder";
+            }
+        }
+    });
+</script>

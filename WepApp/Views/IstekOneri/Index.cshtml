@@ -1,0 +1,410 @@
+﻿@model List<WepApp.Models.IstekOneriler>
+
+@{
+    ViewData["Title"] = "İstek ve Önerilerim";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    int totalCount = ViewBag.TotalCount ?? 0;
+    string kullaniciTipi = ViewBag.KullaniciTipi;
+}
+
+<style>
+    .card {
+        border: none;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .badge {
+        font-size: 0.85em;
+        padding: 0.4em 0.8em;
+    }
+
+    .table th {
+        background-color: #f1f3f5;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .readonly-input {
+        background-color: #f8f9fa;
+        font-weight: 500;
+        border: 1px solid #dee2e6;
+    }
+
+    .modal-lg {
+        max-width: 800px;
+    }
+
+    #msgContainer {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 9999;
+        max-width: 400px;
+    }
+</style>
+
+<div class="container-fluid py-4">
+
+    <!-- Mesaj Alanı -->
+    <div id="msgContainer"></div>
+
+    <!-- Yeni İstek Ekleme Formu -->
+    <div class="card shadow mb-5">
+        <div class="card-header bg-gradient-success text-white">
+            <h4 class="mb-0"><i class="fas fa-plus-circle me-2"></i> Yeni İstek / Öneri Ekle</h4>
+        </div>
+        <div class="card-body">
+            <form id="ekleForm">
+                @Html.AntiForgeryToken()
+
+                <!-- Kullanıcı Bilgileri -->
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label">Kullanıcı Tipi</label>
+                        <input type="text" class="form-control readonly-input"
+                               value="@(kullaniciTipi == "Musteri" ? "Müşteri" : "Bayi")" readonly />
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <!-- Form Alanları -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Lisans Tipi <span class="text-danger">*</span></label>
+                        <select name="LisansTipId" class="form-select" required>
+                            <option value="">-- Seçiniz --</option>
+                            @foreach (var lisans in ViewBag.LisansTipleri as List<WepApp.Models.LisansTip>)
+                            {
+                                <option value="@lisans.Id">@lisans.Adi</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Konu <span class="text-danger">*</span></label>
+                        <input type="text" name="Konu" class="form-control" required maxlength="200" />
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <label class="form-label">Açıklama / Detay <span class="text-danger">*</span></label>
+                        <textarea name="Metni" class="form-control" rows="6" required
+                                  placeholder="Lütfen detaylı açıklama giriniz..."></textarea>
+                    </div>
+                </div>
+
+                <div class="text-end">
+                    <button type="reset" class="btn btn-secondary me-2">Temizle</button>
+                    <button type="submit" class="btn btn-success px-5">
+                        <i class="fas fa-paper-plane me-2"></i> Gönder
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Kayıt Listesi -->
+    <div class="card shadow">
+        <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="fas fa-list-alt me-2"></i> İstek ve Önerilerim (@totalCount kayıt)</h4>
+            <div>
+                <a href="@Url.Action("Index", new { page = currentPage })" class="btn btn-light btn-sm">
+                    <i class="fas fa-sync-alt me-1"></i> Yenile
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped" id="istekTablo">
+                        <thead>
+                            <tr>
+                                <th>Tarih</th>
+                                <th>Lisans Tipi</th>
+                                <th>Konu</th>
+                                <th>Açıklama</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                var lisansAdi = item.LisansTip?.Adi ?? "-";
+
+                                <tr data-id="@item.Id">
+                                    <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td>@lisansAdi</td>
+                                    <td>@item.Konu</td>
+                                    <td>
+                                        <div class="text-truncate" style="max-width: 250px;"
+                                             title="@item.Metni">
+                                            @(item.Metni.Length > 80 ? item.Metni.Substring(0, 80) + "..." : item.Metni)
+                                        </div>
+                                    </td>
+                            
+                                    <td>
+                                        <button class="btn btn-sm btn-warning text-white btn-duzenle"
+                                                data-id="@item.Id" title="Düzenle">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger btn-sil"
+                                                data-id="@item.Id" title="Sil">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                @if (totalPages > 1)
+                {
+                    <nav aria-label="Sayfa navigasyonu">
+                        <ul class="pagination justify-content-center mt-4">
+                            @if (currentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Index"
+                                       asp-route-page="1">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Index"
+                                       asp-route-page="@(currentPage-1)">
+                                        <i class="fas fa-angle-left"></i>
+                                    </a>
+                                </li>
+                            }
+
+                            @{
+                                int start = Math.Max(1, currentPage - 2);
+                                int end = Math.Min(totalPages, currentPage + 2);
+                            }
+
+                            @for (int i = start; i <= end; i++)
+                            {
+                                <li class="page-item @(i == currentPage ? "active" : "")">
+                                    <a class="page-link" asp-action="Index"
+                                       asp-route-page="@i">@i</a>
+                                </li>
+                            }
+
+                            @if (currentPage < totalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Index"
+                                       asp-route-page="@(currentPage+1)">
+                                        <i class="fas fa-angle-right"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Index"
+                                       asp-route-page="@totalPages">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                }
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+                    <p class="text-muted fs-5">Henüz istek/öneri göndermediniz.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Düzenleme Modal -->
+<div class="modal fade" id="duzenleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="duzenleForm">
+                <div class="modal-header bg-warning text-white">
+                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i> İstek/Öneri Düzenle</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="Id" id="duzenleId" />
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Lisans Tipi <span class="text-danger">*</span></label>
+                            <select name="LisansTipId" id="duzenleLisansTipId" class="form-select" required></select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Konu <span class="text-danger">*</span></label>
+                            <input type="text" name="Konu" id="duzenleKonu" class="form-control" required maxlength="200" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Açıklama / Detay <span class="text-danger">*</span></label>
+                        <textarea name="Metni" id="duzenleMetni" class="form-control" rows="6" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-warning">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function showMessage(type, text) {
+            const container = document.getElementById('msgContainer');
+            container.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show shadow" role="alert">
+                    <div class="d-flex align-items-center">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i>
+                        <div>${text}</div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            setTimeout(() => {
+                const alert = container.querySelector('.alert');
+                if (alert) {
+                    alert.classList.remove('show');
+                    setTimeout(() => container.innerHTML = '', 300);
+                }
+            }, 5000);
+        }
+
+        // Yeni Ekleme
+        $('#ekleForm').submit(function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '@Url.Action("Ekle")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(res) {
+                    if (res.success) {
+                        showMessage('success', res.message);
+                        $('#ekleForm')[0].reset();
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showMessage('danger', res.message || 'İşlem başarısız!');
+                    }
+                },
+                error: function(xhr) {
+                    showMessage('danger', 'Sunucu hatası: ' + xhr.statusText);
+                }
+            });
+        });
+
+        // Düzenle Butonu
+        $(document).on('click', '.btn-duzenle', function() {
+            const id = $(this).data('id');
+            $.get('@Url.Action("GetirDuzenle")', { id: id }, function(data) {
+                if (data) {
+                    $('#duzenleId').val(data.id);
+                    $('#duzenleKonu').val(data.konu);
+                    $('#duzenleMetni').val(data.metni);
+
+                    // Select doldur
+                    const select = $('#duzenleLisansTipId');
+                    select.empty();
+                    select.append('<option value="">-- Lisans Tipi Seçiniz --</option>');
+                    $.each(data.lisansTipleri, function(i, g) {
+                        select.append(`<option value="${g.id}" ${g.id === data.lisansTipId ? 'selected' : ''}>${g.adi}</option>`);
+                    });
+
+                    $('#duzenleModal').modal('show');
+                }
+            });
+        });
+
+        // Düzenle Kaydet
+        $('#duzenleForm').submit(function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '@Url.Action("Duzenle")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(res) {
+                    if (res.success) {
+                        showMessage('success', res.message);
+                        $('#duzenleModal').modal('hide');
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showMessage('danger', res.message || 'İşlem başarısız!');
+                    }
+                },
+                error: function(xhr) {
+                    showMessage('danger', 'Sunucu hatası: ' + xhr.statusText);
+                }
+            });
+        });
+
+        // Sil Butonu
+        $(document).on('click', '.btn-sil', function() {
+            const id = $(this).data('id');
+            Swal.fire({
+                title: 'Emin misiniz?',
+                text: "Bu istek/öneri kalıcı olarak silinecek!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Evet, Sil',
+                cancelButtonText: 'İptal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.post('@Url.Action("Sil")', {
+                        id: id,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    })
+                    .done(function(res) {
+                        if (res.success) {
+                            showMessage('success', res.message);
+                            location.reload();
+                        } else {
+                            showMessage('danger', res.message);
+                        }
+                    })
+                    .fail(function() {
+                        showMessage('danger', 'Sunucuyla iletişim kurulamadı.');
+                    });
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            setTimeout(() => {
+                $('#msgContainer').empty();
+            }, 10000);
+        });
+    </script>
+}

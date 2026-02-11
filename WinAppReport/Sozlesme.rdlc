@@ -1,0 +1,3758 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <Body>
+    <ReportItems>
+      <Image Name="Image2">
+        <Source>Embedded</Source>
+        <Value>Ekrangörüntüsü20251205152936</Value>
+        <Sizing>FitProportional</Sizing>
+        <Top>0.10266cm</Top>
+        <Left>0.72319cm</Left>
+        <Height>1.87042cm</Height>
+        <Width>5.79058cm</Width>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+        </Style>
+      </Image>
+      <Image Name="Image3">
+        <Source>Embedded</Source>
+        <Value>Ekrangörüntüsü20251205153229</Value>
+        <Sizing>FitProportional</Sizing>
+        <Top>0.19016cm</Top>
+        <Left>15.37398cm</Left>
+        <Height>1.87042cm</Height>
+        <Width>3.52715cm</Width>
+        <ZIndex>1</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+        </Style>
+      </Image>
+      <Textbox Name="Textbox1">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Sözleşme Tarihi: </Value>
+                <Style>
+                  <FontSize>9pt</FontSize>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!Ek1.Value</Value>
+                <Style>
+                  <FontSize>9pt</FontSize>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value xml:space="preserve">                                     </Value>
+                <Style>
+                  <FontSize>9pt</FontSize>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>Yazılım Programı Sipariş Sözleşmesi                              </Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>Form No:</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>8pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!Ek2.Value</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>8pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox1</rd:DefaultName>
+        <Top>2.16641cm</Top>
+        <Left>0.72319cm</Left>
+        <Height>0.5909cm</Height>
+        <Width>18.17794cm</Width>
+        <ZIndex>2</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line1">
+        <Top>3.06599cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>0cm</Height>
+        <Width>18.23086cm</Width>
+        <ZIndex>3</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line2">
+        <Top>3.06599cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>1.53459cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>4</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line3">
+        <Top>4.60058cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>0cm</Height>
+        <Width>18.23086cm</Width>
+        <ZIndex>5</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line4">
+        <Top>3.02218cm</Top>
+        <Left>18.90113cm</Left>
+        <Height>1.5784cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>6</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line6">
+        <Top>3.10127cm</Top>
+        <Left>3.3923cm</Left>
+        <Height>1.49931cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>7</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line7">
+        <Top>3.05745cm</Top>
+        <Left>8.71437cm</Left>
+        <Height>1.49931cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>8</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line8">
+        <Top>3.10127cm</Top>
+        <Left>11.49659cm</Left>
+        <Height>1.53458cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>9</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line10">
+        <Top>3.8862cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>0cm</Height>
+        <Width>8.0441cm</Width>
+        <ZIndex>10</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox2">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Yazılımın Paket Adı</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox2</rd:DefaultName>
+        <Top>3.14509cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>0.63528cm</Height>
+        <Width>2.72521cm</Width>
+        <ZIndex>11</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox3">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Lisans Türü</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox3</rd:DefaultName>
+        <Top>3.8862cm</Top>
+        <Left>0.70237cm</Left>
+        <Height>0.6cm</Height>
+        <Width>2.5cm</Width>
+        <ZIndex>12</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox4">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!PaketAdi.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox4</rd:DefaultName>
+        <Top>3.10981cm</Top>
+        <Left>3.72272cm</Left>
+        <Height>0.6cm</Height>
+        <Width>4.63709cm</Width>
+        <ZIndex>13</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox5">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!LisansTipi.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox5</rd:DefaultName>
+        <Top>3.95676cm</Top>
+        <Left>3.72272cm</Left>
+        <Height>0.52944cm</Height>
+        <Width>4.63709cm</Width>
+        <ZIndex>14</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox6">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Programın </Value>
+                <Style>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Paket İçeriği</Value>
+                <Style>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox6</rd:DefaultName>
+        <Top>3.13627cm</Top>
+        <Left>8.89076cm</Left>
+        <Height>1.42021cm</Height>
+        <Width>2.5cm</Width>
+        <ZIndex>15</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox13">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!PaketIcerigi.Value</Value>
+                <Style>
+                  <FontSize>6pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value />
+                <Style>
+                  <FontSize>6pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox13</rd:DefaultName>
+        <Top>3.13655cm</Top>
+        <Left>11.67298cm</Left>
+        <Height>1.39348cm</Height>
+        <Width>7.05176cm</Width>
+        <ZIndex>16</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line11">
+        <Top>5.05037cm</Top>
+        <Left>0.69494cm</Left>
+        <Height>0cm</Height>
+        <Width>18.20619cm</Width>
+        <ZIndex>17</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox14">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Yazılım Lisans Türü ve Özellikleri1</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox14</rd:DefaultName>
+        <Top>5.05037cm</Top>
+        <Left>7.05237cm</Left>
+        <Height>0.6cm</Height>
+        <Width>5.50256cm</Width>
+        <ZIndex>18</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line13">
+        <Top>5.58863cm</Top>
+        <Left>0.72319cm</Left>
+        <Height>0cm</Height>
+        <Width>18.17794cm</Width>
+        <ZIndex>19</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line16">
+        <Top>5.05037cm</Top>
+        <Left>0.72319cm</Left>
+        <Height>6.27062cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>20</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line17">
+        <Top>10.5187cm</Top>
+        <Left>0.72319cm</Left>
+        <Height>0cm</Height>
+        <Width>18.17794cm</Width>
+        <ZIndex>21</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line18">
+        <Top>5.05037cm</Top>
+        <Left>18.90113cm</Left>
+        <Height>6.5352cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>22</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line19">
+        <Top>6.67342cm</Top>
+        <Left>0.72319cm</Left>
+        <Height>0cm</Height>
+        <Width>18.17794cm</Width>
+        <ZIndex>23</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line20">
+        <Top>9.5662cm</Top>
+        <Left>0.72319cm</Left>
+        <Height>0cm</Height>
+        <Width>18.17794cm</Width>
+        <ZIndex>24</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line22">
+        <Top>7.62592cm</Top>
+        <Left>0.72319cm</Left>
+        <Height>0cm</Height>
+        <Width>18.17794cm</Width>
+        <ZIndex>25</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line23">
+        <Top>8.57842cm</Top>
+        <Left>0.72319cm</Left>
+        <Height>0cm</Height>
+        <Width>18.17794cm</Width>
+        <ZIndex>26</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line24">
+        <Top>5.58863cm</Top>
+        <Left>8.35981cm</Left>
+        <Height>5.73236cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>27</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox15">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Program Lisans Türü</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox15</rd:DefaultName>
+        <Top>5.65919cm</Top>
+        <Left>0.8082cm</Left>
+        <Height>0.57203cm</Height>
+        <Width>6.13834cm</Width>
+        <ZIndex>28</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox16">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Eğitim Alma Süresi (Lisans Ücretine Dahil)</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox15</rd:DefaultName>
+        <Top>6.81453cm</Top>
+        <Left>0.82902cm</Left>
+        <Height>0.56417cm</Height>
+        <Width>6.13834cm</Width>
+        <ZIndex>29</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox17">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Küçük Sürüm Upgrade</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox15</rd:DefaultName>
+        <Top>7.69648cm</Top>
+        <Left>0.84349cm</Left>
+        <Height>0.64382cm</Height>
+        <Width>6.17361cm</Width>
+        <ZIndex>30</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox22">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Sipariş Sözleşme Tarihi itibariyle; ilk 3 (üç) Ay</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox15</rd:DefaultName>
+        <Top>6.84981cm</Top>
+        <Left>8.5362cm</Left>
+        <Height>0.56417cm</Height>
+        <Width>10.01037cm</Width>
+        <ZIndex>31</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox23">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Sipariş Sözleşme Tarihi itibariyle; ilk yıl ücretsiz. Sonraki yıllar; (Bknz. Lisans ve Sözleşme Şartları)</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox15</rd:DefaultName>
+        <Top>7.61682cm</Top>
+        <Left>8.5362cm</Left>
+        <Height>0.92632cm</Height>
+        <Width>10.18854cm</Width>
+        <ZIndex>32</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox7">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!LisansTipi.Value</Value>
+                <Style />
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox5</rd:DefaultName>
+        <Top>5.86203cm</Top>
+        <Left>8.5362cm</Left>
+        <Height>0.6cm</Height>
+        <Width>9.10361cm</Width>
+        <ZIndex>33</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox18">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Büyük Sürüm Upgrade</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox15</rd:DefaultName>
+        <Top>8.64898cm</Top>
+        <Left>0.79374cm</Left>
+        <Height>0.64382cm</Height>
+        <Width>6.17361cm</Width>
+        <ZIndex>34</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox24">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Program Üst Sürüm Paket fiyatından %60 İndirimli</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox15</rd:DefaultName>
+        <Top>8.76391cm</Top>
+        <Left>8.5362cm</Left>
+        <Height>0.56417cm</Height>
+        <Width>10.01037cm</Width>
+        <ZIndex>35</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox19">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Yıllık Yazılım Destek ve Bakım Hizmeti</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox15</rd:DefaultName>
+        <Top>9.60148cm</Top>
+        <Left>0.8082cm</Left>
+        <Height>0.64382cm</Height>
+        <Width>6.17361cm</Width>
+        <ZIndex>36</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox20">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Ücretli</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox15</rd:DefaultName>
+        <Top>9.86606cm</Top>
+        <Left>8.5362cm</Left>
+        <Height>0.58208cm</Height>
+        <Width>6.17361cm</Width>
+        <ZIndex>37</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox21">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Yeni Yıl Devir Hizmeti (her yıl sonu)</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox15</rd:DefaultName>
+        <Top>10.5446cm</Top>
+        <Left>0.8643cm</Left>
+        <Height>0.6cm</Height>
+        <Width>6.02932cm</Width>
+        <ZIndex>38</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox25">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Ücretli</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox15</rd:DefaultName>
+        <Top>10.53606cm</Top>
+        <Left>8.62147cm</Left>
+        <Height>0.60854cm</Height>
+        <Width>6.17361cm</Width>
+        <ZIndex>39</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line25">
+        <Top>11.32099cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>0cm</Height>
+        <Width>18.23086cm</Width>
+        <ZIndex>40</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line26">
+        <Top>12.05328cm</Top>
+        <Left>10.12549cm</Left>
+        <Height>3.98584cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>41</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line28">
+        <Top>12.05328cm</Top>
+        <Left>0.70237cm</Left>
+        <Height>3.98584cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>42</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line29">
+        <Top>12.67037cm</Top>
+        <Left>0.72319cm</Left>
+        <Height>0cm</Height>
+        <Width>9.4023cm</Width>
+        <ZIndex>43</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox34">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Ödeme Şartları</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox34</rd:DefaultName>
+        <Top>11.95599cm</Top>
+        <Left>4.86106cm</Left>
+        <Height>0.6cm</Height>
+        <Width>2.5cm</Width>
+        <ZIndex>44</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line30">
+        <Top>12.67008cm</Top>
+        <Left>5.94112cm</Left>
+        <Height>3.36904cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>45</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line31">
+        <Top>13.34064cm</Top>
+        <Left>0.70237cm</Left>
+        <Height>0cm</Height>
+        <Width>9.42312cm</Width>
+        <ZIndex>46</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox35">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Faydalanılan Kampanyalar</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox35</rd:DefaultName>
+        <Top>12.67008cm</Top>
+        <Left>0.77293cm</Left>
+        <Height>0.6cm</Height>
+        <Width>3.96875cm</Width>
+        <ZIndex>47</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox36">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!Kampanya.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox36</rd:DefaultName>
+        <Top>12.63509cm</Top>
+        <Left>6.04695cm</Left>
+        <Height>0.6cm</Height>
+        <Width>3.8316cm</Width>
+        <ZIndex>48</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line32">
+        <Top>14.01092cm</Top>
+        <Left>0.70237cm</Left>
+        <Height>0cm</Height>
+        <Width>9.42312cm</Width>
+        <ZIndex>49</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line33">
+        <Top>14.64592cm</Top>
+        <Left>0.75528cm</Left>
+        <Height>0cm</Height>
+        <Width>9.37021cm</Width>
+        <ZIndex>50</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line34">
+        <Top>15.3162cm</Top>
+        <Left>0.75528cm</Left>
+        <Height>0cm</Height>
+        <Width>9.37021cm</Width>
+        <ZIndex>51</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line35">
+        <Top>16.03912cm</Top>
+        <Left>0.72319cm</Left>
+        <Height>0cm</Height>
+        <Width>9.4023cm</Width>
+        <ZIndex>52</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox37">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Lisans Fiyatı</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox37</rd:DefaultName>
+        <Top>13.34036cm</Top>
+        <Left>0.72319cm</Left>
+        <Height>0.6cm</Height>
+        <Width>4.02167cm</Width>
+        <ZIndex>53</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox38">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Toplam Ödenecek Tutar</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox38</rd:DefaultName>
+        <Top>14.08092cm</Top>
+        <Left>0.75528cm</Left>
+        <Height>0.52944cm</Height>
+        <Width>3.9864cm</Width>
+        <ZIndex>54</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox39">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Ödenecek Tutar Yazı İle</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox39</rd:DefaultName>
+        <Top>14.68092cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>0.6cm</Height>
+        <Width>3.91584cm</Width>
+        <ZIndex>55</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox40">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!PaketFiyati.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value> + KDV ₺</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox40</rd:DefaultName>
+        <Top>13.37564cm</Top>
+        <Left>6.04695cm</Left>
+        <Height>0.6cm</Height>
+        <Width>3.8316cm</Width>
+        <ZIndex>56</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox41">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!Toplam.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value> ₺</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox41</rd:DefaultName>
+        <Top>13.97592cm</Top>
+        <Left>6.11751cm</Left>
+        <Height>0.59944cm</Height>
+        <Width>3.76104cm</Width>
+        <ZIndex>57</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox42">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!YaziIle.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox42</rd:DefaultName>
+        <Top>14.64592cm</Top>
+        <Left>6.11751cm</Left>
+        <Height>0.6cm</Height>
+        <Width>3.76104cm</Width>
+        <ZIndex>58</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox43">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Ürün/Lisans Yenileme Bedeli (ÜYB) Bitirş Süresi</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox43</rd:DefaultName>
+        <Top>15.28092cm</Top>
+        <Left>0.8082cm</Left>
+        <Height>0.82903cm</Height>
+        <Width>4.95653cm</Width>
+        <ZIndex>59</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox44">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>........../............/.............</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox44</rd:DefaultName>
+        <Top>15.49259cm</Top>
+        <Left>6.11751cm</Left>
+        <Height>0.37014cm</Height>
+        <Width>3.76104cm</Width>
+        <ZIndex>60</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line36">
+        <Top>12.03537cm</Top>
+        <Left>18.90113cm</Left>
+        <Height>4.00375cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>61</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line37">
+        <Top>11.99155cm</Top>
+        <Left>10.64993cm</Left>
+        <Height>4.04757cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>62</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line38">
+        <Top>12.70593cm</Top>
+        <Left>10.63229cm</Left>
+        <Height>0cm</Height>
+        <Width>8.26884cm</Width>
+        <ZIndex>63</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox45">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Sözleşme Ek Bilgiler</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox34</rd:DefaultName>
+        <Top>12.03537cm</Top>
+        <Left>13.28593cm</Left>
+        <Height>0.6cm</Height>
+        <Width>3.88427cm</Width>
+        <ZIndex>64</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line39">
+        <Top>12.70537cm</Top>
+        <Left>15.37398cm</Left>
+        <Height>3.33375cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>65</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line40">
+        <Top>13.3762cm</Top>
+        <Left>10.64993cm</Left>
+        <Height>0cm</Height>
+        <Width>8.2512cm</Width>
+        <ZIndex>66</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox46">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Özel Entegratör</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox35</rd:DefaultName>
+        <Top>12.74093cm</Top>
+        <Left>10.64993cm</Left>
+        <Height>0.6cm</Height>
+        <Width>3.96875cm</Width>
+        <ZIndex>67</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line41">
+        <Top>14.04648cm</Top>
+        <Left>10.63229cm</Left>
+        <Height>0cm</Height>
+        <Width>8.26884cm</Width>
+        <ZIndex>68</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line42">
+        <Top>14.68148cm</Top>
+        <Left>10.72063cm</Left>
+        <Height>0cm</Height>
+        <Width>8.1805cm</Width>
+        <ZIndex>69</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line44">
+        <Top>16.03912cm</Top>
+        <Left>10.63229cm</Left>
+        <Height>0cm</Height>
+        <Width>8.26884cm</Width>
+        <ZIndex>70</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox48">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>İlk Yüklenen Kontör Miktarı</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox37</rd:DefaultName>
+        <Top>13.41148cm</Top>
+        <Left>10.70285cm</Left>
+        <Height>0.6cm</Height>
+        <Width>4.02167cm</Width>
+        <ZIndex>71</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox49">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Eğitim Süresi</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox38</rd:DefaultName>
+        <Top>14.11731cm</Top>
+        <Left>10.63229cm</Left>
+        <Height>0.49361cm</Height>
+        <Width>3.9864cm</Width>
+        <ZIndex>72</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox56">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Diğer Notlar</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox56</rd:DefaultName>
+        <Top>14.98988cm</Top>
+        <Left>11.07876cm</Left>
+        <Height>0.6cm</Height>
+        <Width>2.5cm</Width>
+        <ZIndex>73</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line46">
+        <Top>16.21578cm</Top>
+        <Left>2.89277cm</Left>
+        <Height>0cm</Height>
+        <Width>14.9481cm</Width>
+        <ZIndex>74</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line47">
+        <Top>16.21578cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>0cm</Height>
+        <Width>18.23086cm</Width>
+        <ZIndex>75</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox57">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Lisans ve Ödeme Şartları</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox57</rd:DefaultName>
+        <Top>16.21578cm</Top>
+        <Left>7.78819cm</Left>
+        <Height>0.45861cm</Height>
+        <Width>3.9248cm</Width>
+        <ZIndex>76</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox58">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Sözleşmeyi onaylamadan önce programın demo sürümünü inceleyiniz. Sözleşme yapıldıktan sonra bir hafta içerisinde program faturanız çözüm ortağımıza gönderilecektir. Bu süre zarfında çözüm ortağımızdan program faturanızı, programa ait lisans belgenizi ise http://musteri.noyasis.com.tr müşteri paneline giriş yapıp alabilirsiniz. </Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value> Program faturası bulunmayan firmaların lisansı geçerli sayılmaz.</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value> Müşteriye ait iş bu sözleşmeye girilen bilgiler tam ve eksiksiz olarak bizzat Çözüm Ortağı tarafından doldurulmuş ve müşteri tarafından da Sipariş Onaylama SMS’i aracılığı ile okunmuş ve onaylanmıştır. Herhangi bir ihtilafa konu değildir.</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value> Müşteri, bilgilerinin tam, eksiksiz ve doğru olarak girildiğini kabul ve taahhüt eder. İhtilaf sebebi ile oluşacak zararlardan müşteri sorumludur. </Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value> İş bu sözleşmede yazan Müşteri Cep Telefonu bilgisine gönderilecek sms’deki sipariş onaylama işlemi, en geç 24 saat içerisinde yapılmalıdır. Aksi durumda sipariş iptal olacaktır. </Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value> Ödeme kısmında yazan toplam tutar; peşin satışlarda hemen, vadeli satışlarda vade tarihinde ödenmediği taktirde hizmet edimi ödeme yapılıncaya kadar askıya alınır. </Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value> Programlarımızın güncellenmesi, ilk lisans alım tarihinden itibaren 1 (bir) yıldır. Bu güncellemeler; programın mevcut yapısındaki, yasal zorunlu düzenlemeleri kapsamaktadır. </Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value> Bu sözleşme yukarıda yer alan form no ile takip edilmektedir. Noyasis Genel Merkez’deki nüshasının aslı ile arasında uyuşmazlık olması durumunda ortaya çıkacak problemlerden Noyasis Çözüm Ortağı sorumludur. </Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value> Kiralık olan yazılımlarda bu sözleşmeye ek olarak, Noyasis Yazılım Kiralama Sözleşmesinin sms aracılığı ile onaylanması gerekmektedir. </Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value> Ücretsiz eğitimin yukarıdaki tabloda yazan süre içerisinde alınmasından Müşteri sorumludur. İlave eğitimde lisans bedelinin (kampanyasız bedel) %10'u alınır. </Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value> Yazılım Programı kullanım lisansı hakkı bu sözleşme kapsamında son kullanıcıya aittir. Başka bir firmaya devredilemez.</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value> Ürün/Lisans Yenileme Bedeli (ÜYB) Fiyatı: # </Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!UYBTutar.Value</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value> TL #'dir (Lisanslı paketinizin %..</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!UYBOran.Value</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>'i oranıdır). Sözleşme tarihinizden sonra her yıl TÜFE oranında güncellenir.</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>7pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox58</rd:DefaultName>
+        <Top>16.70967cm</Top>
+        <Left>0.70237cm</Left>
+        <Height>5.12438cm</Height>
+        <Width>18.02237cm</Width>
+        <ZIndex>77</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line48">
+        <Top>16.21578cm</Top>
+        <Left>18.90113cm</Left>
+        <Height>5.7241cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>78</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line49">
+        <Top>16.21578cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>5.7241cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>79</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line50">
+        <Top>21.97516cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>0cm</Height>
+        <Width>18.23086cm</Width>
+        <ZIndex>80</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line52">
+        <Top>22.61898cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>0cm</Height>
+        <Width>18.23086cm</Width>
+        <ZIndex>81</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox59">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Müşteri / Son Kullanıcı Bilgileri</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox59</rd:DefaultName>
+        <Top>21.9837cm</Top>
+        <Left>6.97121cm</Left>
+        <Height>0.52944cm</Height>
+        <Width>6.31472cm</Width>
+        <ZIndex>82</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line53">
+        <Top>23.28926cm</Top>
+        <Left>0.62121cm</Left>
+        <Height>0cm</Height>
+        <Width>18.27992cm</Width>
+        <ZIndex>83</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line54">
+        <Top>23.88898cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>0cm</Height>
+        <Width>18.23086cm</Width>
+        <ZIndex>84</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line55">
+        <Top>24.52398cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>0cm</Height>
+        <Width>18.23086cm</Width>
+        <ZIndex>85</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line56">
+        <Top>25.19426cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>0cm</Height>
+        <Width>18.23086cm</Width>
+        <ZIndex>86</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line57">
+        <Top>26.07648cm</Top>
+        <Left>0.62121cm</Left>
+        <Height>0cm</Height>
+        <Width>18.27992cm</Width>
+        <ZIndex>87</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line58">
+        <Top>21.9837cm</Top>
+        <Left>18.90113cm</Left>
+        <Height>4.14598cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>88</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line59">
+        <Top>21.9837cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>4.10132cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>89</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line60">
+        <Top>21.97516cm</Top>
+        <Left>3.19494cm</Left>
+        <Height>4.10986cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>90</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox60">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Ticari Ünvanı</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox60</rd:DefaultName>
+        <Top>22.68953cm</Top>
+        <Left>0.69494cm</Left>
+        <Height>0.49389cm</Height>
+        <Width>2.5cm</Width>
+        <ZIndex>91</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox61">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Adı ve Soyadı</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox61</rd:DefaultName>
+        <Top>23.95898cm</Top>
+        <Left>0.69494cm</Left>
+        <Height>0.6cm</Height>
+        <Width>2.5cm</Width>
+        <ZIndex>92</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox62">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Adresi</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox62</rd:DefaultName>
+        <Top>24.59426cm</Top>
+        <Left>0.69494cm</Left>
+        <Height>0.49389cm</Height>
+        <Width>2.5cm</Width>
+        <ZIndex>93</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox63">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>KVKK. Onayı</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox63</rd:DefaultName>
+        <Top>25.30009cm</Top>
+        <Left>0.74083cm</Left>
+        <Height>0.6cm</Height>
+        <Width>2.1825cm</Width>
+        <ZIndex>94</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line61">
+        <Top>22.61898cm</Top>
+        <Left>10.7453cm</Left>
+        <Height>1.94cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>95</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line62">
+        <Top>22.61898cm</Top>
+        <Left>8.35981cm</Left>
+        <Height>1.93999cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>96</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox64">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>İletişim No</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox64</rd:DefaultName>
+        <Top>22.65426cm</Top>
+        <Left>8.4921cm</Left>
+        <Height>0.6cm</Height>
+        <Width>1.78562cm</Width>
+        <ZIndex>97</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox65">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Cep Telefonu</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox65</rd:DefaultName>
+        <Top>23.38599cm</Top>
+        <Left>8.4921cm</Left>
+        <Height>0.50326cm</Height>
+        <Width>1.98452cm</Width>
+        <ZIndex>98</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox66">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>e-Posta</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox66</rd:DefaultName>
+        <Top>23.8887cm</Top>
+        <Left>8.4921cm</Left>
+        <Height>0.6cm</Height>
+        <Width>2.0198cm</Width>
+        <ZIndex>99</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line63">
+        <Top>22.61898cm</Top>
+        <Left>13.28593cm</Left>
+        <Height>1.905cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>100</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line64">
+        <Top>22.65397cm</Top>
+        <Left>15.60954cm</Left>
+        <Height>1.90472cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>101</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox67">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Tabela Adı</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox67</rd:DefaultName>
+        <Top>23.35981cm</Top>
+        <Left>0.72231cm</Left>
+        <Height>0.6cm</Height>
+        <Width>2.5cm</Width>
+        <ZIndex>102</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox68">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Vergi Dairesi</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox68</rd:DefaultName>
+        <Top>22.68925cm</Top>
+        <Left>13.42704cm</Left>
+        <Height>0.6cm</Height>
+        <Width>2.00611cm</Width>
+        <ZIndex>103</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox69">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Vergi No</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox69</rd:DefaultName>
+        <Top>23.32454cm</Top>
+        <Left>13.46232cm</Left>
+        <Height>0.6cm</Height>
+        <Width>2.00611cm</Width>
+        <ZIndex>104</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox70">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Sektör</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox70</rd:DefaultName>
+        <Top>23.92398cm</Top>
+        <Left>13.39176cm</Left>
+        <Height>0.6cm</Height>
+        <Width>2.00611cm</Width>
+        <ZIndex>105</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox71">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Yazılım Programı kampanyalarından ve duyurularından faydalanmak istiyorum.</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>8pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox71</rd:DefaultName>
+        <Top>25.1248cm</Top>
+        <Left>3.19494cm</Left>
+        <Height>0.88112cm</Height>
+        <Width>7.28168cm</Width>
+        <ZIndex>106</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line65">
+        <Top>25.17634cm</Top>
+        <Left>10.78593cm</Left>
+        <Height>0.90014cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>107</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line66">
+        <Top>25.17634cm</Top>
+        <Left>13.50155cm</Left>
+        <Height>0.90014cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>108</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line67">
+        <Top>25.24718cm</Top>
+        <Left>13.57225cm</Left>
+        <Height>0.8293cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>109</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line68">
+        <Top>25.22954cm</Top>
+        <Left>15.83003cm</Left>
+        <Height>0.79375cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>110</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox72">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>SMS</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox72</rd:DefaultName>
+        <Top>25.33537cm</Top>
+        <Left>10.85649cm</Left>
+        <Height>0.54708cm</Height>
+        <Width>1.19867cm</Width>
+        <ZIndex>111</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox73">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>e-Mail</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox73</rd:DefaultName>
+        <Top>25.33537cm</Top>
+        <Left>13.60753cm</Left>
+        <Height>0.6cm</Height>
+        <Width>1.11699cm</Width>
+        <ZIndex>112</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line70">
+        <Top>25.19426cm</Top>
+        <Left>17.27604cm</Left>
+        <Height>0.84694cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>113</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox74">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Telefon</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>8pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox74</rd:DefaultName>
+        <Top>25.33537cm</Top>
+        <Left>15.86531cm</Left>
+        <Height>0.6cm</Height>
+        <Width>1.3049cm</Width>
+        <ZIndex>114</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox75">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!Unvan.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox75</rd:DefaultName>
+        <Top>22.68925cm</Top>
+        <Left>3.3923cm</Left>
+        <Height>0.6cm</Height>
+        <Width>2.40235cm</Width>
+        <ZIndex>115</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox76">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!Adi.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value xml:space="preserve"> </Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+              <TextRun>
+                <Value>=Fields!Soyadi.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox76</rd:DefaultName>
+        <Top>23.81897cm</Top>
+        <Left>3.3987cm</Left>
+        <Height>0.6cm</Height>
+        <Width>2.13432cm</Width>
+        <ZIndex>116</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox77">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!Adres.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox77</rd:DefaultName>
+        <Top>24.56009cm</Top>
+        <Left>3.3923cm</Left>
+        <Height>0.52944cm</Height>
+        <Width>12.21724cm</Width>
+        <ZIndex>117</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox80">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!Email.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox80</rd:DefaultName>
+        <Top>23.88953cm</Top>
+        <Left>10.81586cm</Left>
+        <Height>0.6cm</Height>
+        <Width>2.14784cm</Width>
+        <ZIndex>118</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox81">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!VergiDairesi.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox81</rd:DefaultName>
+        <Top>22.58343cm</Top>
+        <Left>15.57426cm</Left>
+        <Height>0.6cm</Height>
+        <Width>3.15048cm</Width>
+        <ZIndex>119</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox82">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!VergiNo.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox82</rd:DefaultName>
+        <Top>23.21897cm</Top>
+        <Left>15.57426cm</Left>
+        <Height>0.6cm</Height>
+        <Width>3.15048cm</Width>
+        <ZIndex>120</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox83">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!MusteriTipi.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox83</rd:DefaultName>
+        <Top>23.96009cm</Top>
+        <Left>15.64482cm</Left>
+        <Height>0.49334cm</Height>
+        <Width>3.07992cm</Width>
+        <ZIndex>121</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox84">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!Sms.Value</Value>
+                <Style />
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox84</rd:DefaultName>
+        <Top>25.33537cm</Top>
+        <Left>12.23549cm</Left>
+        <Height>0.6cm</Height>
+        <Width>1.12494cm</Width>
+        <ZIndex>122</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox85">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!Eposta.Value</Value>
+                <Style>
+                  <FontSize>9pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox85</rd:DefaultName>
+        <Top>25.30009cm</Top>
+        <Left>14.89594cm</Left>
+        <Height>0.6cm</Height>
+        <Width>0.7577cm</Width>
+        <ZIndex>123</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox78">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!Telefon.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox78</rd:DefaultName>
+        <Top>25.33537cm</Top>
+        <Left>17.41715cm</Left>
+        <Height>0.74965cm</Height>
+        <Width>0.95303cm</Width>
+        <ZIndex>124</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line5">
+        <Top>12.03537cm</Top>
+        <Left>10.68521cm</Left>
+        <Height>0cm</Height>
+        <Width>8.21592cm</Width>
+        <ZIndex>125</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line9">
+        <Top>12.05328cm</Top>
+        <Left>0.70237cm</Left>
+        <Height>0cm</Height>
+        <Width>9.42312cm</Width>
+        <ZIndex>126</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line12">
+        <Top>21.93988cm</Top>
+        <Left>0.62121cm</Left>
+        <Height>0cm</Height>
+        <Width>18.27992cm</Width>
+        <ZIndex>127</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line69">
+        <Top>25.22954cm</Top>
+        <Left>12.23155cm</Left>
+        <Height>0.90014cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>128</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox9">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!IletisimNo.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox9</rd:DefaultName>
+        <Top>22.61898cm</Top>
+        <Left>10.71538cm</Left>
+        <Height>0.56444cm</Height>
+        <Width>2.24833cm</Width>
+        <ZIndex>129</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox10">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!IletisimNo.Value</Value>
+                <Style>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox9</rd:DefaultName>
+        <Top>23.25398cm</Top>
+        <Left>10.81586cm</Left>
+        <Height>0.56444cm</Height>
+        <Width>2.24833cm</Width>
+        <ZIndex>130</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Line Name="Line15">
+        <Top>26.53453cm</Top>
+        <Left>0.62121cm</Left>
+        <Height>0cm</Height>
+        <Width>18.27992cm</Width>
+        <ZIndex>131</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line21">
+        <Top>27.16953cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>0cm</Height>
+        <Width>18.23086cm</Width>
+        <ZIndex>132</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line27">
+        <Top>26.53426cm</Top>
+        <Left>18.90113cm</Left>
+        <Height>1.89674cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>133</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line43">
+        <Top>26.56981cm</Top>
+        <Left>0.67027cm</Left>
+        <Height>1.86118cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>134</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line45">
+        <Top>26.53453cm</Top>
+        <Left>9.44245cm</Left>
+        <Height>1.89646cm</Height>
+        <Width>0cm</Width>
+        <ZIndex>135</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Line Name="Line51">
+        <Top>28.43099cm</Top>
+        <Left>0.69494cm</Left>
+        <Height>0cm</Height>
+        <Width>18.20619cm</Width>
+        <ZIndex>136</ZIndex>
+        <Style>
+          <Border>
+            <Style>Solid</Style>
+          </Border>
+        </Style>
+      </Line>
+      <Textbox Name="Textbox11">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Çözüm Ortağı (Onay)</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox11</rd:DefaultName>
+        <Top>26.53453cm</Top>
+        <Left>2.89277cm</Left>
+        <Height>0.6cm</Height>
+        <Width>5.46704cm</Width>
+        <ZIndex>137</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox12">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>Müşteri / Son Kullanıcı (Onay)</Value>
+                <Style>
+                  <FontStyle>Normal</FontStyle>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>9pt</FontSize>
+                  <FontWeight>Normal</FontWeight>
+                  <TextDecoration>None</TextDecoration>
+                  <Color>#000000</Color>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox11</rd:DefaultName>
+        <Top>26.53426cm</Top>
+        <Left>10.85649cm</Left>
+        <Height>0.6cm</Height>
+        <Width>5.46704cm</Width>
+        <ZIndex>138</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Textbox8">
+        <CanGrow>true</CanGrow>
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=Fields!Ek3.Value</Value>
+                <Style>
+                  <FontFamily>Times New Roman</FontFamily>
+                  <FontSize>8pt</FontSize>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Textbox8</rd:DefaultName>
+        <Top>12.74121cm</Top>
+        <Left>15.40926cm</Left>
+        <Height>0.49388cm</Height>
+        <Width>3.31548cm</Width>
+        <ZIndex>139</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+    </ReportItems>
+    <Height>28.72203cm</Height>
+    <Style>
+      <Border>
+        <Style>None</Style>
+      </Border>
+    </Style>
+  </Body>
+  <Width>19.50953cm</Width>
+  <Page>
+    <PageHeight>29.7cm</PageHeight>
+    <PageWidth>21cm</PageWidth>
+    <LeftMargin>0.5cm</LeftMargin>
+    <RightMargin>0.5cm</RightMargin>
+    <TopMargin>0cm</TopMargin>
+    <BottomMargin>0cm</BottomMargin>
+    <ColumnSpacing>0.13cm</ColumnSpacing>
+    <Style />
+  </Page>
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="WinAppReport">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>fc92450a-2007-4e0c-89b6-1dbcc89a4d9f</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="DataSetSozlesme">
+      <Query>
+        <DataSourceName>WinAppReport</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="Adi">
+          <DataField>Adi</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Adres">
+          <DataField>Adres</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CepTelefonu">
+          <DataField>CepTelefonu</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Ek1">
+          <DataField>Ek1</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Ek2">
+          <DataField>Ek2</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Ek3">
+          <DataField>Ek3</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Email">
+          <DataField>Email</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Eposta">
+          <DataField>Eposta</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="IletisimNo">
+          <DataField>IletisimNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Kampanya">
+          <DataField>Kampanya</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="LisansTipi">
+          <DataField>LisansTipi</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="MusteriTipi">
+          <DataField>MusteriTipi</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="PaketAdi">
+          <DataField>PaketAdi</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="PaketFiyati">
+          <DataField>PaketFiyati</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="PaketIcerigi">
+          <DataField>PaketIcerigi</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Sms">
+          <DataField>Sms</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Soyadi">
+          <DataField>Soyadi</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Telefon">
+          <DataField>Telefon</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Toplam">
+          <DataField>Toplam</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Unvan">
+          <DataField>Unvan</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="UYBOran">
+          <DataField>UYBOran</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="UYBTutar">
+          <DataField>UYBTutar</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="VergiDairesi">
+          <DataField>VergiDairesi</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="VergiNo">
+          <DataField>VergiNo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="YaziIle">
+          <DataField>YaziIle</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>WinAppReport</rd:DataSetName>
+        <rd:TableName>SozlesmeRapor</rd:TableName>
+        <rd:ObjectDataSourceType>WinAppReport.SozlesmeRapor, WinAppReport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
+      </rd:DataSetInfo>
+    </DataSet>
+  </DataSets>
+  <EmbeddedImages>
+    <EmbeddedImage Name="Ekrangörüntüsü20251205152936">
+      <MIMEType>image/png</MIMEType>
+      <ImageData>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</ImageData>
+    </EmbeddedImage>
+    <EmbeddedImage Name="Ekrangörüntüsü20251205153229">
+      <MIMEType>image/png</MIMEType>
+      <ImageData>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</ImageData>
+    </EmbeddedImage>
+  </EmbeddedImages>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportID>9d1dcbb9-2289-4e29-b5aa-b31d3806fc13</rd:ReportID>
+</Report>

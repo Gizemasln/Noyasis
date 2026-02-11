@@ -1,0 +1,448 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+    string baslik = string.Empty;
+}
+<section class="wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <section class="panel">
+                <header class="panel-heading">
+                    @if (ViewBag.KullaniciListesi != null)
+                    {
+                        baslik = "Kullanıcılar Listesi" + "-" + " " + " " + "Kayıt Sayısı:" + ViewBag.KullaniciListesi.Count.ToString();
+                    }
+                    else
+                    {
+                        baslik = "Kullanıcılar Listesi" + "-" + "Kayıt Sayısı:0";
+                    }
+                    @baslik
+
+                </header>
+                <div class="panel-body">
+                    <section id="unseen">
+                        <div class="adv-table">
+                            <button type="button" class="btn btn-success" id="btnexcel"><i class="fa fa-file-excel-o" style="padding-right:5px"></i>Excel</button>
+                            <button type="button" class="btn btn-primary" id="btnEkle"><i class="fa fa-plus" style="padding-right:5px"></i>Ekle</button>
+                            <table class="table table-bordered table-striped table-condensed" id="TblVeriler" style="font-size:13px;margin-top:5px">
+                                <thead>
+                                    <tr>
+                                        <th>Sıra</th>
+                                        <th>Kullanıcı Adı</th>
+                                        <th>Şifre</th>
+                                        <th>RolId</th>
+                                        <th>Rol</th>
+                                        <th>OlusturulmaTarihi</th>
+                                        <th>GuncellenmeTarihi</th>
+                                        <th>OlusturanKullaniciId</th>
+                                        <th>GuncellemeKullaniciId</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.KullaniciListesi != null)
+                                    {
+                                        @foreach (var item in ViewBag.KullaniciListesi)
+                                        {
+                                    <tr>
+                                        <td>@item.Id</td>
+                                        <td>@item.KullaniciAdi</td>
+                                        <td>@item.Sifre</td>
+                                        <td>@item.RolId</td>
+                                        <td>@item.Rol.Adi</td>
+                                        <td>@item.OlusturulmaTarihi</td>
+                                        <td>@item.GuncellenmeTarihi</td>
+                                        <td>@item.OlusturanKullaniciId</td>
+                                        <td>@item.GuncellemeKullaniciId</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-xs duzenleme" data-id="@item.Id"><i class="icon-pencil"></i></button>
+                                            <button class="btn btn-danger btn-xs sil" data-id="@item.Id"><i class="icon-trash "></i></button>
+                                        </td>
+                                    </tr>
+                                        }
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </section>
+        </div>
+    </div>
+</section>
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="ModalYeniKullanici" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><i class="icon-user" style="padding-right:5px"></i>Kullanıcı</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <div class="row">
+                        <div class="col-md-6">
+                                <label for="">Kullanıcı Adı</label>
+                                <input type="text" class="form-control" id="txtKullaniciAdi" placeholder="Kullanıcı" style="color:#000" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="">Şifre</label>
+                                <input type="password" class="form-control" id="txtSifre" placeholder="Şifre" style="color:#000" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="">Rol</label>
+                                    <select class="form-control" style="color:#000" id="Rol">
+                                        <option value="Seçiniz">Seçiniz</option>
+                                        @if (ViewBag.RolListesi != null)
+                                        {
+                                            foreach (var item in ViewBag.RolListesi)
+                                            {
+                                                <option value="@item.Id">@item.Adi</option>
+                                            }
+                                        }
+
+                                    </select>
+                                </div>
+
+                           
+                            </div>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <div class="form-group">
+                                <div class="row">
+                                    <button type="button" data-dismiss="modal" class="btn btn-info" id="btnKaydet"><i class="fa fa-save" style="padding-right:5px"></i>Kaydet</button>
+                                    <button type="button" data-dismiss="modal" class="btn btn-danger" id="btnIptal"><i class="fa fa-window-close" style="padding-right:5px"></i>Kapat</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="ModalMesaj" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><i class="icon-info" style="padding-right:5px"></i>Bilgi</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p style="color:#000;font-size:14px;font-weight:bold" id="MesajMetin">Kayıt Başarılı Bir Şekilde Yapıldı.</p>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="modal-footer">
+                        <div class="form-group">
+                            <div class="row">
+
+                                <button type="button" data-dismiss="modal" class="btn btn-info" id="btnKaydetTamam">Tamam</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="ModalKullaniciGuncelleme" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><i class="icon-user" style="padding-right:5px"></i>Kullanıcı</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="hidden" value="" id="txtKullaniciId" />
+                                <label for="">Kullanıcı Adı</label>
+                                <input type="text" class="form-control" id="txtGuncellemeKullaniciAdi" placeholder="Kullanıcı" style="color:#000" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="">Şifre</label>
+                                <input type="password" class="form-control" id="txtGuncellemeSifre" placeholder="Şifre" style="color:#000" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="">Rol</label>
+                                    <select class="form-control" style="color:#000" id="GuncellemeRol">
+                                        <option value="Seçiniz">Seçiniz</option>
+                                        @if (ViewBag.RolListesi != null)
+                                        {
+                                            foreach (var item in ViewBag.RolListesi)
+                                            {
+                                                <option value="@item.Id">@item.Adi</option>
+                                            }
+                                        }
+
+                                    </select>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <div class="form-group">
+                                <div class="row">
+                                    <button type="button" data-dismiss="modal" class="btn btn-info" id="btnGuncellemeKaydet"><i class="fa fa-save" style="padding-right:5px"></i>Kaydet</button>
+                                    <button type="button" data-dismiss="modal" class="btn btn-danger" id="btnIptal"><i class="fa fa-window-close" style="padding-right:5px"></i>Kapat</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="ModalMesajSil" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><i class="icon-info" style="padding-right:5px"></i>Bilgi</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input type="hidden" value="" id="txtKullaniciIdSil" />
+                                <p style="color:#000;font-size:14px;font-weight:bold">Kaydı Silmek İstediğinizden Emin misniz?</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="modal-footer">
+                        <div class="form-group">
+                            <div class="row">
+
+                                <button type="button" data-dismiss="modal" class="btn btn-info" id="btnSilTamam">Evet</button>
+                                <button type="button" data-dismiss="modal" class="btn btn-danger" id="btnSiIptal">Hayır</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="ModalMesajKayit" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><i class="icon-info" style="padding-right:5px"></i>Bilgi</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input type="hidden" value="" id="txtMusteriIdSil" />
+                                <p style="color:#000;font-size:14px;font-weight:bold">Aynı Kullanıcı Kaydı Daha Önceden Oluşturulmuş?</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="modal-footer">
+                        <div class="form-group">
+                            <div class="row">
+
+                                <button type="button" data-dismiss="modal" class="btn btn-info">Tamam</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/WebAdminTheme/js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+    var table = $("#TblVeriler").dataTable({});
+    $("#btnexcel").click(function () {
+            var table = $("#TblVeriler").dataTable();
+            $(table).table2excel({
+                exclude: ".noExl",
+                name: "MüsterilerListesi",
+                filename: "MüsterilerListesi",
+                fileext: ".xls",
+                exclude_img: true,
+                exclude_links: true,
+                exclude_inputs: true
+            });
+
+        });
+    $("#btnEkle").click(function () {
+
+            $("#ModalYeniKullanici").modal("show");
+        });
+    $("#TblVeriler").on("click", ".duzenleme", function () {
+               var id = $(this).data("id");
+               $("#txtKullaniciId").val(id);
+               var nTr = $(this).parents('tr')[0];
+               var aData = table.fnGetData(nTr);
+               var Id = aData[0];
+               var KullaniciAdi = aData[1];
+               var Sifre = aData[2];
+               var RolId = aData[3];
+               var RolAdi = aData[4];
+               var OlusturulmaTarihi = aData[5];
+               var GuncellenmeTarihi = aData[6];
+               var OlusturanKullaniciId = aData[7];
+        var GuncellemeKullaniciId = aData[8];
+        $("#txtGuncellemeKullaniciAdi").val(KullaniciAdi);
+        $("#txtGuncellemeSifre").val(Sifre);
+        $("#GuncellemeRol").val(RolId);
+        $("#ModalKullaniciGuncelleme").modal("show")
+           });
+    $("#TblVeriler").on("click", ".sil", function () {
+            var id = $(this).data("id");
+            $("#txtKullaniciIdSil").val(id);
+            $("#ModalMesajSil").modal("show");
+
+
+
+        });
+    $("#btnSilTamam").click(function () {
+
+        var Id = $("#txtKullaniciIdSil").val();
+        $.ajax({
+            type: "POST",
+            url: "/AdminKullanici/KayitSil",
+            data: { Id: Id },
+            success: function (data) {
+                if (data == true)
+                {
+                    $("#MesajMetin").html("");
+                    $("#MesajMetin").append("Kayıt Başarılı Bir Şekilde Silindi.");
+                    $("#ModalMesaj").modal("show");
+
+                }
+                if (data == false) { alert("Veritabanı Hatası"); }
+            },
+            error: function (err) { }
+        });
+    });
+    $("#btnKaydet").click(function () {
+
+           var KullaniciAdi = $("#txtKullaniciAdi").val();
+           var Rol = $("#Rol option:selected").val();
+        var Sifre = $("#txtSifre").val();
+
+           var Durumu = 1;
+        var kullanici = {
+            KullaniciAdi: KullaniciAdi,
+            RolId: Rol,
+            Sifre: Sifre,
+            Durumu: Durumu
+            };
+                $.ajax({
+                    type: "POST",
+                    url: "/AdminKullanici/Kaydet",
+                    data: { kullanici: kullanici },
+                    success: function (data) {
+                        if (data == true)
+                        {
+                            $("#ModalMesaj").modal("show");
+
+                        }
+                        if (data == false)
+                        {
+
+                            $("#ModalMesajKayit").modal("show");
+                        }
+                    },
+                    error: function (err) {}
+                });
+       });
+    $("#btnGuncellemeKaydet").click(function ()
+    {
+        var KullaniciAdi = $("#txtGuncellemeKullaniciAdi").val();
+        var Rol = $("#GuncellemeRol option:selected").val();
+        var Sifre = $("#txtGuncellemeSifre").val();
+        var Id = $("#txtKullaniciId").val();
+        var Durumu = 1;
+        var kullanici = {
+            Id:Id,
+            KullaniciAdi: KullaniciAdi,
+            RolId: Rol,
+            Sifre: Sifre,
+            Durumu: Durumu
+        };
+        $.ajax({
+            type: "POST",
+            url: "/AdminKullanici/KayitGuncelleme",
+            data: { kullanici: kullanici },
+            success: function (data) {
+                if (data == true) {
+                    $("#ModalMesaj").modal("show");
+
+                }
+                if (data == false) { alert("Veritabanı Hatası"); }
+            },
+            error: function (err) { }
+        });
+    });
+        $("#btnKaydetTamam").click(function ()
+        {
+      window.location.href = "@Url.Action("Index", "AdminKullanici")";
+    });
+   });
+
+
+
+
+</script>
+
+

@@ -1,0 +1,2433 @@
+﻿@using WepApp.Models
+@using System.IO
+@{
+    ViewData["Title"] = "Müşteri Sözleşmeleri";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+    var durumlar = ViewBag.Durumlar as List<SozlesmeDurumu>;
+    var sozlesmeler = ViewBag.Sozlesmeler as List<MusteriSozlesme>;
+}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+<style>
+    /* Belgeler eksik uyarı stili - Kıpırdama YOK */
+    .belgeler-eksik-row {
+        background-color: #fff3cd !important;
+        border-left: 4px solid #ffc107 !important;
+        /* animation: pulse 2s infinite; KALDIRILDI */
+    }
+
+    .belgeler-eksik-badge {
+        background-color: #ffc107 !important;
+        color: #856404 !important;
+        font-size: 0.7rem;
+        padding: 3px 8px;
+        border-radius: 12px;
+        margin-left: 5px;
+    }
+
+    /* Toastr özel stili */
+    .toast-bg-warning {
+        background-color: #ffc107 !important;
+        color: #856404 !important;
+    }
+    .satir-onaylandi {
+        background-color: #d4edda !important;
+        border-left: 4px solid #28a745;
+    }
+
+    .durum-onaylandi {
+        background-color: #d4edda !important;
+        color: #155724 !important;
+        border-color: #c3e6cb !important;
+    }
+    .lisans-iptal-btn {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+        font-size: 0.7rem;
+        padding: 3px 6px;
+        margin-top: 3px;
+        width: 100%;
+    }
+
+        .lisans-iptal-btn:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+    /* Lisanslandı durumundaki butonlar için düzenleme */
+    .satir-lisanslandi .durum-hucresi .btn {
+        margin-top: 2px;
+    }
+    .dokuman-yukleme-alani {
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #dee2e6;
+    }
+
+    .dokuman-check-group {
+        margin-bottom: 15px;
+        padding: 10px;
+        background-color: white;
+        border-radius: 6px;
+        border: 1px solid #dee2e6;
+    }
+
+    .dokuman-check-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .dokuman-check-label {
+        font-weight: 500;
+        color: #2e2e5d;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .dokuman-durum {
+        font-size: 0.75rem;
+        padding: 2px 8px;
+        border-radius: 12px;
+    }
+
+    .dokuman-yuklu {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .dokuman-yuksuz {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .dokuman-dosya-info {
+        background-color: #e9ecef;
+        padding: 8px 12px;
+        border-radius: 4px;
+        margin-top: 8px;
+        font-size: 0.85rem;
+    }
+
+    .dokuman-aksiyonlar {
+        display: flex;
+        gap: 5px;
+        margin-top: 10px;
+    }
+
+    .dokuman-aksiyon-btn {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+    }
+
+    .file-input-preview {
+        border: 2px dashed #dee2e6;
+        border-radius: 6px;
+        padding: 15px;
+        text-align: center;
+        background-color: #f8f9fa;
+        transition: all 0.3s;
+        margin-top: 10px;
+    }
+
+        .file-input-preview:hover {
+            border-color: #86b7fe;
+            background-color: #e7f3ff;
+        }
+
+    .file-preview {
+        max-width: 200px;
+        max-height: 150px;
+        margin-top: 10px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        display: none;
+    }
+
+        .file-preview.active {
+            display: inline-block;
+        }
+
+    .zorunlu-dokuman-section {
+        background-color: #fff3cd;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-left: 4px solid #ffc107;
+    }
+
+    .zorunlu-dokuman-title {
+        font-weight: 600;
+        color: #856404;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .dokuman-var-icon {
+        color: #28a745;
+    }
+
+    .dokuman-yok-icon {
+        color: #dc3545;
+    }
+
+    .dokuman-badge {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        margin-left: 5px;
+    }
+
+    /* Diğer stiller mevcut halinde kalacak */
+    .sozlesme-container {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: #f8f9fa;
+        min-height: calc(100vh - 80px);
+        padding: 20px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #2e2e5d, #4a4a8a);
+        color: white;
+        padding: 15px 20px;
+    }
+
+    .table th {
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        color: #2e2e5d;
+        padding: 12px 8px;
+        font-size: 0.85rem;
+    }
+
+    .table td {
+        padding: 10px 8px;
+        vertical-align: middle;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+    }
+
+    .dokuman-no {
+        font-weight: 600;
+        color: #2e2e5d;
+    }
+
+    .musteri-adi {
+        font-weight: 500;
+        color: #495057;
+    }
+
+    .yillik-bakim {
+        font-weight: 600;
+        color: #28a745;
+    }
+
+    .durum-select {
+        font-size: 0.75rem;
+        padding: 5px 8px;
+        border-radius: 6px;
+        min-width: 130px;
+        cursor: pointer;
+        border: 1px solid #ced4da;
+        transition: all 0.2s;
+        font-weight: 500;
+    }
+
+        .durum-select:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .durum-select:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            outline: none;
+        }
+
+    /* Durum stilleri */
+    .satir-sms-onay {
+        background-color: #e7f3fe !important;
+        border-left: 4px solid #0dcaf0;
+    }
+
+    .satir-bayi-onay {
+        background-color: #fff3cd !important;
+        border-left: 4px solid #ffc107;
+    }
+
+    .satir-distributor-onay {
+        background-color: #d1ecf1 !important;
+        border-left: 4px solid #17a2b8;
+    }
+
+    .satir-lisanslandi {
+        background-color: #d4edda !important;
+        border-left: 4px solid #28a745;
+    }
+
+    .satir-muhasebelendi {
+        background-color: #e2e3e5 !important;
+        border-left: 4px solid #6c757d;
+    }
+
+    .satir-iptal {
+        background-color: #f8d7da !important;
+        border-left: 4px solid #dc3545;
+    }
+
+    .durum-sms-onay {
+        background-color: #e7f3fe !important;
+        color: #0c5460 !important;
+        border-color: #bee5eb !important;
+    }
+
+    .durum-bayi-onay {
+        background-color: #fff3cd !important;
+        color: #856404 !important;
+        border-color: #ffeaa7 !important;
+    }
+
+    .durum-distributor-onay {
+        background-color: #d1ecf1 !important;
+        color: #0c5460 !important;
+        border-color: #bee5eb !important;
+    }
+
+    .durum-lisanslandi {
+        background-color: #d4edda !important;
+        color: #155724 !important;
+        border-color: #c3e6cb !important;
+    }
+
+    .durum-muhasebelendi {
+        background-color: #e2e3e5 !important;
+        color: #383d41 !important;
+        border-color: #d6d8db !important;
+    }
+
+    .durum-iptal {
+        background-color: #f8d7da !important;
+        color: #721c24 !important;
+        border-color: #f5c6cb !important;
+    }
+
+    .durum-belirtilmemis {
+        background-color: #f8f7da !important;
+        color: #856404 !important;
+        border-color: #f5f3c1 !important;
+    }
+
+    .aksiyon-btn {
+        padding: 4px 8px;
+        margin: 0 2px;
+        font-size: 0.75rem;
+        border-radius: 4px;
+        transition: all 0.2s;
+    }
+
+        .aksiyon-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+    .search-box {
+        max-width: 300px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #dee2e6;
+        }
+
+    /* Loading spinner */
+    .durum-loading {
+        position: relative;
+        opacity: 0.7;
+    }
+
+        .durum-loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            margin: -8px 0 0 -8px;
+            border: 2px solid #007bff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .durum-hucresi {
+        min-width: 150px;
+        max-width: 180px;
+    }
+
+    .lisans-btn, .muhasebe-btn, .geri-al-btn {
+        font-size: 0.7rem;
+        padding: 3px 6px;
+        margin-top: 3px;
+        width: 100%;
+    }
+
+    .lisans-btn {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .muhasebe-btn {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+    }
+
+    .geri-al-btn {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #212529;
+    }
+
+    /* Arama inputu için özel stiller */
+    .search-box {
+        max-width: 300px;
+    }
+
+        .search-box .input-group {
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+            .search-box .input-group:focus-within {
+                border-color: #86b7fe;
+                box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            }
+
+        .search-box .input-group-text {
+            background-color: #f8f9fa;
+            border: none;
+            color: #6c757d;
+        }
+
+        .search-box .form-control {
+            border: none;
+            box-shadow: none;
+            font-size: 0.85rem;
+        }
+
+            .search-box .form-control:focus {
+                box-shadow: none;
+            }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .aksiyon-btn {
+            display: block;
+            margin: 3px 0;
+            width: 100%;
+        }
+
+        .table td, .table th {
+            padding: 8px 5px;
+            font-size: 0.75rem;
+        }
+
+        .durum-select {
+            min-width: 110px;
+            font-size: 0.7rem;
+        }
+
+        .card-header {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .search-box {
+            max-width: 100%;
+        }
+
+        .dokuman-aksiyonlar {
+            flex-wrap: wrap;
+        }
+    }
+
+    .badge-sm {
+        font-size: 0.7rem;
+        padding: 3px 6px;
+    }
+
+    .option-disabled {
+        color: #adb5bd;
+        background-color: #f8f9fa;
+        font-style: italic;
+    }
+
+    .btn-icon {
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+
+    .islem-btns {
+        display: flex;
+        gap: 3px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+</style>
+
+<div class="sozlesme-container">
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">Müşteri Sözleşmeleri</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Tüm Sözleşmeler</h5>
+                        <!-- Arama inputu -->
+                        <div class="search-box">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" id="sozlesmeArama" class="form-control" placeholder="Doküman no, müşteri, lisans no ara...">
+                                <button class="btn btn-outline-secondary" type="button" id="sozlesmeAramaTemizle" style="display:none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" id="sozlesmeTablosu">
+                                <thead>
+                                    <tr>
+                                        <th width="120">Doküman No</th>
+                                        <th width="180">Müşteri</th>
+                                        <th width="150">Lisans No</th>
+                                        <th width="120">Yıllık Bakım</th>
+                                        <th width="110">Yayın Tarihi</th>
+                                        <th width="110">Revizyon</th>
+                                        <th width="160" class="durum-hucresi">Durum</th>
+                                        <th width="220" class="text-center">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (sozlesmeler != null && sozlesmeler.Count > 0)
+                                    {
+                                        foreach (var sozlesme in sozlesmeler)
+                                        {
+                                            var durumId = sozlesme.SozlesmeDurumuId;
+                                            var satirCss = "";
+                                            var durumCss = "";
+                                            var durumAdi = sozlesme.SozlesmeDurumu?.Adi ?? "Belirtilmemiş";
+
+                                            // Satır CSS sınıfını belirle
+                                            switch (durumId)
+                                            {
+                                                case 6: // Müşteri SMS Onayında
+                                                    satirCss = "satir-sms-onay";
+                                                    durumCss = "durum-sms-onay";
+                                                    break;
+                                                case 7: // Bayi Onayı
+                                                    satirCss = "satir-bayi-onay";
+                                                    durumCss = "durum-bayi-onay";
+                                                    break;
+                                                case 9: // Distribütör Onayı
+                                                    satirCss = "satir-distributor-onay";
+                                                    durumCss = "durum-distributor-onay";
+                                                    break;
+                                                case 10: // Lisanslandı
+                                                    satirCss = "satir-lisanslandi";
+                                                    durumCss = "durum-lisanslandi";
+                                                    break;
+                                                case 11: // Muhasebelendi
+                                                    satirCss = "satir-muhasebelendi";
+                                                    durumCss = "durum-muhasebelendi";
+                                                    break;
+                                                case 12: // İptal
+                                                    satirCss = "satir-iptal";
+                                                    durumCss = "durum-iptal";
+                                                    break;
+                                                default:
+                                                    satirCss = "";
+                                                    durumCss = "durum-belirtilmemis";
+                                                    break;
+                                            }
+
+                                            <tr data-sozlesme-id="@sozlesme.Id" class="@satirCss" data-durum-id="@durumId">
+                                                <td><span class="dokuman-no">@sozlesme.DokumanNo</span></td>
+                                                <td>
+                                                    <div class="musteri-adi">@(sozlesme.Musteri?.Ad + " " + (sozlesme.Musteri?.Soyad ?? ""))</div>
+                                                    <small class="text-muted">@sozlesme.Email</small>
+                                                </td>
+                                                <td>
+                                                    @if (!string.IsNullOrEmpty(sozlesme.LisansNo))
+                                                    {
+                                                        <span class="badge bg-success badge-sm">@sozlesme.LisansNo</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">-</span>
+                                                    }
+                                                </td>
+                                                <td class="yillik-bakim">@sozlesme.YillikBakim.ToString("N2") ₺</td>
+                                                <td><small>@sozlesme.YayinTarihi.ToString("dd.MM.yyyy")</small></td>
+                                                <td>
+                                                    <small>@sozlesme.RevizyonNo</small>
+                                                    <br />
+                                                    <small class="text-muted">@sozlesme.RevizeTarihi.ToString("dd.MM.yyyy")</small>
+                                                </td>
+                                                <td class="durum-hucresi">
+                                                    <select class="form-select form-select-sm durum-select @durumCss"
+                                                            data-sozlesme-id="@sozlesme.Id"
+                                                            data-current-durum="@durumId"
+                                                            title="@durumAdi">
+                                                        @foreach (var d in durumlar)
+                                                        {
+                                                            var isDisabled = !IsValidTwoWayTransition(durumId, d.Id);
+                                                            var isSelected = durumId == d.Id;
+
+                                                            <option value="@d.Id"
+                                                                    data-durum-adi="@d.Adi"
+                                                            @(isDisabled ? "disabled" : "")
+                                                            @(isSelected ? "selected" : "")>
+                                                                @d.Adi @(isDisabled && !isSelected ? " " : "")
+                                                            </option>
+                                                        }
+                                                    </select>
+                                                    @if (durumId == 9)
+                                                    {
+                                                        <button class="btn btn-success btn-sm lisans-btn lisansla-btn"
+                                                                data-sozlesme-id="@sozlesme.Id"
+                                                                data-dokuman-no="@sozlesme.DokumanNo"
+                                                                title="Lisansla">
+                                                            <i class="fas fa-key"></i> Lisansla
+                                                        </button>
+                                                    }
+                                                    else if (durumId == 10)
+                                                    {
+                                                        <div class="mt-2">
+                                                            <button class="btn btn-info btn-sm muhasebe-btn muhasebelendi-yap-btn"
+                                                                    data-sozlesme-id="@sozlesme.Id"
+                                                                    data-dokuman-no="@sozlesme.DokumanNo"
+                                                                    title="Muhasebelendi Yap">
+                                                                <i class="fas fa-calculator"></i> Muhasebelendi Yap
+                                                            </button>
+                                                            <button class="btn btn-danger btn-sm lisans-iptal-btn"
+                                                                    data-sozlesme-id="@sozlesme.Id"
+                                                                    data-dokuman-no="@sozlesme.DokumanNo"
+                                                                    title="Lisans İptal Et">
+                                                                <i class="fas fa-ban"></i> Lisans İptal
+                                                            </button>
+                                                        </div>
+                                                    }
+                                                    else if (durumId == 11)
+                                                    {
+                                                        <button class="btn btn-warning btn-sm geri-al-btn muhasebe-geri-al-btn"
+                                                                data-sozlesme-id="@sozlesme.Id"
+                                                                data-dokuman-no="@sozlesme.DokumanNo"
+                                                                title="Muhasebelendi Geri Al">
+                                                            <i class="fas fa-undo"></i> Muhasebe Geri Al
+                                                        </button>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <div class="islem-btns">
+                                                        <button class="btn btn-info btn-sm aksiyon-btn btn-icon detay-goster"
+                                                                data-sozlesme-id="@sozlesme.Id"
+                                                                title="Detayları Gör">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <a href="/AdminTeklif/SozlesmePdf?sozlesmeId=@sozlesme.Id"
+                                                           target="_blank"
+                                                           class="btn btn-secondary btn-sm aksiyon-btn btn-icon"
+                                                           title="PDF İndir">
+                                                            <i class="fas fa-file-pdf"></i>
+                                                        </a>
+                                                        <button class="btn btn-danger btn-sm aksiyon-btn btn-icon sil-sozlesme"
+                                                                data-sozlesme-id="@sozlesme.Id"
+                                                                data-dokuman-no="@sozlesme.DokumanNo"
+                                                                title="Sil">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="8" class="empty-state">
+                                                <i class="fas fa-file-contract"></i>
+                                                <h5>Henüz sözleşme bulunmuyor</h5>
+                                                <p>Yeni sözleşmeler tekliflerden oluşturulabilir.</p>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sözleşme Detay Modal -->
+<div class="modal fade" id="sozlesmeDetayModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-file-contract me-2"></i>
+                    Sözleşme Detayları
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="sozlesmeDetayIcerik">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Yükleniyor...</span>
+                    </div>
+                    <p class="mt-3">Sözleşme detayları yükleniyor...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Kapat
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Silme Onay Modal -->
+<div class="modal fade" id="silModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Sözleşme Silme
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2"><strong id="silinecekDokumanNo"></strong> numaralı sözleşmeyi silmek istediğinizden emin misiniz?</p>
+                <p class="text-danger mb-0">
+                    <small><i class="fas fa-info-circle me-1"></i> Bu işlem geri alınamaz ve bağlı dosya da silinecektir.</small>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>İptal
+                </button>
+                <button type="button" class="btn btn-danger" id="silBtn">
+                    <i class="fas fa-trash me-2"></i>Sil
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lisanslama Modal -->
+<div class="modal fade" id="lisanslamaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-key me-2"></i>
+                    Sözleşme Lisanslama
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2"><strong id="lisanslanacakDokumanNo"></strong> numaralı sözleşmeyi lisanslamak için lisans numarasını girin:</p>
+                <div class="mb-3">
+                    <label for="lisansNo" class="form-label">Lisans Numarası</label>
+                    <input type="text" class="form-control" id="lisansNo" placeholder="Lisans numarasını girin" required>
+                    <div class="form-text">Lisans numarası benzersiz olmalıdır.</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>İptal
+                </button>
+                <button type="button" class="btn btn-success" id="lisanslaBtn">
+                    <i class="fas fa-key me-2"></i>Lisansla
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- İptal Neden Modal -->
+<div class="modal fade" id="iptalNedenModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-ban me-2"></i>
+                    Sözleşme İptal
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2"><strong id="iptalDokumanNo"></strong> numaralı sözleşmeyi iptal etmek için neden girin:</p>
+                <div class="mb-3">
+                    <label for="iptalNedeni" class="form-label">İptal Nedeni *</label>
+                    <textarea class="form-control" id="iptalNedeni" rows="3" placeholder="İptal nedenini açıklayın..." required></textarea>
+                    <div class="form-text">İptal nedeni zorunludur. Teklif durumu "Müşteri Onayladı" durumuna geçecektir.</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>İptal Etme
+                </button>
+                <button type="button" class="btn btn-danger" id="iptalEtBtn">
+                    <i class="fas fa-ban me-2"></i>İptal Et
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Muhasebelendi Onay Modal -->
+<div class="modal fade" id="muhasebelendiModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-calculator me-2"></i>
+                    Muhasebelendi Yap
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2"><strong id="muhasebelendiDokumanNo"></strong> numaralı sözleşmeyi muhasebelendi olarak işaretlemek istediğinizden emin misiniz?</p>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Dikkat:</strong> Bu işlem geri alınamaz. Sözleşme durumu "Muhasebelendi" olarak değişecektir.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>İptal
+                </button>
+                <button type="button" class="btn btn-info" id="muhasebelendiBtn">
+                    <i class="fas fa-calculator me-2"></i>Muhasebelendi Yap
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Muhasebelendi Geri Al Modal -->
+<div class="modal fade" id="muhasebelendiGeriAlModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-undo me-2"></i>
+                    Muhasebelendi Geri Al
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2"><strong id="muhasebelendiGeriAlDokumanNo"></strong> numaralı sözleşmenin muhasebelendi durumunu geri almak istediğinizden emin misiniz?</p>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Dikkat:</strong> Bu işlem sözleşme durumunu "Lisanslandı" olarak değiştirecektir.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>İptal
+                </button>
+                <button type="button" class="btn btn-warning" id="muhasebelendiGeriAlBtn">
+                    <i class="fas fa-undo me-2"></i>Geri Al
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Doküman Yükleme Modal -->
+<div class="modal fade" id="dokumanYukleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-file-upload me-2"></i>
+                    Doküman Yükle
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="dokumanSozlesmeId">
+                <input type="hidden" id="dokumanTipi">
+                <div class="mb-3">
+                    <label class="form-label">Doküman Türü</label>
+                    <div class="alert alert-info">
+                        <strong id="yuklenecekDokumanTipi"></strong> için dosya yüklenecektir.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Dosya Seç *</label>
+                    <div class="file-input-preview" id="fileInputArea">
+                        <input type="file" class="form-control" id="dokumanDosya" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="display:none;">
+                        <div class="text-center">
+                            <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                            <p class="mb-2">Dosyayı buraya sürükleyin veya tıklayarak seçin</p>
+                            <p class="text-muted small">PDF, JPG, JPEG, PNG, DOC, DOCX (Max 10MB)</p>
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="dosyaSecBtn">
+                                <i class="fas fa-folder-open me-1"></i> Dosya Seç
+                            </button>
+                        </div>
+                        <img id="filePreview" class="file-preview" alt="Dosya önizleme">
+                    </div>
+                    <div id="selectedFileName" class="mt-2 text-success"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>İptal
+                </button>
+                <button type="button" class="btn btn-primary" id="dokumanYukleBtn" disabled>
+                    <i class="fas fa-upload me-2"></i>Yükle
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Doküman Silme Onay Modal -->
+<div class="modal fade" id="dokumanSilModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Doküman Silme
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2"><strong id="silinecekDokumanTipi"></strong> dokümanını silmek istediğinizden emin misiniz?</p>
+                <p class="text-danger mb-0">
+                    <small><i class="fas fa-info-circle me-1"></i> Bu işlem geri alınamaz ve fiziksel dosya da silinecektir.</small>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>İptal
+                </button>
+                <button type="button" class="btn btn-danger" id="dokumanSilBtn">
+                    <i class="fas fa-trash me-2"></i>Sil
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Lisans İptal Modal -->
+<div class="modal fade" id="lisansIptalModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-ban me-2"></i>
+                    Lisans İptal Et
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2"><strong id="lisansIptalDokumanNo"></strong> numaralı sözleşmenin lisansını iptal etmek istediğinizden emin misiniz?</p>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Dikkat:</strong> Bu işlem lisans numarasını temizleyecek ve sözleşme durumunu "Distribütör Onayı" olarak değiştirecektir.
+                </div>
+       
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>İptal Etme
+                </button>
+                <button type="button" class="btn btn-danger" id="lisansIptalBtn">
+                    <i class="fas fa-ban me-2"></i>Lisansı İptal Et
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Script {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        let isProcessing = false;
+        let currentSozlesmeId = null;
+        let currentSozlesmeDetay = null;
+
+        // HTML Escape (XSS önlemi)
+        function escapeHtml(text) {
+            if (text === null || text === undefined) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Çift yönlü durum geçişi kontrolü (client-side)
+           function isValidTwoWayTransition(fromStateId, toStateId) {
+            if (fromStateId === toStateId) return false;
+
+            // Eski özel kontroller
+            // if (toStateId === 11 || (fromStateId === 11 && toStateId === 10)) return false;
+
+            const validTwoWayTransitions = {
+                6:  [7, 12],
+                7:  [6, 9, 12],
+                9:  [7, 10, 12],
+                10: [9, 12, 11],               // Lisanslandı → Muhasebelendi
+                11: [12, 14],                  // KRİTİK: Muhasebelendi → İptal ve Onaylandı (14)
+                12: [6, 7, 9, 10, 11, 14],      // İptal'den Onaylandı'ya da dönebilir
+                14: [11, 12]                   // Opsiyonel: Onaylandı'dan Muhasebelendi veya İptal'e geri dönüş
+            };
+
+            if (validTwoWayTransitions[fromStateId]) {
+                return validTwoWayTransitions[fromStateId].includes(toStateId);
+            }
+            return false;
+        }
+
+        // Sayfa yüklendiğinde select'leri güncelle
+        function updateSelectOptions() {
+            $('.durum-select').each(function() {
+                const $select = $(this);
+                const currentStateId = parseInt($select.data('current-durum'));
+
+                // Tüm option'ları kontrol et
+                $select.find('option').each(function() {
+                    const $option = $(this);
+                    const optionStateId = parseInt($option.val());
+
+                    // Geçerli durum hariç, geçiş yapılamayanları devre dışı bırak
+                    if (optionStateId !== currentStateId && !isValidTwoWayTransition(currentStateId, optionStateId)) {
+                        $option.prop('disabled', true);
+                        $option.addClass('option-disabled');
+                    } else {
+                        $option.prop('disabled', false);
+                        $option.removeClass('option-disabled');
+                    }
+                });
+            });
+        }
+
+        // ============= SÖZLEŞME ARAMA FONKSİYONU =============
+        document.addEventListener('DOMContentLoaded', function () {
+            const aramaInput = document.getElementById('sozlesmeArama');
+            const temizleBtn = document.getElementById('sozlesmeAramaTemizle');
+            const tablo = document.getElementById('sozlesmeTablosu');
+
+            // Eğer elemanlar yoksa çık
+            if (!aramaInput || !temizleBtn || !tablo) return;
+
+            const tbody = tablo.querySelector('tbody');
+            const tumSatirlar = tbody.querySelectorAll('tr');
+
+            function filtrele() {
+                const kelime = aramaInput.value.trim().toLowerCase();
+
+                // Temizle butonunu göster/gizle
+                temizleBtn.style.display = kelime ? 'block' : 'none';
+
+                let gorunenSayisi = 0;
+                let bosMesajSatiri = tbody.querySelector('tr.arama-bos-mesaj');
+
+                tumSatirlar.forEach(satir => {
+                    // "Henüz sözleşme bulunmuyor" mesaj satırını filtreleme dışı bırak
+                    if (satir.querySelector('td[colspan]')) {
+                        if (kelime === '') {
+                            satir.style.display = '';
+                        } else {
+                            satir.style.display = 'none';
+                        }
+                        return;
+                    }
+
+                    const metin = satir.textContent.toLowerCase();
+                    if (kelime === '' || metin.includes(kelime)) {
+                        satir.style.display = '';
+                        gorunenSayisi++;
+                    } else {
+                        satir.style.display = 'none';
+                    }
+                });
+
+                // Hiç sonuç yoksa mesaj göster
+                if (gorunenSayisi === 0 && kelime !== '') {
+                    if (!bosMesajSatiri) {
+                        bosMesajSatiri = document.createElement('tr');
+                        bosMesajSatiri.className = 'arama-bos-mesaj';
+                        bosMesajSatiri.innerHTML = `
+                            <td colspan="8" class="text-center text-muted py-5">
+                                <i class="fas fa-search fa-2x mb-3"></i><br>
+                                "<strong>${escapeHtml(kelime)}</strong>" aramanıza uygun sözleşme bulunamadı.
+                            </td>`;
+                        tbody.appendChild(bosMesajSatiri);
+                    }
+                    bosMesajSatiri.style.display = '';
+                } else if (bosMesajSatiri) {
+                    bosMesajSatiri.style.display = 'none';
+                }
+            }
+
+            aramaInput.addEventListener('input', filtrele);
+            aramaInput.addEventListener('keyup', filtrele);
+
+            temizleBtn.addEventListener('click', function () {
+                aramaInput.value = '';
+                filtrele();
+                aramaInput.focus();
+            });
+
+            // Sayfa yüklendiğinde bir kez çalıştır
+            filtrele();
+        });
+
+        $(document).ready(function () {
+                    // Modal gösterildiğinde formları sıfırla
+        $('#muhasebelendiModal').on('show.bs.modal', function() {
+            $('#muhasebelendiBtn').prop('disabled', false);
+        });
+
+        $('#muhasebelendiGeriAlModal').on('show.bs.modal', function() {
+            $('#muhasebelendiGeriAlBtn').prop('disabled', false);
+        });
+
+        $('#lisanslamaModal').on('show.bs.modal', function() {
+            $('#lisansNo').val('');
+            $('#lisanslaBtn').prop('disabled', false);
+        });
+
+        $('#iptalNedenModal').on('show.bs.modal', function() {
+            $('#iptalNedeni').val('');
+            $('#iptalEtBtn').prop('disabled', false);
+        });
+            // Sayfa yüklendiğinde select option'larını güncelle
+            updateSelectOptions();
+
+            // DURUM DEĞİŞTİRME (Çift yönlü)
+            $(document).on('change', '.durum-select', async function () {
+                if (isProcessing) return;
+
+                const $select = $(this);
+                const sozlesmeId = $select.data('sozlesme-id');
+                const eskiDurumId = parseInt($select.data('current-durum'));
+                const yeniDurumId = parseInt($select.val());
+
+                // Eski değere geri dön
+                $select.val(eskiDurumId);
+
+                if (yeniDurumId === 0 || yeniDurumId === eskiDurumId) return;
+
+                // İptal durumu için özel modal aç
+                if (yeniDurumId === 12) {
+                    window.iptalSozlesmeId = sozlesmeId;
+                    window.iptalEskiDurumId = eskiDurumId;
+                    $('#iptalDokumanNo').text($select.closest('tr').find('.dokuman-no').text());
+                    new bootstrap.Modal('#iptalNedenModal').show();
+                    return;
+                }
+
+                // Client-side durum geçişi kontrolü
+                if (!isValidTwoWayTransition(eskiDurumId, yeniDurumId)) {
+                    const errorMsg = getStateTransitionErrorMessage(eskiDurumId, yeniDurumId);
+                    toastr.error(errorMsg);
+                    updateSelectOptions(); // Option'ları yenile
+                    return;
+                }
+
+                isProcessing = true;
+                $select.prop('disabled', true).addClass('durum-loading');
+
+                try {
+                    await updateDurum($select, sozlesmeId, yeniDurumId, eskiDurumId);
+                } catch (err) {
+                    console.error(err);
+                    toastr.error('Bir hata oluştu.');
+                } finally {
+                    $select.prop('disabled', false).removeClass('durum-loading');
+                    isProcessing = false;
+                    updateSelectOptions(); // Option'ları yenile
+                }
+            });
+
+            // Lisansla butonu
+            $(document).on('click', '.lisansla-btn', function () {
+                window.lisansSozlesmeId = $(this).data('sozlesme-id');
+                $('#lisanslanacakDokumanNo').text($(this).data('dokuman-no'));
+                new bootstrap.Modal('#lisanslamaModal').show();
+            });
+
+            // Muhasebelendi Yap butonu
+            $(document).on('click', '.muhasebelendi-yap-btn', function () {
+                window.muhasebelendiSozlesmeId = $(this).data('sozlesme-id');
+                $('#muhasebelendiDokumanNo').text($(this).data('dokuman-no'));
+                new bootstrap.Modal('#muhasebelendiModal').show();
+            });
+
+            // Muhasebelendi Geri Al butonu
+            $(document).on('click', '.muhasebe-geri-al-btn', function () {
+                window.muhasebeGeriAlSozlesmeId = $(this).data('sozlesme-id');
+                $('#muhasebelendiGeriAlDokumanNo').text($(this).data('dokuman-no'));
+                new bootstrap.Modal('#muhasebelendiGeriAlModal').show();
+            });
+
+            // Doküman yükleme modalı dosya seçimi
+            $('#dosyaSecBtn').click(function() {
+                $('#dokumanDosya').click();
+            });
+
+            $('#dokumanDosya').change(function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Dosya adını göster
+                    $('#selectedFileName').html(`<i class="fas fa-file me-1"></i> Seçilen dosya: <strong>${file.name}</strong> (${formatFileSize(file.size)})`);
+
+                    // Dosya önizleme (eğer resim ise)
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const preview = $('#filePreview');
+                        preview.attr('src', e.target.result);
+                        preview.addClass('active');
+                    }
+
+                    // Sadece resim dosyaları için önizleme
+                    if (file.type.startsWith('image/')) {
+                        reader.readAsDataURL(file);
+                    } else {
+                        $('#filePreview').removeClass('active');
+                    }
+
+                    // Yükle butonunu aktif et
+                    $('#dokumanYukleBtn').prop('disabled', false);
+                }
+            });
+
+            // Dosya sürükle-bırak
+            $('#fileInputArea').on('dragover', function(e) {
+                e.preventDefault();
+                $(this).css({
+                    'border-color': '#86b7fe',
+                    'background-color': '#e7f3ff'
+                });
+            }).on('dragleave', function(e) {
+                e.preventDefault();
+                $(this).css({
+                    'border-color': '#dee2e6',
+                    'background-color': '#f8f9fa'
+                });
+            }).on('drop', function(e) {
+                e.preventDefault();
+                $(this).css({
+                    'border-color': '#dee2e6',
+                    'background-color': '#f8f9fa'
+                });
+
+                const file = e.originalEvent.dataTransfer.files[0];
+                if (file) {
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    $('#dokumanDosya')[0].files = dataTransfer.files;
+                    $('#dokumanDosya').trigger('change');
+                }
+            });
+
+            // Doküman yükleme butonu
+            $('#dokumanYukleBtn').click(async function() {
+                const dokumanTipi = $('#dokumanTipi').val();
+                const fileInput = $('#dokumanDosya')[0];
+
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    toastr.error('Lütfen bir dosya seçin.');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('sozlesmeId', currentSozlesmeId);
+                formData.append('dokumanTipi', dokumanTipi);
+                formData.append('dosya', fileInput.files[0]);
+
+                $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Yükleniyor...');
+
+                try {
+                    const response = await $.ajax({
+                        url: '/AdminMusteriSozlesme/DokumanYukle',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        dataType: 'json'
+                    });
+
+                    if (response.success) {
+                        // Modalı kapat
+                        bootstrap.Modal.getInstance(document.getElementById('dokumanYukleModal')).hide();
+
+                        // Formu temizle
+                        $('#dokumanDosya').val('');
+                        $('#selectedFileName').empty();
+                        $('#filePreview').removeClass('active');
+
+                        // Sözleşme detayını yenile
+                        if (currentSozlesmeDetay) {
+                            currentSozlesmeDetay[getDokumanVarKey(dokumanTipi)] = true;
+                            currentSozlesmeDetay[getDokumanDosyaKey(dokumanTipi)] = response.dosyaAdi;
+                            renderDokumanListesi();
+                        }
+
+                        toastr.success(response.message);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    toastr.error('Dosya yüklenirken hata oluştu.');
+                } finally {
+                    $(this).prop('disabled', false).html('<i class="fas fa-upload me-2"></i>Yükle');
+                }
+            });
+
+            // Doküman silme butonu
+            $('#dokumanSilBtn').click(async function() {
+                const dokumanTipi = window.silinecekDokumanTipi;
+
+                $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Siliniyor...');
+
+                try {
+                    const response = await $.ajax({
+                        url: '/AdminMusteriSozlesme/DokumanSil',
+                        type: 'POST',
+                        data: {
+                            id: currentSozlesmeId,
+                            dokumanTipi: dokumanTipi
+                        },
+                        dataType: 'json'
+                    });
+
+                    if (response.success) {
+                        // Modalı kapat
+                        bootstrap.Modal.getInstance(document.getElementById('dokumanSilModal')).hide();
+
+                        // Sözleşme detayını yenile
+                        if (currentSozlesmeDetay) {
+                            currentSozlesmeDetay[getDokumanVarKey(dokumanTipi)] = false;
+                            currentSozlesmeDetay[getDokumanDosyaKey(dokumanTipi)] = null;
+                            renderDokumanListesi();
+                        }
+
+                        toastr.success(response.message);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    toastr.error('Silme işlemi sırasında hata oluştu.');
+                } finally {
+                    $(this).prop('disabled', false).html('<i class="fas fa-trash me-2"></i>Sil');
+                }
+            });
+
+            // Doküman checkbox güncelleme
+            $(document).on('change', '.dokuman-checkbox', async function() {
+                const dokumanTipi = $(this).data('dokuman-tipi');
+                const durum = $(this).is(':checked');
+                const $checkbox = $(this);
+
+                $checkbox.prop('disabled', true);
+
+                try {
+                    const response = await $.ajax({
+                        url: '/AdminMusteriSozlesme/DokumanCheckboxGuncelle',
+                        type: 'POST',
+                        data: {
+                            id: currentSozlesmeId,
+                            dokumanTipi: dokumanTipi,
+                            durum: durum
+                        },
+                        dataType: 'json'
+                    });
+
+                    if (response.success) {
+                        // Sözleşme detayını yenile
+                        if (currentSozlesmeDetay) {
+                            currentSozlesmeDetay[getDokumanVarKey(dokumanTipi)] = durum;
+                            if (!durum) {
+                                currentSozlesmeDetay[getDokumanDosyaKey(dokumanTipi)] = null;
+                            }
+                            renderDokumanListesi();
+                        }
+                        toastr.success(response.message);
+                    } else {
+                        toastr.error(response.message);
+                        $checkbox.prop('checked', !durum);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    toastr.error('Güncelleme sırasında hata oluştu.');
+                    $checkbox.prop('checked', !durum);
+                } finally {
+                    $checkbox.prop('disabled', false);
+                }
+            });
+
+            // Doküman form validasyonu
+            $('#dokumanDosya').on('change', function() {
+                const fileInput = $('#dokumanDosya')[0];
+                const isValid = fileInput.files && fileInput.files.length > 0;
+                $('#dokumanYukleBtn').prop('disabled', !isValid);
+            });
+
+            // Doküman modal açılınca formu sıfırla
+            $('#dokumanYukleModal').on('show.bs.modal', function() {
+                $('#dokumanDosya').val('');
+                $('#selectedFileName').empty();
+                $('#filePreview').removeClass('active');
+                $('#dokumanYukleBtn').prop('disabled', true);
+            });
+
+            // Detay göster
+            $(document).on('click', '.detay-goster', function () {
+                detaylariGetir($(this).data('sozlesme-id'));
+            });
+
+            // Silme butonu
+            $(document).on('click', '.sil-sozlesme', function () {
+                window.seciliSozlesmeId = $(this).data('sozlesme-id');
+                $('#silinecekDokumanNo').text($(this).data('dokuman-no'));
+                new bootstrap.Modal('#silModal').show();
+            });
+
+            $('#silBtn').click(() => {
+                if (window.seciliSozlesmeId) sozlesmeSil(window.seciliSozlesmeId);
+            });
+        });
+
+        // Doküman listesini render et
+        function renderDokumanListesi() {
+            const container = $('#dokumanListesiContainer');
+            if (!container.length || !currentSozlesmeDetay) return;
+
+            const dokumanTipleri = [
+                { key: 'VergiKimlikLevhası', label: 'Vergi Kimlik Levhası', icon: 'fa-file-contract' },
+                { key: 'TicariSicilGazetesi', label: 'Ticari Sicil Gazetesi', icon: 'fa-newspaper' },
+                { key: 'KimlikOnYuzu', label: 'Kimlik Ön Yüzü', icon: 'fa-id-card' },
+                { key: 'ImzaSirkusu', label: 'İmza Sirküsü veya İmza Beyanı', icon: 'fa-signature' }
+            ];
+
+            let html = '';
+
+            dokumanTipleri.forEach(tip => {
+                const varKey = getDokumanVarKey(tip.key);
+                const dosyaKey = getDokumanDosyaKey(tip.key);
+                const durum = currentSozlesmeDetay[varKey];
+                const dosyaAdi = currentSozlesmeDetay[dosyaKey];
+                const dosyaVar = !!(dosyaAdi && dosyaAdi !== 'null' && dosyaAdi !== 'undefined');
+
+                html += `
+                    <div class="dokuman-check-group">
+                        <div class="dokuman-check-header">
+                            <div class="dokuman-check-label">
+                                <i class="fas ${tip.icon}"></i>
+                                ${tip.label}
+                                <span class="dokuman-durum ${dosyaVar ? 'dokuman-yuklu' : 'dokuman-yuksuz'}">
+                                    ${dosyaVar ? 'Yüklü' : 'Yüklenmemiş'}
+                                </span>
+                            </div>
+                    
+                        </div>`;
+
+                if (dosyaVar) {
+                    const fileIcon = getFileIcon(dosyaAdi);
+                    html += `
+                        <div class="dokuman-dosya-info">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="${fileIcon} me-2"></i>
+                                    <span>${dosyaAdi}</span>
+                                </div>
+                                <div class="dokuman-aksiyonlar">
+                                    <button class="btn btn-sm btn-outline-primary dokuman-aksiyon-btn dokuman-goruntule-btn"
+                                            data-dokuman-tipi="${tip.key}"
+                                            title="Görüntüle">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <a href="/AdminMusteriSozlesme/DokumanIndir?id=${currentSozlesmeId}&dokumanTipi=${tip.key}"
+                                       class="btn btn-sm btn-outline-success dokuman-aksiyon-btn"
+                                       title="İndir">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-danger dokuman-aksiyon-btn dokuman-sil-btn"
+                                            data-dokuman-tipi="${tip.key}"
+                                            title="Sil">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>`;
+                } else {
+                    html += `
+                        <div class="text-center py-3">
+                            <p class="text-muted mb-2">Bu doküman henüz yüklenmemiş</p>
+                            <button class="btn btn-sm btn-outline-primary dokuman-yukle-btn"
+                                    data-dokuman-tipi="${tip.key}">
+                                <i class="fas fa-upload me-1"></i> Doküman Yükle
+                            </button>
+                        </div>`;
+                }
+
+                html += `</div>`;
+            });
+
+            container.html(html);
+
+            // Doküman buton event'lerini bağla
+            $('.dokuman-goruntule-btn').off('click').on('click', function() {
+                const dokumanTipi = $(this).data('dokuman-tipi');
+                window.open(`/AdminMusteriSozlesme/DokumanGoruntule?id=${currentSozlesmeId}&dokumanTipi=${dokumanTipi}`, '_blank');
+            });
+
+            $('.dokuman-sil-btn').off('click').on('click', function() {
+                const dokumanTipi = $(this).data('dokuman-tipi');
+                window.silinecekDokumanTipi = dokumanTipi;
+                $('#silinecekDokumanTipi').text(getDokumanLabel(dokumanTipi));
+                new bootstrap.Modal('#dokumanSilModal').show();
+            });
+
+            $('.dokuman-yukle-btn').off('click').on('click', function() {
+                const dokumanTipi = $(this).data('dokuman-tipi');
+                $('#dokumanSozlesmeId').val(currentSozlesmeId);
+                $('#dokumanTipi').val(dokumanTipi);
+                $('#yuklenecekDokumanTipi').text(getDokumanLabel(dokumanTipi));
+                new bootstrap.Modal('#dokumanYukleModal').show();
+            });
+        }
+
+
+                // Belgeleri kontrol et ve eksik olan sözleşmeleri işaretle
+        function checkAndMarkIncompleteDocuments() {
+            $('.durum-select').each(function() {
+                const $select = $(this);
+                const sozlesmeId = $select.data('sozlesme-id');
+                const $row = $select.closest('tr');
+                const currentDurumId = parseInt($select.data('current-durum'));
+
+                // Eğer Distribütör Onayı (9) veya daha ileri bir durumdaysa, belge kontrolü yap
+                if (currentDurumId < 9) {
+                    // Sadece Distribütör Onayından önceki durumlarda belge kontrolü yap
+                    checkSozlesmeBelgeler(sozlesmeId, $row);
+                }
+            });
+        }
+
+        // Sözleşme belgelerini kontrol et
+        async function checkSozlesmeBelgeler(sozlesmeId, $row) {
+            try {
+                const response = await $.ajax({
+                    url: '/AdminMusteriSozlesme/CheckBelgeler',
+                    type: 'GET',
+                    data: { id: sozlesmeId },
+                    dataType: 'json'
+                });
+
+                if (response && response.belgelerEksik) {
+                    $row.addClass('belgeler-eksik-row');
+
+                    // Eksik belge uyarısı ekle
+                    if (!$row.find('.belgeler-eksik-badge').length) {
+                        $row.find('.dokuman-no').append(`
+                            <span class="belgeler-eksik-badge" title="Eksik belgeler: ${response.eksikBelgeler.join(', ')}">
+                                <i class="fas fa-exclamation-triangle me-1"></i>Belgeler Eksik
+                            </span>
+                        `);
+                    }
+                } else {
+                    $row.removeClass('belgeler-eksik-row');
+                    $row.find('.belgeler-eksik-badge').remove();
+                }
+            } catch (err) {
+                console.error('Belge kontrol hatası:', err);
+            }
+        }
+
+        // Sayfa yüklendiğinde belge kontrolü yap
+        $(document).ready(function() {
+            // 2 saniye sonra belge kontrolü yap (sayfanın tam yüklenmesini bekle)
+            setTimeout(() => {
+                checkAndMarkIncompleteDocuments();
+            }, 2000);
+
+            // Her 30 saniyede bir kontrol et
+            setInterval(checkAndMarkIncompleteDocuments, 30000);
+        });
+        // Doküman tipine göre key belirle
+        function getDokumanVarKey(dokumanTipi) {
+            switch(dokumanTipi) {
+                case 'VergiKimlikLevhası': return 'vergiKimlikLevhasıVar';
+                case 'TicariSicilGazetesi': return 'ticariSicilGazetesiVar';
+                case 'KimlikOnYuzu': return 'kimlikOnYuzuVar';
+                case 'ImzaSirkusu': return 'imzaSirkusuVar';
+                default: return dokumanTipi.toLowerCase() + 'Var';
+            }
+        }
+
+        function getDokumanDosyaKey(dokumanTipi) {
+            switch(dokumanTipi) {
+                case 'VergiKimlikLevhası': return 'vergiKimlikLevhasıDosyaAdi';
+                case 'TicariSicilGazetesi': return 'ticariSicilGazetesiDosyaAdi';
+                case 'KimlikOnYuzu': return 'kimlikOnYuzuDosyaAdi';
+                case 'ImzaSirkusu': return 'imzaSirkusuDosyaAdi';
+                default: return dokumanTipi.toLowerCase() + 'DosyaAdi';
+            }
+        }
+
+        function getDokumanLabel(dokumanTipi) {
+            switch(dokumanTipi) {
+                case 'VergiKimlikLevhası': return 'Vergi Kimlik Levhası';
+                case 'TicariSicilGazetesi': return 'Ticari Sicil Gazetesi';
+                case 'KimlikOnYuzu': return 'Kimlik Ön Yüzü';
+                case 'ImzaSirkusu': return 'İmza Sirküsü veya İmza Beyanı';
+                default: return dokumanTipi;
+            }
+        }
+
+        // Dosya ikonu belirle
+        function getFileIcon(fileName) {
+            const ext = fileName.split('.').pop().toLowerCase();
+            switch (ext) {
+                case 'pdf': return 'fas fa-file-pdf text-danger';
+                case 'doc':
+                case 'docx': return 'fas fa-file-word text-primary';
+                case 'xls':
+                case 'xlsx': return 'fas fa-file-excel text-success';
+                case 'jpg':
+                case 'jpeg':
+                case 'png': return 'fas fa-file-image text-info';
+                default: return 'fas fa-file text-secondary';
+            }
+        }
+
+        // Dosya boyutunu formatla
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Byte';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        function getStateTransitionErrorMessage(fromStateId, toStateId) {
+            const stateNames = {
+                6: "Müşteri SMS Onayında",
+                7: "Bayi Onayı",
+                9: "Distribütör Onayı",
+                10: "Lisanslandı",
+                11: "Muhasebelendi",
+                12: "İptal",
+                14: "Onaylandı"  // Ekledik
+            };
+
+            const fromName = stateNames[fromStateId] || fromStateId.toString();
+            const toName = stateNames[toStateId] || toStateId.toString();
+
+            // Özel mesajlar
+            if (fromStateId === 11 && toStateId === 10)
+                return "Muhasebelendi durumundan geri almak için 'Muhasebelendi Geri Al' butonunu kullanın.";
+
+            // Muhasebelendi'den Onaylandı'ya geçiş mümkün
+            if (fromStateId === 11 && toStateId === 14)
+                return `'${fromName}' durumundan '${toName}' durumuna geçilebilir.`;
+
+            // Diğer durumlar için genel mesaj
+            if (!isValidTwoWayTransition(fromStateId, toStateId)) {
+                return `'${fromName}' durumundan '${toName}' durumuna geçilemez.`;
+            }
+
+            return ""; // Hata yok
+        }
+        // Durum değiştirme fonksiyonu (güncellendi)
+        async function updateDurum($select, sozlesmeId, yeniDurumId, eskiDurumId, iptalNeden = null) {
+            try {
+                const data = {
+                    id: sozlesmeId,
+                    durumId: yeniDurumId
+                };
+
+                if (iptalNeden) {
+                    data.iptalNeden = iptalNeden;
+                }
+
+                const response = await $.ajax({
+                    url: '/AdminMusteriSozlesme/DurumDegistir',
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json'
+                });
+
+                if (response.success) {
+                    $select.val(yeniDurumId);
+                    $select.data('current-durum', yeniDurumId);
+                    $select.attr('title', response.yeniDurum || '');
+
+                    const $row = $select.closest('tr');
+                    $row.attr('data-durum-id', yeniDurumId);
+
+                    // Tüm renk sınıflarını temizle
+                    $row.removeClass('satir-sms-onay satir-bayi-onay satir-distributor-onay satir-lisanslandi satir-muhasebelendi satir-iptal');
+                    $select.removeClass('durum-sms-onay durum-bayi-onay durum-distributor-onay durum-lisanslandi durum-muhasebelendi durum-iptal durum-belirtilmemis');
+
+                    // Yeni sınıfları ekle
+                    const cssMap = {
+                        6:  { row: 'satir-sms-onay', select: 'durum-sms-onay' },
+                        7:  { row: 'satir-bayi-onay', select: 'durum-bayi-onay' },
+                        9:  { row: 'satir-distributor-onay', select: 'durum-distributor-onay' },
+                        10: { row: 'satir-lisanslandi', select: 'durum-lisanslandi' },
+                        11: { row: 'satir-muhasebelendi', select: 'durum-muhasebelendi' },
+                        12: { row: 'satir-iptal', select: 'durum-iptal' },
+                        14: { row: 'satir-onaylandi', select: 'durum-onaylandi' }
+                    };
+
+                    const css = cssMap[yeniDurumId] || { select: 'durum-belirtilmemis' };
+                    if (css.row) $row.addClass(css.row);
+                    if (css.select) $select.addClass(css.select);
+
+                    // Özel butonları güncelle
+                    const $durumHucresi = $row.find('.durum-hucresi');
+                    $durumHucresi.find('.lisans-btn, .muhasebe-btn, .geri-al-btn, .lisans-iptal-btn').remove();
+
+                    // İptal durumunda özel buton gösterme
+                    if (yeniDurumId !== 12) {
+                        if (yeniDurumId === 9) {
+                            // Distribütör Onayı - Lisansla butonu ekle
+                            $durumHucresi.append(`
+                                <button class="btn btn-success btn-sm lisans-btn lisansla-btn mt-2"
+                                        data-sozlesme-id="${sozlesmeId}"
+                                        data-dokuman-no="${$row.find('.dokuman-no').text()}"
+                                        title="Lisansla">
+                                    <i class="fas fa-key"></i> Lisansla
+                                </button>
+                            `);
+                        } else if (yeniDurumId === 10) {
+                            // Lisanslandı - Butonlar ekle
+                            $durumHucresi.append(`
+                                <div class="mt-2">
+                                    <button class="btn btn-info btn-sm muhasebe-btn muhasebelendi-yap-btn"
+                                            data-sozlesme-id="${sozlesmeId}"
+                                            data-dokuman-no="${$row.find('.dokuman-no').text()}"
+                                            title="Muhasebelendi Yap">
+                                        <i class="fas fa-calculator"></i> Muhasebelendi Yap
+                                    </button>
+                                    <button class="btn btn-danger btn-sm lisans-iptal-btn mt-1"
+                                            data-sozlesme-id="${sozlesmeId}"
+                                            data-dokuman-no="${$row.find('.dokuman-no').text()}"
+                                            title="Lisans İptal Et">
+                                        <i class="fas fa-ban"></i> Lisans İptal
+                                    </button>
+                                </div>
+                            `);
+                        } else if (yeniDurumId === 11) {
+                            // Muhasebelendi - Geri al butonu ekle
+                            $durumHucresi.append(`
+                                <button class="btn btn-warning btn-sm geri-al-btn muhasebe-geri-al-btn mt-2"
+                                        data-sozlesme-id="${sozlesmeId}"
+                                        data-dokuman-no="${$row.find('.dokuman-no').text()}"
+                                        title="Muhasebelendi Geri Al">
+                                    <i class="fas fa-undo"></i> Muhasebe Geri Al
+                                </button>
+                            `);
+                        }
+                    }
+
+                    toastr.success(response.message || `Durum "${response.yeniDurum}" olarak güncellendi.`);
+
+                    // Distribütör onayı başarılı olduysa lisanslama butonu göster
+                    if (response.lisanslamaAktif) {
+                        $durumHucresi.append(`
+                            <button class="btn btn-success btn-sm lisans-btn lisansla-btn mt-2"
+                                    data-sozlesme-id="${sozlesmeId}"
+                                    data-dokuman-no="${$row.find('.dokuman-no').text()}"
+                                    title="Lisansla">
+                                <i class="fas fa-key"></i> Lisansla
+                            </button>
+                        `);
+                    }
+                } else {
+                    // YENİ EKLENEN KOD: Belgeler eksikse özel mesaj göster
+                    if (response.belgelerEksik) {
+                        // HTML mesajını göster
+                        toastr.error(response.message, "Eksik Belgeler", {
+                            timeOut: 10000, // 10 saniye
+                            closeButton: true,
+                            progressBar: true,
+                            positionClass: "toast-top-center"
+                        });
+
+                        // Seçimi eski haline getir
+                        $select.val(eskiDurumId);
+                    } else {
+                        toastr.error(response.message || 'Durum güncellenemedi.');
+                    }
+                }
+            } catch (err) {
+                console.error('Hata:', err);
+                toastr.error('Sunucu ile bağlantı kurulamadı.');
+            }
+        }
+
+        // Sözleşme detaylarını getir
+        async function detaylariGetir(id) {
+            try {
+                currentSozlesmeId = id;
+                $('#sozlesmeDetayIcerik').html(`
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-3">Sözleşme detayları yükleniyor...</p>
+                    </div>
+                `);
+                new bootstrap.Modal('#sozlesmeDetayModal').show();
+
+                const response = await $.get('/AdminMusteriSozlesme/GetirSozlesmeDetay', { id: id });
+
+                if (response.success) {
+                    currentSozlesmeDetay = response.sozlesme;
+                    const s = response.sozlesme;
+
+                    let html = `
+                        <div class="row">
+                            <!-- Sol Taraf: Temel Bilgiler -->
+                            <div class="col-md-6">
+                                <div class="card border-0 shadow-sm mb-3">
+                                    <div class="card-header bg-light"><h6 class="mb-0">Sözleşme Bilgileri</h6></div>
+                                    <div class="card-body">
+                                        <table class="table table-sm table-borderless mb-0">
+                                            <tr><td class="text-muted">Doküman No:</td><td><strong>${s.dokumanNo}</strong></td></tr>
+                                            <tr><td class="text-muted">Lisans No:</td><td>${s.lisansNo ? `<span class="badge bg-success">${s.lisansNo}</span>` : '-'}</td></tr>
+                                            <tr><td class="text-muted">Müşteri:</td><td>${s.musteriAdi || '-'}</td></tr>
+                                            <tr><td class="text-muted">Telefon:</td><td>${s.musteriTelefon || '-'}</td></tr>
+                                            <tr><td class="text-muted">E-posta:</td><td>${s.musteriEmail || '-'}</td></tr>
+                                            <tr><td class="text-muted">Durum:</td><td><span class="badge ${getDurumBadgeCss(s.durumId)}">${s.durumAdi}</span></td></tr>
+                                            <tr><td class="text-muted">Yayın Tarihi:</td><td>${s.yayinTarihi || '-'}</td></tr>
+                                            <tr><td class="text-muted">Revizyon:</td><td>${s.revizyonNo || '-'} (${s.revizeTarihi || '-'})</td></tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="card border-0 shadow-sm mb-3">
+                                    <div class="card-header bg-light"><h6 class="mb-0">Ödeme ve Bakım</h6></div>
+                                    <div class="card-body">
+                                        <table class="table table-sm table-borderless mb-0">
+                                            <tr><td class="text-muted">Yıllık Bakım:</td><td><strong class="text-success">${formatTutar(s.yillikBakim)} ₺</strong></td></tr>
+                                            <tr><td class="text-muted">Sözleşme Tipi:</td><td>${s.sozlesmeTipi || '-'}</td></tr>
+                                            <tr><td class="text-muted">Ödeme Beklemede:</td><td>${s.odemeBekleme ? 'Evet' : 'Hayır'}</td></tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sağ Taraf: Müşteri Bilgileri -->
+                            <div class="col-md-6">
+                                <div class="card border-0 shadow-sm mb-3">
+                                    <div class="card-header bg-light"><h6 class="mb-0">Müşteri Bilgileri</h6></div>
+                                    <div class="card-body">
+                                        <table class="table table-sm table-borderless mb-0">
+                                            <tr><td class="text-muted">Ticari Ünvan:</td><td>${s.ticariUnvan || '-'}</td></tr>
+                                            <tr><td class="text-muted">Adı Soyadı:</td><td>${s.adi || '-'} ${s.soyadi || '-'}</td></tr>
+                                            <tr><td class="text-muted">Adres:</td><td>${s.adres1 || '-'} ${s.adres2 || ''}</td></tr>
+                                            <tr><td class="text-muted">İl / İlçe:</td><td>${s.il || '-'} / ${s.ilce || '-'}</td></tr>
+                                            <tr><td class="text-muted">Vergi Dairesi:</td><td>${s.vergiDairesi || '-'}</td></tr>
+                                            <tr><td class="text-muted">Vergi No:</td><td>${s.vergiNo || '-'}</td></tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-light"><h6 class="mb-0">Bilgilendirme Tercihleri</h6></div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input" type="checkbox" ${s.smsBilgilendirme ? 'checked' : ''} disabled>
+                                                    <label class="form-check-label">SMS ile Bilgilendir</label>
+                                                </div>
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input" type="checkbox" ${s.emailBilgilendirme ? 'checked' : ''} disabled>
+                                                    <label class="form-check-label">E-posta Gönder</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input" type="checkbox" ${s.telefonBilgilendirme ? 'checked' : ''} disabled>
+                                                    <label class="form-check-label">Telefonla Bilgilendir</label>
+                                                </div>
+                                                <div class="form-check mb-2">
+                                                    <input class="form-check-input" type="checkbox" ${s.haberPaylasimi ? 'checked' : ''} disabled>
+                                                    <label class="form-check-label">Haber Paylaşımı</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gerekli Dokümanlar Bölümü -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-file-contract me-2"></i>
+                                            Gerekli Dokümanlar
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Zorunlu Doküman Kontrolleri -->
+                                        <div class="zorunlu-dokuman-section mb-4">
+                                            <h6 class="zorunlu-dokuman-title">
+                                                <i class="fas fa-exclamation-circle"></i>
+                                                Zorunlu Doküman Durumları
+                                            </h6>
+                                            <div class="row">
+                                                <div class="col-md-3 mb-2">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="${s.vergiKimlikLevhasıVar ? 'fas fa-check-circle dokuman-var-icon' : 'fas fa-times-circle dokuman-yok-icon'} me-2"></i>
+                                                        <span>Vergi Kimlik Levhası</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 mb-2">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="${s.ticariSicilGazetesiVar ? 'fas fa-check-circle dokuman-var-icon' : 'fas fa-times-circle dokuman-yok-icon'} me-2"></i>
+                                                        <span>Ticari Sicil Gazetesi</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 mb-2">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="${s.kimlikOnYuzuVar ? 'fas fa-check-circle dokuman-var-icon' : 'fas fa-times-circle dokuman-yok-icon'} me-2"></i>
+                                                        <span>Kimlik Ön Yüzü</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 mb-2">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="${s.imzaSirkusuVar ? 'fas fa-check-circle dokuman-var-icon' : 'fas fa-times-circle dokuman-yok-icon'} me-2"></i>
+                                                        <span>İmza Sirküsü</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Doküman Listesi -->
+                                        <div class="dokuman-listesi" id="dokumanListesiContainer">
+                                            <!-- Dokümanlar buraya yüklenecek -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3 text-muted small">
+                            <div class="col-6">Oluşturulma: ${s.eklenmeTarihi || '-'}</div>
+                            <div class="col-6 text-end">Son Güncelleme: ${s.guncellenmeTarihi || '-'}</div>
+                        </div>`;
+
+                    $('#sozlesmeDetayIcerik').html(html);
+
+                    // Doküman listesini render et
+                    renderDokumanListesi();
+                } else {
+                    $('#sozlesmeDetayIcerik').html(`<div class="alert alert-danger">${response.message}</div>`);
+                }
+            } catch (err) {
+                $('#sozlesmeDetayIcerik').html('<div class="alert alert-danger">Sözleşme detayları yüklenirken hata oluştu.</div>');
+            }
+        }
+
+        // Sözleşme silme
+        async function sozlesmeSil(id) {
+            try {
+                $('#silBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Siliniyor...');
+
+                const res = await $.post('/AdminMusteriSozlesme/Sil', { id: id });
+
+                if (res.success) {
+                    // 1. Önce silme modalını kapat
+                    bootstrap.Modal.getInstance(document.getElementById('silModal')).hide();
+
+                    // 2. Başarı mesajı göster
+                    toastr.success(res.message || 'Sözleşme başarıyla silindi.');
+
+                    // 3. Kısa bir gecikmeyle sayfayı yenile (toastr görünebilsin diye)
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500); // 1.5 saniye sonra yenile
+                } else {
+                    toastr.error(res.message || 'Silme işlemi başarısız oldu.');
+                }
+            } catch (err) {
+                console.error(err);
+                toastr.error('Sunucu ile iletişim kurulamadı.');
+            } finally {
+                // Butonu eski haline getir
+                $('#silBtn').prop('disabled', false).html('<i class="fas fa-trash me-2"></i>Sil');
+            }
+        }
+
+        // Yardımcı fonksiyonlar
+        function formatTutar(val) {
+            if (!val) return '0,00';
+            return new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val);
+        }
+
+        function getDurumBadgeCss(id) {
+            const map = {
+                6: 'bg-info',      // Müşteri SMS Onayında
+                7: 'bg-warning',   // Bayi Onayı
+                9: 'bg-primary',   // Distribütör Onayı
+                10: 'bg-success',  // Lisanslandı
+                11: 'bg-secondary',// Muhasebelendi
+                12: 'bg-danger'    // İptal
+            };
+            return map[id] || 'bg-light text-dark';
+        }
+
+        function getFileExtension(filename) {
+            return filename.split('.').pop().toLowerCase();
+        }
+                // Muhasebelendi Yap butonu işleyicisi
+        $('#muhasebelendiBtn').click(async function() {
+            if (!window.muhasebelendiSozlesmeId) return;
+
+            $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> İşleniyor...');
+
+            try {
+                const response = await $.ajax({
+                    url: '/AdminMusteriSozlesme/MuhasebelendiYap',
+                    type: 'POST',
+                    data: {
+                        id: window.muhasebelendiSozlesmeId
+                    },
+                    dataType: 'json'
+                });
+
+                if (response.success) {
+                    // Modalı kapat
+                    bootstrap.Modal.getInstance(document.getElementById('muhasebelendiModal')).hide();
+
+                    // Başarı mesajı göster
+                    toastr.success(response.message || 'Sözleşme muhasebelendi olarak işaretlendi.');
+
+                    // Satırı güncelle
+                    updateSozlesmeDurum(window.muhasebelendiSozlesmeId, 11);
+
+                    // Değişkeni temizle
+                    window.muhasebelendiSozlesmeId = null;
+                } else {
+                    toastr.error(response.message || 'İşlem başarısız oldu.');
+                }
+            } catch (err) {
+                console.error(err);
+                toastr.error('Sunucu ile bağlantı kurulamadı.');
+            } finally {
+                $(this).prop('disabled', false).html('<i class="fas fa-calculator me-2"></i>Muhasebelendi Yap');
+            }
+        });
+
+        // Muhasebelendi Geri Al butonu işleyicisi
+        $('#muhasebelendiGeriAlBtn').click(async function() {
+            if (!window.muhasebeGeriAlSozlesmeId) return;
+
+            $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> İşleniyor...');
+
+            try {
+                const response = await $.ajax({
+                    url: '/AdminMusteriSozlesme/MuhasebelendiGeriAl',
+                    type: 'POST',
+                    data: {
+                        id: window.muhasebeGeriAlSozlesmeId
+                    },
+                    dataType: 'json'
+                });
+
+                if (response.success) {
+                    // Modalı kapat
+                    bootstrap.Modal.getInstance(document.getElementById('muhasebelendiGeriAlModal')).hide();
+
+                    // Başarı mesajı göster
+                    toastr.success(response.message || 'Muhasebelendi durumu geri alındı.');
+
+                    // Satırı güncelle
+                    updateSozlesmeDurum(window.muhasebeGeriAlSozlesmeId, 10);
+
+                    // Değişkeni temizle
+                    window.muhasebeGeriAlSozlesmeId = null;
+                } else {
+                    toastr.error(response.message || 'İşlem başarısız oldu.');
+                }
+            } catch (err) {
+                console.error(err);
+                toastr.error('Sunucu ile bağlantı kurulamadı.');
+            } finally {
+                $(this).prop('disabled', false).html('<i class="fas fa-undo me-2"></i>Geri Al');
+            }
+        });
+
+        // Lisansla butonu işleyicisi
+        $('#lisanslaBtn').click(async function() {
+            if (!window.lisansSozlesmeId) return;
+
+            const lisansNo = $('#lisansNo').val().trim();
+            if (!lisansNo) {
+                toastr.error('Lütfen lisans numarasını girin.');
+                return;
+            }
+
+            $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> İşleniyor...');
+
+            try {
+                const response = await $.ajax({
+                    url: '/AdminMusteriSozlesme/Lisansla',
+                    type: 'POST',
+                    data: {
+                        id: window.lisansSozlesmeId,
+                        lisansNo: lisansNo
+                    },
+                    dataType: 'json'
+                });
+
+                if (response.success) {
+                    // Modalı kapat
+                    bootstrap.Modal.getInstance(document.getElementById('lisanslamaModal')).hide();
+
+                    // Başarı mesajı göster
+                    toastr.success(response.message || 'Sözleşme lisanslandı.');
+
+                    // Satırı güncelle
+                    updateSozlesmeDurum(window.lisansSozlesmeId, 10, response.lisansNo);
+
+                    // Değişkeni temizle
+                    window.lisansSozlesmeId = null;
+                    $('#lisansNo').val('');
+                } else {
+                    toastr.error(response.message || 'İşlem başarısız oldu.');
+                }
+            } catch (err) {
+                console.error(err);
+                toastr.error('Sunucu ile bağlantı kurulamadı.');
+            } finally {
+                $(this).prop('disabled', false).html('<i class="fas fa-key me-2"></i>Lisansla');
+            }
+        });
+
+        // İptal et butonu işleyicisi
+        $('#iptalEtBtn').click(async function() {
+            if (!window.iptalSozlesmeId) return;
+
+            const iptalNedeni = $('#iptalNedeni').val().trim();
+            if (!iptalNedeni) {
+                toastr.error('Lütfen iptal nedenini girin.');
+                return;
+            }
+
+            $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> İşleniyor...');
+
+            try {
+                const response = await $.ajax({
+                    url: '/AdminMusteriSozlesme/IptalEt',
+                    type: 'POST',
+                    data: {
+                        id: window.iptalSozlesmeId,
+                        iptalNedeni: iptalNedeni
+                    },
+                    dataType: 'json'
+                });
+
+                if (response.success) {
+                    // Modalı kapat
+                    bootstrap.Modal.getInstance(document.getElementById('iptalNedenModal')).hide();
+
+                    // Başarı mesajı göster
+                    toastr.success(response.message || 'Sözleşme iptal edildi.');
+
+                    // Satırı güncelle
+                    updateSozlesmeDurum(window.iptalSozlesmeId, 12);
+
+                    // Formu temizle
+                    $('#iptalNedeni').val('');
+
+                    // Değişkenleri temizle
+                    window.iptalSozlesmeId = null;
+                    window.iptalEskiDurumId = null;
+                } else {
+                    toastr.error(response.message || 'İşlem başarısız oldu.');
+                }
+            } catch (err) {
+                console.error(err);
+                toastr.error('Sunucu ile bağlantı kurulamadı.');
+            } finally {
+                $(this).prop('disabled', false).html('<i class="fas fa-ban me-2"></i>İptal Et');
+            }
+        });
+
+        // Sözleşme durumunu güncelleme yardımcı fonksiyonu
+        function updateSozlesmeDurum(sozlesmeId, yeniDurumId, lisansNo = null) {
+            // İlgili satırı bul
+            const $row = $(`tr[data-sozlesme-id="${sozlesmeId}"]`);
+            if ($row.length === 0) {
+                location.reload(); // Satır bulunamazsa sayfayı yenile
+                return;
+            }
+
+            // Durum select'ini güncelle
+            const $select = $row.find('.durum-select');
+            $select.val(yeniDurumId);
+            $select.data('current-durum', yeniDurumId);
+
+            // Satır ve select CSS sınıflarını güncelle
+            updateDurumStyling($row, $select, yeniDurumId);
+
+            // Lisans no güncellenecekse güncelle
+            if (lisansNo) {
+                const $lisansCell = $row.find('td:nth-child(3)');
+                $lisansCell.html(`<span class="badge bg-success badge-sm">${lisansNo}</span>`);
+            }
+
+            // Özel butonları güncelle
+            updateDurumButtons($row, sozlesmeId, yeniDurumId);
+        }
+
+        // Durum stillerini güncelleme yardımcı fonksiyonu
+        function updateDurumStyling($row, $select, durumId) {
+            // Tüm renk sınıflarını temizle
+            $row.removeClass('satir-sms-onay satir-bayi-onay satir-distributor-onay satir-lisanslandi satir-muhasebelendi satir-iptal');
+            $select.removeClass('durum-sms-onay durum-bayi-onay durum-distributor-onay durum-lisanslandi durum-muhasebelendi durum-iptal durum-belirtilmemis');
+
+            // Yeni sınıfları ekle
+            const cssMap = {
+                6: { row: 'satir-sms-onay', select: 'durum-sms-onay' },
+                7: { row: 'satir-bayi-onay', select: 'durum-bayi-onay' },
+                9: { row: 'satir-distributor-onay', select: 'durum-distributor-onay' },
+                10: { row: 'satir-lisanslandi', select: 'durum-lisanslandi' },
+                11: { row: 'satir-muhasebelendi', select: 'durum-muhasebelendi' },
+                12: { row: 'satir-iptal', select: 'durum-iptal' }
+            };
+
+            const css = cssMap[durumId] || { select: 'durum-belirtilmemis' };
+            if (css.row) $row.addClass(css.row);
+            if (css.select) $select.addClass(css.select);
+
+            // Satırın data-durum-id özelliğini güncelle
+            $row.attr('data-durum-id', durumId);
+        }
+                // JavaScript bölümüne bu fonksiyonları ekleyin:
+
+        // Lisans İptal butonu
+        $(document).on('click', '.lisans-iptal-btn', function () {
+            window.lisansIptalSozlesmeId = $(this).data('sozlesme-id');
+            $('#lisansIptalDokumanNo').text($(this).data('dokuman-no'));
+            new bootstrap.Modal('#lisansIptalModal').show();
+        });
+
+        // Lisans İptal butonu işleyicisi
+        $('#lisansIptalBtn').click(async function() {
+            if (!window.lisansIptalSozlesmeId) return;
+
+            $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> İşleniyor...');
+
+            try {
+                const response = await $.ajax({
+                    url: '/AdminMusteriSozlesme/LisansIptalEt',
+                    type: 'POST',
+                    data: {
+                        id: window.lisansIptalSozlesmeId
+                    },
+                    dataType: 'json'
+                });
+
+                if (response.success) {
+                    // Modalı kapat
+                    bootstrap.Modal.getInstance(document.getElementById('lisansIptalModal')).hide();
+
+                    // Başarı mesajı göster
+                    toastr.success(response.message || 'Lisans iptal edildi.');
+
+                    // Satırı güncelle
+                    updateSozlesmeDurum(window.lisansIptalSozlesmeId, 9, ""); // Boş lisans no
+
+                    // Değişkeni temizle
+                    window.lisansIptalSozlesmeId = null;
+                    $('#lisansIptalNedeni').val('');
+                } else {
+                    toastr.error(response.message || 'İşlem başarısız oldu.');
+                }
+            } catch (err) {
+                console.error(err);
+                toastr.error('Sunucu ile bağlantı kurulamadı.');
+            } finally {
+                $(this).prop('disabled', false).html('<i class="fas fa-ban me-2"></i>Lisansı İptal Et');
+            }
+        });
+        // Durum butonlarını güncelleme yardımcı fonksiyonuna ekle
+        function updateDurumButtons($row, sozlesmeId, durumId) {
+            const $durumHucresi = $row.find('.durum-hucresi');
+            const dokumanNo = $row.find('.dokuman-no').text();
+
+            // Mevcut butonları temizle
+            $durumHucresi.find('.lisans-btn, .muhasebe-btn, .geri-al-btn, .lisans-iptal-btn').remove();
+
+            // Yeni butonları ekle
+            if (durumId === 9) {
+                // Distribütör Onayı - Lisansla butonu
+                $durumHucresi.append(`
+                    <button class="btn btn-success btn-sm lisans-btn lisansla-btn mt-2"
+                            data-sozlesme-id="${sozlesmeId}"
+                            data-dokuman-no="${dokumanNo}"
+                            title="Lisansla">
+                        <i class="fas fa-key"></i> Lisansla
+                    </button>
+                `);
+            } else if (durumId === 10) {
+                // Lisanslandı - Butonlar
+                $durumHucresi.append(`
+                    <div class="mt-2">
+                        <button class="btn btn-info btn-sm muhasebe-btn muhasebelendi-yap-btn"
+                                data-sozlesme-id="${sozlesmeId}"
+                                data-dokuman-no="${dokumanNo}"
+                                title="Muhasebelendi Yap">
+                            <i class="fas fa-calculator"></i> Muhasebelendi Yap
+                        </button>
+                        <button class="btn btn-danger btn-sm lisans-iptal-btn mt-1"
+                                data-sozlesme-id="${sozlesmeId}"
+                                data-dokuman-no="${dokumanNo}"
+                                title="Lisans İptal Et">
+                            <i class="fas fa-ban"></i> Lisans İptal
+                        </button>
+                    </div>
+                `);
+            } else if (durumId === 11) {
+                // Muhasebelendi - Geri Al butonu
+                $durumHucresi.append(`
+                    <button class="btn btn-warning btn-sm geri-al-btn muhasebe-geri-al-btn mt-2"
+                            data-sozlesme-id="${sozlesmeId}"
+                            data-dokuman-no="${dokumanNo}"
+                            title="Muhasebelendi Geri Al">
+                        <i class="fas fa-undo"></i> Muhasebe Geri Al
+                    </button>
+                `);
+            }
+        }
+
+        // Lisans numarası güncelleme
+        function updateSozlesmeDurum(sozlesmeId, yeniDurumId, lisansNo = null) {
+            // İlgili satırı bul
+            const $row = $(`tr[data-sozlesme-id="${sozlesmeId}"]`);
+            if ($row.length === 0) {
+                location.reload(); // Satır bulunamazsa sayfayı yenile
+                return;
+            }
+
+            // Durum select'ini güncelle
+            const $select = $row.find('.durum-select');
+            $select.val(yeniDurumId);
+            $select.data('current-durum', yeniDurumId);
+
+            // Satır ve select CSS sınıflarını güncelle
+            updateDurumStyling($row, $select, yeniDurumId);
+
+            // Lisans no güncellenecekse güncelle
+            const $lisansCell = $row.find('td:nth-child(3)');
+            if (lisansNo === "") {
+                // Boş lisans no
+                $lisansCell.html('<span class="text-muted">-</span>');
+            } else if (lisansNo) {
+                // Yeni lisans no
+                $lisansCell.html(`<span class="badge bg-success badge-sm">${lisansNo}</span>`);
+            }
+
+            // Özel butonları güncelle
+            updateDurumButtons($row, sozlesmeId, yeniDurumId);
+        }
+
+        // Modal açıldığında formları sıfırla
+        $('#lisansIptalModal').on('show.bs.modal', function() {
+            $('#lisansIptalNedeni').val('');
+            $('#lisansIptalBtn').prop('disabled', false);
+        });
+    </script>
+}
+
+@functions {
+    public bool IsValidTwoWayTransition(int fromStateId, int toStateId)
+    {
+        if (fromStateId == toStateId) return false;
+
+        // Muhasebelendi'ye ve geri alınmasına özel kontroller
+        if (toStateId == 11 || (fromStateId == 11 && toStateId == 10)) return false;
+
+        var validTwoWayTransitions = new Dictionary<int, List<int>>
+    {
+        { 6, new List<int> { 7, 12 } },
+        { 7, new List<int> { 6, 9, 12 } },
+        { 9, new List<int> { 7, 10, 12 } },
+        { 10, new List<int> { 9, 12, 11 } },
+        { 11, new List<int> { 12, 14 } },  // 14 eklendi
+        { 12, new List<int> { 6, 7, 9, 10, 11, 14 } },  // 14 eklendi
+        { 14, new List<int> { 11, 12 } }  // Yeni eklendi
+    };
+
+        if (validTwoWayTransitions.ContainsKey(fromStateId))
+        {
+            return validTwoWayTransitions[fromStateId].Contains(toStateId);
+        }
+
+        return false;
+    }
+}

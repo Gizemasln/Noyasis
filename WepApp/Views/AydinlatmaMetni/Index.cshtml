@@ -1,0 +1,57 @@
+﻿@using WebApp.Models
+@using WepApp.Models
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutWebUI.cshtml";
+}
+<main class="main">
+
+    <!-- Page Title -->
+    <div class="page-title">
+        <div class="heading">
+            <div class="container">
+                <div class="row d-flex justify-content-center text-center">
+                    <div class="col-lg-8">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="breadcrumbs">
+            <div class="container">
+                <ol>
+                    <li><a href="/Home">Ana Sayfa</a></li>
+                    <li class="current">Genel Aydınlatma Metni</li>
+                </ol>
+            </div>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-10">
+
+                <!-- Blog Details Section -->
+                <section id="blog-details" class="blog-details section">
+                    <div class="container">
+
+                        <article class="article">
+
+                            @Html.Raw(ViewBag.Aydinlatma.Metin)
+
+                        </article>
+
+                    </div>
+                </section><!-- /Blog Details Section -->
+                <!-- Blog Author Section -->
+
+
+            </div>
+
+
+
+        </div>
+    </div>
+
+</main>

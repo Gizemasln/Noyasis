@@ -1,0 +1,468 @@
+﻿@using WepApp.Models
+@{
+    ViewData["Title"] = "Paket Grubu Detayları";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<style>
+    .card {
+        margin-top: 70px;
+        border: none;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-bottom: none;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+    .paket-list-container {
+        max-height: 70vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .paket-search {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: white;
+        padding: 12px 0;
+        border-bottom: 1px solid #e3e6f0;
+    }
+
+    .paket-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 8px 0;
+    }
+
+    .paket-item {
+        padding: 10px 15px;
+        border-bottom: 1px solid #eee;
+        transition: background-color 0.2s;
+    }
+
+        .paket-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .paket-item label {
+            margin: 0;
+            width: 100%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+    .paket-info {
+        flex: 1;
+    }
+
+        .paket-info small {
+            color: #6c757d;
+        }
+
+    .form-check-input:checked {
+        background-color: #4e73df;
+        border-color: #4e73df;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2e59d9 0%, #1a3c99 100%);
+            transform: translateY(-1px);
+        }
+
+    .summary-card {
+        background: #f8f9fa;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid #4e73df;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+        .summary-item strong {
+            color: #4e73df;
+        }
+
+    .text-success {
+        color: #28a745 !important;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #6c757d;
+    }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #dddfeb;
+            margin-bottom: 1rem;
+        }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-boxes me-2"></i>Paket Grubu İçeriği Yönet
+                </h5>
+                <span class="badge bg-light text-dark">
+                    <i class="fas fa-info-circle me-1"></i>Paket gruplarını düzenleyin
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Paket Grubu Seçin</label>
+                            <select id="grupSelect" class="form-select">
+                                <option value="">-- Lütfen bir paket grubu seçin --</option>
+                                @foreach (var grup in ViewBag.PaketGruplari)
+                                {
+                                    <option value="@grup.Id" data-license="@grup.LisansTipAdi">
+                                        @grup.Adi (@(grup.Fiyat.ToString("C")))
+                                        @if (!string.IsNullOrEmpty(grup.LisansTipAdi))
+                                        {
+                                            <span class="badge badge-license float-end">@grup.LisansTipAdi</span>
+                                        }
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="detayAlani" class="d-none">
+                    <hr>
+                    <div class="summary-card">
+                        <div class="summary-item">
+                            <span>Toplam Paket:</span>
+                            <strong id="ozetPaketSayisi">0</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Grup Fiyatı:</span>
+                            <strong id="ozetToplamFiyat" class="text-success">0 ₺</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Ortalama Eğitim Süresi:</span>
+                            <strong id="ozetOrtalamaSure">0 gün</strong>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h6 class="mb-0">
+                            <i class="fas fa-list me-2"></i>Gruptaki Paketler
+                        </h6>
+                        <button type="button" class="btn btn-primary" id="duzenleBtn">
+                            <i class="fas fa-edit me-2"></i> İçeriği Düzenle
+                        </button>
+                    </div>
+
+                    <div id="paketListesi" class="table-responsive">
+                        <table class="table table-hover table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th width="40%">Paket Adı</th>
+                                    <th width="20%">Fiyat</th>
+                                    <th width="25%">Eğitim Süresi</th>
+                                    <th width="15%">Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Düzenle Modal (YENİ TASARIM - LİSTE ŞEKLİNDE) -->
+<div class="modal fade" id="duzenleModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-edit me-2"></i>Grup İçeriği Düzenle
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="alert alert-info d-flex align-items-center mb-0 rounded-0 border-0">
+                    <i class="fas fa-info-circle me-2 fs-5"></i>
+                    <div>
+                        <strong id="modalGrupAdi"></strong> grubu için paketleri seçin
+                    </div>
+                </div>
+
+                <div class="paket-list-container">
+                    <!-- Arama Çubuğu -->
+                    <div class="paket-search px-4">
+                        <input type="text" id="paketArama" class="form-control" placeholder="Paket ara... (ad, fiyat, süre)">
+                    </div>
+
+                    <!-- Paket Listesi -->
+                    <div class="paket-list">
+                        <div id="paketCheckboxList"></div>
+                    </div>
+                </div>
+
+                <!-- Alt Bilgi -->
+                <div class="border-top bg-light px-4 py-3 d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-4">
+                        <div class="form-check mb-0">
+                            <input class="form-check-input" type="checkbox" id="selectAll">
+                            <label class="form-check-label fw-bold" for="selectAll">
+                                Tümünü Seç
+                            </label>
+                        </div>
+                        <span class="text-muted">
+                            <strong id="selectedCount">0</strong> paket seçildi
+                            <span id="totalCount" class="text-muted ms-1"></span>
+                        </span>
+                    </div>
+                    <div>
+                        <small class="text-muted">Toplam <span id="toplamPaketSayisi">0</span> paket</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>İptal
+                </button>
+                <button type="button" class="btn btn-success" id="kaydetBtn">
+                    <i class="fas fa-save me-2"></i>Değişiklikleri Kaydet
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success & Error Modal'ları aynı kaldı -->
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Başarılı</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-check-circle text-success mb-3" style="font-size: 3rem;"></i>
+                <p id="successMessage" class="mb-0"></p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Tamam</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="errorModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="fas fa-exclamation-circle me-2"></i>Hata</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <i class="fas fa-exclamation-circle text-danger mb-3" style="font-size: 3rem;"></i>
+                <p id="errorMessage" class="mb-0"></p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tamam</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        let seciliGrupId = 0;
+        let tumPaketler = [];
+        let loadingModal = null;
+
+        $(document).ready(function () {
+            $('#grupSelect').change(function () {
+                const grupId = $(this).val();
+                if (!grupId) {
+                    $('#detayAlani').addClass('d-none');
+                    return;
+                }
+                seciliGrupId = grupId;
+                $('#detayAlani').removeClass('d-none');
+                yukleDetaylar(grupId);
+            });
+
+            $('#duzenleBtn').click(function () {
+                yuklePaketler(seciliGrupId);
+                new bootstrap.Modal(document.getElementById('duzenleModal')).show();
+            });
+
+            $('#kaydetBtn').click(kaydetDegisiklikler);
+
+            $('#selectAll').change(function () {
+                const checked = $(this).is(':checked');
+                $('#paketCheckboxList input[type="checkbox"]').prop('checked', checked);
+                updateSelectedCount();
+            });
+
+            // Arama fonksiyonu
+            $('#paketArama').on('input', function () {
+                const query = $(this).val().toLowerCase().trim();
+                $('#paketCheckboxList > div').each(function () {
+                    const text = $(this).text().toLowerCase();
+                    $(this).toggle(text.includes(query));
+                });
+            });
+
+            if (TempData["Success"]) showSuccess('@TempData["Success"]');
+            if (TempData["Error"]) showError('@TempData["Error"]');
+        });
+
+        function yukleDetaylar(grupId) {
+            showLoading();
+            $.get('/AdminPaketGrupDetay/GetirDetaylar?grupId=' + grupId)
+                .done(function (data) {
+                    const tbody = $('#paketListesi tbody').empty();
+                    if (data.detaylar.length === 0) {
+                        tbody.append(`<tr><td colspan="4"><div class="empty-state"><i class="fas fa-inbox"></i><h5>Henüz paket eklenmemiş</h5><p>İçeriği düzenle butonuna tıklayarak paket ekleyebilirsiniz.</p></div></td></tr>`);
+                        guncelleOzet(0, 0, 0);
+                    } else {
+                        data.detaylar.forEach(item => {
+                            const status = item.aktif ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-secondary">Pasif</span>';
+                            tbody.append(`
+                                <tr>
+                                    <td><div class="d-flex align-items-center"><i class="fas fa-box text-primary me-3"></i><strong>${item.paketAdi}</strong></div></td>
+                                    <td class="fw-bold text-success">${formatPrice(item.fiyat)} ₺</td>
+                                    <td><span class="badge bg-info"><i class="fas fa-clock me-1"></i>${item.egitimSuresi} gün</span></td>
+                                    <td>${status}</td>
+                                </tr>
+                            `);
+                        });
+                        guncelleOzet(data.paketSayisi, data.grupFiyat, data.ortalamaSure);
+                    }
+                })
+                .fail(() => showError('Paket bilgileri yüklenirken hata oluştu.'))
+                .always(hideLoading);
+        }
+
+        function yuklePaketler(grupId) {
+            showLoading();
+            $.get('/AdminPaketGrupDetay/GetirPaketler?grupId=' + grupId)
+                .done(function (data) {
+                    tumPaketler = data;
+                    const container = $('#paketCheckboxList').empty();
+                    const grupAdi = $('#grupSelect option:selected').text().split('(')[0].trim();
+                    $('#modalGrupAdi').text(grupAdi);
+                    $('#toplamPaketSayisi, #totalCount').text(data.length + ' paket mevcut');
+
+                    if (data.length === 0) {
+                        container.append(`<div class="empty-state"><i class="fas fa-box-open"></i><h5>Paket bulunamadı</h5><p>Henüz hiç paket oluşturulmamış.</p></div>`);
+                    } else {
+                        data.forEach(item => {
+                            const checked = item.secili ? 'checked' : '';
+                            const fiyat = item.fiyat ? `<small class="text-success fw-bold">${formatPrice(item.fiyat)} ₺</small>` : '<small class="text-muted">Fiyat yok</small>';
+                            const sure = item.egitimSuresi ? ` • ${item.egitimSuresi} gün` : '';
+
+                            container.append(`
+                                <div class="paket-item">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="${item.id}" id="paket_${item.id}" ${checked}>
+                                        <label class="form-check-label" for="paket_${item.id}">
+                                            <div class="paket-info">
+                                                <strong>${item.adi}</strong><br>
+                                                ${fiyat}<span class="text-muted">${sure}</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            `);
+                        });
+                    }
+                    updateSelectedCount();
+                })
+                .fail(() => showError('Paket listesi yüklenirken hata oluştu.'))
+                .always(hideLoading);
+        }
+
+        function kaydetDegisiklikler() {
+            const seciliPaketler = $('#paketCheckboxList input:checked').map(function () { return this.value; }).get();
+
+            if (seciliPaketler.length === 0) {
+                showError('Lütfen en az bir paket seçin.');
+                return;
+            }
+
+            showLoading();
+            $.post('/AdminPaketGrupDetay/Kaydet', {
+                grupId: seciliGrupId,
+                paketIds: seciliPaketler
+            })
+            .done(function (res) {
+                if (res.success) {
+                    bootstrap.Modal.getInstance($('#duzenleModal')[0]).hide();
+                    showSuccess(res.message || 'Değişiklikler başarıyla kaydedildi.');
+                    yukleDetaylar(seciliGrupId);
+                } else {
+                    showError(res.message || 'Kayıt sırasında hata oluştu.');
+                }
+            })
+            .fail(() => showError('İşlem sırasında bir hata oluştu.'))
+            .always(hideLoading);
+        }
+
+        function updateSelectedCount() {
+            const count = $('#paketCheckboxList input:checked').length;
+            $('#selectedCount').text(count);
+            const total = $('#paketCheckboxList input[type="checkbox"]').length;
+            $('#selectAll').prop('checked', count === total && total > 0);
+        }
+
+        function guncelleOzet(paketSayisi, grupFiyat, ortalamaSure) {
+            $('#ozetPaketSayisi').text(paketSayisi);
+            $('#ozetToplamFiyat').text(formatPrice(grupFiyat) + ' ₺');
+            $('#ozetOrtalamaSure').text(ortalamaSure + ' gün');
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('tr-TR').format(price || 0);
+        }
+
+        function showSuccess(msg) {
+            $('#successMessage').text(msg);
+            new bootstrap.Modal(document.getElementById('successModal')).show();
+        }
+
+        function showError(msg) {
+            $('#errorMessage').text(msg);
+            new bootstrap.Modal(document.getElementById('errorModal')).show();
+        }
+
+        function showLoading() { if (loadingModal) loadingModal.show(); }
+        function hideLoading() { if (loadingModal) { try { loadingModal.hide(); } catch(e) {} } }
+    </script>
+}

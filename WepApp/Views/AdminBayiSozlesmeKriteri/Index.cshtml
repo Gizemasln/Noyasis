@@ -1,0 +1,257 @@
+﻿@using WepApp.Models
+@{
+    ViewData["Title"] = "Bayi Sözleşme Kriterleri Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<style>
+    .table-actions {
+        white-space: nowrap;
+        width: 120px;
+    }
+
+    .card {
+        margin-top: 70px;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>Bayi Sözleşme Kriterleri</span>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni Kriter Ekle
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th width="50">#</th>
+                                <th>Kriter Adı</th>
+                                <th>Açıklama</th>
+                                <th>Oran (%)</th>
+                                <th>Eklenme Tarihi</th>
+                                <th width="120" class="text-center">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.Kriterler != null && ((List<BayiSozlesmeKriteri>)ViewBag.Kriterler).Count > 0)
+                            {
+                                var counter = 1;
+                                foreach (var item in (List<BayiSozlesmeKriteri>)ViewBag.Kriterler)
+                                {
+                                    <tr>
+                                        <td>@counter</td>
+                                        <td><strong>@item.Adi</strong></td>
+                                        <td>@(string.IsNullOrEmpty(item.Aciklama) ? "-" : item.Aciklama)</td>
+                                        <td>%@item.Oran.ToString("N2")</td>
+                                        <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td class="table-actions text-center">
+                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id, '@Html.Raw(item.Adi)', '@Html.Raw(item.Aciklama ?? "")', '@Html.Raw(item.UzunAciklama ?? "")', '@Html.Raw(item.Konu ?? "")', @item.Oran)">
+                                                <i class="fas fa-edit">Düzenle</i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@Html.Raw(item.Adi)')">
+                                                <i class="fas fa-trash">Sil</i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center py-5">
+                                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">Henüz kriter eklenmemiş.</p>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                                            İlk Kriteri Ekle
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ekle Modal -->
+<div class="modal fade" id="ekleModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            @using (Html.BeginForm("Ekle", "AdminBayiSozlesmeKriteri", FormMethod.Post, new { id = "ekleForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Bayi Sözleşme Kriteri Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Kriter Adı *</label>
+                            <input type="text" class="form-control" name="Adi" required maxlength="200" placeholder="Örn: Ciro Hedefi" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Oran (%)</label>
+                            <input type="number" step="0.01" class="form-control" name="Oran" value="0" min="0" max="100" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kısa Açıklama</label>
+                        <input type="text" class="form-control" name="Aciklama" maxlength="500" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Konu / Madde</label>
+                        <input type="text" class="form-control" name="Konu" maxlength="300" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Uzun Açıklama (Opsiyonel)</label>
+                        <textarea class="form-control" name="UzunAciklama" rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Düzenle Modal -->
+<div class="modal fade" id="duzenleModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form action="@Url.Action("Guncelle", "AdminBayiSozlesmeKriteri")" method="post" id="duzenleForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editId" name="Id" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Kriter Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Kriter Adı *</label>
+                            <input type="text" class="form-control" id="editAdi" name="Adi" required maxlength="200" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Oran (%)</label>
+                            <input type="number" step="0.01" class="form-control" id="editOran" name="Oran" min="0" max="10000" />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kısa Açıklama</label>
+                        <input type="text" class="form-control" id="editAciklama" name="Aciklama" maxlength="500" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Konu / Madde</label>
+                        <input type="text" class="form-control" id="editKonu" name="Konu" maxlength="300" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Uzun Açıklama</label>
+                        <textarea class="form-control" id="editUzunAciklama" name="UzunAciklama" rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Sil Modal -->
+<div class="modal fade" id="silModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Sil", "AdminBayiSozlesmeKriteri")" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="silId" name="Id" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Silme Onayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>"<span id="silAdi"></span>"</strong> kriterini silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><small>Bu işlem geri alınamaz.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        function duzenleGetir(id, adi, aciklama, uzunAciklama, konu, oran) {
+            $('#editId').val(id);
+            $('#editAdi').val(adi);
+            $('#editAciklama').val(aciklama);
+            $('#editUzunAciklama').val(uzunAciklama);
+            $('#editKonu').val(konu);
+            $('#editOran').val(oran);
+            new bootstrap.Modal('#duzenleModal').show();
+        }
+
+        function silOnay(id, adi) {
+            $('#silId').val(id);
+            $('#silAdi').text(adi);
+            new bootstrap.Modal('#silModal').show();
+        }
+
+        // Form validasyon + modal temizleme + alert kapatma
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('form').forEach(f => {
+                f.addEventListener('submit', e => {
+                    const adi = f.querySelector('[name="Adi"]');
+                    if (adi && !adi.value.trim()) {
+                        e.preventDefault();
+                        alert('Kriter adı zorunludur.');
+                        adi.focus();
+                    }
+                });
+            });
+
+            ['ekleModal', 'duzenleModal'].forEach(id => {
+                const modal = document.getElementById(id);
+                if (modal) modal.addEventListener('hidden.bs.modal', () => modal.querySelector('form')?.reset());
+            });
+
+            setTimeout(() => document.querySelectorAll('.alert').forEach(a => bootstrap.Alert.getOrCreateInstance(a).close()), 5000);
+        });
+    </script>
+}

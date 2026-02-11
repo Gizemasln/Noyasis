@@ -1,0 +1,9 @@
+D:\GİTHUBPROJELER\Noyasis\WinAppReport\bin\Release\WinAppReport.exe.config
+D:\GİTHUBPROJELER\Noyasis\WinAppReport\bin\Release\WinAppReport.exe
+D:\GİTHUBPROJELER\Noyasis\WinAppReport\bin\Release\WinAppReport.pdb
+D:\GİTHUBPROJELER\Noyasis\WinAppReport\obj\Release\WinAppReport.csproj.AssemblyReference.cache
+D:\GİTHUBPROJELER\Noyasis\WinAppReport\obj\Release\WinAppReport.Properties.Resources.resources
+D:\GİTHUBPROJELER\Noyasis\WinAppReport\obj\Release\WinAppReport.csproj.GenerateResource.cache
+D:\GİTHUBPROJELER\Noyasis\WinAppReport\obj\Release\WinAppReport.csproj.CoreCompileInputs.cache
+D:\GİTHUBPROJELER\Noyasis\WinAppReport\obj\Release\WinAppReport.exe
+D:\GİTHUBPROJELER\Noyasis\WinAppReport\obj\Release\WinAppReport.pdb

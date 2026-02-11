@@ -1,0 +1,220 @@
+﻿@using WepApp.Models
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>@ViewBag.Iletisim.Adi</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+
+    <!-- Favicons -->
+    <link href="/WebUITheme/assets/img/favicon.ico" rel="icon">
+    <link href="/WebUITheme/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="/WebUITheme/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/WebUITheme/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="/WebUITheme/assets/vendor/aos/aos.css" rel="stylesheet">
+    <link href="/WebUITheme/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="/WebUITheme/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link href="/WebUITheme/assets/css/main.css" rel="stylesheet">
+
+    <!-- =======================================================
+    * Template Name: FlexStart
+    * Template URL: https://bootstrapmade.com/flexstart-bootstrap-startup-template/
+    * Updated: Nov 01 2024 with Bootstrap v5.3.3
+    * Author: BootstrapMade.com
+    * License: https://bootstrapmade.com/license/
+    ======================================================== -->
+</head>
+
+<body class="index-page">
+
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+            <a href="/Home" class="logo d-flex align-items-center me-auto">
+                <!-- Uncomment the line below if you also wish to use an image logo -->
+                <img src="/WebUITheme/assets/img/logo.png" alt="">
+                <h1 class="sitename">@ViewBag.Iletisim.Adi</h1>
+            </a>
+
+            <nav id="navmenu" class="navmenu">
+                <ul>
+                    <li><a href="/Home" class="active">Ana Sayfa<br></a></li>
+                    <li><a href="#about">Hakkımızda</a></li>
+                    <li class="listing-dropdown">
+                        <a href="#"><span>Ürünler</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                        <ul>
+                            @if (ViewBag.Kategoriler != null)
+                            {
+                                int columnCount = 0;
+                                foreach (var kategori in ViewBag.Kategoriler)
+                                {
+                                    var kategoriUrunleri = ((List<Urun>)ViewBag.Urunler)?.Where(u => u.KategoriId == kategori.Id).OrderBy(u => u.Adi).Take(15).ToList() ?? new List<Urun>();
+
+                                    <li>
+                                        <!-- Kategori başlığı her zaman gösterilecek -->
+                                        <strong style="color:#FF6B01;">@kategori.Adi</strong>
+
+                                        @if (kategoriUrunleri.Any())
+                                        {
+                                            <!-- Ürünler varsa listele -->
+                                            @foreach (var urun in kategoriUrunleri)
+                                            {
+                                                <a href="/UrunDetay/Index/@urun.Id" style="display: block; padding: 2px 0; color:#4C5EF2;"> <span style="color: #888;">•</span>@urun.Adi</a>
+                                            }
+
+                                            @if (kategoriUrunleri.Count == 15)
+                                            {
+                                                <a href="/Urun/Liste?kategoriId=@kategori.Id" style="display: block; padding: 2px 0; font-style: italic;">Daha Fazla...</a>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <!-- Ürün yoksa mesaj göster -->
+                                        }
+                                    </li>
+
+                                    columnCount++;
+                                    if (columnCount % 5 == 0)
+                                    {
+                                        // İsteğe bağlı: Her 5 kategori sonrası stil veya boşluk ekleyebilirsiniz
+                                    }
+                                }
+                            }
+                        </ul>
+                    </li>
+
+                    <li><a href="/Lokasyonlarimiz">Lokasyonlarımız</a></li>
+                    <li><a href="/InsanKaynaklari">İnsan Kaynakları</a></li>
+                    <li><a href="/KVKK">KVKK</a></li>
+                    <li><a href="/AydinlatmaMetni">Genel Aydınlatma Metni</a></li>
+             
+
+                    <li><a href="#contact">İletişim</a></li>
+                </ul>
+                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            </nav>
+
+            <a class="btn-getstarted flex-md-shrink-0" href="/Login">Giriş Yap</a>
+
+        </div>
+    </header>
+
+ 
+    @RenderBody();
+    <footer id="footer" class="footer">
+
+        <div class="footer-newsletter">
+            <div class="container">
+                <div class="row justify-content-center text-center">
+                    <div class="col-lg-6">
+                        <h4>
+                            Bültenimize Katılın
+                        </h4>
+                        <p>
+                            Haber bültenimize abone olun ve ürünlerimiz ve hizmetlerimizle ilgili en son haberleri alın!
+
+                        </p>
+                        <form action="forms/newsletter.php" method="post" class="php-email-form">
+                            <div class="newsletter-form"><input type="email" name="email"><input type="submit" value="Abone ol"></div>
+                            <div class="loading">Yükleniyor</div>
+                            <div class="error-message"></div>
+                            <div class="sent-message">Abonelik talebiniz gönderildi. Teşekkür ederiz!</div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container footer-top">
+            <div class="row gy-4">
+                <div class="col-lg-4 col-md-6 footer-about">
+                    <a href="/Home" class="d-flex align-items-center">
+                        <span class="sitename">@ViewBag.Iletisim.Adi</span>
+                    </a>
+                    <div class="footer-contact pt-3">
+                        <p>@ViewBag.Iletisim.Adres</p>
+                        <p class="mt-3"><strong>Telefon:</strong> <span>@ViewBag.Iletisim.Telefon1</span></p>
+                        <p><strong>Email:</strong> <span>@ViewBag.Iletisim.Email1</span></p>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-3 footer-links">
+                    <h4>Faydalı Bağlantılar</h4>
+                    <ul>
+                        <li><i class="bi bi-chevron-right"></i> <a href="/Home">Ana Sayfa</a></li>
+                        <li><i class="bi bi-chevron-right"></i> <a href="/About">Hakkımızda</a></li>
+                        <li><i class="bi bi-chevron-right"></i> <a href="/Services">Servislerimiz</a></li>
+                        <li><i class="bi bi-chevron-right"></i> <a href="/Home/Login">Kurumsal</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-3 footer-links">
+                    <h4>Servislerimiz</h4>
+                    <ul>
+                        <li><i class="bi bi-chevron-right"></i> <a href="#">Web Design</a></li>
+                        <li><i class="bi bi-chevron-right"></i> <a href="#">Web Development</a></li>
+                        <li><i class="bi bi-chevron-right"></i> <a href="#">Product Management</a></li>
+                        <li><i class="bi bi-chevron-right"></i> <a href="#">Marketing</a></li>
+                      
+                    </ul>
+                </div>
+
+                <div class="col-lg-4 col-md-12">
+                    <h4>Bizi Takip Et!</h4>
+              
+                    <div class="social-links d-flex">
+                        <a href="@ViewBag.Iletisim.Twitter"><i class="bi bi-twitter-x"></i></a>
+                        <a href="@ViewBag.Iletisim.Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="@ViewBag.Iletisim.Instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="@ViewBag.Iletisim.Linkedin"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="container copyright text-center mt-4">
+            <p>© <span>Copyright</span> <strong class="px-1 sitename">@ViewBag.Ilet</strong> <span>All Rights Reserved</span></p>
+            <div class="credits">
+                <!-- All the links in the footer should remain intact. -->
+                <!-- You can delete the links only if you've purchased the pro version. -->
+                <!-- Licensing information: https://bootstrapmade.com/license/ -->
+                <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+                Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> Distributed by <a href=“https://themewagon.com>SpeedSoft
+            </div>
+        </div>
+
+    </footer>
+
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Vendor JS Files -->
+    <script src="/WebUITheme/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/WebUITheme/assets/vendor/php-email-form/validate.js"></script>
+    <script src="/WebUITheme/assets/vendor/aos/aos.js"></script>
+    <script src="/WebUITheme/assets/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="/WebUITheme/assets/vendor/purecounter/purecounter_vanilla.js"></script>
+    <script src="/WebUITheme/assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+    <script src="/WebUITheme/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+    <script src="/WebUITheme/assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+    <!-- Main JS File -->
+    <script src="/WebUITheme/assets/js/main.js"></script>
+    @RenderSection("Script", false)
+
+</body>
+
+</html>

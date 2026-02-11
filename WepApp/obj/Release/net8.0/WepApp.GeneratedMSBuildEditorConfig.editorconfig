@@ -1,0 +1,289 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = WepApp
+build_property.RootNamespace = WepApp
+build_property.ProjectDir = D:\GİTHUBPROJELER\Noyasis\WepApp\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = D:\GİTHUBPROJELER\Noyasis\WepApp
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminAnaSayfaBannerResim/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5BbmFTYXlmYUJhbm5lclJlc2ltXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminAnaSayfa/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5BbmFTYXlmYVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminARGEDurum/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5BUkdFRHVydW1cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminArgeHata/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5BcmdlSGF0YVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminBayiDuyuru/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5CYXlpRHV5dXJ1XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminBayiSozlesmeKriteri/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5CYXlpU296bGVzbWVLcml0ZXJpXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminBayiSozlesme/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5CYXlpU296bGVzbWVcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminBayi/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5CYXlpXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminBirim/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5CaXJpbVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminDepartman/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5EZXBhcnRtYW5cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminDuyuru/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5EdXl1cnVcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminEntegrator/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5FbnRlZ3JhdG9yXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminGenelAydinlatma/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5HZW5lbEF5ZGlubGF0bWFcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminHakkimizdaBilgileri/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5IYWtraW1pemRhQmlsZ2lsZXJpXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminHakkimizdaFotograf/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5IYWtraW1pemRhRm90b2dyYWZcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminIK/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5JS1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminIletisimBilgileri/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5JbGV0aXNpbUJpbGdpbGVyaVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminIstekOneriDurum/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5Jc3Rla09uZXJpRHVydW1cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminIstekOneri/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5Jc3Rla09uZXJpXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminKampanya/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5LYW1wYW55YVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminKategori/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5LYXRlZ29yaVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminKDV/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5LRFZcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminKullanicilar/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5LdWxsYW5pY2lsYXJcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminKullanici/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5LdWxsYW5pY2lcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminKVKK/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5LVktLXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminLisansDurumu/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5MaXNhbnNEdXJ1bXVcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminLisansTip/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5MaXNhbnNUaXBcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminLokasyon/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5Mb2thc3lvblxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminMakale/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5NYWthbGVcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminMenuIzin/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5NZW51SXppblxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminMusteriSozlesme/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5NdXN0ZXJpU296bGVzbWVcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminMusteriTipi/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5NdXN0ZXJpVGlwaVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminMusteri/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5NdXN0ZXJpXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminNedenler/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5OZWRlbmxlclxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminNeredenDuydu/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5OZXJlZGVuRHV5ZHVcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminPaketBaglama/Baglama.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5QYWtldEJhZ2xhbWFcQmFnbGFtYS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminPaketBaglama/BaglantiDetay.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5QYWtldEJhZ2xhbWFcQmFnbGFudGlEZXRheS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminPaketBaglama/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5QYWtldEJhZ2xhbWFcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminPaketGrupDetay/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5QYWtldEdydXBEZXRheVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminPaketGrup/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5QYWtldEdydXBcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminPaket/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5QYWtldFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminSertifika/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5TZXJ0aWZpa2FcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminSozlesmeDurumu/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5Tb3psZXNtZUR1cnVtdVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminSSS/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5TU1NcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminTeklifDurum/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5UZWtsaWZEdXJ1bVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminTeklifler/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5UZWtsaWZsZXJcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminTeklifVer/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5UZWtsaWZWZXJcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminTeklif/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5UZWtsaWZcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminUrunGaleri/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5VcnVuR2FsZXJpXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminUrun/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5VcnVuXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminUYB/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5VWUJcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AdminYetki/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5ZZXRraVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/Arge/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJnZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/AydinlatmaMetni/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXlkaW5sYXRtYU1ldG5pXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/Home/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/InsanKaynaklari/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW5zYW5LYXluYWtsYXJpXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/IstekOneri/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXN0ZWtPbmVyaVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/KVKK/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS1ZLS1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/Login/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/Lokasyonlarimiz/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9rYXN5b25sYXJpbWl6XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/MakaleDetay/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFrYWxlRGV0YXlcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/Shared/_LayoutWebAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRXZWJBZG1pbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/Shared/_LayoutWebUI.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRXZWJVSS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/GİTHUBPROJELER/Noyasis/WepApp/Views/UrunDetay/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXJ1bkRldGF5XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 

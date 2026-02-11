@@ -1,0 +1,536 @@
+﻿@using WepApp.Models
+@{
+    ViewData["Title"] = "Paket Bağlama Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+@{
+    var paketler = ViewBag.Paketler as List<Paket>;
+    var bagliPaketSayilari = ViewBag.BagliPaketSayilari as Dictionary<int, int>;
+    var caprazBaglantiVarMi = ViewBag.CaprazBaglantiVarMi as Dictionary<int, bool>;
+}
+
+<style>
+    .paket-baglama-container {
+        margin-top: 70px;
+    }
+
+    .paket-card {
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+        .paket-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+    .paket-card-header {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 15px;
+        border-bottom: 1px solid #dee2e6;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .paket-adi {
+        font-weight: bold;
+        color: #2c3e50;
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+    }
+
+    .paket-kodu {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+    }
+
+    .paket-card-body {
+        padding: 15px;
+    }
+
+    .paket-bilgi-item {
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+    }
+
+    .paket-bilgi-label {
+        font-weight: 600;
+        color: #34495e;
+    }
+
+    .paket-bilgi-value {
+        color: #7f8c8d;
+    }
+
+    .paket-actions {
+        padding: 15px;
+        border-top: 1px solid #dee2e6;
+        background-color: #f8f9fa;
+        border-radius: 0 0 10px 10px;
+    }
+
+    .bagli-paket-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+
+    .bagli-paket-count {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .capraz-baglanti {
+        background-color: #e74c3c;
+        color: white;
+        animation: blink 2s infinite;
+    }
+
+    .no-baglanti {
+        background-color: #95a5a6;
+        color: white;
+    }
+
+    @@keyframes blink {
+        0%, 100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.7;
+        }
+    }
+
+    .search-container {
+        margin-bottom: 30px;
+    }
+
+    .filter-container {
+        margin-bottom: 20px;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
+
+    .filter-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        min-width: 120px;
+    }
+
+    .filter-active {
+        background-color: #3498db;
+        color: white;
+        border-color: #3498db;
+    }
+
+    .filter-badge {
+        display: inline-block;
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        margin-left: 5px;
+        background-color: #2c3e50;
+        color: white;
+    }
+
+    .no-paket {
+        text-align: center;
+        padding: 50px 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        border: 2px dashed #dee2e6;
+    }
+
+    .paket-count-info {
+        background-color: #f8f9fa;
+        padding: 10px 15px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        border-left: 4px solid #3498db;
+    }
+</style>
+
+<div class="paket-baglama-container">
+    <div class="row">
+        <div class="col-md-12">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title d-flex justify-content-between align-items-center">
+                        <span>Paket Bağlama Yönetimi</span>
+                        <div>
+                            <button type="button" class="btn btn-info" onclick="yenile()">
+                                <i class="fas fa-sync-alt"></i> Yenile
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Filtreleme -->
+                    <div class="filter-container">
+                        <h6 class="mb-3">Paket Filtreleme</h6>
+                        <div class="filter-buttons">
+                            <button type="button" class="btn btn-outline-primary filter-btn filter-active" data-filter="all">
+                                <i class="fas fa-th"></i> Tümü
+                                <span class="filter-badge" id="count-all">@(paketler?.Count ?? 0)</span>
+                            </button>
+                            <button type="button" class="btn btn-outline-success filter-btn" data-filter="bagli">
+                                <i class="fas fa-link"></i> Bağlantısı Olanlar
+                                <span class="filter-badge" id="count-bagli">0</span>
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary filter-btn" data-filter="bagisiz">
+                                <i class="fas fa-unlink"></i> Bağlantısızlar
+                                <span class="filter-badge" id="count-bagisiz">0</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Arama -->
+                    <div class="search-container">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" id="searchInput" class="form-control"
+                                   placeholder="Paket adı, kodu, lisans tipi vb. arayın...">
+                            <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                                <i class="fas fa-times"></i> Temizle
+                            </button>
+                        </div>
+                    </div>
+
+                    @if (paketler != null && paketler.Any())
+                    {
+                        <div class="paket-count-info">
+                            Toplam <strong>@paketler.Count</strong> paket bulunuyor.
+                            <span id="filter-info"></span>
+                        </div>
+
+                        <div class="row" id="paketGrid">
+                            @foreach (var paket in paketler)
+                            {
+                                var bagliSayi = bagliPaketSayilari != null && bagliPaketSayilari.ContainsKey(paket.Id)
+                                ? bagliPaketSayilari[paket.Id] : 0;
+                                var caprazVar = caprazBaglantiVarMi != null && caprazBaglantiVarMi.ContainsKey(paket.Id)
+                                ? caprazBaglantiVarMi[paket.Id] : false;
+
+                                <div class="col-md-4 mb-4 paket-item"
+                                     data-search="@(paket.Adi?.ToLower()) @(paket.ModulKodu?.ToLower()) @(paket.LisansTip?.Adi?.ToLower())"
+                                     data-baglanti-sayisi="@bagliSayi">
+                                    <div class="paket-card">
+                                        <div class="paket-card-header">
+                                            <div class="paket-adi">@paket.Adi</div>
+                                            <div class="paket-kodu">@(paket.ModulKodu ?? "Kod Yok")</div>
+                                        </div>
+                                        <div class="paket-card-body">
+                                            <div class="paket-bilgi-item">
+                                                <span class="paket-bilgi-label">Lisans Tipi:</span>
+                                                <span class="paket-bilgi-value">@(paket.LisansTip?.Adi ?? "-")</span>
+                                            </div>
+                                            <div class="paket-bilgi-item">
+                                                <span class="paket-bilgi-label">Birim:</span>
+                                                <span class="paket-bilgi-value">@(paket.Birim?.Adi ?? "-")</span>
+                                            </div>
+                                            <div class="paket-bilgi-item">
+                                                <span class="paket-bilgi-label">Fiyat:</span>
+                                                <span class="paket-bilgi-value">@paket.Fiyat?.ToString("C")</span>
+                                            </div>
+                                            <div class="paket-bilgi-item">
+                                                <span class="paket-bilgi-label">Durum:</span>
+                                                <span class="badge @(paket.Aktif == 1 ? "bg-success" : "bg-secondary")">
+                                                    @(paket.Aktif == 1 ? "Aktif" : "Pasif")
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="paket-actions">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <div>
+                                                    @if (bagliSayi > 0)
+                                                    {
+                                                        <span class="bagli-paket-badge bagli-paket-count">
+                                                            <i class="fas fa-link"></i> @bagliSayi Bağlantı
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="bagli-paket-badge no-baglanti">
+                                                            <i class="fas fa-unlink"></i> Bağlantı Yok
+                                                        </span>
+                                                    }
+                                                    @if (caprazVar)
+                                                    {
+                                                        <span class="bagli-paket-badge capraz-baglanti">
+                                                            <i class="fas fa-exclamation-triangle"></i> Çapraz Bağlantı
+                                                        </span>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button type="button" class="btn btn-primary btn-sm flex-fill"
+                                                        onclick="baglamaYap(@paket.Id)">
+                                                    <i class="fas fa-link"></i> Bağlama Yap
+                                                </button>
+                                                <button type="button" class="btn btn-info btn-sm"
+                                                        onclick="baglantiDetay(@paket.Id)">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </button>
+                                                @if (caprazVar)
+                                                {
+                                                    <button type="button" class="btn btn-warning btn-sm"
+                                                            onclick="caprazTemizle(@paket.Id, '@paket.Adi')">
+                                                        <i class="fas fa-broom"></i>
+                                                    </button>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="no-paket">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">Henüz paket bulunmuyor</h5>
+                            <p class="text-muted">Önce paket eklemelisiniz.</p>
+                            <a href="/AdminPaket" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Paket Ekle
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modaller -->
+<!-- Çapraz Bağlantı Temizle Modal -->
+<div class="modal fade" id="caprazTemizleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Çapraz Bağlantıları Temizle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>"<span id="caprazPaketAdi"></span>"</strong> paketindeki çapraz bağlantıları temizlemek istediğinizden emin misiniz?</p>
+                <p class="text-warning">
+                    <i class="fas fa-exclamation-triangle"></i> Çapraz bağlantılar (A↔B şeklinde) sistem tutarlılığını bozabilir.
+                </p>
+                <p class="text-muted small">Sadece çift yönlü bağlantılar temizlenecektir.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-warning" onclick="caprazTemizleOnay()">Temizle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        // Global değişkenler
+        let currentFilter = 'all';
+
+        // Sayfa yüklendiğinde
+        $(function() {
+            initSearch();
+            initFilters();
+            calculateCounts();
+            updateFilterInfo();
+
+            // Alert'leri otomatik kapat
+            setTimeout(() => {
+                $('.alert').fadeOut();
+            }, 5000);
+        });
+
+        // Arama fonksiyonu
+        function initSearch() {
+            const searchInput = $('#searchInput');
+            const clearButton = $('#clearSearch');
+
+            function performSearch() {
+                const term = searchInput.val().toLowerCase().trim();
+                applyFilters(term);
+            }
+
+            searchInput.on('input', performSearch);
+            clearButton.on('click', function() {
+                searchInput.val('');
+                performSearch();
+                searchInput.focus();
+            });
+        }
+
+        // Filtreleme fonksiyonu
+        function initFilters() {
+            $('.filter-btn').on('click', function() {
+                // Tüm filtre butonlarından aktif class'ını kaldır
+                $('.filter-btn').removeClass('filter-active');
+                // Tıklanan butona aktif class'ını ekle
+                $(this).addClass('filter-active');
+
+                currentFilter = $(this).data('filter');
+                applyFilters();
+                updateFilterInfo();
+            });
+        }
+
+        // Filtreleri uygula
+        function applyFilters(searchTerm = '') {
+            const paketItems = $('.paket-item');
+            let visibleCount = 0;
+
+            paketItems.each(function() {
+                const $item = $(this);
+                const searchData = $item.data('search') || '';
+                const baglantiSayisi = parseInt($item.data('baglanti-sayisi'));
+
+                let shouldShow = true;
+
+                // Arama filtresi
+                if (searchTerm && !searchData.includes(searchTerm)) {
+                    shouldShow = false;
+                }
+
+                // Ana filtreler
+                if (shouldShow) {
+                    switch (currentFilter) {
+                        case 'bagli':
+                            shouldShow = baglantiSayisi > 0;
+                            break;
+                        case 'bagisiz':
+                            shouldShow = baglantiSayisi === 0;
+                            break;
+                        case 'all':
+                        default:
+                            // Tümü - herhangi bir ek filtre yok
+                            break;
+                    }
+                }
+
+                if (shouldShow) {
+                    $item.show();
+                    visibleCount++;
+                } else {
+                    $item.hide();
+                }
+            });
+
+            // Görünen paket sayısını güncelle
+            $('#filter-info').html(`- <strong>${visibleCount}</strong> paket görüntüleniyor`);
+        }
+
+        // Sayıları hesapla
+        function calculateCounts() {
+            const paketItems = $('.paket-item');
+            let bagliCount = 0;
+            let bagisizCount = 0;
+
+            paketItems.each(function() {
+                const baglantiSayisi = parseInt($(this).data('baglanti-sayisi'));
+
+                if (baglantiSayisi > 0) bagliCount++;
+                if (baglantiSayisi === 0) bagisizCount++;
+            });
+
+            $('#count-all').text(paketItems.length);
+            $('#count-bagli').text(bagliCount);
+            $('#count-bagisiz').text(bagisizCount);
+        }
+
+        // Filtre bilgisini güncelle
+        function updateFilterInfo() {
+            let filterText = '';
+            switch (currentFilter) {
+                case 'bagli':
+                    filterText = 'Bağlantısı Olan Paketler';
+                    break;
+                case 'bagisiz':
+                    filterText = 'Bağlantısız Paketler';
+                    break;
+                default:
+                    filterText = 'Tüm Paketler';
+                    break;
+            }
+
+            $('.paket-count-info').prepend(`<span class="badge bg-primary me-2">${filterText}</span>`);
+        }
+
+        // Bağlama sayfasına yönlendir
+        function baglamaYap(paketId) {
+            window.location.href = '/AdminPaketBaglama/Baglama/' + paketId;
+        }
+
+        // Bağlantı detay sayfasına yönlendir
+        function baglantiDetay(paketId) {
+            window.location.href = '/AdminPaketBaglama/BaglantiDetay?paketId=' + paketId;
+        }
+
+        // Çapraz bağlantı temizle
+        let caprazTemizlePaketId = null;
+        function caprazTemizle(paketId, paketAdi) {
+            caprazTemizlePaketId = paketId;
+            $('#caprazPaketAdi').text(paketAdi);
+            new bootstrap.Modal('#caprazTemizleModal').show();
+        }
+
+        function caprazTemizleOnay() {
+            if (!caprazTemizlePaketId) return;
+
+            $.post('/AdminPaketBaglama/CaprazBaglantilariTemizle', {
+                paketId: caprazTemizlePaketId
+            }, function(response) {
+                if (response.success) {
+                    uyariGoster(response.message);
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    uyariGoster(response.message);
+                }
+            }).fail(function() {
+                uyariGoster('İşlem sırasında hata oluştu.');
+            });
+
+            $('#caprazTemizleModal').modal('hide');
+        }
+
+        // Yenile
+        function yenile() {
+            location.reload();
+        }
+
+        // Uyarı göster
+        function uyariGoster(mesaj) {
+            alert(mesaj);
+        }
+    </script>
+}

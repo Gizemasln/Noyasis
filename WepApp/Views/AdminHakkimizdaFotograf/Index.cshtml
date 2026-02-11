@@ -1,0 +1,157 @@
+﻿@{
+    ViewData["Title"] = "Hakkımızda Fotoğraf Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- Başarı/Hata Mesajları -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- EKLE BUTONU HER ZAMAN GÖRÜNÜR OLMASI İÇİN BAĞIMSIZ YERLEŞTİRİLDİ -->
+        <div class="mb-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                <i class="fas fa-plus"></i> Yeni Resim Ekle
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>Hakkımızda Fotoğrafları</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-head-bg-primary">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Resim</th>
+                                <th scope="col">Eklenme Tarihi</th>
+                                <th scope="col">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.FotografList != null && ViewBag.FotografList.Count > 0)
+                            {
+                                var counter = 1;
+                                foreach (var item in ViewBag.FotografList)
+                                {
+                                    <tr>
+                                        <td>@counter</td>
+                                        <td>
+                                            <img src="@item.FotografKucuk" alt="Resim" style="width: 80px; height: 80px; object-fit: cover;" class="img-thumbnail">
+                                        </td>
+                                        <td>@item.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id)">
+                                                <i class="fas fa-trash"></i> 
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center">Henüz resim eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Resim Ekle</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ekle Modal -->
+<div class="modal fade" id="ekleModal" tabindex="-1" aria-labelledby="ekleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            @using (Html.BeginForm("Ekle", "AdminHakkimizdaFotograf", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ekleModalLabel">Yeni Hakkımızda Resim Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="imagefile" class="form-label">Resim Seçin (Birden fazla seçebilirsiniz)</label>
+                            <input type="file" class="form-control" id="imagefile" name="imagefile" accept="image/*" multiple>
+                            <div class="form-text">Lütfen hakkımızda resimlerini seçin. Büyük boyutlu resimler otomatik olarak küçültülecektir.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Sil Onay Modal -->
+<div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Sil","AdminHakkimizdaFotograf")" " method="post">
+                <input type="hidden" id="silId" name="Id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="silModalLabel">Silme Onayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Seçili resmi silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><small>Bu işlem geri alınamaz. Resim hem veritabanından hem de sunucudan silinecektir.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        function silOnay(id) {
+            document.getElementById('silId').value = id;
+
+            var silModal = new bootstrap.Modal(document.getElementById('silModal'));
+            silModal.show();
+        }
+
+        // Modal kapandığında formları temizle
+        document.getElementById('ekleModal').addEventListener('hidden.bs.modal', function () {
+            this.querySelector('form').reset();
+        });
+
+        // Başarı mesajlarını 5 saniye sonra otomatik kapat
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
+}

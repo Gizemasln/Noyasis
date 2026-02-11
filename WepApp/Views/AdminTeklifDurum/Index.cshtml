@@ -1,0 +1,279 @@
+﻿@using WepApp.Models
+@model List<TeklifDurum>
+@{
+    ViewData["Title"] = "Teklif Durumu Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<style>
+    .table-actions {
+        white-space: nowrap;
+        width: 140px;
+    }
+
+    .card {
+        margin-top: 70px;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    input[type=number] {
+        width: 100%;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>Teklif Durumları</span>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni Teklif Durumu Ekle
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th width="80" class="text-center">Sıra</th>
+                                <th>Teklif Durumu Adı</th>
+                                <th>Açıklama</th>
+                                <th>Eklenme Tarihi</th>
+                                <th>Son Güncelleme</th>
+                                <th width="140" class="text-center">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.TeklifDurumlari != null && ((List<TeklifDurum>)ViewBag.TeklifDurumlari).Count > 0)
+                            {
+                                var counter = 1;
+                                foreach (var item in (List<TeklifDurum>)ViewBag.TeklifDurumlari)
+                                {
+                                    <tr>
+                                        <td class="text-center"><strong>@item.Sıra</strong></td>
+                                        <td><strong>@item.Adi</strong></td>
+                                        <td>@(item.Aciklama ?? "-")</td>
+                                        <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>@item.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td class="table-actions text-center">
+                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id, '@item.Adi', '@(item.Aciklama ?? "")', @item.Sıra)">
+                                                <i class="fas fa-edit"></i> 
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.Adi')">
+                                                <i class="fas fa-trash"></i> 
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center">
+                                        <div class="py-4">
+                                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted">Henüz teklif durumu eklenmemiş.</p>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                                                İlk Teklif Durumunu Ekle
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ekle Modal -->
+<div class="modal fade" id="ekleModal" tabindex="-1" aria-labelledby="ekleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("Ekle", "AdminTeklifDurum", FormMethod.Post, new { id = "ekleForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ekleModalLabel">Yeni Teklif Durumu Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="Adi" class="form-label">Teklif Durumu Adı *</label>
+                        <input type="text" class="form-control" id="Adi" name="Adi" placeholder="Teklif durumu adını giriniz" required maxlength="100">
+                        <div class="form-text">Teklif durumu adı benzersiz olmalıdır.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Aciklama" class="form-label">Açıklama</label>
+                        <textarea class="form-control" id="Aciklama" name="Aciklama" rows="3" placeholder="Teklif durumu hakkında açıklama giriniz" maxlength="500"></textarea>
+                        <div class="form-text">Opsiyonel açıklama alanı.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Sira" class="form-label">Sıra (opsiyonel)</label>
+                        <input type="number" class="form-control" id="Sira" name="Sıra" min="1" placeholder="Boş bırakılırsa en alta eklenir">
+                        <div class="form-text">Belirtilmezse otomatik olarak listenin en altına eklenir.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Düzenle Modal -->
+<div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Guncelle","AdminTeklifDurum")" method="post" id="duzenleForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editId" name="Id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="duzenleModalLabel">Teklif Durumu Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editAdi" class="form-label">Teklif Durumu Adı *</label>
+                        <input type="text" class="form-control" id="editAdi" name="Adi" placeholder="Teklif durumu adını giriniz" required maxlength="100">
+                        <div class="form-text">Teklif durumu adı benzersiz olmalıdır.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editAciklama" class="form-label">Açıklama</label>
+                        <textarea class="form-control" id="editAciklama" name="Aciklama" rows="3" placeholder="Teklif durumu hakkında açıklama giriniz" maxlength="500"></textarea>
+                        <div class="form-text">Opsiyonel açıklama alanı.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editSira" class="form-label">Sıra *</label>
+                        <input type="number" class="form-control" id="editSira" name="Sıra" required min="1">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Sil Onay Modal -->
+<div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Sil","AdminTeklifDurum")" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="silId" name="Id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="silModalLabel">Silme Onayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>"<span id="silAdi"></span>"</strong> adlı teklif durumunu silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger">
+                        <small>Bu işlem geri alınamaz.</small>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        // Düzenle modalını doldur ve aç
+        function duzenleGetir(id, adi, aciklama, sira) {
+            $('#editId').val(id);
+            $('#editAdi').val(adi);
+            $('#editAciklama').val(aciklama);
+            $('#editSira').val(sira);
+            new bootstrap.Modal(document.getElementById('duzenleModal')).show();
+        }
+
+        // Silme onayı modalı
+        function silOnay(id, adi) {
+            $('#silId').val(id);
+            $('#silAdi').text(adi);
+            new bootstrap.Modal(document.getElementById('silModal')).show();
+        }
+
+        // Form validasyonları ve genel işlemler
+        document.addEventListener('DOMContentLoaded', function () {
+            // Adı alanı boş bırakılamasın
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    const adiInput = this.querySelector('input[name="Adi"]');
+                    if (adiInput && adiInput.value.trim().length === 0) {
+                        e.preventDefault();
+                        alert('Teklif durumu adı gereklidir.');
+                        adiInput.focus();
+                    }
+                });
+            });
+
+            // Modal kapandığında formları sıfırla
+            ['ekleModal', 'duzenleModal'].forEach(modalId => {
+                const modalEl = document.getElementById(modalId);
+                if (modalEl) {
+                    modalEl.addEventListener('hidden.bs.modal', function () {
+                        const form = this.querySelector('form');
+                        if (form) form.reset();
+                    });
+                }
+            });
+
+            // Alert mesajlarını 5 saniye sonra kapat
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+
+        // Enter tuşu ile aktif modalın submit butonuna bas
+        document.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                const activeModal = document.querySelector('.modal.show');
+                if (activeModal) {
+                    const form = activeModal.querySelector('form');
+                    if (form) {
+                        const submitBtn = form.querySelector('button[type="submit"]');
+                        if (submitBtn) submitBtn.click();
+                    }
+                }
+            }
+        });
+    </script>
+}

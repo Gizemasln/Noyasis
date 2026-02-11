@@ -1,0 +1,219 @@
+﻿@using WepApp.Models
+@{
+    ViewData["Title"] = "Lisans Durumu Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<style>
+    .table-actions {
+        white-space: nowrap;
+        width: 120px;
+    }
+
+    .card {
+        margin-top: 70px;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>Lisans Durumları</span>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni Durum Ekle
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th width="50">#</th>
+                                <th>Durum Adı</th>
+                                <th>Eklenme Tarihi</th>
+                                <th>Son Güncelleme</th>
+                                <th width="120" class="text-center">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.LisansDurumlari != null && ((List<LisansDurumu>)ViewBag.LisansDurumlari).Count > 0)
+                            {
+                                var counter = 1;
+                                foreach (var item in (List<LisansDurumu>)ViewBag.LisansDurumlari)
+                                {
+                                    <tr>
+                                        <td>@counter</td>
+                                        <td><strong>@item.Adi</strong></td>
+                                        <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>@item.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td class="table-actions text-center">
+                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id, '@Html.Raw(item.Adi)')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@Html.Raw(item.Adi)')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center py-5">
+                                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">Henüz lisans durumu eklenmemiş.</p>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                                            İlk Lisans Durumunu Ekle
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ekle Modal -->
+<div class="modal fade" id="ekleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("Ekle", "AdminLisansDurumu", FormMethod.Post, new { id = "ekleForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Lisans Durumu Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Durum Adı *</label>
+                        <input type="text" class="form-control" name="Adi" required maxlength="100" placeholder="Örn: Aktif, Pasif, Askıya Alındı, İptal Edildi" />
+                        <div class="form-text">Durum adı benzersiz olmalıdır.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Düzenle Modal -->
+<div class="modal fade" id="duzenleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Guncelle", "AdminLisansDurumu")" method="post" id="duzenleForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editId" name="Id" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Lisans Durumu Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Durum Adı *</label>
+                        <input type="text" class="form-control" id="editAdi" name="Adi" required maxlength="100" />
+                        <div class="form-text">Durum adı benzersiz olmalıdır.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Sil Modal -->
+<div class="modal fade" id="silModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Sil", "AdminLisansDurumu")" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="silId" name="Id" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Silme Onayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>"<span id="silAdi"></span>"</strong> lisans durumunu silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><small>Bu işlem geri alınamaz.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        function duzenleGetir(id, adi) {
+            $('#editId').val(id);
+            $('#editAdi').val(adi);
+            new bootstrap.Modal('#duzenleModal').show();
+        }
+
+        function silOnay(id, adi) {
+            $('#silId').val(id);
+            $('#silAdi').text(adi);
+            new bootstrap.Modal('#silModal').show();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Form boş göndermeyi engelle
+            document.querySelectorAll('form').forEach(f => {
+                f.addEventListener('submit', e => {
+                    const adi = f.querySelector('[name="Adi"]');
+                    if (adi && !adi.value.trim()) {
+                        e.preventDefault();
+                        alert('Durum adı gereklidir.');
+                        adi.focus();
+                    }
+                });
+            });
+
+            // Modal kapandığında temizle
+            ['ekleModal', 'duzenleModal'].forEach(id => {
+                const modal = document.getElementById(id);
+                if (modal) modal.addEventListener('hidden.bs.modal', () => modal.querySelector('form')?.reset());
+            });
+
+            // Alert 5 sn sonra kapansın
+            setTimeout(() => document.querySelectorAll('.alert').forEach(a => bootstrap.Alert.getOrCreateInstance(a)?.close()), 5000);
+        });
+    </script>
+}

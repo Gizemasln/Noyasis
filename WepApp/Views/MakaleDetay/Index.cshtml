@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutWebUI.cshtml";
+}
+<main class="main">
+
+    <!-- Page Title -->
+    <div class="page-title">
+        <div class="heading">
+            <div class="container">
+                <div class="row d-flex justify-content-center text-center">
+                    <div class="col-lg-8">
+                        <h1>Makale</h1>
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="breadcrumbs">
+            <div class="container">
+                <ol>
+                    <li><a href="/Home">Ana Sayfa</a></li>
+                    <li class="current">Makale </li>
+                </ol>
+            </div>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-8">
+
+                <!-- Blog Details Section -->
+                <section id="blog-details" class="blog-details section">
+                    <div class="container">
+
+                        <article class="article">
+
+                            <div class="post-img">
+                                <img src="@ViewBag.Makale.Fotograf" alt="" class="img-fluid">
+                            </div>
+
+                            <h2 class="title">@ViewBag.Makale.Baslik</h2>
+
+
+                            @Html.Raw(ViewBag.Makale.Metin)
+
+                        </article>
+
+                    </div>
+                </section>
+
+            </div>
+
+        
+
+        </div>
+    </div>
+
+</main>

@@ -1,0 +1,594 @@
+﻿@using WepApp.Models
+@{
+    ViewData["Title"] = "Paket Grubu Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<style>
+    .table-actions {
+        white-space: nowrap;
+        width: 120px;
+    }
+
+    .card {
+        margin-top: 70px;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    /* Tablo + Scrollbar */
+    .paket-table-container {
+        max-height: 460px;
+        overflow-y: auto;
+        border: 1px solid #dee2e6;
+        border-radius: 0.35rem;
+        margin-top: 10px;
+    }
+
+    .paket-table th {
+        position: sticky;
+        top: 0;
+        background-color: #f8f9fa;
+        z-index: 10;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .paket-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .paket-table .form-check {
+        margin: 0;
+        padding-left: 2.5rem;
+    }
+
+    .fiyat-bilgi {
+        background: #f8f9fa;
+        border-radius: 0.35rem;
+        padding: 15px;
+        margin-top: 15px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+        .summary-item strong {
+            color: #4e73df;
+        }
+
+    .modal-xl {
+        max-width: 1200px;
+    }
+
+    .paket-search {
+        margin-bottom: 15px;
+    }
+
+    .form-check-input:checked {
+        background-color: #4e73df;
+        border-color: #4e73df;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>Paket Grupları</span>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni Grup Ekle
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th width="50">#</th>
+                                <th>Grup Adı</th>
+                                <th>Lisans Tipi</th>
+                                <th>Paket Grup Fiyatı</th>
+                                <th>Eğitim Süresi</th>
+                                <th>İndirim (%)</th>
+                                <th width="120" class="text-center">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.PaketGruplari != null && ((List<PaketGrup>)ViewBag.PaketGruplari).Count > 0)
+                            {
+                                var counter = 1;
+                                foreach (var item in (List<PaketGrup>)ViewBag.PaketGruplari)
+                                {
+                                    <tr>
+                                        <td>@counter</td>
+                                        <td><strong>@item.Adi</strong></td>
+                                        <td>@(item.LisansTip?.Adi ?? "-")</td>
+                                        <td>@item.Fiyat.ToString("N2") ₺</td>
+                                        <td>@item.EgitimSuresi gün</td>
+                                        <td>%@item.IndOran</td>
+                                        <td class="table-actions text-center">
+                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.Adi')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center">
+                                        <div class="py-4">
+                                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted">Henüz paket grubu eklenmemiş.</p>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                                                İlk Grubu Ekle
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ekle Modal -->
+<div class="modal fade" id="ekleModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            @using (Html.BeginForm("Ekle", "AdminPaketGrup", FormMethod.Post, new { id = "ekleForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Paket Grubu Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Grup Adı *</label>
+                            <input type="text" class="form-control" name="Adi" id="ekleAdi" required maxlength="100" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Lisans Tipi *</label>
+                            <select class="form-select" name="LisansTipId" id="ekleLisansTipId" required onchange="lisansTipDegisti('ekle')">
+                                <option value="">Seçiniz</option>
+                                @foreach (var tip in ViewBag.LisansTipleri as List<LisansTip>)
+                                {
+                                    <option value="@tip.Id">@tip.Adi</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Paket Grup Fiyatı *</label>
+                            <input type="text" class="form-control" name="Fiyat" id="ekleFiyat" step="0.01" min="0" required />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Eğitim Süresi (gün) *</label>
+                            <input type="text" class="form-control decimal-mask" name="EgitimSuresiInput" id="ekleEgitimSuresi" step="0.1" min="0.1" required placeholder="Örn: 30,5" />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>İndirim Oranı (%)</label>
+                            <input type="text" class="form-control" name="IndOran" id="ekleIndOran" min="0" max="100" value="0" onchange="fiyatlariHesapla('ekle')" />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Sıra</label>
+                            <input type="text" class="form-control" name="Sira" value="0" />
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6 class="border-bottom pb-2">Paket Seçimi</h6>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Lisans tipi seçtikten sonra paketler listelenecektir.
+                            </div>
+
+                            <div class="paket-search">
+                                <input type="text" id="eklePaketArama" class="form-control" placeholder="Paket ara..." onkeyup="paketAra('ekle')">
+                            </div>
+
+                            <div class="paket-table-container">
+                                <table class="table table-hover table-bordered mb-0 paket-table">
+                                    <thead>
+                                        <tr>
+                                            <th width="50">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="ekleSelectAll" onchange="selectAllPaket('ekle')">
+                                                    <label class="form-check-label" for="ekleSelectAll"></label>
+                                                </div>
+                                            </th>
+                                            <th>Paket Adı</th>
+                                            <th>Lisans</th>
+                                            <th>Birim</th>
+                                            <th>Süre</th>
+                                            <th class="text-end">Fiyat</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="eklePaketTableBody">
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted py-4">
+                                                <i class="fas fa-box-open fa-2x mb-2"></i><br>
+                                                Lütfen önce lisans tipi seçin
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="fiyat-bilgi">
+                                <div class="summary-item">
+                                    <span>Seçili Paket Sayısı:</span>
+                                    <strong id="ekleSeciliPaketSayisi">0</strong>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Toplam Paket Değeri:</span>
+                                    <strong id="ekleToplamFiyat" class="text-success">0.00 ₺</strong>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Grup Fiyatı:</span>
+                                    <strong id="ekleGrupFiyati" class="text-primary">0.00 ₺</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Düzenle Modal -->
+<div class="modal fade" id="duzenleModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form action="@Url.Action("Guncelle","AdminPaketGrup")" method="post" id="duzenleForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="editId" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Paket Grubu Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Grup Adı *</label>
+                            <input type="text" class="form-control" name="Adi" id="editAdi" required maxlength="100" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Lisans Tipi *</label>
+                            <select class="form-select" name="LisansTipId" id="editLisansTipId" required onchange="lisansTipDegisti('edit')">
+                                <option value="">Seçiniz</option>
+                                @foreach (var tip in ViewBag.LisansTipleri as List<LisansTip>)
+                                {
+                                    <option value="@tip.Id">@tip.Adi</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Paket Grup Fiyatı *</label>
+                            <input type="text" class="form-control" name="Fiyat" id="editFiyat" step="0.01" min="0" required />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Eğitim Süresi (gün) *</label>
+                            <input type="text" class="form-control decimal-mask" name="EgitimSuresiInput" id="editEgitimSuresi" step="0.1" min="0.1" required placeholder="Örn: 30,5" />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>İndirim Oranı (%)</label>
+                            <input type="text" class="form-control" name="IndOran" id="editIndOran" min="0" max="100" onchange="fiyatlariHesapla('edit')" />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Sıra</label>
+                            <input type="text" class="form-control" name="Sira" id="editSira" />
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6 class="border-bottom pb-2">Paket Seçimi</h6>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Gruba eklemek istediğiniz paketleri seçin.
+                            </div>
+
+                            <div class="paket-search">
+                                <input type="text" id="editPaketArama" class="form-control" placeholder="Paket ara..." onkeyup="paketAra('edit')">
+                            </div>
+
+                            <div class="paket-table-container">
+                                <table class="table table-hover table-bordered mb-0 paket-table">
+                                    <thead>
+                                        <tr>
+                                            <th width="50">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="editSelectAll" onchange="selectAllPaket('edit')">
+                                                    <label class="form-check-label" for="editSelectAll"></label>
+                                                </div>
+                                            </th>
+                                            <th>Paket Adı</th>
+                                            <th>Lisans</th>
+                                            <th>Birim</th>
+                                            <th>Süre</th>
+                                            <th class="text-end">Fiyat</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="editPaketTableBody">
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted py-4">
+                                                <i class="fas fa-spinner fa-spin fa-2x mb-2"></i><br>
+                                                Paketler yükleniyor...
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="fiyat-bilgi">
+                                <div class="summary-item">
+                                    <span>Seçili Paket Sayısı:</span>
+                                    <strong id="editSeciliPaketSayisi">0</strong>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Toplam Paket Değeri:</span>
+                                    <strong id="editToplamFiyat" class="text-success">0.00 ₺</strong>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Grup Fiyatı:</span>
+                                    <strong id="editGrupFiyati" class="text-primary">0.00 ₺</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Sil Modal -->
+<div class="modal fade" id="silModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Sil","AdminPaketGrup")" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="silId" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Silme Onayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>"<span id="silAdi"></span>"</strong> grubunu silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><small>Bu işlem geri alınamaz.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        let eklePaketler = [];
+        let editPaketler = [];
+
+        function lisansTipDegisti(modalType) {
+            const lisansTipId = $(`#${modalType}LisansTipId`).val();
+            if (!lisansTipId) {
+                $(`#${modalType}PaketTableBody`).html(`<tr><td colspan="6" class="text-center text-muted py-4"><i class="fas fa-box-open fa-2x mb-2"></i><br>Lütfen lisans tipi seçin</td></tr>`);
+                return;
+            }
+
+            $(`#${modalType}PaketTableBody`).html(`
+                <tr><td colspan="6" class="text-center text-muted py-4">
+                    <i class="fas fa-spinner fa-spin fa-2x mb-2"></i><br>Paketler yükleniyor...
+                </td></tr>
+            `);
+
+            $.get(`/AdminPaketGrup/GetirPaketler?lisansTipId=${lisansTipId}`)
+                .done(function (response) {
+                    if (response.success) {
+                        if (modalType === 'ekle') eklePaketler = response.data;
+                        else editPaketler = response.data;
+                        renderPaketListesi(modalType, modalType === 'ekle' ? eklePaketler : editPaketler);
+                    } else {
+                        $(`#${modalType}PaketTableBody`).html(`<tr><td colspan="6" class="text-center text-danger">${response.message}</td></tr>`);
+                    }
+                })
+                .fail(function () {
+                    $(`#${modalType}PaketTableBody`).html(`<tr><td colspan="6" class="text-center text-danger">Paketler yüklenirken hata oluştu.</td></tr>`);
+                });
+        }
+
+        function renderPaketListesi(modalType, paketler) {
+            const tbody = $(`#${modalType}PaketTableBody`);
+            if (paketler.length === 0) {
+                tbody.html(`<tr><td colspan="6" class="text-center text-muted py-4"><i class="fas fa-box-open fa-2x mb-2"></i><br>Bu lisans tipine ait paket bulunamadı</td></tr>`);
+                $(`#${modalType}SelectAll`).prop('checked', false);
+                return;
+            }
+
+            let html = '';
+            paketler.forEach(p => {
+                const checked = (modalType === 'edit' && p.secili) ? 'checked' : '';
+                const egitimSuresi = formatDecimal(p.egitimSuresi);
+                html += `
+                    <tr>
+                        <td>
+                            <div class="form-check">
+                                <input class="form-check-input paket-checkbox" type="checkbox" name="seciliPaketler" value="${p.id}" ${checked} onchange="paketSecildi('${modalType}')">
+                            </div>
+                        </td>
+                        <td><strong>${p.adi}</strong></td>
+                        <td>${p.lisansTipAdi || '-'}</td>
+                        <td>${p.birimAdi || '-'}</td>
+                        <td>${egitimSuresi} gün</td>
+                        <td class="text-end text-success fw-bold">${formatPrice(p.fiyat)} ₺</td>
+                    </tr>`;
+            });
+            tbody.html(html);
+            paketSecildi(modalType);
+        }
+
+        function paketSecildi(modalType) {
+            const secili = $(`#${modalType}PaketTableBody input:checked`).map(function () { return this.value; }).get();
+            $(`#${modalType}SeciliPaketSayisi`).text(secili.length);
+
+            $.post('/AdminPaketGrup/HesaplaFiyat', { paketIds: secili })
+                .done(function (res) {
+                    if (res.success) {
+                        $(`#${modalType}ToplamFiyat`).text(formatPrice(res.toplamFiyat) + ' ₺');
+                        fiyatlariHesapla(modalType);
+                    }
+                });
+
+            const toplam = $(`#${modalType}PaketTableBody .paket-checkbox`).length;
+            $(`#${modalType}SelectAll`).prop('checked', secili.length === toplam && toplam > 0);
+        }
+
+        function selectAllPaket(modalType) {
+            const checked = $(`#${modalType}SelectAll`).is(':checked');
+            $(`#${modalType}PaketTableBody .paket-checkbox`).prop('checked', checked);
+            paketSecildi(modalType);
+        }
+
+        function paketAra(modalType) {
+            const query = $(`#${modalType}PaketArama`).val().toLowerCase();
+            $(`#${modalType}PaketTableBody tr`).each(function () {
+                const text = $(this).text().toLowerCase();
+                $(this).toggle(text.includes(query));
+            });
+        }
+
+        function fiyatlariHesapla(modalType) {
+            const toplamText = $(`#${modalType}ToplamFiyat`).text();
+            const toplam = parseFloat(toplamText.replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
+            const oran = parseFloat($(`#${modalType}IndOran`).val()) || 0;
+            const grupFiyati = parseFloat($(`#${modalType}Fiyat`).val()) || 0;
+
+            // Grup fiyatını göster
+            $(`#${modalType}GrupFiyati`).text(formatPrice(grupFiyati) + ' ₺');
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(price);
+        }
+
+        function formatDecimal(value) {
+            return new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 1, maximumFractionDigits: 2 }).format(value);
+        }
+
+        // Decimal mask için input event listener
+        function applyDecimalMask() {
+            $('.decimal-mask').on('input', function() {
+                let value = $(this).val().replace(/[^\d,]/g, '');
+
+                // Sadece bir virgül olmasını sağla
+                const parts = value.split(',');
+                if (parts.length > 2) {
+                    value = parts[0] + ',' + parts.slice(1).join('');
+                }
+
+                // Ondalık kısmı 2 basamakla sınırla
+                if (parts.length === 2 && parts[1].length > 2) {
+                    value = parts[0] + ',' + parts[1].substring(0, 2);
+                }
+
+                $(this).val(value);
+            });
+        }
+
+        function duzenleGetir(id) {
+            $.get('/AdminPaketGrup/Getir/' + id)
+                .done(function (data) {
+                    $('#editId').val(data.id);
+                    $('#editAdi').val(data.adi);
+                    $('#editLisansTipId').val(data.lisansTipId);
+                    $('#editFiyat').val(data.fiyat);
+
+                    // Eğitim süresini virgüllü formatla
+                    $('#editEgitimSuresi').val(formatDecimal(data.egitimSuresi));
+
+                    $('#editIndOran').val(data.indOran);
+                    $('#editSira').val(data.sira);
+
+                    lisansTipDegisti('edit');
+
+                    setTimeout(() => {
+                        if (data.seciliPaketler && data.seciliPaketler.length > 0) {
+                            data.seciliPaketler.forEach(pid => {
+                                $(`#editPaketTableBody input[value="${pid}"]`).prop('checked', true);
+                            });
+                            paketSecildi('edit');
+                        }
+                    }, 600);
+
+                    new bootstrap.Modal('#duzenleModal').show();
+                });
+        }
+
+        function silOnay(id, adi) {
+            $('#silId').val(id);
+            $('#silAdi').text(adi);
+            new bootstrap.Modal('#silModal').show();
+        }
+
+        $(document).ready(function () {
+            setTimeout(() => $('.alert').fadeOut(), 5000);
+
+            // Decimal mask uygula
+            applyDecimalMask();
+
+            // Form submit öncesi decimal değerleri düzelt
+            $('#ekleForm, #duzenleForm').submit(function() {
+                // Eğitim süresi alanlarını düzelt (virgülü noktaya çevirme artık gerekmiyor)
+                // Controller'da Türkçe kültürde parse ediliyor
+                return true;
+            });
+        });
+    </script>
+}

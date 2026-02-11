@@ -1,0 +1,1201 @@
+﻿@using WepApp.Models
+@model dynamic
+@{
+    ViewData["Title"] = "İstek & Öneri Bildirimleri";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+    var durumlar = ViewBag.DurumListesi as List<IstekOneriDurum>;
+    var bildirimler = ViewBag.IstekOneriListesi as List<IstekOneriler>;
+    var bayi = ViewBag.Bayi as Bayi;
+    var isDistributor = bayi != null && bayi.Distributor;
+}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+<style>
+    /* Ana Container */
+    .istekoner-container {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: #f8f9fa;
+        min-height: calc(100vh - 80px);
+        padding: 20px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #2e2e5d, #4a4a8a);
+        color: white;
+        padding: 15px 20px;
+    }
+
+    .table th {
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        color: #2e2e5d;
+        padding: 12px 8px;
+        font-size: 0.85rem;
+    }
+
+    .table td {
+        padding: 10px 8px;
+        vertical-align: middle;
+        font-size: 0.8rem;
+        transition: all 0.3s ease;
+    }
+
+    /* Durum badge - Başlıkta farklı renk */
+    .badge-istek {
+        background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+        color: #2e7d32;
+        border: 1px solid #a5d6a7;
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+    }
+
+    /* Satır renkleri */
+    .satir-yeni {
+        background-color: #f8f9fa !important;
+        border-left: 4px solid #6c757d;
+    }
+
+    .satir-degerlendirmede {
+        background-color: #fff8e1 !important;
+        border-left: 4px solid #ffb300;
+    }
+
+    .satir-onaylandi {
+        background-color: #d4edda !important;
+        border-left: 4px solid #28a745;
+    }
+
+    .satir-uygulandi {
+        background-color: #cce5ff !important;
+        border-left: 4px solid #007bff;
+    }
+
+    .satir-reddedildi {
+        background-color: #f8d7da !important;
+        border-left: 4px solid #dc3545;
+    }
+
+    .satir-ertelendi {
+        background-color: #fff3cd !important;
+        border-left: 4px solid #ffc107;
+    }
+
+    .satir-tamamlandi {
+        background-color: #d1ecf1 !important;
+        border-left: 4px solid #17a2b8;
+    }
+
+    .cevap-verildi {
+        background-color: #f0fff0 !important;
+        border-left: 4px solid #28a745 !important;
+    }
+
+    /* Durum select */
+    .durum-select {
+        font-size: 0.75rem;
+        padding: 5px 8px;
+        border-radius: 6px;
+        min-width: 130px;
+        cursor: pointer;
+        border: 1px solid #ced4da;
+        transition: all 0.2s;
+        font-weight: 500;
+    }
+
+    /* Durum select renkleri */
+    .durum-yeni {
+        background-color: #f8f9fa !important;
+        color: #6c757d !important;
+    }
+
+    .durum-degerlendirmede {
+        background-color: #fff8e1 !important;
+        color: #856404 !important;
+    }
+
+    .durum-onaylandi {
+        background-color: #d4edda !important;
+        color: #155724 !important;
+    }
+
+    .durum-uygulandi {
+        background-color: #cce5ff !important;
+        color: #004085 !important;
+    }
+
+    .durum-reddedildi {
+        background-color: #f8d7da !important;
+        color: #721c24 !important;
+    }
+
+    .durum-ertelendi {
+        background-color: #fff3cd !important;
+        color: #856404 !important;
+    }
+
+    .durum-tamamlandi {
+        background-color: #d1ecf1 !important;
+        color: #0c5460 !important;
+    }
+
+    /* Durum hücresi */
+    .durum-hucresi {
+        min-width: 150px;
+        max-width: 180px;
+    }
+
+    /* İçerik gösterimi */
+    .metin-kisaltma {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 250px;
+        line-height: 1.4;
+        max-height: 2.8em;
+    }
+
+    /* Boş durum */
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #dee2e6;
+    }
+
+    /* Arama */
+    .search-box {
+        max-width: 300px;
+    }
+
+    /* Butonlar */
+    .aksiyon-btn {
+        padding: 4px 8px;
+        margin: 0 2px;
+        font-size: 0.75rem;
+        border-radius: 4px;
+        transition: all 0.2s;
+    }
+
+    .aksiyon-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Cevap bilgisi */
+    .cevap-bilgi {
+        font-size: 0.75rem;
+        color: #28a745;
+        font-weight: 600;
+        margin-top: 5px;
+    }
+
+    .cevap-verildi-badge {
+        background-color: #28a745;
+        color: white;
+        font-size: 0.7rem;
+        padding: 3px 8px;
+        border-radius: 4px;
+    }
+
+    /* Modal özelleştirmeleri */
+    .modal-cevap-textarea {
+        min-height: 120px;
+        resize: vertical;
+        font-size: 0.9rem;
+    }
+
+    .modal-durum-info {
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-left: 4px solid #2e7d32;
+    }
+
+    .modal-durum-info strong {
+        color: #2e7d32;
+    }
+
+    /* Gönderen bilgisi */
+    .gonderen-info {
+        font-weight: 500;
+        color: #495057;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .metin-kisaltma {
+            max-width: 150px;
+        }
+
+        .durum-select {
+            min-width: 100px;
+        }
+        
+        .durum-hucresi {
+            min-width: 120px;
+        }
+    }
+</style>
+
+<div class="istekoner-container">
+    <div class="container-fluid">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">
+                        <i class="fas fa-lightbulb me-2 text-success"></i>İstek & Öneri Bildirimleri
+                    </h2>
+                    @if (isDistributor)
+                    {
+                        <span class="badge bg-success">
+                            <i class="fas fa-user-tie me-1"></i>Distributor Modu
+                        </span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Tüm Bildirimler</h5>
+                        <div class="search-box">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" id="bildirimArama" class="form-control" placeholder="Konu veya içerik ara...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th width="60">ID</th>
+                                        <th width="180">Konu</th>
+                                        <th width="200">İçerik</th>
+                                        <th width="150">Gönderen</th>
+                                        <th width="120">Lisans Tipi</th>
+                                        @if (isDistributor)
+                                        {
+                                            <th width="90" class="durum-hucresi">Durum</th>
+                                        }
+                                        else
+                                        {
+                                            <th width="90" class="durum-hucresi">Durum</th>
+                                        }
+                                        <th width="120">Tarih</th>
+                                        <th width="120" class="text-center">İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bildirimTablosu">
+                                    @if (bildirimler != null && bildirimler.Count > 0)
+                                    {
+                                        foreach (var bildirim in bildirimler)
+                                        {
+                                            var durumId = bildirim.IstekOneriDurumId;
+                                            var satirCss = "";
+                                            var durumCss = "";
+                                            var durumAdi = bildirim.IstekOneriDurum?.Adi ?? "Yeni";
+
+                                            // Satır CSS sınıfını belirle
+                                            switch (durumId)
+                                            {
+                                                case 1: // Yeni
+                                                    satirCss = "satir-yeni";
+                                                    durumCss = "durum-yeni";
+                                                    break;
+                                                case 2: // Değerlendirmede
+                                                    satirCss = "satir-degerlendirmede";
+                                                    durumCss = "durum-degerlendirmede";
+                                                    break;
+                                                case 3: // Onaylandı
+                                                    satirCss = "satir-onaylandi";
+                                                    durumCss = "durum-onaylandi";
+                                                    break;
+                                                case 4: // Uygulandı
+                                                    satirCss = "satir-uygulandi";
+                                                    durumCss = "durum-uygulandi";
+                                                    break;
+                                                case 5: // Reddedildi
+                                                    satirCss = "satir-reddedildi";
+                                                    durumCss = "durum-reddedildi";
+                                                    break;
+                                                case 6: // Ertelendi
+                                                    satirCss = "satir-ertelendi";
+                                                    durumCss = "durum-ertelendi";
+                                                    break;
+                                                case 7: // Tamamlandı
+                                                    satirCss = "satir-tamamlandi";
+                                                    durumCss = "durum-tamamlandi";
+                                                    break;
+                                                default:
+                                                    satirCss = "";
+                                                    durumCss = "";
+                                                    break;
+                                            }
+
+                                            // Distributor cevap verdi mi kontrolü
+                                            if (bildirim.DistributorCevapVerdiMi)
+                                            {
+                                                satirCss += " cevap-verildi";
+                                            }
+
+                                            // Gönderen bilgisini belirle
+                                            string gonderen = "";
+                                            string gonderenTip = "";
+                                            if (bildirim.BayiId != null)
+                                            {
+                                                gonderen = bildirim.Bayi?.Unvan ?? "Bayi";
+                                                gonderenTip = "Bayi";
+                                            }
+                                            else if (bildirim.MusteriId != null)
+                                            {
+                                                gonderen = bildirim.Musteri?.Ad ?? "Müşteri";
+                                                gonderenTip = "Müşteri";
+                                            }
+                                            else
+                                            {
+                                                gonderen = "Belirtilmemiş";
+                                                gonderenTip = "";
+                                            }
+
+                                            <tr data-bildirim-id="@bildirim.Id" class="@satirCss">
+
+                                                <td><small class="text-muted">#@bildirim.Id</small></td>
+
+                                                <td>
+                                                    <div class="fw-medium">@bildirim.Konu</div>
+                                                </td>
+
+                                                <td>
+                                                    <div class="metin-kisaltma" title="@bildirim.Metni">
+                                                        @if (!string.IsNullOrEmpty(bildirim.Metni))
+                                                        {
+                                                            @(bildirim.Metni.Length > 100 ? bildirim.Metni.Substring(0, 100) + "..." : bildirim.Metni)
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="text-muted">-</span>
+                                                        }
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    <div class="gonderen-info">@gonderen</div>
+                                                    @if (!string.IsNullOrEmpty(gonderenTip))
+                                                    {
+                                                        <small class="text-muted">@gonderenTip</small>
+                                                    }
+                                                </td>
+
+                                                <td>
+                                                    <span class="small">@(bildirim.LisansTip?.Adi ?? "-")</span>
+                                                </td>
+
+                                                <!-- DURUM SÜTUNU -->
+                                                @if (isDistributor)
+                                                {
+                                                    <td class="durum-hucresi">
+                                                        @if (!bildirim.DistributorCevapVerdiMi)
+                                                        {
+                                                            <select class="form-select form-select-sm durum-select @durumCss"
+                                                                    data-bildirim-id="@bildirim.Id"
+                                                                    data-current-durum="@durumId"
+                                                                    data-current-durum-adi="@durumAdi"
+                                                                    title="@durumAdi">
+
+                                                                @foreach (var d in durumlar)
+                                                                {
+                                                                    <option value="@d.Id"
+                                                                            data-durum-adi="@d.Adi"
+                                                                            @(durumId == d.Id ? "selected" : "")>
+                                                                        @d.Adi
+                                                                    </option>
+                                                                }
+                                                            </select>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div>
+                                                                <span class="cevap-verildi-badge">
+                                                                    <i class="fas fa-check-circle me-1"></i>Cevap Verildi
+                                                                </span>
+                                                                <div class="cevap-bilgi">
+                                                                    <small>@bildirim.DistributorCevapTarihi?.ToString("dd.MM.yy HH:mm")</small>
+                                                                </div>
+                                                                <button type="button" 
+                                                                        class="btn btn-sm btn-outline-info mt-1 cevap-goruntule"
+                                                                        data-bildirim-id="@bildirim.Id"
+                                                                        style="font-size: 0.7rem; padding: 2px 6px;">
+                                                                    <i class="fas fa-eye me-1"></i>Görüntüle
+                                                                </button>
+                                                            </div>
+                                                        }
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="durum-hucresi">
+                                                        @if (durumlar != null && durumlar.Count > 0)
+                                                        {
+                                                            <select class="form-select form-select-sm durum-select @durumCss"
+                                                                    data-bildirim-id="@bildirim.Id"
+                                                                    data-current-durum="@durumId"
+                                                                    title="@durumAdi">
+
+                                                                @foreach (var d in durumlar)
+                                                                {
+                                                                    <option value="@d.Id"
+                                                                            data-durum-adi="@d.Adi"
+                                                                            @(durumId == d.Id ? "selected" : "")>
+                                                                        @d.Adi
+                                                                    </option>
+                                                                }
+                                                            </select>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="small @durumCss">@durumAdi</span>
+                                                        }
+                                                    </td>
+                                                }
+
+                                                <td>
+                                                    <small class="text-muted">@bildirim.EklenmeTarihi.ToString("dd.MM.yy HH:mm")</small>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button type="button"
+                                                                class="btn btn-outline-primary btn-sm aksiyon-btn detay-goster"
+                                                                data-bildirim-id="@bildirim.Id"
+                                                                title="Detayları Gör">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button type="button"
+                                                                class="btn btn-outline-danger btn-sm aksiyon-btn sil-bildirim"
+                                                                data-bildirim-id="@bildirim.Id"
+                                                                data-konu="@bildirim.Konu"
+                                                                title="Sil">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="@(isDistributor ? 8 : 8)" class="empty-state">
+                                                <i class="fas fa-inbox fa-2x mb-2"></i>
+                                                <h5>Henüz bildirim bulunmuyor</h5>
+                                                <p>Henüz istek veya öneri bildirimi eklenmemiş.</p>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detay Modal -->
+<div class="modal fade" id="detayModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-file-alt me-2"></i>
+                    Bildirim Detayları
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detayModalIcerik">
+                <div class="text-center py-5">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Yükleniyor...</span>
+                    </div>
+                    <p class="mt-3">Bildirim detayları yükleniyor...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Kapat
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Silme Onay Modal -->
+<div class="modal fade" id="silModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Bildirim Silme
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2"><strong id="silinecekKonu"></strong> konulu bildirimi silmek istediğinizden emin misiniz?</p>
+                <p class="text-danger mb-0">
+                    <small><i class="fas fa-info-circle me-1"></i> Bu işlem geri alınamaz.</small>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>İptal
+                </button>
+                <button type="button" class="btn btn-danger" id="silBtn">
+                    <i class="fas fa-trash me-2"></i>Sil
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Distributor Cevap Modal -->
+<div class="modal fade" id="distributorCevapModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-comment-dots me-2"></i>
+                    Cevap ve Durum Güncelleme
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="distributorCevapIcerik">
+                <!-- İçerik JavaScript ile doldurulacak -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>İptal
+                </button>
+                <button type="button" class="btn btn-success" id="modalCevapKaydet">
+                    <i class="fas fa-check me-2"></i>Kaydet ve Tamamla
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Distributor Cevap Görüntüleme Modal -->
+<div class="modal fade" id="distributorCevapGoruntuleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-comment-dots me-2"></i>
+                    Distributor Cevabı
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="distributorCevapGoruntuleIcerik">
+                <!-- İçerik JavaScript ile doldurulacak -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Kapat
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            let seciliBildirimId = null;
+            let secilenDurumId = null;
+            let secilenDurumAdi = null;
+
+            // Arama fonksiyonu
+            $('#bildirimArama').on('input', function () {
+                const term = $(this).val().toLowerCase().trim();
+                $('#bildirimTablosu tr').each(function () {
+                    const $row = $(this);
+                    if ($row.find('.empty-state').length > 0) return;
+
+                    const text = $row.text().toLowerCase();
+                    $row.toggle(text.includes(term));
+                });
+            });
+
+            @if (!isDistributor)
+            {
+                <text>
+                // Normal kullanıcılar için durum değiştirme
+                $(document).on('change', '.durum-select', async function () {
+                    const $select = $(this);
+                    const bildirimId = $select.data('bildirim-id');
+                    const yeniDurumId = parseInt($select.val());
+                    const eskiDurumId = parseInt($select.data('current-durum'));
+
+                    if (yeniDurumId === eskiDurumId) {
+                        return;
+                    }
+
+                    try {
+                        const response = await $.ajax({
+                            url: '/AdminIstekOneri/DurumGuncelle',
+                            type: 'POST',
+                            data: {
+                                id: bildirimId,
+                                durumId: yeniDurumId
+                            },
+                            dataType: 'json'
+                        });
+
+                        if (response.success) {
+                            $select.data('current-durum', yeniDurumId);
+
+                            // Durum adını güncelle
+                            const durumAdi = $select.find('option:selected').data('durum-adi') || response.durumAdi;
+                            $select.attr('title', durumAdi);
+
+                            // Satır rengini güncelle
+                            const $row = $select.closest('tr');
+
+                            // Tüm satır sınıflarını temizle
+                            $row.removeClass('satir-yeni satir-degerlendirmede satir-onaylandi satir-uygulandi satir-reddedildi satir-ertelendi satir-tamamlandi');
+                            $select.removeClass('durum-yeni durum-degerlendirmede durum-onaylandi durum-uygulandi durum-reddedildi durum-ertelendi durum-tamamlandi');
+
+                            // Yeni sınıfları belirle
+                            const satirCssMap = {
+                                1: 'satir-yeni',
+                                2: 'satir-degerlendirmede',
+                                3: 'satir-onaylandi',
+                                4: 'satir-uygulandi',
+                                5: 'satir-reddedildi',
+                                6: 'satir-ertelendi',
+                                7: 'satir-tamamlandi'
+                            };
+
+                            const durumCssMap = {
+                                1: 'durum-yeni',
+                                2: 'durum-degerlendirmede',
+                                3: 'durum-onaylandi',
+                                4: 'durum-uygulandi',
+                                5: 'durum-reddedildi',
+                                6: 'durum-ertelendi',
+                                7: 'durum-tamamlandi'
+                            };
+
+                            const yeniSatirCss = satirCssMap[yeniDurumId] || '';
+                            const yeniDurumCss = durumCssMap[yeniDurumId] || '';
+
+                            if (yeniSatirCss) $row.addClass(yeniSatirCss);
+                            if (yeniDurumCss) $select.addClass(yeniDurumCss);
+
+                            toastr.success(response.message || 'Durum başarıyla güncellendi.');
+                        } else {
+                            toastr.error(response.message || 'Durum güncellenemedi.');
+                            $select.val(eskiDurumId);
+                        }
+                    } catch (err) {
+                        console.error('Hata:', err);
+                        toastr.error('Sunucu ile bağlantı kurulamadı.');
+                        $select.val(eskiDurumId);
+                    }
+                });
+                </text>
+            }
+            else
+            {
+                <text>
+                // Distributor için durum seçiminde modal aç
+                $(document).on('change', '.durum-select', function(e) {
+                    const $select = $(this);
+                    const bildirimId = $select.data('bildirim-id');
+                    const $row = $select.closest('tr');
+                    
+                    // Eğer cevap verilmişse işlemi engelle
+                    if ($row.hasClass('cevap-verildi')) {
+                        toastr.warning('Bu kayıt için zaten cevap verilmiş. Durum değiştiremezsiniz.');
+                        $select.val($select.data('current-durum'));
+                        return;
+                    }
+                    
+                    const yeniDurumId = parseInt($select.val());
+                    const eskiDurumId = parseInt($select.data('current-durum'));
+                    const eskiDurumAdi = $select.data('current-durum-adi');
+                    
+                    // Durum değişmediyse işlem yapma
+                    if (yeniDurumId === eskiDurumId) {
+                        return;
+                    }
+                    
+                    // Seçilen bilgileri sakla
+                    seciliBildirimId = bildirimId;
+                    secilenDurumId = yeniDurumId;
+                    secilenDurumAdi = $select.find('option:selected').data('durum-adi');
+                    
+                    // Modal içeriğini hazırla
+                    const modalContent = `
+                        <div class="modal-durum-info">
+                            <p><strong>Bildirim ID:</strong> #${bildirimId}</p>
+                            <p><strong>Konu:</strong> ${$row.find('td:nth-child(2) .fw-medium').text()}</p>
+                            <p><strong>Mevcut Durum:</strong> ${eskiDurumAdi}</p>
+                            <p><strong>Yeni Durum:</strong> <span class="text-primary fw-bold">${secilenDurumAdi}</span></p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Açıklama <span class="text-danger">*</span></label>
+                            <textarea class="form-control modal-cevap-textarea" 
+                                      id="modalCevapText" 
+                                      placeholder="Lütfen durum değişikliği ile ilgili açıklama giriniz... (Minimum 10 karakter)"
+                                      rows="4"></textarea>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Bu işlem sadece 1 defa yapılabilir. Lütfen açıklamanızı dikkatli yazın.
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Dikkat!</strong> Bu işlem geri alınamaz. "Kaydet ve Tamamla" butonuna tıkladığınızda:
+                            <ul class="mb-0 mt-2">
+                                <li>Durum "${secilenDurumAdi}" olarak güncellenecek</li>
+                                <li>Açıklamanız kaydedilecek</li>
+                                <li>Artık bu kayıt için durum değişikliği yapamayacaksınız</li>
+                            </ul>
+                        </div>
+                    `;
+                    
+                    // Modal içeriğini doldur
+                    $('#distributorCevapIcerik').html(modalContent);
+                    
+                    // Modal'ı göster
+                    const cevapModal = new bootstrap.Modal(document.getElementById('distributorCevapModal'));
+                    cevapModal.show();
+                    
+                    // Textarea'ya focus ver
+                    setTimeout(() => {
+                        $('#modalCevapText').focus();
+                    }, 500);
+                    
+                    // Select'i eski değerine geri al (modal kapatılırsa)
+                    $select.val(eskiDurumId);
+                });
+
+                // Modal kaydet butonu
+                $('#modalCevapKaydet').click(async function() {
+                    const $btn = $(this);
+                    const aciklama = $('#modalCevapText').val().trim();
+
+                    // Validasyon
+                    if (!aciklama) {
+                        toastr.warning('Lütfen bir açıklama giriniz.');
+                        $('#modalCevapText').focus();
+                        return;
+                    }
+
+          
+                    // Butonu devre dışı bırak
+                    $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Kaydediliyor...');
+
+                    try {
+                        const response = await $.ajax({
+                            url: '/AdminIstekOneri/DistributorCevapVer',
+                            type: 'POST',
+                            data: {
+                                id: seciliBildirimId,
+                                aciklama: aciklama,
+                                durumId: secilenDurumId
+                            },
+                            dataType: 'json'
+                        });
+
+                        if (response.success) {
+                            // Modal'ı kapat
+                            const cevapModal = bootstrap.Modal.getInstance(document.getElementById('distributorCevapModal'));
+                            cevapModal.hide();
+                            
+                            // Satırı güncelle
+                            const $row = $(`tr[data-bildirim-id="${seciliBildirimId}"]`);
+                            const $select = $row.find('.durum-select');
+                            
+                            // Satır sınıflarını güncelle
+                            const satirCssMap = {
+                                1: 'satir-yeni',
+                                2: 'satir-degerlendirmede',
+                                3: 'satir-onaylandi',
+                                4: 'satir-uygulandi',
+                                5: 'satir-reddedildi',
+                                6: 'satir-ertelendi',
+                                7: 'satir-tamamlandi'
+                            };
+
+                            // Tüm sınıfları temizle
+                            $row.removeClass('satir-yeni satir-degerlendirmede satir-onaylandi satir-uygulandi satir-reddedildi satir-ertelendi satir-tamamlandi');
+                            
+                            // Yeni durum sınıfını ekle
+                            const yeniSatirCss = satirCssMap[secilenDurumId] || '';
+                            if (yeniSatirCss) {
+                                $row.addClass(yeniSatirCss);
+                            }
+                            
+                            // Cevap verildi sınıfını ekle
+                            $row.addClass('cevap-verildi');
+
+                            // Durum hücresini güncelle
+                            const durumHtml = `
+                                <div>
+                                    <span class="cevap-verildi-badge">
+                                        <i class="fas fa-check-circle me-1"></i>Cevap Verildi
+                                    </span>
+                                    <div class="cevap-bilgi">
+                                        <small>${response.cevapTarihi}</small>
+                                    </div>
+                                    <button type="button" 
+                                            class="btn btn-sm btn-outline-info mt-1 cevap-goruntule" 
+                                            data-bildirim-id="${seciliBildirimId}"
+                                            style="font-size: 0.7rem; padding: 2px 6px;">
+                                        <i class="fas fa-eye me-1"></i>Görüntüle
+                                    </button>
+                                </div>
+                            `;
+                            
+                            $row.find('.durum-hucresi').html(durumHtml);
+
+                            toastr.success(response.message || 'Cevap ve durum başarıyla güncellendi.');
+                            
+                            // Başarı mesajını göster
+                            setTimeout(() => {
+                                toastr.info('<i class="fas fa-info-circle me-2"></i>Bu kayıt için artık durum değişikliği yapamazsınız.');
+                            }, 1000);
+                            
+                            // Değişkenleri temizle
+                            seciliBildirimId = null;
+                            secilenDurumId = null;
+                            secilenDurumAdi = null;
+                        } else {
+                            toastr.error(response.message || 'Kayıt sırasında bir hata oluştu.');
+                            $btn.prop('disabled', false).html('<i class="fas fa-check me-2"></i>Kaydet ve Tamamla');
+                        }
+                    } catch (err) {
+                        console.error('Hata:', err);
+                        if (err.status === 401 || err.status === 403) {
+                            toastr.error('Bu işlem için yetkiniz bulunmamaktadır.');
+                        } else if (err.status === 400) {
+                            if (err.responseJSON && err.responseJSON.message) {
+                                toastr.error(err.responseJSON.message);
+                            } else {
+                                toastr.error('Bu kayıt için zaten cevap verilmiş. Durum değişikliği yapamazsınız.');
+                            }
+                        } else {
+                            toastr.error('Sunucu ile bağlantı kurulamadı. Lütfen internet bağlantınızı kontrol edin.');
+                        }
+                        $btn.prop('disabled', false).html('<i class="fas fa-check me-2"></i>Kaydet ve Tamamla');
+                    }
+                });
+
+                // Modal kapatıldığında select'i eski haline getir
+                $('#distributorCevapModal').on('hidden.bs.modal', function () {
+                    if (seciliBildirimId) {
+                        const $select = $(`.durum-select[data-bildirim-id="${seciliBildirimId}"]`);
+                        const eskiDurumId = $select.data('current-durum');
+                        $select.val(eskiDurumId);
+                        
+                        // Değişkenleri temizle
+                        seciliBildirimId = null;
+                        secilenDurumId = null;
+                        secilenDurumAdi = null;
+                    }
+                });
+
+                // Distributor cevap görüntüleme
+                $(document).on('click', '.cevap-goruntule', async function() {
+                    const bildirimId = $(this).data('bildirim-id');
+                    
+                    // Yükleme göstergesi
+                    $('#distributorCevapGoruntuleIcerik').html(
+                        '<div class="text-center py-5">' +
+                            '<div class="spinner-border text-success" role="status"></div>' +
+                            '<p class="mt-3">Cevap bilgileri yükleniyor...</p>' +
+                        '</div>'
+                    );
+                    
+                    const cevapModal = new bootstrap.Modal(document.getElementById('distributorCevapGoruntuleModal'));
+                    cevapModal.show();
+
+                    try {
+                        const response = await $.ajax({
+                            url: '/AdminIstekOneri/GetirDistributorCevap',
+                            type: 'GET',
+                            data: { id: bildirimId },
+                            dataType: 'json'
+                        });
+                        
+                        if (response.success) {
+                            const modalContent = 
+                                '<div class="alert alert-success">' +
+                                    '<i class="fas fa-info-circle me-2"></i>' +
+                                    'Bu kayda <strong>' + response.distributorCevapTarihi + '</strong> tarihinde cevap verilmiştir.' +
+                                '</div>' +
+                                '<div class="mb-3">' +
+                                    '<label class="form-label fw-bold">Güncel Durum:</label>' +
+                                    '<div class="border rounded p-2 bg-light mb-3">' +
+                                        '<strong>' + (response.durumAdi || 'Belirtilmemiş') + '</strong>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div class="mb-3">' +
+                                    '<label class="form-label fw-bold">Distributor Açıklaması:</label>' +
+                                    '<div class="border rounded p-3 bg-light" style="min-height: 100px; white-space: pre-line;">' +
+                                        (response.distributorCevap || '<span class="text-muted">Açıklama girilmemiş.</span>') +
+                                    '</div>' +
+                                '</div>' +
+                                '<div class="row text-muted small">' +
+                                    '<div class="col-6">' +
+                                        '<i class="fas fa-clock me-1"></i>' +
+                                        'Cevap Tarihi: ' + (response.distributorCevapTarihi || '-') +
+                                    '</div>' +
+                                    '<div class="col-6">' +
+                                        '<i class="fas fa-sync-alt me-1"></i>' +
+                                        'Durum Güncelleme: ' + (response.durumDegisimTarihi || '-') +
+                                    '</div>' +
+                                '</div>' +
+                                '<div class="alert alert-warning mt-3">' +
+                                    '<i class="fas fa-exclamation-triangle me-2"></i>' +
+                                    '<strong>Dikkat:</strong> Bu cevap sadece 1 defa verilebilir ve değiştirilemez.' +
+                                '</div>';
+                            
+                            $('#distributorCevapGoruntuleIcerik').html(modalContent);
+                        } else {
+                            $('#distributorCevapGoruntuleIcerik').html(
+                                '<div class="alert alert-danger">' +
+                                    '<i class="fas fa-exclamation-triangle me-2"></i>' +
+                                    (response.message || 'Cevap bilgileri alınamadı.') +
+                                '</div>'
+                            );
+                        }
+                    } catch (err) {
+                        console.error('Hata:', err);
+                        $('#distributorCevapGoruntuleIcerik').html(
+                            '<div class="alert alert-danger">' +
+                                '<i class="fas fa-exclamation-triangle me-2"></i>' +
+                                'Cevap bilgileri alınırken bir hata oluştu. Lütfen daha sonra tekrar deneyin.' +
+                            '</div>'
+                        );
+                    }
+                });
+                </text>
+            }
+
+            // Detay göster
+            $(document).on('click', '.detay-goster', async function (e) {
+                e.stopPropagation();
+                const bildirimId = $(this).data('bildirim-id');
+
+                try {
+                    const detayModal = new bootstrap.Modal(document.getElementById('detayModal'));
+                    detayModal.show();
+
+                    $('#detayModalIcerik').html(
+                        '<div class="text-center py-5">' +
+                            '<div class="spinner-border text-success" role="status"></div>' +
+                            '<p class="mt-3">Bildirim detayları yükleniyor...</p>' +
+                        '</div>'
+                    );
+
+                    const response = await $.ajax({
+                        url: '/AdminIstekOneri/DetayGetir',
+                        type: 'GET',
+                        data: { id: bildirimId },
+                        dataType: 'json'
+                    });
+
+                    if (response.success) {
+                        let distributorCevapHtml = '';
+                        if (response.distributorCevapVerdiMi && response.distributorCevap) {
+                            distributorCevapHtml = 
+                                '<div class="col-12 mb-3">' +
+                                    '<div class="card border-success">' +
+                                        '<div class="card-header bg-success text-white">' +
+                                            '<i class="fas fa-comment-dots me-2"></i>' +
+                                            'Distributor Cevabı' +
+                                        '</div>' +
+                                        '<div class="card-body">' +
+                                            '<div class="border rounded p-3 bg-light mb-2" style="white-space: pre-line;">' +
+                                                response.distributorCevap +
+                                            '</div>' +
+                                            '<small class="text-muted">' +
+                                                '<i class="fas fa-clock me-1"></i>' +
+                                                'Cevap Tarihi: ' + (response.distributorCevapTarihi || '-') +
+                                            '</small>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>';
+                        }
+
+                        $('#detayModalIcerik').html(
+                            '<div class="row g-3">' +
+                                '<div class="col-md-6">' +
+                                    '<div class="card h-100">' +
+                                        '<div class="card-header bg-primary text-white">' +
+                                            '<i class="fas fa-info-circle me-2"></i>' +
+                                            'Temel Bilgiler' +
+                                        '</div>' +
+                                        '<div class="card-body">' +
+                                            '<div class="row small g-2">' +
+                                                '<div class="col-12">' +
+                                                    '<label class="text-muted">ID:</label>' +
+                                                    '<div class="fw-bold">#' + response.id + '</div>' +
+                                                '</div>' +
+                                                '<div class="col-12">' +
+                                                    '<label class="text-muted">Konu:</label>' +
+                                                    '<div>' + response.konu + '</div>' +
+                                                '</div>' +
+                                                '<div class="col-12">' +
+                                                    '<label class="text-muted">Durum:</label>' +
+                                                    '<div class="fw-bold ' + (response.distributorCevapVerdiMi ? 'text-success' : 'text-primary') + '">' +
+                                                        response.istekDurumAdi +
+                                                    '</div>' +
+                                                '</div>' +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                                
+                                '<div class="col-md-6">' +
+                                    '<div class="card h-100">' +
+                                        '<div class="card-header bg-info text-white">' +
+                                            '<i class="fas fa-building me-2"></i>' +
+                                            'İşletme Bilgileri' +
+                                        '</div>' +
+                                        '<div class="card-body">' +
+                                            '<div class="row small g-2">' +
+                                                '<div class="col-12">' +
+                                                    '<label class="text-muted">Müşteri:</label>' +
+                                                    '<div>' + response.musteriAdi + '</div>' +
+                                                '</div>' +
+                                                '<div class="col-12">' +
+                                                    '<label class="text-muted">Bayi:</label>' +
+                                                    '<div>' + response.bayiAdi + '</div>' +
+                                                '</div>' +
+                                                '<div class="col-12">' +
+                                                    '<label class="text-muted">Lisans Tipi:</label>' +
+                                                    '<div>' + response.lisansTipAdi + '</div>' +
+                                                '</div>' +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                                
+                                '<div class="col-12">' +
+                                    '<div class="card">' +
+                                        '<div class="card-header bg-warning text-dark">' +
+                                            '<i class="fas fa-file-alt me-2"></i>' +
+                                            'İçerik' +
+                                        '</div>' +
+                                        '<div class="card-body">' +
+                                            '<div class="border rounded p-3 bg-light" style="white-space: pre-line; min-height: 100px;">' +
+                                                (response.metni || '-') +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                                
+                                distributorCevapHtml +
+                                
+                                '<div class="col-md-6">' +
+                                    '<div class="card">' +
+                                        '<div class="card-header bg-secondary text-white">' +
+                                            '<i class="fas fa-history me-2"></i>' +
+                                            'Zaman Bilgileri' +
+                                        '</div>' +
+                                        '<div class="card-body">' +
+                                            '<div class="row small g-2">' +
+                                                '<div class="col-12">' +
+                                                    '<label class="text-muted">Eklenme Tarihi:</label>' +
+                                                    '<div>' + response.eklenmeTarihi + '</div>' +
+                                                '</div>' +
+                                                '<div class="col-12">' +
+                                                    '<label class="text-muted">Son Güncelleme:</label>' +
+                                                    '<div>' + response.guncellenmeTarihi + '</div>' +
+                                                '</div>' +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>'
+                        );
+                    } else {
+                        $('#detayModalIcerik').html(
+                            '<div class="alert alert-danger">' +
+                                '<i class="fas fa-exclamation-triangle me-2"></i>' +
+                                (response.message || 'Detay bilgileri alınamadı.') +
+                            '</div>'
+                        );
+                    }
+                } catch (error) {
+                    console.error('Hata:', error);
+                    $('#detayModalIcerik').html(
+                        '<div class="alert alert-danger">' +
+                            '<i class="fas fa-exclamation-triangle me-2"></i>' +
+                            'Bir hata oluştu: ' + (error.message || 'Sunucu ile bağlantı kurulamadı.') +
+                        '</div>'
+                    );
+                }
+            });
+
+            // Satıra tıklayınca detay göster
+            $(document).on('click', '#bildirimTablosu tr:not(:has(.empty-state))', function(e) {
+                // Eğer tıklanan element bir buton veya link ise işlemi durdur
+                if ($(e.target).closest('button, a, select, .aksiyon-btn, .durum-select').length === 0) {
+                    $(this).find('.detay-goster').first().click();
+                }
+            });
+
+            // Silme işlemi
+            $(document).on('click', '.sil-bildirim', function (e) {
+                e.stopPropagation();
+                seciliBildirimId = $(this).data('bildirim-id');
+                $('#silinecekKonu').text($(this).data('konu'));
+                const silModal = new bootstrap.Modal(document.getElementById('silModal'));
+                silModal.show();
+            });
+
+            $('#silBtn').click(function() {
+                if (seciliBildirimId) {
+                    window.location.href = '/AdminIstekOneri/Sil?Id=' + seciliBildirimId;
+                }
+            });
+        });
+    </script>
+}

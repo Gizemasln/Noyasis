@@ -1,0 +1,229 @@
+﻿@using WepApp.Models
+@{
+    ViewData["Title"] = "Birim Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="card" style="margin-top: 70px;">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Birimler</span>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                    <i class="fas fa-plus"></i> Yeni Birim Ekle
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Birim Adı</th>
+                                <th>Eklenme Tarihi</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.Birimler != null && ViewBag.Birimler.Count > 0)
+                            {
+                                var counter = 1;
+                                foreach (var item in ViewBag.Birimler)
+                                {
+                                    <tr>
+                                        <td>@counter</td>
+                                        <td><strong>@item.Adi</strong></td>
+                                        <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id, '@item.Adi')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="silOnay(@item.Id)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center py-4">
+                                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                        <p>Henüz birim eklenmemiş.</p>
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                                            İlk Birimi Ekle
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ekle Modal -->
+<div class="modal fade" id="ekleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("Ekle", "AdminBirim", FormMethod.Post, new { id = "ekleForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Birim Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Birim Adı *</label>
+                        <input type="text" class="form-control" name="Adi" id="Adi" placeholder="Ör: Adet, Kutu" required oninput="kontrolEtAdi()">
+                        <div id="adiMesaj" class="form-text"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary" disabled>Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Düzenle Modal -->
+<div class="modal fade" id="duzenleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Guncelle","AdminBirim")" method="post" id="duzenleForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="editId">
+                <div class="modal-header">
+                    <h5 class="modal-title">Birim Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Birim Adı *</label>
+                        <input type="text" class="form-control" name="Adi" id="editAdi" required oninput="kontrolEtAdi(true)">
+                        <div id="editAdiMesaj" class="form-text"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary" disabled>Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Sil Modal -->
+<!-- Sil Modal -->
+<div class="modal fade" id="silModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Sil","AdminBirim")" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="silId">
+                <div class="modal-header">
+                    <h5 class="modal-title">Silme Onayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong id="silAdiGoster"></strong> birimini pasif yapmak istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><small>Bu işlem geri alınamaz.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        let adiGecerli = false;
+        let duzenleme = false;
+
+        function kontrolEtAdi(duzenle = false) {
+            const input = duzenle ? $('#editAdi') : $('#Adi');
+            const mesaj = duzenle ? $('#editAdiMesaj') : $('#adiMesaj');
+            const val = input.val().trim();
+            const birimId = duzenle ? $('#editId').val() : null;
+            if (val === '') {
+                mesaj.html('<small class="text-muted">Birim adı giriniz.</small>');
+                adiGecerli = false;
+            } else if (val.length < 2) {
+                mesaj.html('<small class="text-warning">En az 2 karakter.</small>');
+                adiGecerli = false;
+            } else {
+                fetch(`@Url.Action("AdiKontrol", "AdminBirim")?adi=${encodeURIComponent(val)}&birimId=${birimId || ''}`)
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d.success) {
+                            mesaj.html(`<small class="text-success">${d.message}</small>`);
+                            adiGecerli = true;
+                        } else {
+                            mesaj.html(`<small class="text-danger">${d.message}</small>`);
+                            adiGecerli = false;
+                        }
+                        guncelleButon();
+                    });
+                return;
+            }
+            guncelleButon();
+        }
+
+        function guncelleButon() {
+            const modal = duzenleme ? '#duzenleModal' : '#ekleModal';
+            $(modal).find('button[type="submit"]').prop('disabled', !adiGecerli);
+        }
+
+        function duzenleGetir(id, adi) {
+            $('#editId').val(id);
+            $('#editAdi').val(adi);
+            duzenleme = true;
+            adiGecerli = true;
+            guncelleButon();
+            kontrolEtAdi(true);
+            new bootstrap.Modal('#duzenleModal').show();
+        }
+
+        // Sadece ID ile silme onayı
+        function silOnay(id) {
+            $('#silId').val(id);
+            new bootstrap.Modal('#silModal').show();
+        }
+
+        $('#ekleModal').on('show.bs.modal', () => {
+            duzenleme = false;
+            adiGecerli = false;
+            $('#adiMesaj').empty();
+            guncelleButon();
+        });
+
+   
+
+        setTimeout(() => $('.alert').each((i, el) => bootstrap.Alert.getOrCreateInstance(el).close()), 5000);
+    </script>
+}

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WepApp", "WepApp\WepApp.csproj", "{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinAppReport", "WinAppReport\WinAppReport.csproj", "{6D2F6DB6-DDAC-41BF-A9BB-AA0DD1E28ACC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D2F6DB6-DDAC-41BF-A9BB-AA0DD1E28ACC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D2F6DB6-DDAC-41BF-A9BB-AA0DD1E28ACC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D2F6DB6-DDAC-41BF-A9BB-AA0DD1E28ACC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D2F6DB6-DDAC-41BF-A9BB-AA0DD1E28ACC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C2E8F608-B060-4012-A8E1-57A347230748}
+	EndGlobalSection
+EndGlobal
