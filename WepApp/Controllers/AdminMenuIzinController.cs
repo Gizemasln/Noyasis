@@ -124,8 +124,7 @@ namespace WebApp.Controllers
                 
                 // 2. Seviye - Tek başına menüler
                 ("/AdminPaket", "Modül", "#offerManagement", null, 8, 2),
-                ("/AdminMusteri", "Müşteriler", "#offerManagement", null, 9, 2),
-                ("/AdminBayi", "Bayiler", "#offerManagement", null, 10, 2),
+    
 
                 // 3. Seviye - Destek Tablosu alt menüleri
                 ("/AdminUYB", "Genel Ayarlar", "#destekSubmenu", null, 1, 3),
@@ -150,7 +149,8 @@ namespace WebApp.Controllers
 
                 // 3. Seviye - Teklif alt menüleri
                 ("/AdminTeklifVer", "Teklif Oluştur", "#teklifSubmenu", null, 1, 3),
-                ("/AdminTeklif", "Teklif Listesi", "#teklifSubmenu", null, 2, 3)
+                ("/AdminTeklif", "Teklif Listesi", "#teklifSubmenu", null, 42, 1),
+                ("/AdminButtonController", "Buton Yetki", null, null, 44, 1)
             };
         }
 

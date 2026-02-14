@@ -1789,7 +1789,14 @@
                     }
 
                     toastr.success(response.message || `Durum "${response.yeniDurum}" olarak güncellendi.`);
+                        const eskiDurum = parseInt($select.data('current-durum'));  // değişiklik öncesi durum
+        const yeniDurum = yeniDurumId;
 
+        if (eskiDurum === 9) {
+            setTimeout(() => {
+                location.reload();
+            });  // toastr'ın görünmesi için kısa gecikme
+        }
                     // Distribütör onayı başarılı olduysa lisanslama butonu göster
                     if (response.lisanslamaAktif) {
                         $durumHucresi.append(`

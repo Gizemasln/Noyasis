@@ -30,7 +30,7 @@ namespace WebApp.Controllers
         {
             if (model == null || string.IsNullOrEmpty(model.KullaniciAdi) || string.IsNullOrEmpty(model.Sifre))
                 return Json(new { success = false, message = "Kullanıcı adı ve şifre zorunludur." });
-
+            HttpContext.Session.Clear();
             switch (model.tip)
             {
                 case 0: // Kurumsal

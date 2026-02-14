@@ -86,6 +86,19 @@
           }
         }
       },
+      "Dapper/2.1.66": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Dapper.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Dapper.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "EntityFramework/6.5.1": {
         "type": "package",
         "dependencies": {
@@ -5677,6 +5690,25 @@
         "azureicon.png",
         "lib/netstandard2.0/Azure.Identity.dll",
         "lib/netstandard2.0/Azure.Identity.xml"
+      ]
+    },
+    "Dapper/2.1.66": {
+      "sha512": "/q77jUgDOS+bzkmk3Vy9SiWMaetTw+NOoPAV0xPBsGVAyljd5S6P+4RUW7R3ZUGGr9lDRyPKgAMj2UAOwvqZYw==",
+      "type": "package",
+      "path": "dapper/2.1.66",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Dapper.png",
+        "dapper.2.1.66.nupkg.sha512",
+        "dapper.nuspec",
+        "lib/net461/Dapper.dll",
+        "lib/net461/Dapper.xml",
+        "lib/net8.0/Dapper.dll",
+        "lib/net8.0/Dapper.xml",
+        "lib/netstandard2.0/Dapper.dll",
+        "lib/netstandard2.0/Dapper.xml",
+        "readme.md"
       ]
     },
     "EntityFramework/6.5.1": {
@@ -15449,6 +15481,7 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "AspNetCore.Reporting >= 2.1.0",
+      "Dapper >= 2.1.66",
       "EntityFramework >= 6.5.1",
       "Microsoft.AspNetCore.Session >= 2.1.1",
       "Microsoft.EntityFrameworkCore >= 9.0.0",
@@ -15494,11 +15527,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\GİTHUBPROJELER\\Noyasis\\WepApp\\WepApp.csproj",
+      "projectUniqueName": "D:\\PROJELER\\Noyasis\\WepApp\\WepApp.csproj",
       "projectName": "WepApp",
-      "projectPath": "D:\\GİTHUBPROJELER\\Noyasis\\WepApp\\WepApp.csproj",
+      "projectPath": "D:\\PROJELER\\Noyasis\\WepApp\\WepApp.csproj",
       "packagesPath": "C:\\Users\\gzmas\\.nuget\\packages\\",
-      "outputPath": "D:\\GİTHUBPROJELER\\Noyasis\\WepApp\\obj\\",
+      "outputPath": "D:\\PROJELER\\Noyasis\\WepApp\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -15520,8 +15553,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\GİTHUBPROJELER\\Noyasis\\WinAppReport\\WinAppReport.csproj": {
-              "projectPath": "D:\\GİTHUBPROJELER\\Noyasis\\WinAppReport\\WinAppReport.csproj"
+            "D:\\PROJELER\\Noyasis\\WinAppReport\\WinAppReport.csproj": {
+              "projectPath": "D:\\PROJELER\\Noyasis\\WinAppReport\\WinAppReport.csproj"
             }
           }
         }
@@ -15545,6 +15578,10 @@
           "AspNetCore.Reporting": {
             "target": "Package",
             "version": "[2.1.0, )"
+          },
+          "Dapper": {
+            "target": "Package",
+            "version": "[2.1.66, )"
           },
           "EntityFramework": {
             "target": "Package",

@@ -45,6 +45,8 @@ namespace WepApp.Controllers
                 ViewBag.MusteriTipleri = _musteriTipiRepository.GetirList(x => x.Durumu == 1)?.OrderBy(x => x.Adi).ToList() ?? new List<MusteriTipi>();
 
                 Bayi currentBayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
+                Musteri musteris = SessionHelper.GetObjectFromJson<Musteri>(HttpContext.Session, "Musteri");
+
                 List<Bayi> bayiList;
                 if (currentBayi != null)
                     bayiList = _bayiRepository.GetBayiVeAltBayiler(currentBayi.Id) ?? new List<Bayi>();
@@ -62,16 +64,21 @@ namespace WepApp.Controllers
                     ViewBag.MusteriList = musteri;
 
                 }
-                else
+               if(musteris!=null)
                 {
-                    List<Musteri> musteriler = _musteriRepository.GetirList(x => x.Durum == 1, new List<string> { "MusteriTipi", "Bayi" })
+                    List<Musteri> musteriler = _musteriRepository.GetirList(x => x.Durum == 1 && x.Id==musteris.Id, new List<string> { "MusteriTipi", "Bayi" })
                        ?.OrderBy(x => x.Ad).ThenBy(x => x.Soyad).ToList() ?? new List<Musteri>();
                     ViewBag.MusteriList = musteriler;
 
                 }
+                else
+                {
+                    List<Musteri> musteriler = _musteriRepository.GetirList(x => x.Durum == 1 , new List<string> { "MusteriTipi", "Bayi" })
+                     ?.OrderBy(x => x.Ad).ThenBy(x => x.Soyad).ToList() ?? new List<Musteri>();
+                    ViewBag.MusteriList = musteriler;
+                }
 
-
-                return View();
+                    return View();
             }
             catch (Exception ex)
             {

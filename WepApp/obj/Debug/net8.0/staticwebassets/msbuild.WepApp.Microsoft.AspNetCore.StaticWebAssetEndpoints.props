@@ -4476,6 +4476,18 @@
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"yf5m37m0mz"},{"Name":"integrity","Value":"sha256-8nt7k3phH8PqLqxM52BbUI9LuXBxZ4uMyDGwxglXNRY="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/assets/img/visa.svg"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"2336"},{"Name":"Content-Type","Value":"image/svg\u002Bxml"},{"Name":"ETag","Value":"\u00228nt7k3phH8PqLqxM52BbUI9LuXBxZ4uMyDGwxglXNRY=\u0022"},{"Name":"Last-Modified","Value":"Thu, 30 Oct 2025 11:37:16 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/assets/js/button-permission.3rankdcle3.js">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\assets\js\button-permission.js'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"3rankdcle3"},{"Name":"integrity","Value":"sha256-L34VhTukOO8B0WndKRHxkuwOsbCNORHgVoDhYg5BVnA="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/assets/js/button-permission.js"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"9930"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022L34VhTukOO8B0WndKRHxkuwOsbCNORHgVoDhYg5BVnA=\u0022"},{"Name":"Last-Modified","Value":"Wed, 11 Feb 2026 14:17:40 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/assets/js/button-permission.js">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\assets\js\button-permission.js'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-L34VhTukOO8B0WndKRHxkuwOsbCNORHgVoDhYg5BVnA="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"9930"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022L34VhTukOO8B0WndKRHxkuwOsbCNORHgVoDhYg5BVnA=\u0022"},{"Name":"Last-Modified","Value":"Wed, 11 Feb 2026 14:17:40 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/assets/js/ckeditor/build-config.5coiil74zn.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\assets\js\ckeditor\build-config.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>

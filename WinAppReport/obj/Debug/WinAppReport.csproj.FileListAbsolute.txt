@@ -7,3 +7,6 @@ D:\GİTHUBPROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.csproj.GenerateRe
 D:\GİTHUBPROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.csproj.CoreCompileInputs.cache
 D:\GİTHUBPROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.exe
 D:\GİTHUBPROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.pdb
+D:\PROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.csproj.AssemblyReference.cache
+D:\PROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.exe
+D:\PROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.pdb

@@ -371,6 +371,7 @@ wwwroot\WebAdminTheme\assets\img\undraw\undraw_Taken_if77.svg
 wwwroot\WebAdminTheme\assets\img\undraw\undraw_update_uxn2.svg
 wwwroot\WebAdminTheme\assets\img\undraw\undraw_upgrade_06a0.svg
 wwwroot\WebAdminTheme\assets\img\visa.svg
+wwwroot\WebAdminTheme\assets\js\button-permission.js
 wwwroot\WebAdminTheme\assets\js\ckeditor\build-config.js
 wwwroot\WebAdminTheme\assets\js\ckeditor\CHANGES.md
 wwwroot\WebAdminTheme\assets\js\ckeditor\ckeditor.js

@@ -1,0 +1,385 @@
+﻿@model List<WepApp.Models.DetectedButton>
+@{
+    ViewData["Title"] = "Buton Tarama Sonuçları";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="fas fa-search me-2"></i>Buton Tarama Sonuçları
+        </h2>
+        <div>
+            <a href="@Url.Action("Index")" class="btn btn-outline-secondary me-2">
+                <i class="fas fa-arrow-left me-2"></i>Yetkilendirmeye Dön
+            </a>
+            <button class="btn btn-outline-success" onclick="exportToExcel()">
+                <i class="fas fa-file-excel me-2"></i>Excel Export
+            </button>
+        </div>
+    </div>
+
+    <!-- Özet Kartları -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-1">Toplam Buton</h6>
+                            <h2 class="mb-0">@Model.Count</h2>
+                            <small>Tüm view'lerde tespit edilen</small>
+                        </div>
+                        <i class="fas fa-bolt fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-1">Benzersiz Buton</h6>
+                            <h2 class="mb-0">
+                                @Model.Select(b => new { b.Controller, b.Action }).Distinct().Count()
+                            </h2>
+                            <small>Controller + Action</small>
+                        </div>
+                        <i class="fas fa-tag fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-1">Controller Sayısı</h6>
+                            <h2 class="mb-0">@Model.Select(b => b.Controller).Distinct().Count()</h2>
+                            <small>Farklı controller</small>
+                        </div>
+                        <i class="fas fa-cubes fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-1">View Sayısı</h6>
+                            <h2 class="mb-0">@Model.Select(b => b.View).Distinct().Count()</h2>
+                            <small>Farklı view</small>
+                        </div>
+                        <i class="fas fa-file-alt fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Buton Tipleri Dağılımı ve Controller Listesi -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-dark text-white">
+                    <i class="fas fa-chart-pie me-2"></i>Buton Tipleri Dağılımı
+                </div>
+                <div class="card-body">
+                    @{
+                        var actionGroups = Model.GroupBy(b => b.Action)
+                        .Select(g => new { Action = g.Key, Count = g.Count() })
+                        .OrderByDescending(g => g.Count);
+                    }
+                    @foreach (var group in actionGroups)
+                    {
+                        string color = group.Action.ToLower() switch
+                        {
+                            "create" => "success",
+                            "edit" => "warning",
+                            "delete" => "danger",
+                            "view" => "info",
+                            "export" => "secondary",
+                            "import" => "secondary",
+                            "download" => "primary",
+                            "print" => "dark",
+                            "approve" => "success",
+                            "reject" => "danger",
+                            _ => "secondary"
+                        };
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span>
+                                    <span class="badge bg-@color">@group.Action</span>
+                                    <span class="text-muted ms-2">@group.Count buton</span>
+                                </span>
+                                <span class="text-muted">%@((group.Count * 100 / Model.Count).ToString("0"))</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-@color"
+                                     style="width: @((group.Count * 100) / Model.Count)%"></div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-dark text-white">
+                    <i class="fas fa-file-alt me-2"></i>Controller Dağılımı
+                </div>
+                <div class="card-body" style="max-height: 350px; overflow-y: auto;">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Controller</th>
+                                <th class="text-center">Buton</th>
+                                <th class="text-center">Action</th>
+                                <th class="text-center">View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                var controllerGroups = Model.GroupBy(b => b.Controller)
+                                .Select(g => new
+                                {
+                                    Controller = g.Key,
+                                    Total = g.Count(),
+                                    UniqueAction = g.Select(b => b.Action).Distinct().Count(),
+                                    UniqueView = g.Select(b => b.View).Distinct().Count()
+                                })
+                                .OrderByDescending(g => g.Total);
+                            }
+                            @foreach (var group in controllerGroups)
+                            {
+                                <tr>
+                                    <td><strong>@group.Controller</strong></td>
+                                    <td class="text-center"><span class="badge bg-primary">@group.Total</span></td>
+                                    <td class="text-center"><span class="badge bg-info">@group.UniqueAction</span></td>
+                                    <td class="text-center"><span class="badge bg-secondary">@group.UniqueView</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detaylı Buton Listesi -->
+    <div class="card">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fas fa-list me-2"></i>Tespit Edilen Butonlar
+            </h5>
+            <div>
+                <button class="btn btn-sm btn-light" onclick="generateSQL()">
+                    <i class="fas fa-database me-1"></i>SQL Export
+                </button>
+                <button class="btn btn-sm btn-light" onclick="printTable()">
+                    <i class="fas fa-print me-1"></i>Yazdır
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered datatable" id="buttonTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 5%">#</th>
+                            <th style="width: 15%">Controller</th>
+                            <th style="width: 15%">View</th>
+                            <th style="width: 10%">Action</th>
+                            <th style="width: 45%">Buton HTML</th>
+                            <th style="width: 10%">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int index = 1;
+                            var sortedButtons = Model.OrderBy(b => b.Controller)
+                            .ThenBy(b => b.View)
+                            .ThenBy(b => b.Action);
+                        }
+                        @foreach (var button in sortedButtons)
+                        {
+                            string actionBadgeColor = button.Action.ToLower() switch
+                            {
+                                "create" => "success",
+                                "edit" => "warning",
+                                "delete" => "danger",
+                                "view" => "info",
+                                "export" => "secondary",
+                                "import" => "secondary",
+                                "download" => "primary",
+                                "print" => "dark",
+                                _ => "secondary"
+                            };
+
+                            <tr>
+                                <td>@index</td>
+                                <td><strong>@button.Controller</strong></td>
+                                <td>@button.View</td>
+                                <td>
+                                    <span class="badge bg-@actionBadgeColor">@button.Action</span>
+                                </td>
+                                <td>
+                                    <code class="small" style="background: #f8f9fa; padding: 4px 8px; border-radius: 4px; display: block; white-space: normal; word-break: break-all;">
+                                        @button.ButtonHtml
+                                    </code>
+                                </td>
+                                <td class="text-center">
+                                    <a href="@Url.Action("Index", new { kullaniciTipi = "Admin", controller = button.Controller })"
+                                       class="btn btn-sm btn-outline-primary"
+                                       title="Yetkilendir">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SQL Export Modal -->
+<div class="modal fade" id="sqlModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-database me-2"></i>SQL Export Scripti
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Bu script, tespit edilen butonlar için INSERT sorgularını içerir.
+                </div>
+                <pre id="sqlScript" style="max-height: 500px; overflow-y: auto; background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 5px; font-size: 12px;"></pre>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="copySQL()">
+                    <i class="fas fa-copy me-2"></i>Kopyala
+                </button>
+                <button class="btn btn-success" onclick="downloadSQL()">
+                    <i class="fas fa-download me-2"></i>SQL İndir
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Script {
+
+
+    <script>
+        $(document).ready(function() {
+            $('#buttonTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/tr.json'
+                },
+                pageLength: 25,
+                order: [[1, 'asc'], [2, 'asc']],
+                columnDefs: [
+                    { orderable: false, targets: [4, 5] }
+                ]
+            });
+        });
+
+        function exportToExcel() {
+            var table = document.getElementById('buttonTable');
+            var wb = XLSX.utils.table_to_book(table, { sheet: "Butonlar" });
+            XLSX.writeFile(wb, 'buton_tarama_sonuclari.xlsx');
+        }
+
+        function generateSQL() {
+            var buttons = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(
+            Model.Select(b => new
+            {
+           b.Controller,
+           b.Action
+            }).Distinct()
+        ));
+
+            var sql = '-- ============================================================\n';
+            sql += '-- BUTON YETKİLENDİRME - OTOMATİK OLUŞTURULAN SQL SCRIPT\n';
+            sql += '-- Tarih: ' + new Date().toLocaleDateString('tr-TR') + '\n';
+            sql += '-- Toplam Buton: ' + buttons.length + '\n';
+            sql += '-- ============================================================\n\n';
+
+            sql += '-- Mevcut kayıtları temizle\n';
+            sql += 'DELETE FROM ButtonPermissions;\n';
+            sql += 'DBCC CHECKIDENT (\'ButtonPermissions\', RESEED, 0);\n\n';
+
+            var userTypes = ['Admin', 'Musteri', 'Bayi', 'Distributor'];
+
+            userTypes.forEach(function(userType) {
+                sql += '-- ' + userType + ' Yetkileri\n';
+                sql += 'INSERT INTO ButtonPermissions (KullaniciTipi, SayfaAdi, ButonAksiyonu, IzınVar, Aciklama) VALUES\n';
+
+                var values = [];
+                buttons.forEach(function(button, index) {
+                    var izinVar = userType === 'Admin' ? 1 : 0;
+                    var aciklama = userType + ' - ' + button.Controller + ' sayfasında ' + button.Action + ' işlemi';
+                    values.push(`('${userType}', '${button.Controller}', '${button.Action}', ${izinVar}, '${aciklama}')`);
+                });
+
+                sql += values.join(',\n');
+                sql += ';\n\n';
+            });
+
+            sql += '-- ============================================================\n';
+            sql += '-- İstatistikler\n';
+            sql += 'SELECT KullaniciTipi, COUNT(*) as ButonSayisi FROM ButtonPermissions GROUP BY KullaniciTipi;\n';
+            sql += '-- ============================================================\n';
+
+            $('#sqlScript').text(sql);
+            $('#sqlModal').modal('show');
+        }
+
+        function copySQL() {
+            var sqlText = document.getElementById('sqlScript').innerText;
+            navigator.clipboard.writeText(sqlText).then(function() {
+                alert('SQL script kopyalandı!');
+            }).catch(function() {
+                alert('Kopyalama başarısız!');
+            });
+        }
+
+        function downloadSQL() {
+            var sqlText = document.getElementById('sqlScript').innerText;
+            var blob = new Blob([sqlText], { type: 'application/sql' });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'ButtonPermissions_Export_' + new Date().getTime() + '.sql';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function printTable() {
+            var printWindow = window.open('', '_blank');
+            printWindow.document.write('<html><head><title>Buton Tarama Sonuçları</title>');
+            printWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">');
+            printWindow.document.write('<style>body { padding: 20px; } table { width: 100%; } td, th { padding: 8px; }</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write('<h2>Buton Tarama Sonuçları</h2>');
+            printWindow.document.write('<p>Oluşturulma Tarihi: ' + new Date().toLocaleString('tr-TR') + '</p>');
+            printWindow.document.write(document.getElementById('buttonTable').outerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+    </script>
+
+}
