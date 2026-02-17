@@ -565,15 +565,7 @@
                                                                 }
                                                             }
                                                         </div>
-                                                        <div class="cevap-veren">
-                                                            <span class="badge @(cevapVerenTip == "Admin" ? "badge-admin" : "badge-bayi")">
-                                                                <i class="fas fa-user me-1"></i>@cevapVerenTip
-                                                            </span>
-                                                            <small class="text-muted ms-2">
-                                                                <i class="fas fa-clock me-1"></i>
-                                                                @(bildirim.DistributorCevapTarihi?.ToString("dd.MM.yy HH:mm") ?? "-")
-                                                            </small>
-                                                        </div>
+                                                      
                                                         @if (cevapDuzenleyebilir)
                                                         {
                                                             <div class="mt-1">
@@ -1134,75 +1126,6 @@
                 const $row = $cevapDiv.closest('tr');
                 const bildirimId = $row.data('bildirim-id');
 
-                try {
-                    const response = await $.ajax({
-                        url: '/AdminArgeHata/GetirCevap',
-                        type: 'GET',
-                        data: { id: bildirimId },
-                        dataType: 'json'
-                    });
-
-                    if (response.success && response.distributorCevap) {
-                        const modalContent = `
-                            <div class="modal-header bg-info text-white">
-                                <h5 class="modal-title">
-                                    <i class="fas fa-comment-dots me-2"></i>
-                                    Cevap Detayları
-                                </h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Cevap Veren:</label>
-                                    <div class="d-flex align-items-center mb-2">
-                                        <span class="badge ${response.cevapVerenTip === 'Admin' ? 'badge-admin' : 'badge-bayi'} me-2">
-                                            <i class="fas fa-user me-1"></i>${response.cevapVerenTip}
-                                        </span>
-                                        <span>${response.cevapVerenAdi || ''}</span>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Cevap Tarihi:</label>
-                                    <div>${response.distributorCevapTarihi || ''}</div>
-                                </div>
-                                <div>
-                                    <label class="form-label fw-bold">Cevap İçeriği:</label>
-                                    <div class="border rounded p-3 bg-light" style="white-space: pre-line; min-height: 150px; max-height: 400px; overflow-y: auto;">
-                                        ${response.distributorCevap}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                    <i class="fas fa-times me-2"></i>Kapat
-                                </button>
-                            </div>
-                        `;
-
-                        // Geçici modal oluştur
-                        const tempModal = document.createElement('div');
-                        tempModal.className = 'modal fade';
-                        tempModal.innerHTML = `
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    ${modalContent}
-                                </div>
-                            </div>
-                        `;
-
-                        document.body.appendChild(tempModal);
-                        const modal = new bootstrap.Modal(tempModal);
-                        modal.show();
-
-                        // Modal kapatıldığında DOM'dan kaldır
-                        tempModal.addEventListener('hidden.bs.modal', function() {
-                            document.body.removeChild(tempModal);
-                        });
-                    }
-                } catch (err) {
-                    console.error('Hata:', err);
-                    toastr.error('Cevap bilgileri alınamadı.');
-                }
             });
 
             // Detay göster

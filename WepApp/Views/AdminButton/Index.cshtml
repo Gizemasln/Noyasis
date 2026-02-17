@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = "Buton Yetkilendirme";
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
-
     // Sayfa adı çeviri sözlüğü
     var sayfaAdlari = new Dictionary<string, string>
             {
@@ -53,25 +52,33 @@
                 ["AdminTeklifVer"] = "Teklif Oluştur",
                 ["AdminUrunGaleri"] = "Ürün Görselleri",
                 ["AdminUYB"] = "Genel Ayarlar",
-                ["AdminYetki"] = "Yetkilendirme",
+                ["AdminYetki"] = "Yetkilendirme"
             };
 
-    // BUTON AKSİYONU ÇEVİRİ SÖZLÜĞÜ - ÖZEL, DİĞER TABLOLARDA OLMAYAN İCONLAR
+    // BUTON AKSİYONU ÇEVİRİ SÖZLÜĞÜ - SADECE İHTİYAÇ DUYULANLAR
     var butonAdlari = new Dictionary<string, dynamic>
             {
                 ["create"] = new { Ad = "Ekle", Icon = "fa-hammer", Renk = "purple" },
                 ["edit"] = new { Ad = "Düzenle", Icon = "fa-wrench", Renk = "orange" },
                 ["delete"] = new { Ad = "Sil", Icon = "fa-eraser", Renk = "maroon" },
-                ["view"] = new { Ad = "Detay", Icon = "fa-binoculars", Renk = "teal" },
-                ["export"] = new { Ad = "Dışa Aktar", Icon = "fa-rocket", Renk = "indigo" },
-                ["download"] = new { Ad = "İndir", Icon = "fa-magnet", Renk = "pink" },
-                ["print"] = new { Ad = "Yazdır", Icon = "fa-scroll", Renk = "brown" },
-                ["approve"] = new { Ad = "Onaycı", Icon = "fa-stamp", Renk = "emerald" },
-                ["reject"] = new { Ad = "Engelleyici", Icon = "fa-shield", Renk = "crimson" },
-                ["save"] = new { Ad = "Kaydet", Icon = "fa-box", Renk = "navy" }
+                ["view"] = new { Ad = "Detay", Icon = "fa-binoculars", Renk = "teal" }
             };
-}
 
+    // Gizlenecek controller'lar
+    var gizlenecekler = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    {
+        "Home",
+        "AdminKullanici",
+        "AdminKullanicilar",
+        "AdminPaketGrupDetay",
+        "_LayoutWebAdmin",
+        "_LayoutWebUI",
+        "InsanKaynaklari",
+        "UrunDetay",
+        "Shared",
+        "Login"
+    };
+}
 <style>
     /* RENK TANIMLARI - ÖZEL RENKLER */
     .bg-purple {
@@ -163,7 +170,6 @@
     .text-navy {
         color: #000080 !important;
     }
-
     /* ANA TASARIM - SADE VE TEMİZ */
     * {
         box-sizing: border-box;
@@ -336,7 +342,6 @@
         font-size: 0.65rem;
         font-weight: 600;
     }
-
     /* SABİT KAYDET BUTONU */
     .fixed-save-button {
         position: fixed;
@@ -367,7 +372,6 @@
         justify-content: flex-end;
         z-index: 1000;
     }
-
     /* Scrollbar */
     .menu-container::-webkit-scrollbar {
         width: 6px;
@@ -386,7 +390,6 @@
         .menu-container::-webkit-scrollbar-thumb:hover {
             background: #6c757d;
         }
-
     /* Responsive */
     @@media (max-width: 768px) {
         .user-type-bar {
@@ -426,7 +429,6 @@
         }
     }
 </style>
-
 <div class="container-fluid mt-3 permission-wrapper">
     <!-- BAŞLIK -->
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -435,11 +437,7 @@
             Buton Yetkilendirme
             <small class="text-muted">(Otomatik Tespit)</small>
         </h5>
-        <a href="@Url.Action("TaraVeGoster")" class="btn btn-sm btn-outline-secondary" target="_blank">
-            <i class="fas fa-search me-1"></i>Butonları Tara
-        </a>
     </div>
-
     <!-- MESAJ -->
     @if (TempData["Success"] != null)
     {
@@ -448,7 +446,6 @@
             <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
         </div>
     }
-
     <!-- KULLANICI TİPİ VE İSTATİSTİK -->
     <div class="user-type-bar">
         <div class="user-buttons">
@@ -471,53 +468,49 @@
             </div>
         </div>
     </div>
-
     <!-- YETKİ FORMU -->
     <form method="post" action="@Url.Action("Kaydet")" id="permissionForm">
         <input type="hidden" name="kullaniciTipi" value="@Model.SeciliKullaniciTipi" />
-
         <!-- MENÜ LİSTESİ -->
         <div class="menu-container">
             @{
                 int index = 0;
             }
-            @foreach (var controller in Model.GruplanmisButonlar.Keys.OrderBy(k => k))
+            @foreach (var controller in Model.GruplanmisButonlar.Keys
+            .Where(k => !gizlenecekler.Contains(k))
+            .OrderBy(k => k))
             {
                 var buttons = Model.GruplanmisButonlar[controller];
                 var sayfaAdi = sayfaAdlari.ContainsKey(controller) ? sayfaAdlari[controller] : controller;
-
                 <div class="menu-item">
                     <!-- HEADER -->
                     <div class="menu-header" onclick="toggleMenu('@index')">
                         <div class="menu-title">
-                            <i class="fas fa-chevron-dow" id="icon_@index"></i>
-                            <i class="fas fa-file-al"></i>
+                            <i class="fas fa-chevron-right" id="icon_@index"></i>
+                            <i class="fas fa-file-alt"></i>
                             <span>@sayfaAdi</span>
                             <span class="badge-count">@buttons.Count</span>
                         </div>
                         <div class="menu-actions" onclick="event.stopPropagation()">
                             <button type="button" class="btn btn-xs btn-outline-success controller-tumunu-sec" data-controller="@controller">
-                                <i class="fas fa-chec"></i> Tümü
+                                <i class="fas fa-check"></i> Tümü
                             </button>
                             <button type="button" class="btn btn-xs btn-outline-danger controller-tumunu-kaldir" data-controller="@controller">
-                                <i class="fas fa-time"></i> Temizle
+                                <i class="fas fa-times"></i> Temizle
                             </button>
                         </div>
                     </div>
-
                     <!-- CONTENT -->
                     <div id="menu_@index" class="menu-content" style="display: @(index == 0 ? "flex" : "none")">
                         @foreach (var button in buttons.OrderBy(b => b.Action))
                         {
                             string key = $"{button.Controller}|{button.Action}";
                             bool izinVar = Model.ButtonPermissions.ContainsKey(key) && Model.ButtonPermissions[key];
-
                             // Buton bilgileri
                             string buttonIcon = "fa-circle";
                             string buttonColor = "secondary";
                             string buttonText = button.Action;
                             string renkClass = "secondary";
-
                             if (butonAdlari.ContainsKey(button.Action.ToLower()))
                             {
                                 var butonBilgi = butonAdlari[button.Action.ToLower()];
@@ -526,7 +519,6 @@
                                 buttonText = butonBilgi.Ad;
                                 renkClass = butonBilgi.Renk;
                             }
-
                             <div class="button-chip @(izinVar ? "izinli" : "")">
                                 <input class="form-check-input button-checkbox"
                                        type="checkbox"
@@ -546,26 +538,22 @@
                 index++;
             }
         </div>
-
         <!-- STICKY KAYDET BUTONU -->
         <div class="sticky-save-container">
             <button type="submit" class="btn btn-primary btn-lg px-5">
-                <i class="fas fa-sav me-2"></i>Yetkileri Kaydet
+                <i class="fas fa-save me-2"></i>Yetkileri Kaydet
             </button>
         </div>
     </form>
 </div>
-
-
 @section Script {
     <!-- jQuery CDN -->
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         // MENU TOGGLE - Pure JavaScript
         function toggleMenu(index) {
             var menu = document.getElementById('menu_' + index);
             var icon = document.getElementById('icon_' + index);
-
             if (menu.style.display === 'none' || menu.style.display === '') {
                 menu.style.display = 'flex';
                 icon.className = 'fas fa-chevron-down';
@@ -574,7 +562,6 @@
                 icon.className = 'fas fa-chevron-right';
             }
         }
-
         // jQuery hazır olduğunda
         $(document).ready(function() {
             // Tümünü seç
@@ -583,26 +570,22 @@
                 e.stopPropagation();
                 var controller = $(this).data('controller');
                 var checkboxes = $(`input[type="checkbox"][data-controller="${controller}"]`);
-
                 checkboxes.prop('checked', true);
                 checkboxes.each(function() {
                     $(this).closest('.button-chip').addClass('izinli');
                 });
             });
-
             // Tümünü kaldır
             $('.controller-tumunu-kaldir').click(function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 var controller = $(this).data('controller');
                 var checkboxes = $(`input[type="checkbox"][data-controller="${controller}"]`);
-
                 checkboxes.prop('checked', false);
                 checkboxes.each(function() {
                     $(this).closest('.button-chip').removeClass('izinli');
                 });
             });
-
             // Checkbox değiştiğinde
             $(document).on('change', '.button-checkbox', function() {
                 if ($(this).is(':checked')) {
@@ -611,7 +594,6 @@
                     $(this).closest('.button-chip').removeClass('izinli');
                 }
             });
-
             // Sayfa yüklendiğinde
             $('.button-checkbox:checked').each(function() {
                 $(this).closest('.button-chip').addClass('izinli');

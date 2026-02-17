@@ -17,7 +17,7 @@ namespace WepApp.Repositories
         {
             // HATA DÜZELTİLDİ - Sondaki fazla parantez kaldırıldı
             _connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString
-                ?? "Server=tcp:89.19.21.42;Initial Catalog=Noyasis;Persist Security Info=False;User ID=speedsoft;Password=5063664643msb*;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;";
+                ?? "Server=193.35.155.81,1433;Database=Noyasis;User Id=sqluser;Password=5343212901Ga*;TrustServerCertificate=True;";
         }
 
         // Tüm buton izinlerini getir

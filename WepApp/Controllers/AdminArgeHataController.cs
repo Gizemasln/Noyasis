@@ -33,7 +33,7 @@ namespace WepApp.Controllers
                 .OrderByDescending(x => x.EklenmeTarihi)
                 .ToList();
 
-            List<ARGEDurum> durumListesi = _argeDurumRepository.GetirList(x => x.Durumu == 1)
+            List<ARGEDurum> durumListesi = _argeDurumRepository.GetirList(x => x.Durumu == 1 && x.Id!=6)
                 .OrderBy(x => x.Sira)
                 .ToList();
             ViewBag.DurumListesi = durumListesi;

@@ -3,36 +3,60 @@
   "WorkspaceRootPath": "D:\\PROJELER\\Noyasis\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\views\\arge\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\views\\arge\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\views\\shared\\_layoutwebadmin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\views\\shared\\_layoutwebadmin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\controllers\\argecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\controllers\\argecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\controllers\\adminmustericontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\controllers\\adminmustericontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\repositories\\argehatarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\repositories\\argehatarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6D2F6DB6-DDAC-41BF-A9BB-AA0DD1E28ACC}|WinAppReport\\WinAppReport.csproj|d:\\projeler\\noyasis\\winappreport\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{6D2F6DB6-DDAC-41BF-A9BB-AA0DD1E28ACC}|WinAppReport\\WinAppReport.csproj|solutionrelative:winappreport\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\controllers\\istekonericontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\controllers\\istekonericontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\notifications.log||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\notifications.log||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\controllers\\adminargehatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\controllers\\adminargehatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\repositories\\istekonerirepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\repositories\\istekonerirepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\models\\context.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\models\\context.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\views\\istekoneri\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\views\\istekoneri\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\wepapp.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\wepapp.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\models\\musteri.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\models\\musteri.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\models\\bayi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\models\\bayi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\views\\adminargehata\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\views\\adminargehata\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\views\\administekoneri\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\views\\administekoneri\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\controllers\\administekonericontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\controllers\\administekonericontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\models\\istekoneri.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\models\\istekoneri.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\models\\istekoneridurum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\models\\istekoneridurum.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -42,7 +66,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 214,
-          "SelectedChildIndex": 14,
+          "SelectedChildIndex": 19,
           "Children": [
             {
               "$type": "Bookmark",
@@ -98,106 +122,184 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "_LayoutWebAdmin.cshtml",
-              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\Shared\\_LayoutWebAdmin.cshtml",
-              "RelativeDocumentMoniker": "WepApp\\Views\\Shared\\_LayoutWebAdmin.cshtml",
-              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\Shared\\_LayoutWebAdmin.cshtml",
-              "RelativeToolTip": "WepApp\\Views\\Shared\\_LayoutWebAdmin.cshtml",
-              "ViewState": "AgIAAAIBAAAAAAAAAAAAAAwBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-14T10:30:39.902Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "LoginController.cs",
-              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\LoginController.cs",
-              "RelativeDocumentMoniker": "WepApp\\Controllers\\LoginController.cs",
-              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\LoginController.cs",
-              "RelativeToolTip": "WepApp\\Controllers\\LoginController.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAQwBcAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T10:19:34.02Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "AdminMusteriController.cs",
-              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\AdminMusteriController.cs",
-              "RelativeDocumentMoniker": "WepApp\\Controllers\\AdminMusteriController.cs",
-              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\AdminMusteriController.cs",
-              "RelativeToolTip": "WepApp\\Controllers\\AdminMusteriController.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAAAgwCUAAAAxAAAAAAAAAA==",
+              "Title": "ArgeHataRepository.cs",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Repositories\\ArgeHataRepository.cs",
+              "RelativeDocumentMoniker": "WepApp\\Repositories\\ArgeHataRepository.cs",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Repositories\\ArgeHataRepository.cs",
+              "RelativeToolTip": "WepApp\\Repositories\\ArgeHataRepository.cs",
+              "ViewState": "AgIAADoAAAAAAAAAAADwv08AAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T10:03:55.788Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "App.config",
-              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WinAppReport\\App.config",
-              "RelativeDocumentMoniker": "WinAppReport\\App.config",
-              "ToolTip": "D:\\PROJELER\\Noyasis\\WinAppReport\\App.config",
-              "RelativeToolTip": "WinAppReport\\App.config",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
-              "WhenOpened": "2026-02-14T10:02:38.485Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "notifications.log",
-              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\notifications.log",
-              "RelativeDocumentMoniker": "WepApp\\notifications.log",
-              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\notifications.log",
-              "RelativeToolTip": "WepApp\\notifications.log",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2026-02-14T10:02:30.499Z",
+              "WhenOpened": "2026-02-17T10:07:57.443Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\appsettings.json",
-              "RelativeDocumentMoniker": "WepApp\\appsettings.json",
-              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\appsettings.json",
-              "RelativeToolTip": "WepApp\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-02-14T10:02:27.725Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Context.cs",
-              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Models\\Context.cs",
-              "RelativeDocumentMoniker": "WepApp\\Models\\Context.cs",
-              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Models\\Context.cs",
-              "RelativeToolTip": "WepApp\\Models\\Context.cs",
-              "ViewState": "AgIAAEMAAAAAAAAAAAA1wAAAAAAAAAAAAAAAAA==",
+              "Title": "IstekOneriRepository.cs",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Repositories\\IstekOneriRepository.cs",
+              "RelativeDocumentMoniker": "WepApp\\Repositories\\IstekOneriRepository.cs",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Repositories\\IstekOneriRepository.cs",
+              "RelativeToolTip": "WepApp\\Repositories\\IstekOneriRepository.cs",
+              "ViewState": "AgIAAHAAAAAAAAAAAAAywJQAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-14T10:02:06.905Z",
+              "WhenOpened": "2026-02-17T10:05:53.145Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 7,
-              "Title": "WepApp.csproj",
-              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\WepApp.csproj",
-              "RelativeDocumentMoniker": "WepApp\\WepApp.csproj",
-              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\WepApp.csproj",
-              "RelativeToolTip": "WepApp\\WepApp.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAABlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-02-13T20:16:38.741Z",
+              "Title": "Musteri.cs",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Models\\Musteri.cs",
+              "RelativeDocumentMoniker": "WepApp\\Models\\Musteri.cs",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Models\\Musteri.cs",
+              "RelativeToolTip": "WepApp\\Models\\Musteri.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAAkwD8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T09:59:43.038Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Bayi.cs",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Models\\Bayi.cs",
+              "RelativeDocumentMoniker": "WepApp\\Models\\Bayi.cs",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Models\\Bayi.cs",
+              "RelativeToolTip": "WepApp\\Models\\Bayi.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAA0wDMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T09:59:36.497Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\IstekOneri\\Index.cshtml",
+              "RelativeDocumentMoniker": "WepApp\\Views\\IstekOneri\\Index.cshtml",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\IstekOneri\\Index.cshtml",
+              "RelativeToolTip": "WepApp\\Views\\IstekOneri\\Index.cshtml",
+              "ViewState": "AgIAAPgDAAAAAAAAAAAUwBMEAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-17T09:46:51.608Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IstekOneriController.cs",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\IstekOneriController.cs",
+              "RelativeDocumentMoniker": "WepApp\\Controllers\\IstekOneriController.cs",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\IstekOneriController.cs",
+              "RelativeToolTip": "WepApp\\Controllers\\IstekOneriController.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAgwEMAAABNAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T09:46:43.576Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\Arge\\Index.cshtml",
+              "RelativeDocumentMoniker": "WepApp\\Views\\Arge\\Index.cshtml",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\Arge\\Index.cshtml",
+              "RelativeToolTip": "WepApp\\Views\\Arge\\Index.cshtml",
+              "ViewState": "AgIAAAMBAAAAAAAAAAAEwB8BAABgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-17T09:46:10.588Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ArgeController.cs",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\ArgeController.cs",
+              "RelativeDocumentMoniker": "WepApp\\Controllers\\ArgeController.cs",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\ArgeController.cs",
+              "RelativeToolTip": "WepApp\\Controllers\\ArgeController.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABMAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T09:45:57.701Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminArgeHata\\Index.cshtml",
+              "RelativeDocumentMoniker": "WepApp\\Views\\AdminArgeHata\\Index.cshtml",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminArgeHata\\Index.cshtml",
+              "RelativeToolTip": "WepApp\\Views\\AdminArgeHata\\Index.cshtml",
+              "ViewState": "AgIAADACAAAAAAAAAAAEwDcCAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-17T09:37:44.311Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AdminArgeHataController.cs",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\AdminArgeHataController.cs",
+              "RelativeDocumentMoniker": "WepApp\\Controllers\\AdminArgeHataController.cs",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\AdminArgeHataController.cs",
+              "RelativeToolTip": "WepApp\\Controllers\\AdminArgeHataController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T09:33:12.494Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "IstekOneri.cs",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Models\\IstekOneri.cs",
+              "RelativeDocumentMoniker": "WepApp\\Models\\IstekOneri.cs",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Models\\IstekOneri.cs",
+              "RelativeToolTip": "WepApp\\Models\\IstekOneri.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAcwBsAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T09:07:13.214Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "IstekOneriDurum.cs",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Models\\IstekOneriDurum.cs",
+              "RelativeDocumentMoniker": "WepApp\\Models\\IstekOneriDurum.cs",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Models\\IstekOneriDurum.cs",
+              "RelativeToolTip": "WepApp\\Models\\IstekOneriDurum.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T09:07:12.55Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminIstekOneri\\Index.cshtml",
+              "RelativeDocumentMoniker": "WepApp\\Views\\AdminIstekOneri\\Index.cshtml",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminIstekOneri\\Index.cshtml",
+              "RelativeToolTip": "WepApp\\Views\\AdminIstekOneri\\Index.cshtml",
+              "ViewState": "AgIAAA8CAAAAAAAAAAAEwCQCAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-17T09:07:01.207Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "AdminIstekOneriController.cs",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\AdminIstekOneriController.cs",
+              "RelativeDocumentMoniker": "WepApp\\Controllers\\AdminIstekOneriController.cs",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\AdminIstekOneriController.cs",
+              "RelativeToolTip": "WepApp\\Controllers\\AdminIstekOneriController.cs",
+              "ViewState": "AgIAADcAAAAAAAAAAAAcwFQAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-17T09:06:52.243Z",
               "EditorCaption": ""
             }
           ]

@@ -41,6 +41,7 @@ namespace WepApp.Controllers
 
             Bayi bayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
+            Musteri musteri = SessionHelper.GetObjectFromJson<Musteri>(HttpContext.Session, "Musteri");
 
             List<Bayi> bayiList;
 
@@ -48,6 +49,10 @@ namespace WepApp.Controllers
             {
                 // Bayi girişi: Sadece kendisi ve alt bayileri
                 bayiList = GetBayiVeAltBayiler(bayi.Id);
+            }
+            if (musteri != null)
+            {
+                bayiList = GetBayi(musteri.BayiId ?? 0);
             }
             else
             {
@@ -1511,7 +1516,16 @@ namespace WepApp.Controllers
             }
             return result;
         }
-
+        private List<Bayi> GetBayi(int bayiId)
+        {
+            List<Bayi> result = new List<Bayi>();
+            Bayi anaBayi = _bayiRepository.Getir(bayiId);
+            if (anaBayi != null && anaBayi.Durumu == 1)
+            {
+                result.Add(anaBayi);
+            }
+            return result;
+        }
         private void AddAltBayiler(int ustBayiId, List<Bayi> resultList)
         {
             List<Bayi> altBayiler = _bayiRepository.GetirList(x => x.UstBayiId == ustBayiId && x.Durumu == 1);

@@ -7,6 +7,8 @@
     int totalPages = ViewBag.TotalPages ?? 1;
     int totalCount = ViewBag.TotalCount ?? 0;
     string kullaniciTipi = ViewBag.KullaniciTipi;
+    var bayiListe = ViewBag.BayiListe as List<WepApp.Models.IstekOneriler> ?? new List<WepApp.Models.IstekOneriler>();
+    var musteriListe = ViewBag.MusteriListe as List<WepApp.Models.IstekOneriler> ?? new List<WepApp.Models.IstekOneriler>();
 }
 
 <style>
@@ -53,6 +55,102 @@
         right: 20px;
         z-index: 9999;
         max-width: 400px;
+    }
+
+    /* Cevap Durum Stilleri */
+    .cevap-bekliyor {
+        background-color: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+    }
+
+    .cevap-verildi {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .cevap-badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-weight: 600;
+    }
+
+    .cevap-icerik {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 8px;
+        margin-top: 5px;
+        font-size: 0.8rem;
+        line-height: 1.4;
+        max-height: 60px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .cevap-icerik:hover {
+            background-color: #e9ecef;
+        }
+
+    .cevap-tarihi {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+
+    .durum-bilgi {
+        font-size: 0.8rem;
+        color: #495057;
+        margin-top: 3px;
+    }
+
+    /* Cevap Modal */
+    .cevap-modal-content {
+        background-color: #f8f9fa;
+        border-left: 4px solid #28a745;
+    }
+
+    /* Kayıt Sahibi Badge */
+    .sahibi-badge-bayi {
+        background-color: #cce5ff;
+        color: #004085;
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        border-radius: 4px;
+        display: inline-block;
+        margin-bottom: 3px;
+    }
+
+    .sahibi-badge-musteri {
+        background-color: #d4edda;
+        color: #155724;
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        border-radius: 4px;
+        display: inline-block;
+        margin-bottom: 3px;
+    }
+
+    /* Filtre Butonları */
+    .filtre-butonlari {
+        margin-bottom: 20px;
+    }
+
+        .filtre-butonlari .btn {
+            margin-right: 5px;
+        }
+
+            .filtre-butonlari .btn.active {
+                font-weight: bold;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            }
+
+    .kayit-sahibi-alani {
+        font-size: 0.8rem;
+        margin-bottom: 5px;
     }
 </style>
 
@@ -118,122 +216,771 @@
         </div>
     </div>
 
-    <!-- Kayıt Listesi -->
-    <div class="card shadow">
-        <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0"><i class="fas fa-list-alt me-2"></i> İstek ve Önerilerim (@totalCount kayıt)</h4>
-            <div>
-                <a href="@Url.Action("Index", new { page = currentPage })" class="btn btn-light btn-sm">
-                    <i class="fas fa-sync-alt me-1"></i> Yenile
-                </a>
+    @if (kullaniciTipi == "Bayi")
+    {
+        <!-- Filtre Butonları -->
+        <div class="filtre-butonlari">
+            <a href="@Url.Action("Index", new { filtre = "tumu" })"
+               class="btn @(ViewBag.SeciliFiltre == "tumu" ? "btn-primary active" : "btn-outline-primary")">
+                <i class="fas fa-layer-group me-1"></i> Tümü
+            </a>
+            <a href="@Url.Action("Index", new { filtre = "bayi" })"
+               class="btn @(ViewBag.SeciliFiltre == "bayi" ? "btn-info active" : "btn-outline-info")">
+                <i class="fas fa-store me-1"></i> Kendi Bayim Adına (@ViewBag.ToplamBayi)
+            </a>
+            <a href="@Url.Action("Index", new { filtre = "musteri" })"
+               class="btn @(ViewBag.SeciliFiltre == "musteri" ? "btn-success active" : "btn-outline-success")">
+                <i class="fas fa-users me-1"></i> Bağlı Müşterilerim Adına (@ViewBag.ToplamMusteri)
+            </a>
+        </div>
+    }
+
+    @if (kullaniciTipi == "Bayi" && ViewBag.SeciliFiltre == "tumu")
+    {
+        <!-- Bayi Adına Kayıtlar -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-store me-2"></i> Kendi Bayim Adına İstek ve Öneriler (@bayiListe.Count)</h5>
+            </div>
+            <div class="card-body">
+                @if (bayiListe.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Lisans Tipi</th>
+                                    <th>Konu</th>
+                                    <th>Açıklama</th>
+                                    <th>Cevap Durumu</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in bayiListe)
+                                {
+                                    var lisansAdi = item.LisansTip?.Adi ?? "-";
+                                    var cevapTarihi = "";
+                                    var kisaCevap = "";
+                                    var durumBilgi = "";
+
+                                    if (item.DistributorCevapVerdiMi && !string.IsNullOrEmpty(item.DistributorCevap))
+                                    {
+                                        cevapTarihi = item.DistributorCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "";
+                                        kisaCevap = item.DistributorCevap.Length > 50
+                                        ? item.DistributorCevap.Substring(0, 50) + "..."
+                                        : item.DistributorCevap;
+                                        durumBilgi = item.IstekOneriDurum?.Adi ?? "Cevap Verildi";
+                                    }
+                                    else
+                                    {
+                                        cevapTarihi = "Henüz cevap verilmedi";
+                                        durumBilgi = item.IstekOneriDurum?.Adi ?? "Beklemede";
+                                    }
+
+                                    <tr data-id="@item.Id">
+                                        <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>@lisansAdi</td>
+                                        <td>@item.Konu</td>
+                                        <td>
+                                            <div class="text-truncate" style="max-width: 250px;"
+                                                 title="@item.Metni">
+                                                @(item.Metni.Length > 80 ? item.Metni.Substring(0, 80) + "..." : item.Metni)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-column">
+                                                @if (item.DistributorCevapVerdiMi && !string.IsNullOrEmpty(item.DistributorCevap))
+                                                {
+                                                    <div class="cevap-icerik" data-cevap="@item.DistributorCevap"
+                                                         data-id="@item.Id" title="Cevabı görmek için tıklayın">
+                                                        @kisaCevap
+                                                    </div>
+                                                }
+                                                <small class="cevap-tarihi">@cevapTarihi</small>
+                                                <div class="durum-bilgi">
+                                                    <i class="fas fa-info-circle me-1"></i>
+                                                    Durum: @durumBilgi
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if (!item.DistributorCevapVerdiMi)
+                                            {
+                                                <button class="btn btn-sm btn-warning text-white btn-duzenle"
+                                                        data-id="@item.Id" title="Düzenle">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-danger btn-sil"
+                                                        data-id="@item.Id" title="Sil">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Düzenlenemez</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-3">
+                        <p class="text-muted mb-0">Bayi adına henüz istek/öneri gönderilmemiş.</p>
+                    </div>
+                }
             </div>
         </div>
-        <div class="card-body">
-            @if (Model != null && Model.Any())
-            {
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped" id="istekTablo">
-                        <thead>
-                            <tr>
-                                <th>Tarih</th>
-                                <th>Lisans Tipi</th>
-                                <th>Konu</th>
-                                <th>Açıklama</th>
-                                <th>İşlemler</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                var lisansAdi = item.LisansTip?.Adi ?? "-";
 
-                                <tr data-id="@item.Id">
-                                    <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
-                                    <td>@lisansAdi</td>
-                                    <td>@item.Konu</td>
-                                    <td>
-                                        <div class="text-truncate" style="max-width: 250px;"
-                                             title="@item.Metni">
-                                            @(item.Metni.Length > 80 ? item.Metni.Substring(0, 80) + "..." : item.Metni)
-                                        </div>
-                                    </td>
-                            
-                                    <td>
-                                        <button class="btn btn-sm btn-warning text-white btn-duzenle"
-                                                data-id="@item.Id" title="Düzenle">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-danger btn-sil"
-                                                data-id="@item.Id" title="Sil">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                @if (totalPages > 1)
+        <!-- Müşteri Adına Kayıtlar -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i> Bağlı Müşterilerim Adına İstek ve Öneriler (@musteriListe.Count)</h5>
+            </div>
+            <div class="card-body">
+                @if (musteriListe.Any())
                 {
-                    <nav aria-label="Sayfa navigasyonu">
-                        <ul class="pagination justify-content-center mt-4">
-                            @if (currentPage > 1)
-                            {
-                                <li class="page-item">
-                                    <a class="page-link" asp-action="Index"
-                                       asp-route-page="1">
-                                        <i class="fas fa-angle-double-left"></i>
-                                    </a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" asp-action="Index"
-                                       asp-route-page="@(currentPage-1)">
-                                        <i class="fas fa-angle-left"></i>
-                                    </a>
-                                </li>
-                            }
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Lisans Tipi</th>
+                                    <th>Konu</th>
+                                    <th>Açıklama</th>
+                                    <th>Müşteri</th>
+                                    <th>Cevap Durumu</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in musteriListe)
+                                {
+                                    var lisansAdi = item.LisansTip?.Adi ?? "-";
+                                    var cevapTarihi = "";
+                                    var kisaCevap = "";
+                                    var durumBilgi = "";
+                                    var musteriAdi = item.Musteri != null ? item.Musteri.Ad + " " + item.Musteri.Soyad : "Belirtilmemiş";
 
-                            @{
-                                int start = Math.Max(1, currentPage - 2);
-                                int end = Math.Min(totalPages, currentPage + 2);
-                            }
+                                    if (item.DistributorCevapVerdiMi && !string.IsNullOrEmpty(item.DistributorCevap))
+                                    {
+                                        cevapTarihi = item.DistributorCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "";
+                                        kisaCevap = item.DistributorCevap.Length > 50
+                                        ? item.DistributorCevap.Substring(0, 50) + "..."
+                                        : item.DistributorCevap;
+                                        durumBilgi = item.IstekOneriDurum?.Adi ?? "Cevap Verildi";
+                                    }
+                                    else
+                                    {
+                                        cevapTarihi = "Henüz cevap verilmedi";
+                                        durumBilgi = item.IstekOneriDurum?.Adi ?? "Beklemede";
+                                    }
 
-                            @for (int i = start; i <= end; i++)
-                            {
-                                <li class="page-item @(i == currentPage ? "active" : "")">
-                                    <a class="page-link" asp-action="Index"
-                                       asp-route-page="@i">@i</a>
-                                </li>
-                            }
-
-                            @if (currentPage < totalPages)
-                            {
-                                <li class="page-item">
-                                    <a class="page-link" asp-action="Index"
-                                       asp-route-page="@(currentPage+1)">
-                                        <i class="fas fa-angle-right"></i>
-                                    </a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" asp-action="Index"
-                                       asp-route-page="@totalPages">
-                                        <i class="fas fa-angle-double-right"></i>
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    </nav>
+                                    <tr data-id="@item.Id">
+                                        <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>@lisansAdi</td>
+                                        <td>@item.Konu</td>
+                                        <td>
+                                            <div class="text-truncate" style="max-width: 200px;"
+                                                 title="@item.Metni">
+                                                @(item.Metni.Length > 80 ? item.Metni.Substring(0, 80) + "..." : item.Metni)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="sahibi-badge-musteri">
+                                                <i class="fas fa-user me-1"></i>@musteriAdi
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-column">
+                                                @if (item.DistributorCevapVerdiMi && !string.IsNullOrEmpty(item.DistributorCevap))
+                                                {
+                                                    <div class="cevap-icerik" data-cevap="@item.DistributorCevap"
+                                                         data-id="@item.Id" title="Cevabı görmek için tıklayın">
+                                                        @kisaCevap
+                                                    </div>
+                                                }
+                                                <small class="cevap-tarihi">@cevapTarihi</small>
+                                                <div class="durum-bilgi">
+                                                    <i class="fas fa-info-circle me-1"></i>
+                                                    Durum: @durumBilgi
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if (!item.DistributorCevapVerdiMi)
+                                            {
+                                                <button class="btn btn-sm btn-warning text-white btn-duzenle"
+                                                        data-id="@item.Id" title="Düzenle">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-danger btn-sil"
+                                                        data-id="@item.Id" title="Sil">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Düzenlenemez</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 }
-            }
-            else
-            {
-                <div class="text-center py-5">
-                    <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
-                    <p class="text-muted fs-5">Henüz istek/öneri göndermediniz.</p>
+                else
+                {
+                    <div class="text-center py-3">
+                        <p class="text-muted mb-0">Bağlı müşteriler adına henüz istek/öneri gönderilmemiş.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else if (kullaniciTipi == "Bayi" && ViewBag.SeciliFiltre == "bayi")
+    {
+        <!-- Sadece Bayi Adına Kayıtlar -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-store me-2"></i> Kendi Bayim Adına İstek ve Öneriler (@Model.Count)</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Lisans Tipi</th>
+                                    <th>Konu</th>
+                                    <th>Açıklama</th>
+                                    <th>Cevap Durumu</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    var lisansAdi = item.LisansTip?.Adi ?? "-";
+                                    var cevapTarihi = "";
+                                    var kisaCevap = "";
+                                    var durumBilgi = "";
+
+                                    if (item.DistributorCevapVerdiMi && !string.IsNullOrEmpty(item.DistributorCevap))
+                                    {
+                                        cevapTarihi = item.DistributorCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "";
+                                        kisaCevap = item.DistributorCevap.Length > 50
+                                        ? item.DistributorCevap.Substring(0, 50) + "..."
+                                        : item.DistributorCevap;
+                                        durumBilgi = item.IstekOneriDurum?.Adi ?? "Cevap Verildi";
+                                    }
+                                    else
+                                    {
+                                        cevapTarihi = "Henüz cevap verilmedi";
+                                        durumBilgi = item.IstekOneriDurum?.Adi ?? "Beklemede";
+                                    }
+
+                                    <tr data-id="@item.Id">
+                                        <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>@lisansAdi</td>
+                                        <td>@item.Konu</td>
+                                        <td>
+                                            <div class="text-truncate" style="max-width: 250px;"
+                                                 title="@item.Metni">
+                                                @(item.Metni.Length > 80 ? item.Metni.Substring(0, 80) + "..." : item.Metni)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-column">
+                                                @if (item.DistributorCevapVerdiMi && !string.IsNullOrEmpty(item.DistributorCevap))
+                                                {
+                                                    <div class="cevap-icerik" data-cevap="@item.DistributorCevap"
+                                                         data-id="@item.Id" title="Cevabı görmek için tıklayın">
+                                                        @kisaCevap
+                                                    </div>
+                                                }
+                                                <small class="cevap-tarihi">@cevapTarihi</small>
+                                                <div class="durum-bilgi">
+                                                    <i class="fas fa-info-circle me-1"></i>
+                                                    Durum: @durumBilgi
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if (!item.DistributorCevapVerdiMi)
+                                            {
+                                                <button class="btn btn-sm btn-warning text-white btn-duzenle"
+                                                        data-id="@item.Id" title="Düzenle">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-danger btn-sil"
+                                                        data-id="@item.Id" title="Sil">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Düzenlenemez</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    @if (totalPages > 1)
+                    {
+                        <nav aria-label="Sayfa navigasyonu">
+                            <ul class="pagination justify-content-center mt-4">
+                                @if (currentPage > 1)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="Index"
+                                           asp-route-page="1"
+                                           asp-route-filtre="bayi">
+                                            <i class="fas fa-angle-double-left"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="Index"
+                                           asp-route-page="@(currentPage-1)"
+                                           asp-route-filtre="bayi">
+                                            <i class="fas fa-angle-left"></i>
+                                        </a>
+                                    </li>
+                                }
+
+                                @{
+                                    int start = Math.Max(1, currentPage - 2);
+                                    int end = Math.Min(totalPages, currentPage + 2);
+                                }
+
+                                @for (int i = start; i <= end; i++)
+                                {
+                                    <li class="page-item @(i == currentPage ? "active" : "")">
+                                        <a class="page-link" asp-action="Index"
+                                           asp-route-page="@i"
+                                           asp-route-filtre="bayi">@i</a>
+                                    </li>
+                                }
+
+                                @if (currentPage < totalPages)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="Index"
+                                           asp-route-page="@(currentPage+1)"
+                                           asp-route-filtre="bayi">
+                                            <i class="fas fa-angle-right"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="Index"
+                                           asp-route-page="@totalPages"
+                                           asp-route-filtre="bayi">
+                                            <i class="fas fa-angle-double-right"></i>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-3">
+                        <p class="text-muted mb-0">Bayi adına henüz istek/öneri gönderilmemiş.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else if (kullaniciTipi == "Bayi" && ViewBag.SeciliFiltre == "musteri")
+    {
+        <!-- Sadece Müşteri Adına Kayıtlar -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i> Bağlı Müşterilerim Adına İstek ve Öneriler (@Model.Count)</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Lisans Tipi</th>
+                                    <th>Konu</th>
+                                    <th>Açıklama</th>
+                                    <th>Müşteri</th>
+                                    <th>Cevap Durumu</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    var lisansAdi = item.LisansTip?.Adi ?? "-";
+                                    var cevapTarihi = "";
+                                    var kisaCevap = "";
+                                    var durumBilgi = "";
+                                    var musteriAdi = item.Musteri != null ? item.Musteri.Ad + " " + item.Musteri.Soyad : "Belirtilmemiş";
+
+                                    if (item.DistributorCevapVerdiMi && !string.IsNullOrEmpty(item.DistributorCevap))
+                                    {
+                                        cevapTarihi = item.DistributorCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "";
+                                        kisaCevap = item.DistributorCevap.Length > 50
+                                        ? item.DistributorCevap.Substring(0, 50) + "..."
+                                        : item.DistributorCevap;
+                                        durumBilgi = item.IstekOneriDurum?.Adi ?? "Cevap Verildi";
+                                    }
+                                    else
+                                    {
+                                        cevapTarihi = "Henüz cevap verilmedi";
+                                        durumBilgi = item.IstekOneriDurum?.Adi ?? "Beklemede";
+                                    }
+
+                                    <tr data-id="@item.Id">
+                                        <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>@lisansAdi</td>
+                                        <td>@item.Konu</td>
+                                        <td>
+                                            <div class="text-truncate" style="max-width: 200px;"
+                                                 title="@item.Metni">
+                                                @(item.Metni.Length > 80 ? item.Metni.Substring(0, 80) + "..." : item.Metni)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="sahibi-badge-musteri">
+                                                <i class="fas fa-user me-1"></i>@musteriAdi
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-column">
+                                                @if (item.DistributorCevapVerdiMi && !string.IsNullOrEmpty(item.DistributorCevap))
+                                                {
+                                                    <div class="cevap-icerik" data-cevap="@item.DistributorCevap"
+                                                         data-id="@item.Id" title="Cevabı görmek için tıklayın">
+                                                        @kisaCevap
+                                                    </div>
+                                                }
+                                                <small class="cevap-tarihi">@cevapTarihi</small>
+                                                <div class="durum-bilgi">
+                                                    <i class="fas fa-info-circle me-1"></i>
+                                                    Durum: @durumBilgi
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if (!item.DistributorCevapVerdiMi)
+                                            {
+                                                <button class="btn btn-sm btn-warning text-white btn-duzenle"
+                                                        data-id="@item.Id" title="Düzenle">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-danger btn-sil"
+                                                        data-id="@item.Id" title="Sil">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Düzenlenemez</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    @if (totalPages > 1)
+                    {
+                        <nav aria-label="Sayfa navigasyonu">
+                            <ul class="pagination justify-content-center mt-4">
+                                @if (currentPage > 1)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="Index"
+                                           asp-route-page="1"
+                                           asp-route-filtre="musteri">
+                                            <i class="fas fa-angle-double-left"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="Index"
+                                           asp-route-page="@(currentPage-1)"
+                                           asp-route-filtre="musteri">
+                                            <i class="fas fa-angle-left"></i>
+                                        </a>
+                                    </li>
+                                }
+
+                                @{
+                                    int start = Math.Max(1, currentPage - 2);
+                                    int end = Math.Min(totalPages, currentPage + 2);
+                                }
+
+                                @for (int i = start; i <= end; i++)
+                                {
+                                    <li class="page-item @(i == currentPage ? "active" : "")">
+                                        <a class="page-link" asp-action="Index"
+                                           asp-route-page="@i"
+                                           asp-route-filtre="musteri">@i</a>
+                                    </li>
+                                }
+
+                                @if (currentPage < totalPages)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="Index"
+                                           asp-route-page="@(currentPage+1)"
+                                           asp-route-filtre="musteri">
+                                            <i class="fas fa-angle-right"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="Index"
+                                           asp-route-page="@totalPages"
+                                           asp-route-filtre="musteri">
+                                            <i class="fas fa-angle-double-right"></i>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-3">
+                        <p class="text-muted mb-0">Bağlı müşteriler adına henüz istek/öneri gönderilmemiş.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else if (kullaniciTipi == "Musteri")
+    {
+        <!-- Müşteri Listesi (Tek Kart) -->
+        <div class="card shadow">
+            <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="fas fa-list-alt me-2"></i> İstek ve Önerilerim (@totalCount kayıt)</h4>
+                <div>
+                    <a href="@Url.Action("Index", new { page = currentPage })" class="btn btn-light btn-sm">
+                        <i class="fas fa-sync-alt me-1"></i> Yenile
+                    </a>
                 </div>
-            }
+            </div>
+            <div class="card-body">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped" id="istekTablo">
+                            <thead>
+                                <tr>
+                                    <th>Tarih</th>
+                                    <th>Lisans Tipi</th>
+                                    <th>Konu</th>
+                                    <th>Açıklama</th>
+                                    <th>Cevap Durumu</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    var lisansAdi = item.LisansTip?.Adi ?? "-";
+                                    var cevapTarihi = "";
+                                    var kisaCevap = "";
+                                    var durumBilgi = "";
+
+                                    if (item.DistributorCevapVerdiMi && !string.IsNullOrEmpty(item.DistributorCevap))
+                                    {
+                                        cevapTarihi = item.DistributorCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "";
+                                        kisaCevap = item.DistributorCevap.Length > 50
+                                        ? item.DistributorCevap.Substring(0, 50) + "..."
+                                        : item.DistributorCevap;
+                                        durumBilgi = item.IstekOneriDurum?.Adi ?? "Cevap Verildi";
+                                    }
+                                    else
+                                    {
+                                        cevapTarihi = "Henüz cevap verilmedi";
+                                        durumBilgi = item.IstekOneriDurum?.Adi ?? "Beklemede";
+                                    }
+
+                                    <tr data-id="@item.Id">
+                                        <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>@lisansAdi</td>
+                                        <td>@item.Konu</td>
+                                        <td>
+                                            <div class="text-truncate" style="max-width: 250px;"
+                                                 title="@item.Metni">
+                                                @(item.Metni.Length > 80 ? item.Metni.Substring(0, 80) + "..." : item.Metni)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-column">
+                                                @if (item.DistributorCevapVerdiMi && !string.IsNullOrEmpty(item.DistributorCevap))
+                                                {
+                                                    <div class="cevap-icerik" data-cevap="@item.DistributorCevap"
+                                                         data-id="@item.Id" title="Cevabı görmek için tıklayın">
+                                                        @kisaCevap
+                                                    </div>
+                                                }
+                                                <small class="cevap-tarihi">@cevapTarihi</small>
+                                                <div class="durum-bilgi">
+                                                    <i class="fas fa-info-circle me-1"></i>
+                                                    Durum: @durumBilgi
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if (!item.DistributorCevapVerdiMi)
+                                            {
+                                                <button class="btn btn-sm btn-warning text-white btn-duzenle"
+                                                        data-id="@item.Id" title="Düzenle">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-danger btn-sil"
+                                                        data-id="@item.Id" title="Sil">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Düzenlenemez</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    @if (totalPages > 1)
+                    {
+                        <nav aria-label="Sayfa navigasyonu">
+                            <ul class="pagination justify-content-center mt-4">
+                                @if (currentPage > 1)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="Index"
+                                           asp-route-page="1">
+                                            <i class="fas fa-angle-double-left"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="Index"
+                                           asp-route-page="@(currentPage-1)">
+                                            <i class="fas fa-angle-left"></i>
+                                        </a>
+                                    </li>
+                                }
+
+                                @{
+                                    int start = Math.Max(1, currentPage - 2);
+                                    int end = Math.Min(totalPages, currentPage + 2);
+                                }
+
+                                @for (int i = start; i <= end; i++)
+                                {
+                                    <li class="page-item @(i == currentPage ? "active" : "")">
+                                        <a class="page-link" asp-action="Index"
+                                           asp-route-page="@i">@i</a>
+                                    </li>
+                                }
+
+                                @if (currentPage < totalPages)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="Index"
+                                           asp-route-page="@(currentPage+1)">
+                                            <i class="fas fa-angle-right"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="Index"
+                                           asp-route-page="@totalPages">
+                                            <i class="fas fa-angle-double-right"></i>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    }
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+                        <p class="text-muted fs-5">Henüz istek/öneri göndermediniz.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Cevap Görüntüleme Modal -->
+<div class="modal fade" id="cevapModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content cevap-modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-comment-dots me-2"></i> Distributor Cevabı
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="alert alert-info">
+                            <i class="fas fa-calendar-alt me-2"></i>
+                            <strong>Cevap Tarihi:</strong> <span id="modalCevapTarihi"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Güncel Durum:</strong> <span id="modalDurumAdi"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Distributor Cevabı:</label>
+                    <div class="border rounded p-4 bg-white" style="min-height: 200px; white-space: pre-line;" id="modalCevapMetni">
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-success" role="status"></div>
+                            <p class="mt-3">Cevap bilgileri yükleniyor...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-light border">
+                    <i class="fas fa-lightbulb me-2 text-warning"></i>
+                    <small>
+                        Bu cevap firma yetkilisi tarafından gönderilmiştir. Ek bilgi veya sorularınız için
+                        bayi/distributor yetkilinizle iletişime geçebilirsiniz.
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i> Kapat
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -299,6 +1046,54 @@
                 }
             }, 5000);
         }
+
+        // Cevap içeriğine tıklayınca modal aç
+        $(document).on('click', '.cevap-icerik', function() {
+            const bildirimId = $(this).data('id');
+            const tamCevap = $(this).data('cevap');
+
+            if (tamCevap) {
+                // Data attribute'den direkt göster
+                $('#modalCevapMetni').text(tamCevap);
+                $('#modalCevapTarihi').text($(this).closest('td').find('.cevap-tarihi').text());
+                $('#modalDurumAdi').text($(this).closest('td').find('.durum-bilgi').text().replace('Durum: ', ''));
+                $('#cevapModal').modal('show');
+                return;
+            }
+
+            // AJAX ile detay getir
+            $('#modalCevapMetni').html(
+                '<div class="text-center py-5">' +
+                '<div class="spinner-border text-success" role="status"></div>' +
+                '<p class="mt-3">Cevap bilgileri yükleniyor...</p>' +
+                '</div>'
+            );
+
+            $.ajax({
+                url: '@Url.Action("CevapDetayGetir")',
+                type: 'GET',
+                data: { id: bildirimId },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        $('#modalCevapMetni').text(response.distributorCevap || 'Cevap bulunamadı.');
+                        $('#modalCevapTarihi').text(response.distributorCevapTarihi || 'Belirtilmemiş');
+                        $('#modalDurumAdi').text(response.istekDurumAdi || 'Bilinmiyor');
+                        $('#cevapModal').modal('show');
+                    } else {
+                        showMessage('warning', response.message || 'Cevap bilgileri alınamadı.');
+                    }
+                },
+                error: function() {
+                    $('#modalCevapMetni').html(
+                        '<div class="alert alert-danger">' +
+                        '<i class="fas fa-exclamation-triangle me-2"></i>' +
+                        'Cevap bilgileri alınırken bir hata oluştu.' +
+                        '</div>'
+                    );
+                }
+            });
+        });
 
         // Yeni Ekleme
         $('#ekleForm').submit(function(e) {

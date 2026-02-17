@@ -1,28 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WepApp.Models;
 using WepApp.Repositories;
-using WepApp.Services;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
+using System.Text.RegularExpressions;
+using System.IO;
 
 namespace WebApp.Controllers
 {
     public class AdminButtonController : Controller
     {
         private readonly ButtonPermissionRepository _repo;
-        private readonly ButtonScannerService _scanner;
+        private readonly IWebHostEnvironment _env;
 
         public AdminButtonController(IWebHostEnvironment env)
         {
             _repo = new ButtonPermissionRepository();
-            _scanner = new ButtonScannerService(env.WebRootPath);
+            _env = env;
         }
 
         public IActionResult Index(string kullaniciTipi = "Admin")
         {
-            // 1. Mevcut view'lerdeki butonları tara
-            var detectedButtons = _scanner.ScanAllViews();
+            // 1. View'leri tara ve gerçek butonları bul
+            var detectedButtons = ScanViewsForButtons();
 
             // 2. Benzersiz controller+action kombinasyonlarını al
             var uniqueButtons = detectedButtons
@@ -64,7 +65,7 @@ namespace WebApp.Controllers
         public IActionResult Kaydet(string kullaniciTipi, List<string> seciliIzinler)
         {
             // Tüm butonları tara
-            var detectedButtons = _scanner.ScanAllViews();
+            var detectedButtons = ScanViewsForButtons();
             var uniqueButtons = detectedButtons
                 .GroupBy(b => new { b.Controller, b.Action })
                 .Select(g => g.First())
@@ -94,17 +95,210 @@ namespace WebApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult TaraVeGoster()
-        {
-            var buttons = _scanner.ScanAllViews();
-            return View(buttons);
-        }
-
-        [HttpGet]
         public IActionResult TumIzinleriGetirJson()
         {
             var izinler = _repo.TumIzinleriGetir();
             return Json(izinler);
+        }
+
+        private List<DetectedButton> ScanViewsForButtons()
+        {
+            var buttons = new List<DetectedButton>();
+            var viewsPath = Path.Combine(_env.ContentRootPath, "Views");
+
+            if (!Directory.Exists(viewsPath))
+                return buttons;
+
+            // Tüm cshtml dosyalarını tara
+            var viewFiles = Directory.GetFiles(viewsPath, "*.cshtml", SearchOption.AllDirectories);
+
+            foreach (var viewFile in viewFiles)
+            {
+                var content = System.IO.File.ReadAllText(viewFile);
+                var fileName = Path.GetFileNameWithoutExtension(viewFile);
+                var folderName = Path.GetFileName(Path.GetDirectoryName(viewFile));
+
+                // Controller adını belirle
+                var controllerName = folderName;
+
+                // Gerçek butonları bul
+                FindButtonsInContent(content, controllerName, fileName, buttons);
+            }
+
+            return buttons;
+        }
+
+        private void FindButtonsInContent(string content, string controllerName, string viewName, List<DetectedButton> buttons)
+        {
+            // SADECE EKLE BUTONLARI VE TABLO İŞLEM BUTONLARINI BUL
+            var patterns = new[]
+            {
+                // 1. Ana ekle butonları (fa-plus icon ile)
+                @"<button[^>]*class=[""'][^""']*\bbtn-primary\b[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-plus[^""']*[""']>.*?</i>.*?</button>",
+                @"<a[^>]*class=[""'][^""']*\bbtn-primary\b[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-plus[^""']*[""']>.*?</i>.*?</a>",
+                
+                // 2. Tablo içindeki işlem butonları (düzenle ve sil)
+                @"<td[^>]*>\s*<button[^>]*class=[""'][^""']*btn-warning[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-edit[^""']*[""']>.*?</i>.*?</button>\s*<button[^>]*class=[""'][^""']*btn-danger[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-trash[^""']*[""']>.*?</i>.*?</button>\s*</td>",
+                
+                // 3. Düzenle butonları (fa-edit icon)
+                @"<button[^>]*class=[""'][^""']*\bbtn-warning\b[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-edit[^""']*[""']>.*?</i>.*?</button>",
+                @"<a[^>]*class=[""'][^""']*\bbtn-warning\b[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-edit[^""']*[""']>.*?</i>.*?</a>",
+                
+                // 4. Sil butonları (fa-trash icon)
+                @"<button[^>]*class=[""'][^""']*\bbtn-danger\b[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-trash[^""']*[""']>.*?</i>.*?</button>",
+                @"<a[^>]*class=[""'][^""']*\bbtn-danger\b[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-trash[^""']*[""']>.*?</i>.*?</a>",
+                
+                // 5. Detay butonları (fa-eye icon) - eğer varsa
+                @"<button[^>]*class=[""'][^""']*\bbtn-info\b[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-eye[^""']*[""']>.*?</i>.*?</button>",
+                @"<a[^>]*class=[""'][^""']*\bbtn-info\b[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-eye[^""']*[""']>.*?</i>.*?</a>",
+                
+                // 6. Genel buton desenleri (metin bazlı)
+                @"<button[^>]*>(.*?)(?:Ekle|ekle|Yeni|yeni|Düzenle|düzenle|Sil|sil|Detay|detay|Görüntüle|görüntüle).*?</button>",
+                @"<a[^>]*>(.*?)(?:Ekle|ekle|Yeni|yeni|Düzenle|düzenle|Sil|sil|Detay|detay|Görüntüle|görüntüle).*?</a>"
+            };
+
+            foreach (var pattern in patterns)
+            {
+                var matches = Regex.Matches(content, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                foreach (Match match in matches)
+                {
+                    var buttonHtml = match.Value;
+                    var action = DetectActionFromButton(buttonHtml);
+
+                    if (!string.IsNullOrEmpty(action) && IsValidAction(action))
+                    {
+                        // Aynı controller+action kombinasyonu varsa ekleme
+                        var existingButton = buttons.FirstOrDefault(b =>
+                            b.Controller == controllerName &&
+                            b.Action == action);
+
+                        if (existingButton == null)
+                        {
+                            buttons.Add(new DetectedButton
+                            {
+                                Controller = controllerName,
+                                Action = action
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool IsValidAction(string action)
+        {
+            // SADECE EKLE, DÜZENLE, SİL, DETAY butonları geçerli
+            var validActions = new[] { "create", "edit", "delete", "view" };
+            return validActions.Contains(action.ToLower());
+        }
+
+        private string DetectActionFromButton(string buttonHtml)
+        {
+            buttonHtml = buttonHtml.ToLower();
+
+            // İPTAL BUTONLARINI ELE - hiçbir şekilde listelenmesin
+            if (buttonHtml.Contains("iptal") ||
+                buttonHtml.Contains("cancel") ||
+                buttonHtml.Contains("data-bs-dismiss=\"modal\"") ||
+                buttonHtml.Contains("btn-secondary") ||
+                buttonHtml.Contains("btn-close"))
+            {
+                return null;
+            }
+
+            // YAZDIR, EXCEL, PDF BUTONLARINI ELE
+            if (buttonHtml.Contains("yazdır") ||
+                buttonHtml.Contains("yazdir") ||
+                buttonHtml.Contains("excel") ||
+                buttonHtml.Contains("pdf") ||
+                buttonHtml.Contains("print") ||
+                buttonHtml.Contains("export") ||
+                buttonHtml.Contains("rocket") ||
+                buttonHtml.Contains("dışa aktar") ||
+                buttonHtml.Contains("disa aktar"))
+            {
+                return null;
+            }
+
+            // 1. Data-permission attribute'u
+            var permissionMatch = Regex.Match(buttonHtml, @"data-button-permission=[""']([^""']+)[""']", RegexOptions.IgnoreCase);
+            if (permissionMatch.Success)
+            {
+                var action = MapToStandardAction(permissionMatch.Groups[1].Value);
+                if (IsValidAction(action)) return action;
+            }
+
+            // 2. Data-action attribute'u
+            var actionMatch = Regex.Match(buttonHtml, @"data-action=[""']([^""']+)[""']", RegexOptions.IgnoreCase);
+            if (actionMatch.Success)
+            {
+                var action = MapToStandardAction(actionMatch.Groups[1].Value);
+                if (IsValidAction(action)) return action;
+            }
+
+            // 3. Asp-action attribute'u
+            var aspActionMatch = Regex.Match(buttonHtml, @"asp-action=[""']([^""']+)[""']", RegexOptions.IgnoreCase);
+            if (aspActionMatch.Success)
+            {
+                var action = MapToStandardAction(aspActionMatch.Groups[1].Value);
+                if (IsValidAction(action)) return action;
+            }
+
+            // 4. onclick fonksiyonlarına göre kontrol
+            if (buttonHtml.Contains("duzenlegetir") || buttonHtml.Contains("edit") || buttonHtml.Contains("düzenle")) return "edit";
+            if (buttonHtml.Contains("silOnay") || buttonHtml.Contains("delete") || buttonHtml.Contains("sil")) return "delete";
+            if (buttonHtml.Contains("detaygetir") || buttonHtml.Contains("view") || buttonHtml.Contains("görüntüle")) return "view";
+
+            // 5. Icon sınıflarına göre kontrol
+            if (buttonHtml.Contains("fa-plus") || buttonHtml.Contains("fa-add") || buttonHtml.Contains("fa-hammer")) return "create";
+            if (buttonHtml.Contains("fa-edit") || buttonHtml.Contains("fa-pencil") || buttonHtml.Contains("fa-wrench")) return "edit";
+            if (buttonHtml.Contains("fa-trash") || buttonHtml.Contains("fa-times") || buttonHtml.Contains("fa-eraser")) return "delete";
+            if (buttonHtml.Contains("fa-eye") || buttonHtml.Contains("fa-search") || buttonHtml.Contains("fa-binoculars")) return "view";
+
+            // 6. Class sınıflarına göre kontrol
+            if (buttonHtml.Contains("btn-primary") && (buttonHtml.Contains("ekle") || buttonHtml.Contains("plus") || buttonHtml.Contains("add"))) return "create";
+            if (buttonHtml.Contains("btn-warning") || buttonHtml.Contains("btn-edit")) return "edit";
+            if (buttonHtml.Contains("btn-danger") || buttonHtml.Contains("btn-delete")) return "delete";
+            if (buttonHtml.Contains("btn-info") || buttonHtml.Contains("btn-view") || buttonHtml.Contains("btn-detail")) return "view";
+
+            // 7. Buton metnini çıkar
+            var text = ExtractButtonText(buttonHtml).ToLower();
+
+            // 8. Metin bazlı kontrol
+            if (text.Contains("ekle") || text.Contains("yeni") || text == "add" || text == "create" || text.Contains("plus")) return "create";
+            if (text.Contains("düzenle") || text.Contains("duzenle") || text == "edit" || text == "update" || text.Contains("güncelle") || text.Contains("guncelle")) return "edit";
+            if (text.Contains("sil") || text == "delete" || text == "remove" || text.Contains("kaldır") || text.Contains("kaldir")) return "delete";
+            if (text.Contains("detay") || text.Contains("görüntüle") || text.Contains("goruntule") || text == "view" || text == "details" || text.Contains("incele")) return "view";
+
+            return null; // Tespit edilemedi
+        }
+
+        private string ExtractButtonText(string buttonHtml)
+        {
+            // Button etiketi içindeki metni çıkar
+            var textMatch = Regex.Match(buttonHtml, @">(.*?)</", RegexOptions.Singleline);
+            if (textMatch.Success)
+            {
+                // HTML tag'lerini temizle
+                var text = Regex.Replace(textMatch.Groups[1].Value, @"<[^>]+>", "");
+                // Icon ve boşlukları temizle
+                text = Regex.Replace(text, @"<i[^>]*>.*?</i>", "");
+                text = Regex.Replace(text, @"&nbsp;", " ");
+                return text.Trim();
+            }
+            return "";
+        }
+
+        private string MapToStandardAction(string action)
+        {
+            action = action.ToLower();
+
+            if (action == "create" || action == "ekle" || action == "add" || action == "new") return "create";
+            if (action == "edit" || action == "duzenle" || action == "düzenle" || action == "update" || action == "guncelle" || action == "güncelle") return "edit";
+            if (action == "delete" || action == "sil" || action == "remove") return "delete";
+            if (action == "view" || action == "detay" || action == "details" || action == "goruntule" || action == "görüntüle") return "view";
+
+            return action;
         }
 
         // Sayfa adlarını Türkçeleştir
@@ -170,15 +364,7 @@ namespace WebApp.Controllers
                 "create" => "Ekle",
                 "edit" => "Düzenle",
                 "delete" => "Sil",
-                "view" => "Görüntüle",
-                "export" => "Dışa Aktar",
-                "import" => "İçe Aktar",
-                "download" => "İndir",
-                "print" => "Yazdır",
-                "approve" => "Onayla",
-                "reject" => "Reddet",
-                "save" => "Kaydet",
-                "copy" => "Kopyala",
+                "view" => "Detay",
                 _ => action
             };
         }

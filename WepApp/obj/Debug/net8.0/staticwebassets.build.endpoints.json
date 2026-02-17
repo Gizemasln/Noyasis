@@ -46497,51 +46497,6 @@
       ]
     },
     {
-      "Route": "WebAdminTheme/assets/js/button-permission.3rankdcle3.js",
-      "AssetFile": "WebAdminTheme/assets/js/button-permission.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "9930"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"L34VhTukOO8B0WndKRHxkuwOsbCNORHgVoDhYg5BVnA=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Wed, 11 Feb 2026 14:17:40 GMT"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "3rankdcle3"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-L34VhTukOO8B0WndKRHxkuwOsbCNORHgVoDhYg5BVnA="
-        },
-        {
-          "Name": "label",
-          "Value": "WebAdminTheme/assets/js/button-permission.js"
-        }
-      ]
-    },
-    {
       "Route": "WebAdminTheme/assets/js/button-permission.js",
       "AssetFile": "WebAdminTheme/assets/js/button-permission.js",
       "Selectors": [],
@@ -46556,7 +46511,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "9930"
+          "Value": "10590"
         },
         {
           "Name": "Content-Type",
@@ -46564,17 +46519,62 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"L34VhTukOO8B0WndKRHxkuwOsbCNORHgVoDhYg5BVnA=\""
+          "Value": "\"Vo5xbipw2Li5ZSi4x91rlTUZbTwALpYrkJCH9FVZMTg=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 11 Feb 2026 14:17:40 GMT"
+          "Value": "Mon, 16 Feb 2026 12:40:44 GMT"
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-L34VhTukOO8B0WndKRHxkuwOsbCNORHgVoDhYg5BVnA="
+          "Value": "sha256-Vo5xbipw2Li5ZSi4x91rlTUZbTwALpYrkJCH9FVZMTg="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/assets/js/button-permission.qgtepbykpm.js",
+      "AssetFile": "WebAdminTheme/assets/js/button-permission.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10590"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Vo5xbipw2Li5ZSi4x91rlTUZbTwALpYrkJCH9FVZMTg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 16 Feb 2026 12:40:44 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "qgtepbykpm"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Vo5xbipw2Li5ZSi4x91rlTUZbTwALpYrkJCH9FVZMTg="
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/assets/js/button-permission.js"
         }
       ]
     },

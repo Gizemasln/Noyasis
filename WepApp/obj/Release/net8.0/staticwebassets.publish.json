@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "O99DKhNFd43kbDnfxp+XVhk8Ezj4mMU6V4e+fy/QkVs=",
+  "Hash": "rmj+VCtUoZ+KYlSslGTxNGoe624nlpc2uFjMKoutOQQ=",
   "Source": "WepApp",
   "BasePath": "_content/WepApp",
   "Mode": "Default",
@@ -7864,8 +7864,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "3rankdcle3",
-      "Integrity": "L34VhTukOO8B0WndKRHxkuwOsbCNORHgVoDhYg5BVnA=",
+      "Fingerprint": "qgtepbykpm",
+      "Integrity": "Vo5xbipw2Li5ZSi4x91rlTUZbTwALpYrkJCH9FVZMTg=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\WebAdminTheme\\assets\\js\\button-permission.js"
@@ -51458,51 +51458,6 @@
       ]
     },
     {
-      "Route": "WebAdminTheme/assets/js/button-permission.3rankdcle3.js",
-      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\assets\\js\\button-permission.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "9930"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"L34VhTukOO8B0WndKRHxkuwOsbCNORHgVoDhYg5BVnA=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Wed, 11 Feb 2026 14:17:40 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "3rankdcle3"
-        },
-        {
-          "Name": "label",
-          "Value": "WebAdminTheme/assets/js/button-permission.js"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-L34VhTukOO8B0WndKRHxkuwOsbCNORHgVoDhYg5BVnA="
-        }
-      ]
-    },
-    {
       "Route": "WebAdminTheme/assets/js/button-permission.js",
       "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\assets\\js\\button-permission.js",
       "Selectors": [],
@@ -51513,7 +51468,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "9930"
+          "Value": "10590"
         },
         {
           "Name": "Content-Type",
@@ -51521,11 +51476,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"L34VhTukOO8B0WndKRHxkuwOsbCNORHgVoDhYg5BVnA=\""
+          "Value": "\"Vo5xbipw2Li5ZSi4x91rlTUZbTwALpYrkJCH9FVZMTg=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 11 Feb 2026 14:17:40 GMT"
+          "Value": "Mon, 16 Feb 2026 12:40:44 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -51535,7 +51490,52 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-L34VhTukOO8B0WndKRHxkuwOsbCNORHgVoDhYg5BVnA="
+          "Value": "sha256-Vo5xbipw2Li5ZSi4x91rlTUZbTwALpYrkJCH9FVZMTg="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/assets/js/button-permission.qgtepbykpm.js",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\assets\\js\\button-permission.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10590"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Vo5xbipw2Li5ZSi4x91rlTUZbTwALpYrkJCH9FVZMTg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 16 Feb 2026 12:40:44 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "qgtepbykpm"
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/assets/js/button-permission.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Vo5xbipw2Li5ZSi4x91rlTUZbTwALpYrkJCH9FVZMTg="
         }
       ]
     },

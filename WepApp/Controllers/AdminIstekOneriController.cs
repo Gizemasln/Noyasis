@@ -7,6 +7,7 @@ using System.Linq;
 using WebApp.Models;
 using System.IO;
 using System.Collections.Generic;
+using WebApp.Repositories;
 
 namespace WepApp.Controllers
 {
@@ -15,16 +16,12 @@ namespace WepApp.Controllers
         private readonly IstekOneriRepository _istekOneriRepository = new IstekOneriRepository();
         private readonly IstekOneriDurumRepository _istekOneriDurumRepository = new IstekOneriDurumRepository();
         private readonly BayiRepository _bayiRepository = new BayiRepository();
+        private readonly KullanicilarRepository _kullaniciRepository = new KullanicilarRepository();
 
         public IActionResult Index()
         {
-            LoadCommonData();
-
-            // Bayi bilgilerini al
-            Bayi bayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
-            bool isDistributor = bayi != null && bayi.Distributor;
-            ViewBag.Bayi = bayi;
-            ViewBag.IsDistributor = isDistributor;
+            var redirectResult = LoadCommonData();
+            if (redirectResult != null) return redirectResult;
 
             List<string> join = new List<string>();
             join.Add("LisansTip");
@@ -36,63 +33,38 @@ namespace WepApp.Controllers
                 .OrderByDescending(x => x.EklenmeTarihi)
                 .ToList();
 
-            // Eğer distributor ise, sadece kendi bayi kayıtlarını göster
-            if (isDistributor && bayi != null)
-            {
-                liste = liste.Where(x => x.BayiId == bayi.Id).ToList();
-            }
-
-            // Durum listesini ViewBag'e ekle
-            List<IstekOneriDurum> durumListesi = _istekOneriDurumRepository.GetirList(x => x.Durumu == 1)
+            List<IstekOneriDurum> durumListesi = _istekOneriDurumRepository.GetirList(x => x.Durumu == 1 && x.Id!=1)
                 .OrderBy(x => x.Sira)
                 .ToList();
             ViewBag.DurumListesi = durumListesi;
+
+            // Kullanıcı bilgilerini al
+            var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
+            ViewBag.KullaniciTipi = kullaniciTipi;
+            ViewBag.KullaniciId = kullaniciId;
+
+            // Eğer bayi ise bayi bilgilerini al
+            Bayi bayi = null;
+            if (kullaniciTipi == "Bayi")
+            {
+                bayi = _bayiRepository.Getir(x => x.Id == kullaniciId && x.Durumu == 1);
+                ViewBag.BayiInfo = bayi;
+            }
 
             ViewBag.IstekOneriListesi = liste;
             return View();
         }
 
         [HttpPost]
-        public IActionResult Sil(int Id)
+        public IActionResult CevapVer(int id, string aciklama)
         {
-            LoadCommonData();
-            try
-            {
-                Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
-                if (kullanici == null)
-                {
-                    TempData["Error"] = "Bu işlem için yetkiniz bulunmamaktadır.";
-                    return RedirectToAction("Index");
-                }
-                IstekOneriler mevcut = _istekOneriRepository.Getir(Id);
-                if (mevcut == null || mevcut.Durumu == 0)
-                {
-                    TempData["Error"] = "Kayıt bulunamadı.";
-                    return RedirectToAction("Index");
-                }
-                // Soft delete
-                mevcut.Durumu = 0;
-                mevcut.GuncelleyenKullaniciId = kullanici.Id;
-                mevcut.GuncellenmeTarihi = DateTime.Now;
-                _istekOneriRepository.Guncelle(mevcut);
-                TempData["Success"] = "Kayıt başarıyla silindi.";
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = $"Silme işlemi sırasında hata oluştu: {ex.Message}";
-            }
-            return RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        public IActionResult DurumGuncelle(int id, int durumId)
-        {
-            LoadCommonData();
+            var redirectResult = LoadCommonData();
+            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
 
             try
             {
-                Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
-                if (kullanici == null)
+                var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
+                if (string.IsNullOrEmpty(kullaniciTipi))
                 {
                     return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
                 }
@@ -103,28 +75,234 @@ namespace WepApp.Controllers
                     return Json(new { success = false, message = "Kayıt bulunamadı." });
                 }
 
-                // Distributor kontrolü
-                Bayi bayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
-                bool isDistributor = bayi != null && bayi.Distributor;
+                // Cevap zaten verilmişse güncelleme yapılabilir
+                mevcut.DistributorCevap = aciklama;
+              
+                mevcut.DistributorCevapVerdiMi = true;
+                mevcut.DistributorCevapTarihi = DateTime.Now;
+                mevcut.GuncelleyenKullaniciId = kullaniciId ?? 0;
+                mevcut.GuncellenmeTarihi = DateTime.Now;
+                mevcut.IstekOneriDurumId = 1;
 
-                if (isDistributor)
+                // Hangi tip kullanıcı cevap verdiğini kaydet
+                if (kullaniciTipi == "Kurumsal")
                 {
-                    // Distributor sadece kendi bayi kayıtlarını güncelleyebilir
-                    if (mevcut.BayiId != bayi.Id)
-                    {
-                        return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
-                    }
+                    mevcut.AdminCevapVerdiMi = true;
+                    mevcut.AdminCevapTarihi = DateTime.Now;
+                    mevcut.AdminKullaniciId = kullaniciId;
+                }
+                else if (kullaniciTipi == "Bayi")
+                {
+                    mevcut.DistributorCevapVerdiMi = true;
+                    mevcut.DistributorCevapTarihi = DateTime.Now;
+                    mevcut.DistributorBayiId = kullaniciId;
+                }
 
-                    // Distributor zaten cevap vermiş mi kontrol et
-                    if (mevcut.DistributorCevapVerdiMi)
-                    {
-                        return Json(new { success = false, message = "Bu kayıt için zaten cevap verilmiş. Durum değiştiremezsiniz." });
-                    }
+                _istekOneriRepository.Guncelle(mevcut);
+
+                // Cevap veren kullanıcı bilgilerini al
+                string cevapVerenAdi = "";
+                if (kullaniciTipi == "Kurumsal")
+                {
+                    var admin = _kullaniciRepository.Getir(x => x.Id == kullaniciId);
+                    cevapVerenAdi = admin?.Adi;
+                }
+                else if (kullaniciTipi == "Bayi")
+                {
+                    var bayi = _bayiRepository.Getir(x => x.Id == kullaniciId);
+                    cevapVerenAdi = bayi?.Unvan;
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Cevabınız başarıyla kaydedildi.",
+                    distributorCevap = aciklama,
+                    cevapVerdiMi = true,
+                    cevapTarihi = DateTime.Now.ToString("dd.MM.yyyy HH:mm"),
+                    cevapVerenTip = kullaniciTipi,
+                    cevapVerenAdi = cevapVerenAdi
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"İşlem sırasında hata oluştu: {ex.Message}" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult CevapGuncelle(int id, string aciklama)
+        {
+            var redirectResult = LoadCommonData();
+            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
+
+            try
+            {
+                var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
+                if (string.IsNullOrEmpty(kullaniciTipi))
+                {
+                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
+                }
+
+                IstekOneriler mevcut = _istekOneriRepository.Getir(id);
+                if (mevcut == null || mevcut.Durumu == 0)
+                {
+                    return Json(new { success = false, message = "Kayıt bulunamadı." });
+                }
+
+                // Sadece cevap veren kişi güncelleyebilir
+                if (kullaniciTipi == "Kurumsal" && !mevcut.AdminCevapVerdiMi)
+                {
+                    return Json(new { success = false, message = "Sadece cevap veren admin bu cevabı güncelleyebilir." });
+                }
+                if (kullaniciTipi == "Bayi" && mevcut.DistributorBayiId != kullaniciId)
+                {
+                    return Json(new { success = false, message = "Sadece cevap veren bayi bu cevabı güncelleyebilir." });
+                }
+
+                // Cevap güncelleme
+                mevcut.DistributorCevap = aciklama;
+                mevcut.DistributorCevapTarihi = DateTime.Now;
+                mevcut.GuncelleyenKullaniciId = kullaniciId ?? 0;
+                mevcut.GuncellenmeTarihi = DateTime.Now;
+
+                _istekOneriRepository.Guncelle(mevcut);
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Cevabınız başarıyla güncellendi.",
+                    distributorCevap = aciklama,
+                    cevapTarihi = DateTime.Now.ToString("dd.MM.yyyy HH:mm")
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"İşlem sırasında hata oluştu: {ex.Message}" });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetirCevap(int id)
+        {
+            var redirectResult = LoadCommonData();
+            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
+
+            try
+            {
+                var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
+                if (string.IsNullOrEmpty(kullaniciTipi))
+                {
+                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
+                }
+
+                IstekOneriler kayit = _istekOneriRepository.Getir(id);
+                if (kayit == null || kayit.Durumu == 0)
+                {
+                    return Json(new { success = false, message = "Kayıt bulunamadı." });
+                }
+
+                // Cevap veren bilgilerini al
+                string cevapVerenTip = "";
+                string cevapVerenAdi = "";
+                if (kayit.AdminCevapVerdiMi)
+                {
+                    cevapVerenTip = "Admin";
+                    var admin = _kullaniciRepository.Getir(x => x.Id == kayit.AdminKullaniciId);
+                    cevapVerenAdi = admin?.Adi;
+                }
+                else if (kayit.DistributorCevapVerdiMi)
+                {
+                    cevapVerenTip = "Bayi";
+                    var bayi = _bayiRepository.Getir(x => x.Id == kayit.DistributorBayiId);
+                    cevapVerenAdi = bayi?.Unvan;
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    distributorCevap = kayit.DistributorCevap ?? "",
+                    distributorCevapVerdiMi = kayit.DistributorCevapVerdiMi,
+                    distributorCevapTarihi = kayit.DistributorCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "",
+                    adminCevapVerdiMi = kayit.AdminCevapVerdiMi,
+                    adminCevapTarihi = kayit.AdminCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "",
+                    cevapVerenTip = cevapVerenTip,
+                    cevapVerenAdi = cevapVerenAdi,
+                    // Kullanıcının bu cevabı düzenleyip düzenleyemeyeceğini kontrol et
+                    duzenleyebilir = (kullaniciTipi == "Kurumsal" && kayit.AdminCevapVerdiMi && kayit.AdminKullaniciId == kullaniciId) ||
+                                   (kullaniciTipi == "Bayi" && kayit.DistributorCevapVerdiMi && kayit.DistributorBayiId == kullaniciId)
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Hata: {ex.Message}" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Sil(int Id)
+        {
+            var redirectResult = LoadCommonData();
+            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
+
+            try
+            {
+                var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
+                if (string.IsNullOrEmpty(kullaniciTipi) || kullaniciTipi != "Kurumsal")
+                {
+                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
+                }
+
+                IstekOneriler mevcut = _istekOneriRepository.Getir(Id);
+                if (mevcut == null || mevcut.Durumu == 0)
+                {
+                    return Json(new { success = false, message = "Kayıt bulunamadı." });
+                }
+
+                // Soft delete
+                mevcut.Durumu = 0;
+                mevcut.GuncelleyenKullaniciId = kullaniciId ?? 0;
+                mevcut.GuncellenmeTarihi = DateTime.Now;
+
+                _istekOneriRepository.Guncelle(mevcut);
+
+                return Json(new { success = true, message = "Kayıt başarıyla silindi." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Silme işlemi sırasında hata oluştu: {ex.Message}" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DurumGuncelle(int id, int durumId)
+        {
+            var redirectResult = LoadCommonData();
+            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
+
+            try
+            {
+                var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
+                if (string.IsNullOrEmpty(kullaniciTipi) || (kullaniciTipi != "Kurumsal" && kullaniciTipi != "Bayi"))
+                {
+                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
+                }
+
+                IstekOneriler mevcut = _istekOneriRepository.Getir(id);
+                if (mevcut == null || mevcut.Durumu == 0)
+                {
+                    return Json(new { success = false, message = "Kayıt bulunamadı." });
+                }
+
+                // Bayiler sadece kendi müşterilerinin durumunu güncelleyebilir
+                if (kullaniciTipi == "Bayi" && mevcut.BayiId != kullaniciId)
+                {
+                    return Json(new { success = false, message = "Sadece kendi müşterilerinizin durumunu güncelleyebilirsiniz." });
                 }
 
                 // Durum güncelleme
                 mevcut.IstekOneriDurumId = durumId;
-                mevcut.GuncelleyenKullaniciId = kullanici.Id;
+                mevcut.GuncelleyenKullaniciId = kullaniciId ?? 0;
                 mevcut.GuncellenmeTarihi = DateTime.Now;
 
                 _istekOneriRepository.Guncelle(mevcut);
@@ -146,71 +324,20 @@ namespace WepApp.Controllers
             }
         }
 
-        [HttpPost]
-        public IActionResult DistributorCevapVer(int id, string aciklama, int durumId)
-        {
-            LoadCommonData();
-
-            try
-            {
-                Bayi bayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
-                if (bayi == null || !bayi.Distributor)
-                {
-                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
-                }
-
-                IstekOneriler mevcut = _istekOneriRepository.Getir(id);
-                if (mevcut == null || mevcut.Durumu == 0)
-                {
-                    return Json(new { success = false, message = "Kayıt bulunamadı." });
-                }
-
-                // Sadece kendi bayi kayıtlarına cevap verebilir
-                if (mevcut.BayiId != bayi.Id)
-                {
-                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
-                }
-
-                // Zaten cevap verilmiş mi kontrol et
-                if (mevcut.DistributorCevapVerdiMi)
-                {
-                    return Json(new { success = false, message = "Bu kayıt için zaten cevap verilmiş. Tekrar cevap veremezsiniz." });
-                }
-
-                // Distributor cevabını ve durumu güncelle
-                mevcut.DistributorCevap = aciklama;
-                mevcut.DistributorCevapTarihi = DateTime.Now;
-                mevcut.DistributorCevapVerdiMi = true;
-                mevcut.IstekOneriDurumId = durumId;
-                mevcut.GuncellenmeTarihi = DateTime.Now;
-
-                _istekOneriRepository.Guncelle(mevcut);
-
-                return Json(new
-                {
-                    success = true,
-                    message = "Cevap ve durum başarıyla güncellendi.",
-                    cevapTarihi = DateTime.Now.ToString("dd.MM.yyyy HH:mm")
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = $"İşlem sırasında hata oluştu: {ex.Message}" });
-            }
-        }
-
         [HttpGet]
         public IActionResult DetayGetir(int id)
         {
-            LoadCommonData();
+            var redirectResult = LoadCommonData();
+            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
 
             try
             {
-                Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
-                if (kullanici == null)
+                var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
+                if (string.IsNullOrEmpty(kullaniciTipi))
                 {
                     return Json(new { success = false, message = "Yetkiniz yok" });
                 }
+
                 List<string> join = new List<string>();
                 join.Add("LisansTip");
                 join.Add("Musteri");
@@ -221,6 +348,22 @@ namespace WepApp.Controllers
                 if (kayit == null || kayit.Durumu == 0)
                 {
                     return Json(new { success = false, message = "Kayıt bulunamadı" });
+                }
+
+                // Cevap veren bilgilerini al
+                string cevapVerenTip = "";
+                string cevapVerenAdi = "";
+                if (kayit.AdminCevapVerdiMi)
+                {
+                    cevapVerenTip = "Admin";
+                    var admin = _kullaniciRepository.Getir(x => x.Id == kayit.AdminKullaniciId);
+                    cevapVerenAdi = admin?.Adi;
+                }
+                else if (kayit.DistributorCevapVerdiMi)
+                {
+                    cevapVerenTip = "Bayi";
+                    var bayi = _bayiRepository.Getir(x => x.Id == kayit.DistributorBayiId);
+                    cevapVerenAdi = bayi?.Unvan;
                 }
 
                 return Json(new
@@ -234,53 +377,18 @@ namespace WepApp.Controllers
                     lisansTipAdi = kayit.LisansTip?.Adi ?? "Belirtilmemiş",
                     istekDurumId = kayit.IstekOneriDurumId,
                     istekDurumAdi = kayit.IstekOneriDurum?.Adi ?? "Belirtilmemiş",
-                    distributorCevap = kayit.DistributorCevap,
-                    distributorCevapTarihi = kayit.DistributorCevapTarihi?.ToString("dd.MM.yyyy HH:mm"),
-                    distributorCevapVerdiMi = kayit.DistributorCevapVerdiMi,
+                    distributorCevap = kayit.DistributorCevap ?? "",
+                    distributorCevapTarihi = kayit.DistributorCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "",
+                    adminCevapTarihi = kayit.AdminCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "",
+                    cevapVerenTip = cevapVerenTip,
+                    cevapVerenAdi = cevapVerenAdi,
                     eklenmeTarihi = kayit.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm"),
-                    guncellenmeTarihi = kayit.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = $"Hata: {ex.Message}" });
-            }
-        }
-
-        [HttpGet]
-        public IActionResult GetirDistributorCevap(int id)
-        {
-            LoadCommonData();
-
-            try
-            {
-                Bayi bayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
-                if (bayi == null || !bayi.Distributor)
-                {
-                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
-                }
-
-                IstekOneriler kayit = _istekOneriRepository.Getir(x => x.Id == id);
-                if (kayit == null || kayit.Durumu == 0)
-                {
-                    return Json(new { success = false, message = "Kayıt bulunamadı" });
-                }
-
-                // Sadece kendi bayi kayıtlarını görebilir
-                if (kayit.BayiId != bayi.Id)
-                {
-                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
-                }
-
-                IstekOneriDurum durum = _istekOneriDurumRepository.Getir(kayit.IstekOneriDurumId);
-
-                return Json(new
-                {
-                    success = true,
-                    distributorCevap = kayit.DistributorCevap,
-                    distributorCevapTarihi = kayit.DistributorCevapTarihi?.ToString("dd.MM.yyyy HH:mm"),
-                    durumAdi = durum?.Adi ?? "Belirtilmemiş",
-                    durumDegisimTarihi = kayit.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")
+                    guncellenmeTarihi = kayit.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm"),
+                    // Kullanıcının bu kaydı düzenleyip düzenleyemeyeceğini kontrol et
+                    cevapDuzenleyebilir = (kullaniciTipi == "Kurumsal") ||
+                                         (kullaniciTipi == "Bayi" && kayit.BayiId == kullaniciId && !kayit.DistributorCevapVerdiMi && !kayit.AdminCevapVerdiMi),
+                    durumDuzenleyebilir = (kullaniciTipi == "Kurumsal") || (kullaniciTipi == "Bayi" && kayit.BayiId == kullaniciId),
+                    silebilir = (kullaniciTipi == "Kurumsal")
                 });
             }
             catch (Exception ex)
@@ -292,7 +400,8 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetirDurumlar()
         {
-            LoadCommonData();
+            var redirectResult = LoadCommonData();
+            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
 
             try
             {

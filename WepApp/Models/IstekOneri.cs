@@ -16,12 +16,16 @@ namespace WepApp.Models
         public DateTime EklenmeTarihi { get; set; }
         public DateTime GuncellenmeTarihi { get; set; }
 
-        // Yeni alanlar - Distributor cevabı için
+        // Distributor cevabı için
         public string? DistributorCevap { get; set; }
         public bool DistributorCevapVerdiMi { get; set; } = false;
         public DateTime? DistributorCevapTarihi { get; set; }
         public int? DistributorBayiId { get; set; }
 
+        // Admin cevabı için
+        public bool AdminCevapVerdiMi { get; set; } = false;
+        public DateTime? AdminCevapTarihi { get; set; }
+        public int? AdminKullaniciId { get; set; }
 
         // Navigation properties
         public Musteri Musteri { get; set; }

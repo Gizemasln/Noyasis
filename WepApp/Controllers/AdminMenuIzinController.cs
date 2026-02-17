@@ -86,7 +86,7 @@ namespace WebApp.Controllers
                 ("/IstekOneri", "İstek/Öneri", null, "fas fa-lightbulb", 40, 1),
                 ("/Arge", "ARGE/Hata", null, "fas fa-bug", 41, 1),
                 ("/AdminMenuIzin", "Yetkilendirme", null, "fas fa-user-shield", 42, 1),
-                ("/AdminPaketBaglama", "AdminPaketBaglama", null, "fas fa-cogs", 43, 1),
+                ("/AdminPaketBaglama", "Paket Bağlama", null, "fas fa-cogs", 43, 1),
 
                 // 2. Seviye - Alt Menüler (contentManagement altında)
                 ("/AdminAnaSayfaBannerResim", "Ana Sayfa Banner", "#contentManagement", null, 1, 2),
@@ -150,7 +150,7 @@ namespace WebApp.Controllers
                 // 3. Seviye - Teklif alt menüleri
                 ("/AdminTeklifVer", "Teklif Oluştur", "#teklifSubmenu", null, 1, 3),
                 ("/AdminTeklif", "Teklif Listesi", "#teklifSubmenu", null, 42, 1),
-                ("/AdminButtonController", "Buton Yetki", null, null, 44, 1)
+                ("/AdminButton", "Buton Yetki", null, null, 44, 1)
             };
         }
 

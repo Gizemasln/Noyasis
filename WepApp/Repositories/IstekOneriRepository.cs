@@ -54,6 +54,7 @@ namespace WepApp.Repositories
         {
             return _context.IstekOneriler
                 .Include(x => x.LisansTip)
+                .Include(x => x.Musteri)
                 .Where(x => x.BayiId == bayiId && x.Durumu == 1)
                 .OrderByDescending(x => x.EklenmeTarihi)
                 .Skip((page - 1) * pageSize)
@@ -72,6 +73,18 @@ namespace WepApp.Repositories
                 .ToList();
         }
 
+        public List<IstekOneriler> GetirMusteriListesi(List<int> musteriIdler, int page = 1, int pageSize = 10)
+        {
+            return _context.IstekOneriler
+                .Include(x => x.LisansTip)
+                .Include(x => x.Musteri)
+                .Where(x => x.MusteriId.HasValue && musteriIdler.Contains(x.MusteriId.Value) && x.Durumu == 1)
+                .OrderByDescending(x => x.EklenmeTarihi)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
+
         public int GetirBayiyeAitToplamSayi(int bayiId)
         {
             return _context.IstekOneriler
@@ -84,6 +97,12 @@ namespace WepApp.Repositories
                 .Count(x => x.MusteriId == musteriId && x.Durumu == 1);
         }
 
+        public int GetirMusteriToplamSayi(List<int> musteriIdler)
+        {
+            return _context.IstekOneriler
+                .Count(x => x.MusteriId.HasValue && musteriIdler.Contains(x.MusteriId.Value) && x.Durumu == 1);
+        }
+
         public IstekOneriler GetirById(int id, int bayiId)
         {
             return _context.IstekOneriler
@@ -94,7 +113,9 @@ namespace WepApp.Repositories
         public IstekOneriler GetirById(int id, int? musteriId, int? bayiId)
         {
             var query = _context.IstekOneriler
-                .Include(x => x.LisansTip);
+                .Include(x => x.LisansTip)
+                .Include(x => x.Musteri)
+                .Include(x => x.Bayi);
 
             if (musteriId.HasValue)
                 return query.FirstOrDefault(x => x.Id == id && x.MusteriId == musteriId.Value && x.Durumu == 1);

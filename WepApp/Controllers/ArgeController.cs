@@ -4,6 +4,7 @@ using WepApp.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using WebApp.Repositories;
+using Microsoft.AspNetCore.Http;
 
 namespace WepApp.Controllers
 {
@@ -13,9 +14,10 @@ namespace WepApp.Controllers
         private readonly GenericRepository<LisansTip> _lisansTipRepository = new GenericRepository<LisansTip>();
         private readonly GenericRepository<Musteri> _musteriRepository = new GenericRepository<Musteri>();
         private readonly GenericRepository<Bayi> _bayiRepository = new GenericRepository<Bayi>();
+        private readonly MusteriSozlesmeRepository _sozlesmeRepository = new MusteriSozlesmeRepository();
         private const int PageSize = 10;
 
-        public IActionResult Index(int page = 1, string tip = null, int? durum = 1)
+        public IActionResult Index(int page = 1, string tip = null, int? durum = 1, string filtre = "tumu")
         {
             IActionResult redirectResult = LoadCommonData();
             if (redirectResult != null) return redirectResult;
@@ -23,11 +25,11 @@ namespace WepApp.Controllers
             var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
             ViewBag.KullaniciTipi = kullaniciTipi;
             ViewBag.KullaniciId = kullaniciId;
+            ViewBag.SeciliFiltre = filtre;
 
             // Bayi müşterilerini ve bayi bilgisini yükle
             List<Musteri> bayiMusterileri = null;
             Bayi bayiBilgi = null;
-
             if (kullaniciTipi == "Bayi" && kullaniciId.HasValue)
             {
                 bayiMusterileri = _musteriRepository
@@ -35,10 +37,8 @@ namespace WepApp.Controllers
                     .OrderBy(x => x.Ad)
                     .ThenBy(x => x.Soyad)
                     .ToList();
-
                 bayiBilgi = _bayiRepository.Getir(x => x.Id == kullaniciId.Value);
             }
-
             ViewBag.BayiMusterileri = bayiMusterileri;
             ViewBag.BayiBilgi = bayiBilgi;
 
@@ -49,29 +49,36 @@ namespace WepApp.Controllers
                 .Include(x => x.Bayi)
                 .Include(x => x.ARGEDurum);
 
-            // Filtreler
             if (kullaniciTipi == "Musteri" && kullaniciId.HasValue)
             {
                 query = query.Where(x => x.MusteriId == kullaniciId.Value);
             }
             else if (kullaniciTipi == "Bayi" && kullaniciId.HasValue)
             {
-                // Bayi hem kendi kayıtlarını hem de müşterilerinin kayıtlarını görebilir
-                query = query.Where(x => x.BayiId == kullaniciId.Value ||
-                                        (x.Musteri != null && x.Musteri.BayiId == kullaniciId.Value));
+                if (filtre == "bayi")
+                {
+                    query = query.Where(x => x.BayiId == kullaniciId.Value);
+                }
+                else if (filtre == "musteri")
+                {
+                    query = query.Where(x => x.Musteri != null && x.Musteri.BayiId == kullaniciId.Value);
+                }
+                else // "tumu"
+                {
+                    query = query.Where(x => x.BayiId == kullaniciId.Value ||
+                                            (x.Musteri != null && x.Musteri.BayiId == kullaniciId.Value));
+                }
             }
 
             if (!string.IsNullOrEmpty(tip))
             {
                 query = query.Where(x => x.Tipi == tip);
             }
-
             if (durum.HasValue)
             {
                 query = query.Where(x => x.Durumu == durum.Value);
             }
 
-            // Sayfalama
             int toplam = query.Count();
             List<ArgeHata> liste = query
                 .OrderByDescending(x => x.EklenmeTarihi)
@@ -79,7 +86,67 @@ namespace WepApp.Controllers
                 .Take(PageSize)
                 .ToList();
 
-            List<LisansTip> lisansTipleri = _lisansTipRepository.GetirList(x => x.Durumu == 1);
+            // Bayi için ayrı listeler (filtre = "tumu" ise)
+            List<ArgeHata> bayiListe = new List<ArgeHata>();
+            List<ArgeHata> musteriListe = new List<ArgeHata>();
+
+            if (kullaniciTipi == "Bayi" && kullaniciId.HasValue && filtre == "tumu")
+            {
+                bayiListe = _repository.GetirQueryable()
+                    .Include(x => x.LisansTip)
+                    .Include(x => x.Musteri)
+                    .Include(x => x.Bayi)
+                    .Include(x => x.ARGEDurum)
+                    .Where(x => x.BayiId == kullaniciId.Value && x.Durumu == 1)
+                    .OrderByDescending(x => x.EklenmeTarihi)
+                   
+                    .ToList();
+
+                musteriListe = _repository.GetirQueryable()
+                    .Include(x => x.LisansTip)
+                    .Include(x => x.Musteri)
+                    .Include(x => x.Bayi)
+                    .Include(x => x.ARGEDurum)
+                    .Where(x => x.Musteri != null && x.Musteri.BayiId == kullaniciId.Value && x.Durumu == 1)
+                    .OrderByDescending(x => x.EklenmeTarihi)
+                  
+                    .ToList();
+            }
+
+            List<LisansTip> lisansTipleri = new List<LisansTip>();
+
+            if (kullaniciTipi == "Musteri" && kullaniciId.HasValue)
+            {
+                var musteriSozlesmeler = _sozlesmeRepository.GetirList(
+                    x => x.Durumu == 1 &&
+                         x.MusteriId == kullaniciId.Value &&
+                         x.SozlesmeDurumuId == 11,
+                    new List<string> { "Teklif.LisansTip" }
+                );
+
+                lisansTipleri = musteriSozlesmeler
+                    .Select(s => s.Teklif?.LisansTip)
+                    .Where(lt => lt != null && lt.Durumu == 1)
+                    .GroupBy(lt => lt.Id)
+                    .Select(g => g.First())
+                    .ToList();
+            }
+            else if (kullaniciTipi == "Bayi" && kullaniciId.HasValue)
+            {
+                var bayiMusteriSozlesmeler = _sozlesmeRepository.GetirQueryable()
+                    .Where(x => x.Durumu == 1 &&
+                                x.SozlesmeDurumuId == 11 &&
+                                x.Musteri != null &&
+                                x.Musteri.BayiId == kullaniciId.Value)
+                    .Include(s => s.Teklif)
+                    .ThenInclude(t => t.LisansTip)
+                    .Select(s => s.Teklif.LisansTip)
+                    .Where(lt => lt != null && lt.Durumu == 1)
+                    .Distinct()
+                    .ToList();
+
+                lisansTipleri = bayiMusteriSozlesmeler;
+            }
 
             ViewBag.LisansTipleri = lisansTipleri;
             ViewBag.CurrentPage = page;
@@ -89,7 +156,36 @@ namespace WepApp.Controllers
             ViewBag.SelectedTip = tip;
             ViewBag.SelectedDurum = durum;
 
+            // Bayi için ayrı listeleri View'a gönder
+            ViewBag.BayiListe = bayiListe;
+            ViewBag.MusteriListe = musteriListe;
+
             return View(liste);
+        }
+
+        [HttpGet]
+        public IActionResult GetLisansTipleriByMusteri(int musteriId)
+        {
+            if (musteriId <= 0)
+            {
+                return Json(new List<object>());
+            }
+
+            var sozlesmeler = _sozlesmeRepository.GetirList(
+                x => x.Durumu == 1 &&
+                     x.MusteriId == musteriId &&
+                     x.SozlesmeDurumuId == 11,
+                new List<string> { "Teklif.LisansTip" }
+            );
+
+            var lisansTipleri = sozlesmeler
+                .Select(s => s.Teklif?.LisansTip)
+                .Where(lt => lt != null && lt.Durumu == 1)
+                .GroupBy(lt => lt.Id)
+                .Select(g => new { id = g.Key, adi = g.First().Adi })
+                .ToList();
+
+            return Json(lisansTipleri);
         }
 
         [HttpPost]
@@ -102,7 +198,6 @@ namespace WepApp.Controllers
             if (string.IsNullOrEmpty(kullaniciTipi) || !kullaniciId.HasValue)
                 return Json(new { success = false, message = "Oturum hatası. Lütfen tekrar giriş yapın." });
 
-            // Bayi için müşteri kontrolü
             if (kullaniciTipi == "Bayi" && bildirimSahibi == "musteri" && !SecilenMusteriId.HasValue)
             {
                 return Json(new { success = false, message = "Lütfen bir müşteri seçiniz." });
@@ -117,11 +212,9 @@ namespace WepApp.Controllers
                 string dosyaYolu = null;
                 if (Dosya != null && Dosya.Length > 0)
                 {
-                    // Dosya boyutu kontrolü (10MB)
                     if (Dosya.Length > 10 * 1024 * 1024)
                         return Json(new { success = false, message = "Dosya boyutu 10MB'dan küçük olmalıdır." });
 
-                    // Dosya tipi kontrolü
                     var allowedExtensions = new[] { ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".jpg", ".jpeg", ".png" };
                     string fileExtension = Path.GetExtension(Dosya.FileName).ToLower();
                     if (!allowedExtensions.Contains(fileExtension))
@@ -152,13 +245,12 @@ namespace WepApp.Controllers
                     GuncelleyenKullaniciId = kullaniciId.Value,
                     EklenmeTarihi = DateTime.Now,
                     GuncellenmeTarihi = DateTime.Now,
-                    ARGEDurumId = 1 // Yeni durum
+                    ARGEDurumId = 1
                 };
 
                 if (LisansTipId.HasValue)
                     yeni.LisansTipId = LisansTipId.Value;
 
-                // Kullanıcı tipine göre atamalar
                 if (kullaniciTipi == "Musteri")
                 {
                     yeni.MusteriId = kullaniciId.Value;
@@ -172,7 +264,6 @@ namespace WepApp.Controllers
                     else if (bildirimSahibi == "musteri" && SecilenMusteriId.HasValue)
                     {
                         yeni.MusteriId = SecilenMusteriId.Value;
-                        // Müşterinin bayi bilgisini de set et
                         Musteri musteri = _musteriRepository.Getir(x => x.Id == SecilenMusteriId.Value);
                         if (musteri != null && musteri.BayiId.HasValue)
                         {
@@ -200,7 +291,6 @@ namespace WepApp.Controllers
         {
             ArgeHata kayit = _repository.Getir(x => x.Id == id,
                 new List<string> { "LisansTip", "Musteri", "Bayi", "ARGEDurum" });
-
             if (kayit == null)
                 return Json(new { success = false, message = "Kayıt bulunamadı." });
 
@@ -226,7 +316,6 @@ namespace WepApp.Controllers
                 BayiAdi = kayit.Bayi != null ? kayit.Bayi.Unvan : null,
                 LisansTipleri = lisansTipleri.Select(g => new { g.Id, g.Adi })
             };
-
             return Json(data);
         }
 
@@ -244,13 +333,11 @@ namespace WepApp.Controllers
             if (mevcut == null)
                 return Json(new { success = false, message = "Kayıt bulunamadı." });
 
-            // HATA DURUMU KONTROLÜ: Durumu 1 (İncelenecek) değilse düzenlemeyi engelle
             if (mevcut.Durumu != 1)
             {
                 return Json(new { success = false, message = "Bu kayıt incelenmeye alındığı için düzenlenemez. Yalnızca 'İncelenecek' durumundaki kayıtlar düzenlenebilir." });
             }
 
-            // Yetki kontrolü
             if (kullaniciTipi == "Musteri" && mevcut.MusteriId != kullaniciId.Value)
             {
                 return Json(new { success = false, message = "Bu kaydı düzenleme yetkiniz yok." });
@@ -260,7 +347,6 @@ namespace WepApp.Controllers
                 return Json(new { success = false, message = "Bu kaydı düzenleme yetkiniz yok." });
             }
 
-            // Bayi için müşteri kontrolü
             if (kullaniciTipi == "Bayi" && duzenleBildirimSahibi == "musteri" && !SecilenMusteriId.HasValue)
             {
                 return Json(new { success = false, message = "Lütfen bir müşteri seçiniz." });
@@ -275,11 +361,9 @@ namespace WepApp.Controllers
                 string dosyaYolu = mevcut.DosyaYolu;
                 if (Dosya != null && Dosya.Length > 0)
                 {
-                    // Dosya boyutu kontrolü
                     if (Dosya.Length > 10 * 1024 * 1024)
                         return Json(new { success = false, message = "Dosya boyutu 10MB'dan küçük olmalıdır." });
 
-                    // Dosya tipi kontrolü
                     var allowedExtensions = new[] { ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".jpg", ".jpeg", ".png" };
                     string fileExtension = Path.GetExtension(Dosya.FileName).ToLower();
                     if (!allowedExtensions.Contains(fileExtension))
@@ -316,7 +400,6 @@ namespace WepApp.Controllers
                 mevcut.GuncelleyenKullaniciId = kullaniciId.Value;
                 mevcut.GuncellenmeTarihi = DateTime.Now;
 
-                // Bayi için müşteri/bayi bilgisi güncelleme
                 if (kullaniciTipi == "Bayi")
                 {
                     if (duzenleBildirimSahibi == "bayi")
@@ -327,7 +410,6 @@ namespace WepApp.Controllers
                     else if (duzenleBildirimSahibi == "musteri" && SecilenMusteriId.HasValue)
                     {
                         mevcut.MusteriId = SecilenMusteriId.Value;
-                        // Müşterinin bayi bilgisini de set et
                         Musteri musteri = _musteriRepository.Getir(x => x.Id == SecilenMusteriId.Value);
                         if (musteri != null && musteri.BayiId.HasValue)
                         {
@@ -362,7 +444,6 @@ namespace WepApp.Controllers
             if (kayit == null)
                 return Json(new { success = false, message = "Kayıt bulunamadı." });
 
-            // Yetki kontrolü
             if (kullaniciTipi == "Musteri" && kayit.MusteriId != kullaniciId.Value)
             {
                 return Json(new { success = false, message = "Bu kaydı silme yetkiniz yok." });
@@ -405,18 +486,15 @@ namespace WepApp.Controllers
 
             ArgeHata kayit = _repository.Getir(x => x.Id == id,
                 new List<string> { "ARGEDurum" });
-
             if (kayit == null)
                 return Json(new { success = false, message = "Kayıt bulunamadı." });
 
-            // Yetki kontrolü
             if (kullaniciTipi == "Musteri" && kayit.MusteriId != kullaniciId.Value)
             {
                 return Json(new { success = false, message = "Bu cevabı görüntüleme yetkiniz yok." });
             }
             else if (kullaniciTipi == "Bayi" && kayit.BayiId != kullaniciId.Value)
             {
-                // Bayi hem kendi kayıtlarını hem de müşterilerinin kayıtlarını görebilir
                 if (kayit.Musteri != null && kayit.Musteri.BayiId != kullaniciId.Value)
                 {
                     return Json(new { success = false, message = "Bu cevabı görüntüleme yetkiniz yok." });
@@ -431,7 +509,6 @@ namespace WepApp.Controllers
                 distributorCevapTarihi = kayit.DistributorCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "",
                 argeDurumAdi = kayit.ARGEDurum?.Adi ?? "Beklemede"
             };
-
             return Json(data);
         }
     }
