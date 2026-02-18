@@ -12,6 +12,10 @@ class ButtonPermissionManager {
         this.initialized = false;
         this.retryCount = 0;
         this.maxRetry = 3;
+        console.log('ButonPermissionManager başlatıldı:', {
+            userType: this.currentUserType,
+            page: this.currentPage
+        });
     }
 
     // Kullanıcı tipini al (cookie'den veya localStorage'dan)
@@ -20,16 +24,23 @@ class ButtonPermissionManager {
         const cookies = document.cookie.split(';');
         for (let cookie of cookies) {
             const [name, value] = cookie.trim().split('=');
-            if (name === 'UserType' || name === 'KullaniciTipi') {
-                return value;
+            if (name === 'UserType' || name === 'KullaniciTipi' || name === 'kullaniciTipi') {
+                return decodeURIComponent(value);
             }
         }
 
         // localStorage'dan al
-        const userType = localStorage.getItem('userType') || localStorage.getItem('KullaniciTipi');
+        const userType = localStorage.getItem('userType') ||
+            localStorage.getItem('KullaniciTipi') ||
+            localStorage.getItem('kullaniciTipi');
         if (userType) return userType;
 
-        // Varsayılan olarak Admin (geliştirme aşamasında)
+        // URL'den almayı dene (bazı sistemlerde)
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlUserType = urlParams.get('kullaniciTipi');
+        if (urlUserType) return urlUserType;
+
+        // Varsayılan olarak Admin
         return 'Admin';
     }
 
@@ -51,14 +62,16 @@ class ButtonPermissionManager {
     // İzinleri backend'den yükle
     async loadPermissions() {
         try {
+            console.log('İzinler yükleniyor...');
             const response = await fetch('/AdminButton/TumIzinleriGetirJson');
 
             if (response.ok) {
                 const data = await response.json();
+                console.log('Ham izin verisi:', data);
                 this.permissions = this.formatPermissions(data);
                 this.initialized = true;
                 this.retryCount = 0;
-                console.log('Buton izinleri yüklendi');
+                console.log('Formatlanmış izinler:', this.permissions);
                 this.applyPermissions();
             } else {
                 console.error('İzinler yüklenemedi:', response.status);
@@ -84,12 +97,11 @@ class ButtonPermissionManager {
         for (const userType in data) {
             formatted[userType] = {};
 
-            // Her buton izni için
-            if (Array.isArray(data[userType])) {
-                data[userType].forEach(permission => {
-                    const key = `${permission.sayfaAdi}|${permission.butonAksiyonu}`;
-                    formatted[userType][key] = permission.izınVar;
-                });
+            // Her buton izni için (data objesi olarak geliyor)
+            if (data[userType] && typeof data[userType] === 'object') {
+                for (const key in data[userType]) {
+                    formatted[userType][key] = data[userType][key];
+                }
             }
         }
 
@@ -99,24 +111,23 @@ class ButtonPermissionManager {
     // Belirli bir buton için izin kontrolü
     hasPermission(buttonAction, customPage = null) {
         if (!this.initialized) {
+            console.log('İzinler henüz yüklenmedi, buton gösteriliyor:', buttonAction);
             return true; // Henüz yüklenmediyse göster
         }
 
         const page = customPage || this.currentPage;
         const key = `${page}|${buttonAction}`;
 
-        // Admin her şeyi görebilir (isteğe bağlı)
-        if (this.currentUserType === 'Admin') {
-            return true;
-        }
-
         // İzin kontrolü
         if (this.permissions[this.currentUserType] &&
             this.permissions[this.currentUserType][key] !== undefined) {
-            return this.permissions[this.currentUserType][key];
+            const result = this.permissions[this.currentUserType][key];
+            console.log(`İzin kontrolü: ${this.currentUserType} - ${key} = ${result}`);
+            return result;
         }
 
         // Varsayılan olarak false (yetki yok)
+        console.log(`İzin bulunamadı: ${key}, varsayılan false dönülüyor`);
         return false;
     }
 
@@ -127,7 +138,8 @@ class ButtonPermissionManager {
             return;
         }
 
-        console.log('Buton izinleri uygulanıyor...');
+        console.log('Buton izinleri uygulanıyor... Mevcut kullanıcı tipi:', this.currentUserType);
+        console.log('Mevcut sayfa:', this.currentPage);
 
         // 1. data-permission attribute'u ile tanımlanan butonlar
         document.querySelectorAll('[data-permission]').forEach(element => {
@@ -139,8 +151,108 @@ class ButtonPermissionManager {
             this.processPermissionElement(element);
         });
 
-        // 3. class ile tanımlanan butonlar (isteğe bağlı)
-        this.processCommonButtons();
+        // 3. İCON BAZLI KONTROL - ÖNEMLİ!
+        this.processIconBasedButtons();
+    }
+
+    // İcon bazlı butonları işle (fa-edit, fa-trash, fa-plus, fa-eye)
+    processIconBasedButtons() {
+        console.log('İcon bazlı butonlar kontrol ediliyor...');
+
+        // CREATE - Ekle butonları (fa-plus, fa-hammer, fa-add)
+        document.querySelectorAll('.fa-plus, .fa-hammer, .fa-add').forEach(icon => {
+            const button = icon.closest('button, a, .btn');
+            if (button) {
+                const hasPermission = this.hasPermission('create');
+                console.log('CREATE butonu bulundu (fa-plus):', button, 'İzin:', hasPermission);
+                if (!hasPermission) {
+                    this.hideElement(button);
+                }
+            }
+        });
+
+        // EDIT - Düzenle butonları (fa-edit, fa-pencil, fa-wrench)
+        document.querySelectorAll('.fa-edit, .fa-pencil, .fa-wrench').forEach(icon => {
+            const button = icon.closest('button, a, .btn');
+            if (button) {
+                const hasPermission = this.hasPermission('edit');
+                console.log('EDIT butonu bulundu (fa-edit):', button, 'İzin:', hasPermission);
+                if (!hasPermission) {
+                    this.hideElement(button);
+                }
+            }
+        });
+
+        // DELETE - Sil butonları (fa-trash, fa-times, fa-eraser)
+        document.querySelectorAll('.fa-trash, .fa-times, .fa-eraser').forEach(icon => {
+            const button = icon.closest('button, a, .btn');
+            if (button) {
+                const hasPermission = this.hasPermission('delete');
+                console.log('DELETE butonu bulundu (fa-trash):', button, 'İzin:', hasPermission);
+                if (!hasPermission) {
+                    this.hideElement(button);
+                }
+            }
+        });
+
+        // VIEW - Detay butonları (fa-eye, fa-search, fa-binoculars)
+        document.querySelectorAll('.fa-eye, .fa-search, .fa-binoculars').forEach(icon => {
+            const button = icon.closest('button, a, .btn');
+            if (button) {
+                const hasPermission = this.hasPermission('view');
+                console.log('VIEW butonu bulundu (fa-eye):', button, 'İzin:', hasPermission);
+                if (!hasPermission) {
+                    this.hideElement(button);
+                }
+            }
+        });
+
+        // Ayrıca buton class'larına göre de kontrol et
+        document.querySelectorAll('.btn-warning, .btn-edit').forEach(button => {
+            if (!button.closest('.fa-edit')) { // Daha önce işlenmediyse
+                const hasPermission = this.hasPermission('edit');
+                console.log('EDIT butonu bulundu (btn-warning):', button, 'İzin:', hasPermission);
+                if (!hasPermission) {
+                    this.hideElement(button);
+                }
+            }
+        });
+
+        document.querySelectorAll('.btn-danger, .btn-delete').forEach(button => {
+            if (!button.closest('.fa-trash')) { // Daha önce işlenmediyse
+                const hasPermission = this.hasPermission('delete');
+                console.log('DELETE butonu bulundu (btn-danger):', button, 'İzin:', hasPermission);
+                if (!hasPermission) {
+                    this.hideElement(button);
+                }
+            }
+        });
+
+        document.querySelectorAll('.btn-primary, .btn-success').forEach(button => {
+            if (button.textContent.includes('Ekle') || button.textContent.includes('Yeni') ||
+                button.innerHTML.includes('plus') || button.innerHTML.includes('ekle')) {
+                if (!button.closest('.fa-plus')) { // Daha önce işlenmediyse
+                    const hasPermission = this.hasPermission('create');
+                    console.log('CREATE butonu bulundu (btn-primary):', button, 'İzin:', hasPermission);
+                    if (!hasPermission) {
+                        this.hideElement(button);
+                    }
+                }
+            }
+        });
+
+        document.querySelectorAll('.btn-info, .btn-view, .btn-detail').forEach(button => {
+            if (button.textContent.includes('Detay') || button.textContent.includes('Görüntüle') ||
+                button.innerHTML.includes('eye') || button.innerHTML.includes('detay')) {
+                if (!button.closest('.fa-eye')) { // Daha önce işlenmediyse
+                    const hasPermission = this.hasPermission('view');
+                    console.log('VIEW butonu bulundu (btn-info):', button, 'İzin:', hasPermission);
+                    if (!hasPermission) {
+                        this.hideElement(button);
+                    }
+                }
+            }
+        });
     }
 
     // Tek bir permission elementini işle
@@ -164,73 +276,16 @@ class ButtonPermissionManager {
 
         const hasPermission = this.hasPermission(action, page);
 
+        console.log(`Element işleniyor: ${permissionAttr} -> ${hasPermission ? 'GÖSTER' : 'GİZLE'}`);
+
         if (!hasPermission) {
             this.hideElement(element);
         }
     }
 
-    // Yaygın butonları işle (icon bazlı)
-    processCommonButtons() {
-        // Ekle butonları (fa-plus)
-        document.querySelectorAll('.btn-primary, .btn-success, a.btn-primary, a.btn-success').forEach(btn => {
-            if (btn.innerHTML.includes('fa-plus') || btn.textContent.includes('Ekle') || btn.textContent.includes('Yeni')) {
-                if (!this.hasPermission('create')) {
-                    this.hideElement(btn);
-                }
-            }
-        });
-
-        // Düzenle butonları (fa-edit)
-        document.querySelectorAll('.btn-warning, .btn-edit, a.btn-warning').forEach(btn => {
-            if (btn.innerHTML.includes('fa-edit') || btn.textContent.includes('Düzenle') || btn.textContent.includes('Güncelle')) {
-                if (!this.hasPermission('edit')) {
-                    this.hideElement(btn);
-                }
-            }
-        });
-
-        // Sil butonları (fa-trash)
-        document.querySelectorAll('.btn-danger, .btn-delete, a.btn-danger').forEach(btn => {
-            if (btn.innerHTML.includes('fa-trash') || btn.textContent.includes('Sil')) {
-                if (!this.hasPermission('delete')) {
-                    this.hideElement(btn);
-                }
-            }
-        });
-
-        // Detay butonları (fa-eye)
-        document.querySelectorAll('.btn-info, .btn-view, .btn-detail, a.btn-info').forEach(btn => {
-            if (btn.innerHTML.includes('fa-eye') || btn.textContent.includes('Detay') || btn.textContent.includes('Görüntüle')) {
-                if (!this.hasPermission('view')) {
-                    this.hideElement(btn);
-                }
-            }
-        });
-
-        // Tablo içindeki işlem butonları
-        document.querySelectorAll('td:last-child button, td:last-child a').forEach(btn => {
-            const btnHtml = btn.outerHTML.toLowerCase();
-
-            if (btnHtml.includes('fa-edit') || btnHtml.includes('düzenle') || btnHtml.includes('duzenle')) {
-                if (!this.hasPermission('edit')) {
-                    this.hideElement(btn);
-                }
-            }
-            else if (btnHtml.includes('fa-trash') || btnHtml.includes('sil')) {
-                if (!this.hasPermission('delete')) {
-                    this.hideElement(btn);
-                }
-            }
-            else if (btnHtml.includes('fa-eye') || btnHtml.includes('detay') || btnHtml.includes('görüntüle')) {
-                if (!this.hasPermission('view')) {
-                    this.hideElement(btn);
-                }
-            }
-        });
-    }
-
     // Elementi gizle
     hideElement(element) {
+        console.log('Element gizleniyor:', element);
         element.style.display = 'none';
     }
 
@@ -243,6 +298,7 @@ class ButtonPermissionManager {
 
     // Sayfa yüklendiğinde başlat
     initialize() {
+        console.log('initialize çağrıldı');
         this.loadPermissions();
         this.observeDynamicContent();
     }
@@ -259,6 +315,7 @@ class ButtonPermissionManager {
             });
 
             if (shouldRefresh && this.initialized) {
+                console.log('Dinamik içerik algılandı, yeniden kontrol ediliyor');
                 setTimeout(() => this.applyPermissions(), 100);
             }
         });
@@ -272,6 +329,11 @@ class ButtonPermissionManager {
     // Manuel olarak yenile
     refresh() {
         this.currentPage = this.getCurrentPageName();
+        this.currentUserType = this.getCurrentUserType();
+        console.log('Manuel yenileme:', {
+            userType: this.currentUserType,
+            page: this.currentPage
+        });
         this.applyPermissions();
     }
 }
@@ -281,12 +343,14 @@ window.buttonPermissionManager = new ButtonPermissionManager();
 
 // Sayfa yüklendiğinde başlat
 document.addEventListener('DOMContentLoaded', function () {
+    console.log('DOM yüklendi, buton manager başlatılıyor...');
     window.buttonPermissionManager.initialize();
 });
 
 // Sayfa değişikliklerini dinle (SPA için)
 window.addEventListener('popstate', function () {
     setTimeout(() => {
+        console.log('popstate algılandı');
         window.buttonPermissionManager.refresh();
     }, 300);
 });
@@ -294,12 +358,14 @@ window.addEventListener('popstate', function () {
 // Tab değişimlerini dinle (Bootstrap modallar, tablar)
 document.addEventListener('shown.bs.tab', function () {
     setTimeout(() => {
+        console.log('tab değişimi algılandı');
         window.buttonPermissionManager.refresh();
     }, 300);
 });
 
 document.addEventListener('shown.bs.modal', function () {
     setTimeout(() => {
+        console.log('modal açıldı');
         window.buttonPermissionManager.refresh();
     }, 300);
 });
@@ -308,6 +374,7 @@ document.addEventListener('shown.bs.modal', function () {
 if (typeof $ !== 'undefined') {
     $(document).ajaxComplete(function () {
         setTimeout(() => {
+            console.log('AJAX tamamlandı');
             window.buttonPermissionManager.refresh();
         }, 300);
     });

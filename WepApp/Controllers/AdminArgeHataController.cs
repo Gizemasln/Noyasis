@@ -37,6 +37,10 @@ namespace WepApp.Controllers
                 .OrderBy(x => x.Sira)
                 .ToList();
             ViewBag.DurumListesi = durumListesi;
+            List<ARGEDurum> durumListesis = _argeDurumRepository.GetirList(x => x.Durumu == 1 && x.Id != 6)
+             .OrderBy(x => x.Sira)
+             .ToList();
+            ViewBag.DurumListesi = durumListesi;
 
             // Kullanıcı bilgilerini al
             var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
@@ -81,6 +85,7 @@ namespace WepApp.Controllers
                 mevcut.DistributorCevapTarihi = DateTime.Now;
                 mevcut.GuncelleyenKullaniciId = kullaniciId ?? 0;
                 mevcut.GuncellenmeTarihi = DateTime.Now;
+                mevcut.ARGEDurumId = 6;
 
                 // Hangi tip kullanıcı cevap verdiğini kaydet
                 if (kullaniciTipi == "Kurumsal")

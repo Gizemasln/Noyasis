@@ -81,102 +81,133 @@
                     @{
                         // Kullanıcı tipini belirle
                         string kullaniciTipi = "Admin";
+                        string displayName = "";
 
                         if (ViewBag.Kullanici != null)
+                        {
                             kullaniciTipi = "Admin";
+                            displayName = ViewBag.Kullanici.Adi;
+                        }
                         else if (ViewBag.Musteri != null)
+                        {
                             kullaniciTipi = "Musteri";
+                            displayName = ViewBag.Musteri.TicariUnvan;
+                        }
                         else if (ViewBag.Bayi != null)
                         {
                             var bayi = ViewBag.Bayi as Bayi;
-                            kullaniciTipi = bayi?.Distributor == true ? "Distributor" : "Bayi";
+                            if (bayi?.Distributor == true)
+                            {
+                                kullaniciTipi = "Distributor";
+                            }
+                            else
+                            {
+                                kullaniciTipi = "Bayi";
+                            }
+                            displayName = bayi?.Unvan;
                         }
 
                         // İzinli menüleri veritabanından çek
                         var menuRepo = new WepApp.Repositories.MenuIzinRepository();
-                        var izinliMenuler = menuRepo.Listele()
+                        var tumIzinler = menuRepo.Listele();
+                        var izinliMenuler = tumIzinler
                         .Where(x => x.KullaniciTipi == kullaniciTipi)
                         .OrderBy(x => x.Siralama)
                         .ToList();
 
-                        // Ana menüleri (1. seviye) al
-                        var anaMenuler = izinliMenuler.Where(m => m.ParentMenuUrl == null).ToList();
+                        // Ana menüleri (ParentMenuUrl'si null olanlar) al - sadece # ile başlayanlar veya normal menüler
+                        var anaMenuler = izinliMenuler
+                        .Where(m => string.IsNullOrEmpty(m.ParentMenuUrl))
+                        .OrderBy(m => m.Siralama)
+                        .ToList();
                     }
 
                     <ul class="nav nav-secondary">
-                        @foreach (var menu in anaMenuler)
+                        @if (anaMenuler.Any())
                         {
-                            var altMenulerSeviye1 = izinliMenuler.Where(m => m.ParentMenuUrl == menu.MenuUrl).ToList();
-                            var menuId = "menu_" + menu.Id;
-
-                            if (altMenulerSeviye1.Any())
+                            @foreach (var menu in anaMenuler)
                             {
-                                <!-- 1. Seviye Menü (alt menülü) -->
-                                <li class="nav-item">
-                                    <a data-bs-toggle="collapse" href="#@menuId" aria-expanded="false">
-                                        @if (!string.IsNullOrEmpty(menu.Icon))
-                                        {
-                                            <i class="@menu.Icon"></i>
-                                        }
-                                        <p>@menu.MenuBaslik</p>
-                                        <span class="caret"></span>
-                                    </a>
-                                    <div class="collapse" id="@menuId">
-                                        <ul class="nav nav-collapse">
-                                            @foreach (var alt1 in altMenulerSeviye1)
+                                var altMenuler = izinliMenuler.Where(m => m.ParentMenuUrl == menu.MenuUrl).OrderBy(m => m.Siralama).ToList();
+                                var menuId = "menu_" + menu.Id;
+
+                                if (altMenuler.Any())
+                                {
+                                    <!-- Alt menülü menü -->
+                                    <li class="nav-item">
+                                        <a data-bs-toggle="collapse" href="#@menuId" aria-expanded="false">
+                                            @if (!string.IsNullOrEmpty(menu.Icon))
                                             {
-                                                var altMenulerSeviye2 = izinliMenuler.Where(m => m.ParentMenuUrl == alt1.MenuUrl).ToList();
-                                                var altMenuId = "submenu_" + alt1.Id;
-
-                                                if (altMenulerSeviye2.Any())
-                                                {
-                                                    <!-- 2. Seviye Menü (iç içe alt menülü) -->
-                                                    <li>
-                                                        <a data-bs-toggle="collapse" href="#@altMenuId">
-                                                            <span class="sub-item">@alt1.MenuBaslik</span>
-                                                            <span class="caret"></span>
-                                                        </a>
-                                                        <div class="collapse" id="@altMenuId">
-                                                            <ul class="nav nav-collapse" style="margin-left: 20px;">
-                                                                @foreach (var alt2 in altMenulerSeviye2)
-                                                                {
-                                                                    <li>
-                                                                        <a href="@alt2.MenuUrl">
-                                                                            <span class="sub-item">@alt2.MenuBaslik</span>
-                                                                        </a>
-                                                                    </li>
-                                                                }
-                                                            </ul>
-                                                        </div>
-                                                    </li>
-                                                }
-                                                else
-                                                {
-                                                    <!-- 2. Seviye Menü (tek başına) -->
-                                                    <li>
-                                                        <a href="@alt1.MenuUrl">
-                                                            <span class="sub-item">@alt1.MenuBaslik</span>
-                                                        </a>
-                                                    </li>
-                                                }
+                                                <i class="@menu.Icon"></i>
                                             }
-                                        </ul>
-                                    </div>
-                                </li>
+                                            <p>@menu.MenuBaslik</p>
+                                            <span class="caret"></span>
+                                        </a>
+                                        <div class="collapse" id="@menuId">
+                                            <ul class="nav nav-collapse">
+                                                @foreach (var alt1 in altMenuler)
+                                                {
+                                                    var altMenulerSeviye2 = izinliMenuler.Where(m => m.ParentMenuUrl == alt1.MenuUrl).OrderBy(m => m.Siralama).ToList();
+                                                    var altMenuId = "submenu_" + alt1.Id;
+
+                                                    if (altMenulerSeviye2.Any())
+                                                    {
+                                                        <!-- 2. Seviye menü (alt menülü) -->
+                                                        <li>
+                                                            <a data-bs-toggle="collapse" href="#@altMenuId">
+                                                                <span class="sub-item">@alt1.MenuBaslik</span>
+                                                                <span class="caret"></span>
+                                                            </a>
+                                                            <div class="collapse" id="@altMenuId">
+                                                                <ul class="nav nav-collapse submenu">
+                                                                    @foreach (var alt2 in altMenulerSeviye2)
+                                                                    {
+                                                                        <li>
+                                                                            <a href="@(alt2.MenuUrl.StartsWith("#") ? "#" : alt2.MenuUrl)">
+                                                                                <span class="sub-item">@alt2.MenuBaslik</span>
+                                                                            </a>
+                                                                        </li>
+                                                                    }
+                                                                </ul>
+                                                            </div>
+                                                        </li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <!-- 2. Seviye menü (tek başına) -->
+                                                        <li>
+                                                            <a href="@(alt1.MenuUrl.StartsWith("#") ? "#" : alt1.MenuUrl)">
+                                                                <span class="sub-item">@alt1.MenuBaslik</span>
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <!-- Tek başına menü -->
+                                    <li class="nav-item">
+                                        <a href="@(menu.MenuUrl.StartsWith("#") ? "#" : menu.MenuUrl)">
+                                            @if (!string.IsNullOrEmpty(menu.Icon))
+                                            {
+                                                <i class="@menu.Icon"></i>
+                                            }
+                                            <p>@menu.MenuBaslik</p>
+                                        </a>
+                                    </li>
+                                }
                             }
-                            else
-                            {
-                                <!-- Tek başına menü -->
-                                <li class="nav-item">
-                                    <a href="@menu.MenuUrl">
-                                        @if (!string.IsNullOrEmpty(menu.Icon))
-                                        {
-                                            <i class="@menu.Icon"></i>
-                                        }
-                                        <p>@menu.MenuBaslik</p>
-                                    </a>
-                                </li>
-                            }
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a href="#">
+                                    <i class="fas fa-ban"></i>
+                                    <p>Yetkili menü bulunamadı</p>
+                                </a>
+                            </li>
                         }
                     </ul>
                 </div>

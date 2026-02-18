@@ -38,22 +38,20 @@ namespace WepApp.Controllers
             Teklif mevcutTeklif = null;
             if (teklifId > 0)
             {
-                mevcutTeklif = _teklifRepo.Getir(x => x.Id == teklifId,
-                    new List<string> { "Musteri", "LisansTip", "Detaylar" });
+                mevcutTeklif = _teklifRepo.Getir(
+                    x => x.Id == teklifId,
+                    new List<string> { "Musteri", "LisansTip", "Detaylar" }
+                );
 
                 if (mevcutTeklif != null)
                 {
-                    // Teklif numarasını güncelle (-1, -2 ekle)
                     string yeniTeklifNo = TeklifNumarasiniGuncelle(mevcutTeklif.TeklifNo);
 
-                    // Mevcut teklif numarasını da ViewBag'e ekleyin
-                    ViewBag.MevcutTeklifNo = mevcutTeklif.TeklifNo; // YENİ SATIR
-
+                    ViewBag.MevcutTeklifNo = mevcutTeklif.TeklifNo;
                     ViewBag.MevcutTeklif = mevcutTeklif;
                     ViewBag.YeniTeklifNo = yeniTeklifNo;
                     ViewBag.TeklifId = teklifId;
 
-                    // Geçerlilik tarihini mevcut tekliften al veya 30 gün ekle
                     if (mevcutTeklif.GecerlilikTarihi.HasValue)
                     {
                         ViewBag.GecerlilikTarihi = mevcutTeklif.GecerlilikTarihi.Value.ToString("yyyy-MM-dd");
@@ -61,36 +59,86 @@ namespace WepApp.Controllers
                 }
             }
 
-            Bayi currentBayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
+            // ────────────────────────────────────────────────
+            // Mevcut bayi
+            // ────────────────────────────────────────────────
+            var currentBayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
+
+            // Bayi listesi (dropdown vs. için - genelde hiyerarşi gösterimi)
             List<Bayi> bayiList;
             if (currentBayi != null)
-                bayiList = _bayiRepository.GetBayiVeAltBayiler(currentBayi.Id) ?? new List<Bayi>();
+            {
+                bayiList = _bayiRepository.GetBayiVeAltBayiler(currentBayi.Id)
+                           ?? new List<Bayi>();
+            }
             else
-                bayiList = _bayiRepository.GetirList(x => x.Durumu == 1)?.ToList() ?? new List<Bayi>();
+            {
+                bayiList = _bayiRepository.GetirList(x => x.Durumu == 1)?.ToList()
+                           ?? new List<Bayi>();
+            }
 
-            foreach (Bayi b in bayiList)
+            foreach (var b in bayiList)
                 b.Seviye = b.Seviye ?? 0;
 
             ViewBag.TumBayiler = bayiList;
-            ViewBag.MusteriDurumu = _musteriDurumuRepository.Listele() ?? new List<MusteriDurumu>();
-            ViewBag.MusteriTipleri = _musteriTipiRepository.GetirList(x => x.Durumu == 1)?.OrderBy(x => x.Adi).ToList() ?? new List<MusteriTipi>();
+
+            // ────────────────────────────────────────────────
+            // Müşteriler: "kendi + altındakilerin müşterileri" mantığı
+            // Sadece currentBayi null ise (admin) → tüm müşteriler
+            // ────────────────────────────────────────────────
+            List<Musteri> musterilerQuery = _musteriRepo.GetirList(x => x.Durum == 1);
+
+            if (currentBayi != null)
+            {
+                // Hem distributor hem normal bayi için aynı mantık:
+                // Kendi + tüm alt bayilerin müşterileri
+                var yetkiliBayiIds = _bayiRepository
+                    .GetBayiVeAltBayiler(currentBayi.Id)
+                    .Select(b => b.Id)
+                    .ToList();
+
+                // GetBayiVeAltBayiler() sadece altındakileri döndürüyorsa, kendini ekle
+                // (çoğu implementasyonda kendini de içerir - ama emin olmak için kontrol edebilirsin)
+                if (!yetkiliBayiIds.Contains(currentBayi.Id))
+                {
+                    yetkiliBayiIds.Add(currentBayi.Id);
+                }
+
+                musterilerQuery = musterilerQuery
+       .Where(m => m.BayiId.HasValue && yetkiliBayiIds.Contains(m.BayiId.Value))
+       .ToList();
+
+            }
+            // currentBayi == null → filtre yok → admin tüm müşterileri görür
+
+            ViewBag.Musteriler = musterilerQuery
+                .OrderBy(m => m.Ad)
+                .ThenBy(m => m.Soyad)
+                .ToList();
+
+            // ────────────────────────────────────────────────
+            // Diğer ViewBag'ler (değişmedi)
+            // ────────────────────────────────────────────────
+            ViewBag.MusteriDurumu = _musteriDurumuRepository.Listele()
+                                    ?? new List<MusteriDurumu>();
+
+            ViewBag.MusteriTipleri = _musteriTipiRepository.GetirList(x => x.Durumu == 1)?
+                                         .OrderBy(x => x.Adi)
+                                         .ToList() ?? new List<MusteriTipi>();
+
+            ViewBag.LisansTipleri = _lisansTipRepo.GetirList(x => x.Durumu == 1)?
+                                      .OrderBy(x => x.Sayi)
+                                      .ToList() ?? new List<LisansTip>();
+
+            var ilkLisans = ViewBag.LisansTipleri != null && ViewBag.LisansTipleri.Count > 0
+                ? ViewBag.LisansTipleri[0]
+                : null;
+            ViewBag.IlkLisansTipId = ilkLisans?.Id ?? 0;
+
+            var kdv = new KDVRepository().Getir(x => x.Durumu == 1);
+            ViewBag.KDV = kdv?.Oran ?? 20;
 
             LoadCommonData();
-            ViewBag.Musteriler = _musteriRepo.GetirList(x => x.Durum == 1)
-                .OrderBy(x => x.Ad).ThenBy(x => x.Soyad).ToList();
-            ViewBag.LisansTipleri = _lisansTipRepo.GetirList(x => x.Durumu == 1)
-                .OrderBy(x => x.Sayi).ToList();
-
-            LisansTip ilkLisans = _lisansTipRepo
-                .GetirList(x => x.Durumu == 1)
-                ?.OrderBy(x => x.Sayi)
-                .FirstOrDefault();
-            int ilk = ilkLisans?.Id ?? 0;
-            ViewBag.IlkLisansTipId = ilk;
-
-            KDVRepository kDVRepository = new KDVRepository();
-            KDV kdv = kDVRepository.Getir(x => x.Durumu == 1);
-            ViewBag.KDV = kdv.Oran;
 
             return View();
         }

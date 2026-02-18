@@ -917,6 +917,53 @@ namespace WepApp.Controllers
                 return Json(new { success = false, message = "Hata oluştu: " + ex.Message });
             }
         }
+        [HttpGet]
+        public IActionResult FiltreliListe(DateTime? baslangicTarih, DateTime? bitisTarih, int? durumId, string? arama)
+        {
+            LoadCommonData();
+
+            var sorgu = _sozlesmeRepo.GetirList(x => x.Durumu == 1).AsQueryable();
+
+            // Tarih filtresi
+            if (baslangicTarih.HasValue)
+            {
+                sorgu = sorgu.Where(s => s.YayinTarihi.Date >= baslangicTarih.Value.Date);
+            }
+
+            if (bitisTarih.HasValue)
+            {
+                sorgu = sorgu.Where(s => s.YayinTarihi.Date <= bitisTarih.Value.Date);
+            }
+
+            // Durum filtresi
+            if (durumId.HasValue && durumId.Value > 0)
+            {
+                sorgu = sorgu.Where(s => s.SozlesmeDurumuId == durumId.Value);
+            }
+
+            // Arama
+            if (!string.IsNullOrWhiteSpace(arama))
+            {
+                sorgu = sorgu.Where(s =>
+                    s.DokumanNo.Contains(arama) ||
+                    s.LisansNo.Contains(arama) ||
+                    (s.Musteri.Ad + " " + s.Musteri.Soyad).Contains(arama) ||
+                    s.Email.Contains(arama)
+                );
+            }
+
+            var sozlesmeler = sorgu.OrderByDescending(s => s.YayinTarihi).ToList();
+
+            // Navigation property'leri doldur
+            foreach (MusteriSozlesme s in sozlesmeler)
+            {
+                s.Musteri = _musteriRepo.Getir(s.MusteriId);
+                s.SozlesmeDurumu = _durumRepo.Getir(s.SozlesmeDurumuId);
+                s.Teklif = _teklifRepo.Getir(s.TeklifId);
+            }
+
+            return PartialView("_SozlesmeListesi", sozlesmeler);
+        }
         [HttpPost]
         public IActionResult DokumanCheckboxGuncelle(int id, string dokumanTipi, bool durum)
         {

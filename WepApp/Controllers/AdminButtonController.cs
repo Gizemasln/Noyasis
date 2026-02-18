@@ -48,14 +48,17 @@ namespace WebApp.Controllers
 
             // 5. Her buton için izin durumunu belirle
             model.ButtonPermissions = new Dictionary<string, bool>();
+
+            // Tüm izinleri dictionary'e çevir (hızlı erişim için)
+            var izinDict = mevcutIzinler.ToDictionary(
+                i => $"{i.SayfaAdi}|{i.ButonAksiyonu}",
+                i => i.IzınVar
+            );
+
             foreach (var button in uniqueButtons)
             {
                 var key = $"{button.Controller}|{button.Action}";
-                var izin = mevcutIzinler.FirstOrDefault(i =>
-                    i.SayfaAdi == button.Controller &&
-                    i.ButonAksiyonu == button.Action);
-
-                model.ButtonPermissions[key] = izin?.IzınVar ?? false;
+                model.ButtonPermissions[key] = izinDict.ContainsKey(key) ? izinDict[key] : false;
             }
 
             return View(model);
@@ -91,6 +94,49 @@ namespace WebApp.Controllers
             _repo.TemizleVeEkle(kullaniciTipi, yeniIzinler);
 
             TempData["Success"] = $"{kullaniciTipi} buton yetkileri kaydedildi. Toplam {yeniIzinler.Count} buton tespit edildi.";
+            return RedirectToAction("Index", new { kullaniciTipi });
+        }
+
+        [HttpPost]
+        public IActionResult TopluYetkilendir(string kullaniciTipi, string aksiyonTipi, bool durum)
+        {
+            var detectedButtons = ScanViewsForButtons();
+            var uniqueButtons = detectedButtons
+                .GroupBy(b => new { b.Controller, b.Action })
+                .Select(g => g.First())
+                .ToList();
+
+            var yeniIzinler = new List<ButtonPermission>();
+            var mevcutIzinler = _repo.KullaniciTipineGoreGetir(kullaniciTipi);
+            var mevcutDict = mevcutIzinler.ToDictionary(i => $"{i.SayfaAdi}|{i.ButonAksiyonu}", i => i.IzınVar);
+
+            foreach (var button in uniqueButtons)
+            {
+                string key = $"{button.Controller}|{button.Action}";
+                bool izinVar = mevcutDict.ContainsKey(key) ? mevcutDict[key] : false;
+
+                // Eğer belirtilen aksiyon tipi ise veya tümü seçildiyse
+                if (aksiyonTipi == "Tumu" || button.Action.ToLower() == aksiyonTipi.ToLower())
+                {
+                    izinVar = durum;
+                }
+
+                yeniIzinler.Add(new ButtonPermission
+                {
+                    KullaniciTipi = kullaniciTipi,
+                    SayfaAdi = button.Controller,
+                    ButonAksiyonu = button.Action,
+                    IzınVar = izinVar,
+                    Aciklama = $"{GetSayfaAdi(button.Controller)} sayfasında {GetButtonAdi(button.Action)} işlemi"
+                });
+            }
+
+            _repo.TemizleVeEkle(kullaniciTipi, yeniIzinler);
+
+            var aksiyonAdi = aksiyonTipi == "Tumu" ? "Tüm butonlar" : GetButtonAdi(aksiyonTipi) + " butonları";
+            var durumText = durum ? "yetkilendirildi" : "yetkisi kaldırıldı";
+            TempData["Success"] = $"{kullaniciTipi} için {aksiyonAdi} {durumText}. Toplam {yeniIzinler.Count} buton güncellendi.";
+
             return RedirectToAction("Index", new { kullaniciTipi });
         }
 
@@ -164,7 +210,6 @@ namespace WebApp.Controllers
                 {
                     var buttonHtml = match.Value;
                     var action = DetectActionFromButton(buttonHtml);
-
                     if (!string.IsNullOrEmpty(action) && IsValidAction(action))
                     {
                         // Aynı controller+action kombinasyonu varsa ekleme
@@ -292,12 +337,10 @@ namespace WebApp.Controllers
         private string MapToStandardAction(string action)
         {
             action = action.ToLower();
-
             if (action == "create" || action == "ekle" || action == "add" || action == "new") return "create";
             if (action == "edit" || action == "duzenle" || action == "düzenle" || action == "update" || action == "guncelle" || action == "güncelle") return "edit";
             if (action == "delete" || action == "sil" || action == "remove") return "delete";
             if (action == "view" || action == "detay" || action == "details" || action == "goruntule" || action == "görüntüle") return "view";
-
             return action;
         }
 

@@ -55,6 +55,7 @@ namespace WepApp.Controllers
                     new List<string> { "Musteri", "LisansTip", "Musteri.Bayi", "TeklifDurum", "Nedenler" })
                     .OrderByDescending(x => x.EklenmeTarihi)
                     .ToList();
+
                 // Sözleşmeleri de getir
                 List<MusteriSozlesme> sozlesmeler = _sozlesmeRepo.GetirList(x => x.Durumu == 1)
                     .ToList();
@@ -66,9 +67,15 @@ namespace WepApp.Controllers
                     .ToHashSet();
 
                 ViewBag.Teklifler = teklifler;
-                ViewBag.TeklifIdAktifSozlesmeVar = teklifIdAktifSozlesmeVar; // HashSet olarak gönder
+                ViewBag.TeklifIdAktifSozlesmeVar = teklifIdAktifSozlesmeVar;
 
-                // YENİ:
+                // TÜM LİSANS TİPLERİNİ GETİR (direkt veritabanından)
+                var tumLisansTipleri = _lisansTipRepo.GetirList(x => x.Durumu == 1)
+                    .OrderBy(lt => lt.Adi)
+                    .ToList();
+
+                ViewBag.TumLisansTipleri = tumLisansTipleri;
+
                 ViewBag.TeklifDurumlari = _teklifDurumRepo
                     .GetirList(x => x.Durumu == 1)
                     .OrderBy(x => x.Sıra)

@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using WepApp.Models;
 
 namespace WepApp.Repositories
 {
     public class MenuIzinRepository
     {
-        private readonly string _connectionString = "Server=193.35.155.81,1433;Database=Noyasis;User Id=sqluser;Password=5343212901Ga*;TrustServerCertificate=True;"; // appsettings.json'dan alabilirsin
+        private readonly string _connectionString = "Server=193.35.155.81,1433;Database=Noyasis;User Id=sqluser;Password=5343212901Ga*;TrustServerCertificate=True;";
 
         public List<MenuIzin> Listele()
         {
@@ -22,13 +23,13 @@ namespace WepApp.Repositories
                     {
                         list.Add(new MenuIzin
                         {
-                            Id = dr.GetInt32("Id"),
-                            KullaniciTipi = dr.GetString("KullaniciTipi"),
-                            MenuUrl = dr.GetString("MenuUrl"),
-                            MenuBaslik = dr.GetString("MenuBaslik"),
-                            ParentMenuUrl = dr.IsDBNull("ParentMenuUrl") ? null : dr.GetString("ParentMenuUrl"),
-                            Icon = dr.IsDBNull("Icon") ? null : dr.GetString("Icon"),
-                            Siralama = dr.GetInt32("Siralama")
+                            Id = dr.GetInt32(dr.GetOrdinal("Id")),
+                            KullaniciTipi = dr.GetString(dr.GetOrdinal("KullaniciTipi")),
+                            MenuUrl = dr.GetString(dr.GetOrdinal("MenuUrl")),
+                            MenuBaslik = dr.GetString(dr.GetOrdinal("MenuBaslik")),
+                            ParentMenuUrl = dr.IsDBNull(dr.GetOrdinal("ParentMenuUrl")) ? null : dr.GetString(dr.GetOrdinal("ParentMenuUrl")),
+                            Icon = dr.IsDBNull(dr.GetOrdinal("Icon")) ? null : dr.GetString(dr.GetOrdinal("Icon")),
+                            Siralama = dr.GetInt32(dr.GetOrdinal("Siralama"))
                         });
                     }
                 }
@@ -36,40 +37,59 @@ namespace WepApp.Repositories
             return list;
         }
 
-        // İzin yönetiminde kullanmak için (opsiyonel, silme ve ekleme için)
-        public void TemizleVeEkle(List<MenuIzin> yeniIzinler)
+        public void TemizleVeEkle(string kullaniciTipi, List<MenuIzin> yeniIzinler)
         {
             using (var con = new SqlConnection(_connectionString))
             {
                 con.Open();
-                var tip = yeniIzinler.FirstOrDefault()?.KullaniciTipi ?? "";
-                if (string.IsNullOrEmpty(tip)) return;
-
-                // Önce sil
-                new SqlCommand("DELETE FROM MenuIzinleri WHERE KullaniciTipi = @tip", con)
+                using (var transaction = con.BeginTransaction())
                 {
-                    Parameters = { new SqlParameter("@tip", tip) }
-                }.ExecuteNonQuery();
-
-                // Sonra ekle
-                foreach (var izin in yeniIzinler)
-                {
-                    new SqlCommand(@"INSERT INTO MenuIzinleri 
-                        (KullaniciTipi, MenuUrl, MenuBaslik, ParentMenuUrl, Icon, Siralama) 
-                        VALUES (@tip, @url, @baslik, @parent, @icon, @sira)", con)
+                    try
                     {
-                        Parameters =
+                        // Önce mevcut yetkileri sil
+                        using (var cmd = new SqlCommand("DELETE FROM MenuIzinleri WHERE KullaniciTipi = @tip", con, transaction))
                         {
-                            new SqlParameter("@tip", izin.KullaniciTipi),
-                            new SqlParameter("@url", izin.MenuUrl),
-                            new SqlParameter("@baslik", izin.MenuBaslik),
-                            new SqlParameter("@parent", (object?)izin.ParentMenuUrl ?? DBNull.Value),
-                            new SqlParameter("@icon", (object?)izin.Icon ?? DBNull.Value),
-                            new SqlParameter("@sira", izin.Siralama)
+                            cmd.Parameters.AddWithValue("@tip", kullaniciTipi);
+                            cmd.ExecuteNonQuery();
                         }
-                    }.ExecuteNonQuery();
+
+                        // Yeni yetkileri ekle
+                        foreach (var izin in yeniIzinler)
+                        {
+                            using (var cmd = new SqlCommand(@"
+                                INSERT INTO MenuIzinleri 
+                                (KullaniciTipi, MenuUrl, MenuBaslik, ParentMenuUrl, Icon, Siralama) 
+                                VALUES (@tip, @url, @baslik, @parent, @icon, @sira)", con, transaction)
+                            {
+                                Parameters =
+                                {
+                                    new SqlParameter("@tip", izin.KullaniciTipi),
+                                    new SqlParameter("@url", izin.MenuUrl),
+                                    new SqlParameter("@baslik", izin.MenuBaslik),
+                                    new SqlParameter("@parent", (object?)izin.ParentMenuUrl ?? DBNull.Value),
+                                    new SqlParameter("@icon", (object?)izin.Icon ?? DBNull.Value),
+                                    new SqlParameter("@sira", izin.Siralama)
+                                }
+                            })
+                            {
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
+        }
+
+        public List<MenuIzin> KullaniciTipineGoreListele(string kullaniciTipi)
+        {
+            return Listele().Where(x => x.KullaniciTipi == kullaniciTipi).OrderBy(x => x.Siralama).ToList();
         }
     }
 }

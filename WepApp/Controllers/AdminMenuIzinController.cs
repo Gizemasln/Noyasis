@@ -17,7 +17,8 @@ namespace WebApp.Controllers
 
             var model = new AdminMenuIzinViewModel
             {
-                TumMenuler = tumMenuler
+                TumMenuler = tumMenuler,
+                CheckboxIdMap = new Dictionary<string, string>()
             };
 
             // Checkbox ID'leri üret
@@ -27,7 +28,7 @@ namespace WebApp.Controllers
                 foreach (var menu in tumMenuler)
                 {
                     string key = $"{tip}|{menu.Url}";
-                    string cleanUrl = menu.Url.Replace("/", "_").Replace("#", "hash_");
+                    string cleanUrl = menu.Url.Replace("/", "_").Replace("#", "hash_").Replace("-", "_");
                     model.CheckboxIdMap[key] = $"check_{tip.ToLower()}_{cleanUrl}";
                 }
             }
@@ -50,11 +51,19 @@ namespace WebApp.Controllers
             var tumMenuler = GetTumMenuler();
             var yeniIzinler = new List<MenuIzin>();
 
-            foreach (var url in seciliUrlLer ?? new List<string>())
+            // Seçili URL'ler boşsa tüm yetkileri temizle
+            if (seciliUrlLer == null || !seciliUrlLer.Any())
+            {
+                _repo.TemizleVeEkle(tipi, new List<MenuIzin>());
+                TempData["Success"] = $"{tipi} yetkileri temizlendi.";
+                return RedirectToAction("Index");
+            }
+
+            foreach (var url in seciliUrlLer)
             {
                 var menu = tumMenuler.FirstOrDefault(m => m.Url == url);
 
-                if (!EqualityComparer<(string Url, string Baslik, string? ParentUrl, string? Icon, int Siralama, int Seviye)>.Default.Equals(menu, default))
+                if (menu.Url != null)
                 {
                     yeniIzinler.Add(new MenuIzin
                     {
@@ -68,9 +77,9 @@ namespace WebApp.Controllers
                 }
             }
 
-            _repo.TemizleVeEkle(yeniIzinler);
+            _repo.TemizleVeEkle(tipi, yeniIzinler);
 
-            TempData["Success"] = $"{tipi} yetkileri kaydedildi.";
+            TempData["Success"] = $"{tipi} yetkileri başarıyla kaydedildi.";
             return RedirectToAction("Index");
         }
 
@@ -125,7 +134,6 @@ namespace WebApp.Controllers
                 // 2. Seviye - Tek başına menüler
                 ("/AdminPaket", "Modül", "#offerManagement", null, 8, 2),
     
-
                 // 3. Seviye - Destek Tablosu alt menüleri
                 ("/AdminUYB", "Genel Ayarlar", "#destekSubmenu", null, 1, 3),
                 ("/AdminLisansTip", "Lisans Tipleri", "#destekSubmenu", null, 2, 3),
@@ -149,7 +157,9 @@ namespace WebApp.Controllers
 
                 // 3. Seviye - Teklif alt menüleri
                 ("/AdminTeklifVer", "Teklif Oluştur", "#teklifSubmenu", null, 1, 3),
-                ("/AdminTeklif", "Teklif Listesi", "#teklifSubmenu", null, 42, 1),
+                ("/AdminTeklif", "Teklif Listesi", "#teklifSubmenu", null, 2, 3),
+                
+                // Diğer menüler
                 ("/AdminButton", "Buton Yetki", null, null, 44, 1)
             };
         }
@@ -158,42 +168,12 @@ namespace WebApp.Controllers
         {
             var hiyerarsi = new Dictionary<int, List<MenuHiyerarsi>>();
 
-            foreach (var menu in tumMenuler.Where(m => m.Seviye == 1))
-            {
-                var menuItem = new MenuHiyerarsi
-                {
-                    Url = menu.Url,
-                    Baslik = menu.Baslik,
-                    Icon = menu.Icon,
-                    Siralama = menu.Siralama,
-                    Seviye = menu.Seviye
-                };
+            // 1. seviye menüleri bul
+            var birinciSeviyeMenuler = tumMenuler.Where(m => m.Seviye == 1).OrderBy(m => m.Siralama).ToList();
 
-                // Alt menüleri ekle
-                menuItem.AltMenuler = tumMenuler
-                    .Where(m => m.ParentUrl == menu.Url)
-                    .Select(m => new MenuHiyerarsi
-                    {
-                        Url = m.Url,
-                        Baslik = m.Baslik,
-                        Icon = m.Icon,
-                        Siralama = m.Siralama,
-                        Seviye = m.Seviye,
-                        AltMenuler = tumMenuler
-                            .Where(sm => sm.ParentUrl == m.Url)
-                            .Select(sm => new MenuHiyerarsi
-                            {
-                                Url = sm.Url,
-                                Baslik = sm.Baslik,
-                                Icon = sm.Icon,
-                                Siralama = sm.Siralama,
-                                Seviye = sm.Seviye
-                            })
-                            .OrderBy(sm => sm.Siralama)
-                            .ToList()
-                    })
-                    .OrderBy(m => m.Siralama)
-                    .ToList();
+            foreach (var menu in birinciSeviyeMenuler)
+            {
+                var menuItem = MenuItemOlustur(menu, tumMenuler);
 
                 if (!hiyerarsi.ContainsKey(menu.Seviye))
                     hiyerarsi[menu.Seviye] = new List<MenuHiyerarsi>();
@@ -203,13 +183,40 @@ namespace WebApp.Controllers
 
             return hiyerarsi;
         }
+
+        private MenuHiyerarsi MenuItemOlustur(
+            (string Url, string Baslik, string? ParentUrl, string? Icon, int Siralama, int Seviye) menu,
+            List<(string Url, string Baslik, string? ParentUrl, string? Icon, int Siralama, int Seviye)> tumMenuler)
+        {
+            var menuItem = new MenuHiyerarsi
+            {
+                Url = menu.Url,
+                Baslik = menu.Baslik,
+                Icon = menu.Icon,
+                Siralama = menu.Siralama,
+                Seviye = menu.Seviye
+            };
+
+            // Alt menüleri bul
+            var altMenuler = tumMenuler
+                .Where(m => m.ParentUrl == menu.Url)
+                .OrderBy(m => m.Siralama)
+                .ToList();
+
+            foreach (var altMenu in altMenuler)
+            {
+                menuItem.AltMenuler.Add(MenuItemOlustur(altMenu, tumMenuler));
+            }
+
+            return menuItem;
+        }
     }
 
     public class MenuHiyerarsi
     {
         public string Url { get; set; }
         public string Baslik { get; set; }
-        public string Icon { get; set; }
+        public string? Icon { get; set; }
         public int Siralama { get; set; }
         public int Seviye { get; set; }
         public List<MenuHiyerarsi> AltMenuler { get; set; } = new List<MenuHiyerarsi>();

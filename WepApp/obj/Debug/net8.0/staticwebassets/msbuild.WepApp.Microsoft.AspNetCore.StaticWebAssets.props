@@ -6726,8 +6726,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>qgtepbykpm</Fingerprint>
-      <Integrity>Vo5xbipw2Li5ZSi4x91rlTUZbTwALpYrkJCH9FVZMTg=</Integrity>
+      <Fingerprint>p5586wikvx</Fingerprint>
+      <Integrity>483sHNYVlrr1zr00xOlTmq2T1g2xpOS2e028FAtkH6E=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\assets\js\button-permission.js'))</OriginalItemSpec>
