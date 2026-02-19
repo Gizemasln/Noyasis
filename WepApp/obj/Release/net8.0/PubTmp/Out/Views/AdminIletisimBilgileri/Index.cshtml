@@ -1,0 +1,440 @@
+﻿@{
+    ViewData["Title"] = "İletişim Bilgileri Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- Başarı/Hata Mesajları -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- EKLE BUTONU HER ZAMAN GÖRÜNÜR OLMASI İÇİN BAĞIMSIZ YERLEŞTİRİLDİ -->
+        <div class="mb-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                <i class="fas fa-plus"></i> Yeni İletişim Bilgisi Ekle
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>İletişim Bilgileri</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-head-bg-primary">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Firma Adı</th>
+                                <th scope="col">Adres</th>
+                                <th scope="col">Telefon 1</th>
+                                <th scope="col">Email 1</th>
+                                <th scope="col">Eklenme Tarihi</th>
+                                <th scope="col">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.IletisimList != null && ViewBag.IletisimList.Count > 0)
+                            {
+                                var counter = 1;
+                                foreach (var item in ViewBag.IletisimList)
+                                {
+                                    <tr>
+                                        <td>@counter</td>
+                                        <td>@item.Adi</td>
+                                        <td>@(item.Adres != null && item.Adres.Length > 30 ? item.Adres.Substring(0, 30) + "..." : item.Adres)</td>
+                                        <td>@item.Telefon1</td>
+                                        <td>@item.Email1</td>
+                                        <td>@item.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>
+                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id)">
+                                                <i class="fas fa-edit"></i> 
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.Adi')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center">Henüz iletişim bilgisi eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Bilgi Ekle</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ekle Modal -->
+<div class="modal fade" id="ekleModal" tabindex="-1" aria-labelledby="ekleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            @using (Html.BeginForm("Ekle", "AdminIletisimBilgileri", FormMethod.Post, new { id = "ekleForm" }))
+            {
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ekleModalLabel">Yeni İletişim Bilgisi Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="Adi" name="Adi" placeholder="Firma Adı" required>
+                                <label for="Adi">Firma Adı</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="Telefon1" name="Telefon1" placeholder="Telefon 1">
+                                <label for="Telefon1">Telefon 1</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="Telefon2" name="Telefon2" placeholder="Telefon 2">
+                                <label for="Telefon2">Telefon 2</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="Telefon3" name="Telefon3" placeholder="Telefon 3">
+                                <label for="Telefon3">Telefon 3</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="Telefon4" name="Telefon4" placeholder="Telefon 4">
+                                <label for="Telefon4">Telefon 4</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="Email1" name="Email1" placeholder="Email 1">
+                                <label for="Email1">Email 1</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="Email2" name="Email2" placeholder="Email 2">
+                                <label for="Email2">Email 2</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="Faks" name="Faks" placeholder="Faks">
+                                <label for="Faks">Faks</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="url" class="form-control" id="WhatsApp" name="WhatsApp" placeholder="WhatsApp">
+                                <label for="WhatsApp">WhatsApp</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="url" class="form-control" id="Facebook" name="Facebook" placeholder="Facebook">
+                                <label for="Facebook">Facebook</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="url" class="form-control" id="Instagram" name="Instagram" placeholder="Instagram">
+                                <label for="Instagram">Instagram</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="url" class="form-control" id="Linkedin" name="Linkedin" placeholder="LinkedIn">
+                                <label for="Linkedin">LinkedIn</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="url" class="form-control" id="Twitter" name="Twitter" placeholder="Twitter">
+                                <label for="Twitter">Twitter</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="url" class="form-control" id="YouTube" name="YouTube" placeholder="YouTube">
+                                <label for="YouTube">YouTube</label>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating">
+                                <textarea class="form-control" id="Adres" name="Adres" placeholder="Adres" style="height: 100px"></textarea>
+                                <label for="Adres">Adres</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="BankaAdi" name="BankaAdi" placeholder="Banka Adı">
+                                <label for="BankaAdi">Banka Adı</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="IbanNo" name="IbanNo" placeholder="IBAN No">
+                                <label for="IbanNo">IBAN No</label>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating">
+                                <input type="url" class="form-control" id="GoogleMapsBaglanti" name="GoogleMapsBaglanti" placeholder="Google Maps Bağlantı">
+                                <label for="GoogleMapsBaglanti">Google Maps Bağlantı</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Düzenle Modal -->
+<div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form action ="@Url.Action("Guncelle", "AdminIletisimBilgileri")" method="post" id="duzenleForm">
+                <input type="hidden" id="editId" name="Id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="duzenleModalLabel">İletişim Bilgisi Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="editAdi" name="Adi" placeholder="Firma Adı" required>
+                                <label for="editAdi">Firma Adı</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="editTelefon1" name="Telefon1" placeholder="Telefon 1">
+                                <label for="editTelefon1">Telefon 1</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="editTelefon2" name="Telefon2" placeholder="Telefon 2">
+                                <label for="editTelefon2">Telefon 2</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="editTelefon3" name="Telefon3" placeholder="Telefon 3">
+                                <label for="editTelefon3">Telefon 3</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="editTelefon4" name="Telefon4" placeholder="Telefon 4">
+                                <label for="editTelefon4">Telefon 4</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="editEmail1" name="Email1" placeholder="Email 1">
+                                <label for="editEmail1">Email 1</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="editEmail2" name="Email2" placeholder="Email 2">
+                                <label for="editEmail2">Email 2</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="editFaks" name="Faks" placeholder="Faks">
+                                <label for="editFaks">Faks</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="url" class="form-control" id="editWhatsApp" name="WhatsApp" placeholder="WhatsApp">
+                                <label for="editWhatsApp">WhatsApp</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="url" class="form-control" id="editFacebook" name="Facebook" placeholder="Facebook">
+                                <label for="editFacebook">Facebook</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="url" class="form-control" id="editInstagram" name="Instagram" placeholder="Instagram">
+                                <label for="editInstagram">Instagram</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="url" class="form-control" id="editLinkedin" name="Linkedin" placeholder="LinkedIn">
+                                <label for="editLinkedin">LinkedIn</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="url" class="form-control" id="editTwitter" name="Twitter" placeholder="Twitter">
+                                <label for="editTwitter">Twitter</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="url" class="form-control" id="editYouTube" name="YouTube" placeholder="YouTube">
+                                <label for="editYouTube">YouTube</label>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating">
+                                <textarea class="form-control" id="editAdres" name="Adres" placeholder="Adres" style="height: 100px"></textarea>
+                                <label for="editAdres">Adres</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="editBankaAdi" name="BankaAdi" placeholder="Banka Adı">
+                                <label for="editBankaAdi">Banka Adı</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="editIbanNo" name="IbanNo" placeholder="IBAN No">
+                                <label for="editIbanNo">IBAN No</label>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating">
+                                <input type="url" class="form-control" id="editGoogleMapsBaglanti" name="GoogleMapsBaglanti" placeholder="Google Maps Bağlantı">
+                                <label for="editGoogleMapsBaglanti">Google Maps Bağlantı</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Sil Onay Modal -->
+<div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Sil", "AdminIletisimBilgileri")" method="post">
+                <input type="hidden" id="silId" name="Id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="silModalLabel">Silme Onayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>"<span id="silAdi"></span>"</strong> isimli iletişim bilgisini silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><small>Bu işlem geri alınamaz. Bilgi durumu pasif hale getirilecektir.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        function duzenleGetir(id) {
+            fetch('@Url.Action("Getir", "AdminIletisimBilgileri")' + '?id=' + id)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('editId').value = data.id;
+                    document.getElementById('editAdi').value = data.adi || '';
+                    document.getElementById('editAdres').value = data.adres || '';
+                    document.getElementById('editBankaAdi').value = data.bankaAdi || '';
+                    document.getElementById('editEmail1').value = data.email1 || '';
+                    document.getElementById('editEmail2').value = data.email2 || '';
+                    document.getElementById('editFacebook').value = data.facebook || '';
+                    document.getElementById('editFaks').value = data.faks || '';
+                    document.getElementById('editGoogleMapsBaglanti').value = data.googleMapsBaglanti || '';
+                    document.getElementById('editIbanNo').value = data.ibanNo || '';
+                    document.getElementById('editInstagram').value = data.instagram || '';
+                    document.getElementById('editLinkedin').value = data.linkedin || '';
+                    document.getElementById('editTelefon1').value = data.telefon1 || '';
+                    document.getElementById('editTelefon2').value = data.telefon2 || '';
+                    document.getElementById('editTelefon3').value = data.telefon3 || '';
+                    document.getElementById('editTelefon4').value = data.telefon4 || '';
+                    document.getElementById('editTwitter').value = data.twitter || '';
+                    document.getElementById('editWhatsApp').value = data.whatsApp || '';
+                    document.getElementById('editYouTube').value = data.youTube || '';
+
+                    var duzenleModal = new bootstrap.Modal(document.getElementById('duzenleModal'));
+                    duzenleModal.show();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Kayıt getirilirken bir hata oluştu.');
+                });
+        }
+
+        function silOnay(id, adi) {
+            document.getElementById('silId').value = id;
+            document.getElementById('silAdi').textContent = adi;
+
+            var silModal = new bootstrap.Modal(document.getElementById('silModal'));
+            silModal.show();
+        }
+
+        // Modal kapandığında formları temizle
+        document.getElementById('ekleModal').addEventListener('hidden.bs.modal', function () {
+            this.querySelector('form').reset();
+        });
+        document.getElementById('duzenleModal').addEventListener('hidden.bs.modal', function () {
+            this.querySelector('form').reset();
+        });
+
+        // Başarı mesajlarını 5 saniye sonra otomatik kapat
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
+}

@@ -1,0 +1,320 @@
+﻿@using WepApp.Models
+@model List<KDV>
+
+@{
+    ViewData["Title"] = "KDV Oranları Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<style>
+    .table-actions {
+        white-space: nowrap;
+        width: 120px;
+    }
+
+    .card {
+        margin-top: 70px;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .badge-kdv {
+        background-color: #20c997;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>KDV Oranları Yönetimi</span>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni KDV Oranı Ekle
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th width="50">#</th>
+                                <th>KDV Oranı</th>
+                                <th>Eklenme Tarihi</th>
+                                <th>Son Güncelleme</th>
+                                <th width="120" class="text-center">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.KDVListesi != null && ((List<KDV>)ViewBag.KDVListesi).Count > 0)
+                            {
+                                var counter = 1;
+                                foreach (var item in (List<KDV>)ViewBag.KDVListesi)
+                                {
+                                    <tr>
+                                        <td>@counter</td>
+                                        <td>
+                                            <span class="badge-kdv">%@item.Oran</span>
+                                        </td>
+                                        <td>@item.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>@item.GuncellenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td class="table-actions text-center">
+                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id, '@item.Oran')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.Oran')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        <div class="py-4">
+                                            <i class="fas fa-percentage fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted">Henüz KDV oranı eklenmemiş.</p>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                                                İlk KDV Oranını Ekle
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ekle Modal -->
+<div class="modal fade" id="ekleModal" tabindex="-1" aria-labelledby="ekleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("Ekle", "AdminKDV", FormMethod.Post, new { id = "ekleForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ekleModalLabel">Yeni KDV Oranı Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="Oran" class="form-label">KDV Oranı (%) *</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="Oran" name="Oran"
+                                   placeholder="KDV oranını giriniz"
+                                   required
+                                   min="0"
+                                   max="100"
+                                  >
+                            <span class="input-group-text">%</span>
+                        </div>
+                        <div class="form-text">KDV oranı 0 ile 100 arasında olmalıdır. Örneğin: 18, 20, 1.08</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Düzenle Modal -->
+<div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Guncelle","AdminKDV")" method="post" id="duzenleForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editId" name="Id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="duzenleModalLabel">KDV Oranı Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editOran" class="form-label">KDV Oranı (%) *</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="editOran" name="Oran"
+                                   placeholder="KDV oranını giriniz"
+                                   required
+                                   min="0"
+                                   max="100"
+                                  >
+                            <span class="input-group-text">%</span>
+                        </div>
+                        <div class="form-text">KDV oranı 0 ile 100 arasında olmalıdır.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Sil Onay Modal -->
+<div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Sil","AdminKDV")" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="silId" name="Id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="silModalLabel">Silme Onayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>"%<span id="silOran"></span>"</strong> KDV oranını silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger">
+                        <small>
+                            Bu işlem geri alınamaz. Bu KDV oranını kullanan ürünler varsa sorun yaşayabilirsiniz.
+                        </small>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        // Düzenle modalını aç
+        function duzenleGetir(id, oran) {
+            $('#editId').val(id);
+            $('#editOran').val(oran);
+            new bootstrap.Modal('#duzenleModal').show();
+        }
+
+        // Silme onayı modalı
+        function silOnay(id, oran) {
+            $('#silId').val(id);
+            $('#silOran').text(oran);
+            new bootstrap.Modal('#silModal').show();
+        }
+
+        // Form validasyonları
+        document.addEventListener('DOMContentLoaded', function() {
+            // Oran validasyonu
+            function validateOran(input) {
+                const oran = parseFloat(input.value);
+                if (isNaN(oran) || oran < 0 || oran > 100) {
+                    input.setCustomValidity('KDV oranı 0 ile 100 arasında olmalıdır.');
+                    return false;
+                } else {
+                    input.setCustomValidity('');
+                    return true;
+                }
+            }
+
+            // Oran inputlarına validation ekle
+            const oranInputs = document.querySelectorAll('input[name="Oran"]');
+            oranInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    validateOran(this);
+                });
+
+                input.addEventListener('change', function() {
+                    validateOran(this);
+                });
+            });
+
+            // Form submit kontrolleri
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const oranInput = this.querySelector('input[name="Oran"]');
+                    if (oranInput && !validateOran(oranInput)) {
+                        e.preventDefault();
+                        alert('Geçerli bir KDV oranı giriniz (0-100 arası).');
+                        oranInput.focus();
+                        return false;
+                    }
+
+                    // Boş kontrolü
+                    if (oranInput && oranInput.value.trim().length === 0) {
+                        e.preventDefault();
+                        alert('KDV oranı gereklidir.');
+                        oranInput.focus();
+                        return false;
+                    }
+                });
+            });
+
+            // Modal kapandığında formları sıfırla
+            ['ekleModal', 'duzenleModal'].forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.addEventListener('hidden.bs.modal', function() {
+                        const form = this.querySelector('form');
+                        if (form) {
+                            form.reset();
+                            const inputs = form.querySelectorAll('input');
+                            inputs.forEach(input => input.setCustomValidity(''));
+                        }
+                    });
+                }
+            });
+
+            // Alert mesajlarını 5 saniye sonra otomatik kapat
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+
+        // Enter tuşu ile form submit
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const activeModal = document.querySelector('.modal.show');
+                if (activeModal) {
+                    const form = activeModal.querySelector('form');
+                    if (form) {
+                        const submitButton = form.querySelector('button[type="submit"]');
+                        if (submitButton) {
+                            submitButton.click();
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

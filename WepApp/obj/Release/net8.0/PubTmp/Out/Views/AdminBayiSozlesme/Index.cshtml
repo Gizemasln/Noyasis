@@ -1,0 +1,418 @@
+﻿@using WepApp.Models
+@{
+    ViewData["Title"] = "Bayi Sözleşmeleri";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<style>
+    .table-actions {
+        white-space: nowrap;
+        width: 130px;
+    }
+
+    .card {
+        margin-top: 70px;
+    }
+
+    .kriter-item {
+        cursor: pointer;
+        padding: 8px 12px;
+        margin: 2px 0;
+        border-radius: 6px;
+        transition: all 0.2s;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+    }
+
+        .kriter-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .kriter-item.selected {
+            background-color: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+
+    .kriter-list-container {
+        max-height: 250px;
+        overflow-y: auto;
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        padding: 8px;
+        background-color: #fff;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Bayi Sözleşmeleri</h5>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sozlesmeModal">
+                    <i class="fas fa-plus"></i> Yeni Sözleşme Ekle
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="50">#</th>
+                                <th>Döküman No</th>
+                                <th>Bayi</th>
+                                <th>Yayın Tarihi</th>
+                                <th>Bitiş Tarihi</th>
+                                <th>Sözleşme Durumu</th>
+                                <th>Kriterler</th>
+                                <th>Dosya</th>
+                                <th width="140" class="text-center">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.Sozlesmeler != null && ((List<BayiSozlesme>)ViewBag.Sozlesmeler).Any())
+                            {
+                                var sayac = 1;
+                                foreach (var s in (List<BayiSozlesme>)ViewBag.Sozlesmeler)
+                                {
+                                    var kriterSayisi = s.BayiSozlesmeBayiKriter?.Count(k => k.Durumu == 1) ?? 0;
+                                    <tr>
+                                        <td>@sayac</td>
+                                        <td>
+                                            <strong>@s.DokumanNo</strong>
+                                            @if (!string.IsNullOrEmpty(s.RevizyonNo))
+                                            {
+                                                <br />
+
+                                                <small class="text-muted">Rev. @s.RevizyonNo</small>
+                                            }
+                                        </td>
+                                        <td>@s.Bayi?.Kodu - @s.Bayi?.Unvan</td>
+                                        <td>@s.YayinTarihi.ToString("dd.MM.yyyy")</td>
+                                        <td>@s.BitisTarihi.ToString("dd.MM.yyyy")</td>
+                                        <td><span class="badge bg-success">@s.SozlesmeDurumu?.Adi</span></td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-info" onclick="kriterleriGoster(@s.Id, '@s.DokumanNo')">
+                                                Kriterler (@kriterSayisi)
+                                            </button>
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(s.DosyaYolu))
+                                            {
+                                                <a href="@s.DosyaYolu" target="_blank" class="btn btn-sm btn-success">
+                                                    <i class="fas fa-file-pdf"></i> PDF
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-warning btn-sm" onclick="duzenle(@s.Id)">
+                                                <i class="fas fa-edit">Düzenle</i>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="silOnay(@s.Id, '@s.DokumanNo')">
+                                                <i class="fas fa-trash">Sil</i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    sayac++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="9" class="text-center py-5 text-muted">
+                                        <i class="fas fa-inbox fa-3x mb-3"></i>
+                                        <p>Henüz bayi sözleşmesi eklenmemiş.</p>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sözleşme Ekle/Düzenle Modal -->
+<div class="modal fade" id="sozlesmeModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="sozlesmeForm" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="sozlesmeId" value="0" />
+                <input type="hidden" name="KriterIds" id="kriterIds" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Yeni Sözleşme Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Bayi *</label>
+                            <select class="form-select" name="BayiId" id="bayiId" required></select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Döküman No *</label>
+                            <input type="text" class="form-control" name="DokumanNo" id="dokumanNo" required />
+                            <div id="benzersizUyari"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Sözleşme Durumu *</label>
+                            <select class="form-select" name="SozlesmeDurumuId" id="durumId" required></select>
+                        </div>
+
+                        <div class="col-md-3"><label class="form-label">Yayın Tarihi *</label><input type="date" class="form-control" name="YayinTarihi" id="yayinTarihi" required /></div>
+                        <div class="col-md-3"><label class="form-label">Bitiş Tarihi *</label><input type="date" class="form-control" name="BitisTarihi" id="bitisTarihi" required /></div>
+                        <div class="col-md-3"><label class="form-label">Geçerlilik Süresi (Ay)</label><input type="number" step="0.1" class="form-control" name="GecerlilikSuresi" id="gecerlilikSuresi" value="12" /></div>
+                        <div class="col-md-3"><label class="form-label">Revizyon No</label><input type="text" class="form-control" name="RevizyonNo" id="revizyonNo" /></div>
+                        <div class="col-md-3"><label class="form-label">Revize Tarihi</label><input type="date" class="form-control" name="RevizeTarihi" id="revizeTarihi" /></div>
+
+                        <div class="col-md-9">
+                            <label class="form-label">Sözleşme Dosyası (PDF)</label>
+                            <input type="file" class="form-control" name="Dosya" id="dosya" accept=".pdf" />
+                            <div id="mevcutDosyaDiv" class="mt-1"></div>
+                            <small class="text-muted">Maks. 20 MB, sadece PDF</small>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Ek Kriterler (Çoklu Seçim)</label>
+                            <div class="kriter-list-container" id="kriterListContainer"></div>
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="tumunuSec()">Tümünü Seç</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="secimiTemizle()">Temizle</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Kriterleri Göster Modal -->
+<div class="modal fade" id="kriterGoruntuleModal" tabindex="-1">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sözleşme Kriterleri - <span id="kriterModalDokumanNo"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="kriterListesi">Yükleniyor...</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Script {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        let kriterList = [];
+        let selectedKriterIds = [];
+        let currentEditId = null;
+
+        $(document).ready(function () {
+            yukleVeriler();
+            formEventleriAyarla();
+        });
+
+        function yukleVeriler() {
+            $.getJSON('/AdminBayiSozlesme/GetBayiler').done(data => $('#bayiId').empty().append('<option value="">Bayi Seçiniz</option>').append(data.map(i => `<option value="${i.value}">${i.text}</option>`)));
+            $.getJSON('/AdminBayiSozlesme/GetSozlesmeDurumlari').done(data => $('#durumId').empty().append('<option value="">Durum Seçiniz</option>').append(data.map(i => `<option value="${i.value}">${i.text}</option>`)));
+            $.getJSON('/AdminBayiSozlesme/GetKriterTanimlari').done(data => { kriterList = data; kriterListesiYukle(); });
+        }
+
+        function formEventleriAyarla() {
+            $('#dokumanNo').on('change keyup', benzersizKontrol);
+            $('#sozlesmeModal').on('hidden.bs.modal', formTemizle);
+            $('#sozlesmeForm').on('submit', e => { e.preventDefault(); formKaydet(); });
+        }
+
+        function benzersizKontrol() {
+            const dokumanNo = $('#dokumanNo').val().trim();
+            if (!dokumanNo) { $('#benzersizUyari').empty(); return; }
+            $.get('/AdminBayiSozlesme/BenzersizKontrol', { dokumanNo, excludeId: currentEditId || null }, res => {
+                $('#benzersizUyari').html(res.varMi ? '<small class="text-danger">Bu döküman no zaten kayıtlı!</small>' : '');
+            });
+        }
+
+        function kriterListesiYukle() {
+            const container = $('#kriterListContainer');
+            container.empty();
+            kriterList.forEach(k => {
+                const secili = selectedKriterIds.includes(k.value.toString());
+                const div = $(`<div class="kriter-item ${secili ? 'selected' : ''}" data-id="${k.value}">${k.text}</div>`);
+                div.on('click', () => kriterSec(div, k.value));
+                container.append(div);
+            });
+        }
+
+        function kriterSec(el, id) {
+            const idStr = id.toString();
+            const idx = selectedKriterIds.indexOf(idStr);
+            if (idx > -1) {
+                selectedKriterIds.splice(idx, 1);
+                el.removeClass('selected');
+            } else {
+                selectedKriterIds.push(idStr);
+                el.addClass('selected');
+            }
+        }
+
+        function tumunuSec() {
+            selectedKriterIds = kriterList.map(k => k.value.toString());
+            kriterListesiYukle();
+        }
+
+        function secimiTemizle() {
+            selectedKriterIds = [];
+            kriterListesiYukle();
+        }
+
+        function kriterleriGoster(id, dokumanNo) {
+            $.get('/AdminBayiSozlesme/Getir?id=' + id, function(data) {
+                $('#kriterModalDokumanNo').text(dokumanNo);
+                const liste = $('#kriterListesi');
+
+                if (data.kriterList && data.kriterList.length > 0) {
+                    let html = '<ul class="list-group">';
+                    data.kriterList.forEach(k => {
+                        html += `<li class="list-group-item d-flex justify-content-between align-items-center">
+                                    ${k.adi}
+                                    <span class="badge bg-primary rounded-pill">%${k.oran}</span>
+                                </li>`;
+                    });
+                    html += '</ul>';
+                    liste.html(html);
+                } else {
+                    liste.html('<p class="text-muted">Bu sözleşmeye kriter eklenmemiş.</p>');
+                }
+                $('#kriterGoruntuleModal').modal('show');
+            }).fail(function() {
+                $('#kriterListesi').html('<p class="text-danger">Kriterler yüklenirken hata oluştu.</p>');
+            });
+        }
+
+        function duzenle(id) {
+            currentEditId = id;
+            $.get('/AdminBayiSozlesme/Getir?id=' + id, function(data) {
+                $('#sozlesmeId').val(data.id);
+                $('#bayiId').val(data.bayiId);
+                $('#dokumanNo').val(data.dokumanNo);
+                $('#yayinTarihi').val(data.yayinTarihi);
+                $('#bitisTarihi').val(data.bitisTarihi);
+                $('#revizyonNo').val(data.revizyonNo || '');
+                $('#revizeTarihi').val(data.revizeTarihi || '');
+                $('#durumId').val(data.sozlesmeDurumuId);
+                $('#gecerlilikSuresi').val(data.gecerlilikSuresi);
+                $('#mevcutDosyaDiv').html(data.dosyaYolu ? `<small class="text-success">Mevcut dosya: <a href="${data.dosyaYolu}" target="_blank">Görüntüle</a></small>` : '');
+
+                selectedKriterIds = data.kriterIds ? data.kriterIds.map(x => x.toString()) : [];
+                kriterListesiYukle();
+
+                $('#modalTitle').text('Sözleşme Düzenle');
+                $('#sozlesmeModal').modal('show');
+                benzersizKontrol();
+            });
+        }
+
+        function formKaydet() {
+            if ($('#benzersizUyari').children().length > 0) {
+                Swal.fire('Uyarı!', 'Bu döküman no zaten kayıtlı!', 'warning');
+                return;
+            }
+
+            const formData = new FormData($('#sozlesmeForm')[0]);
+            formData.delete('KriterIds');
+            selectedKriterIds.forEach(id => formData.append('KriterIds', id));
+
+            const url = currentEditId ? '/AdminBayiSozlesme/Guncelle' : '/AdminBayiSozlesme/Ekle';
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(res) {
+                    Swal.fire(res.success ? 'Başarılı!' : 'Hata!', res.message, res.success ? 'success' : 'error')
+                        .then(function(r) {
+                            if (res.success) location.reload();
+                        });
+                },
+                error: function() {
+                    Swal.fire('Hata!', 'Sunucu hatası oluştu.', 'error');
+                }
+            });
+        }
+
+        function silOnay(id, dokumanNo) {
+            Swal.fire({
+                title: 'Emin misiniz?',
+                html: `<strong>${dokumanNo}</strong> numaralı sözleşmeyi silmek istediğinize emin misiniz?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Evet, sil!',
+                cancelButtonText: 'İptal'
+            }).then(function(r) {
+                if (r.isConfirmed) sil(id);
+            });
+        }
+
+        function sil(id) {
+            $.post('/AdminBayiSozlesme/Sil', { Id: id }, function(res) {
+                Swal.fire(res.success ? 'Silindi!' : 'Hata!', res.message, res.success ? 'success' : 'error')
+                    .then(function(r) {
+                        if (res.success) location.reload();
+                    });
+            });
+        }
+
+        function formTemizle() {
+            $('#sozlesmeForm')[0].reset();
+            $('#sozlesmeId').val('0');
+            $('#mevcutDosyaDiv, #benzersizUyari').empty();
+            selectedKriterIds = [];
+            currentEditId = null;
+            $('#modalTitle').text('Yeni Sözleşme Ekle');
+            kriterListesiYukle();
+        }
+
+        $('#sozlesmeModal').on('show.bs.modal', function () {
+            if (!currentEditId) {
+                const today = new Date().toISOString().split('T')[0];
+                $('#yayinTarihi').val(today);
+                const oneYearLater = new Date();
+                oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
+                $('#bitisTarihi').val(oneYearLater.toISOString().split('T')[0]);
+            }
+        });
+    </script>
+}

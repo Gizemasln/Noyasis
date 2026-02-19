@@ -1,0 +1,209 @@
+﻿@using WepApp.Models
+@{
+    ViewData["Title"] = "UYB Oranı Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<style>
+    .card {
+        margin-top: 70px;
+    }
+
+    .badge-uyb {
+        background-color: #0dcaf0;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 1.2em;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>UYB Oranı Yönetimi</span>
+                    @if (ViewBag.UYB == null)
+                    {
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                            <i class="fas fa-plus"></i> UYB Oranı Ekle
+                        </button>
+                    }
+                    else
+                    {
+                        var uyb = (UYB)ViewBag.UYB;
+                        <button type="button"
+                                class="btn btn-warning"
+                                data-bs-toggle="modal"
+                                data-bs-target="#duzenleModal"
+                                data-uyb-id="@uyb.Id"
+                                data-uyb-oran="@uyb.Oran.ToString("N2")">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    }
+                </div>
+            </div>
+            <div class="card-body text-center py-5">
+                @if (ViewBag.UYB != null)
+                {
+                    var uyb = (UYB)ViewBag.UYB;
+                    <div class="mb-4">
+                        <h3>Mevcut UYB Oranı</h3>
+                        <div class="badge-uyb">%@uyb.Oran.ToString("N2")</div>
+                    </div>
+                    <div class="text-muted small">
+                        Eklenme: @uyb.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")<br />
+                        Son Güncelleme: @uyb.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")
+                    </div>
+                }
+                else
+                {
+                    <i class="fas fa-percentage fa-5x text-muted mb-4"></i>
+                    <p class="text-muted">Henüz UYB oranı tanımlanmamış.</p>
+                    <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        İlk UYB Oranını Tanımla
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ekle Modal -->
+<div class="modal fade" id="ekleModal" tabindex="-1" aria-labelledby="ekleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("Ekle", "AdminUYB", FormMethod.Post, new { id = "ekleForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni UYB Oranı Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">UYB Oranı (%) *</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="Oran" placeholder="Örn: 1.5" required />
+                            <span class="input-group-text">%</span>
+                        </div>
+                        <div class="form-text">0 ile 100 arasında bir değer giriniz.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Düzenle Modal -->
+<div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Guncelle", "AdminUYB")" method="post" id="duzenleForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editId" name="Id" />
+                <div class="modal-header">
+                    <h5 class="modal-title">UYB Oranı Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">UYB Oranı (%) *</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="editOran" name="Oran" required />
+                            <span class="input-group-text">%</span>
+                        </div>
+                        <div class="form-text">0 ile 100 arasında bir değer giriniz.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Düzenle butonuna tıklanınca modalı doldur
+            document.querySelectorAll('[data-uyb-id]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-uyb-id');
+                    const oran = this.getAttribute('data-uyb-oran');
+
+                    $('#editId').val(id);
+                    $('#editOran').val(oran);
+                });
+            });
+
+            function validateOran(input) {
+                const val = parseFloat(input.value);
+                if (isNaN(val) || val < 0 || val > 100) {
+                    input.setCustomValidity('UYB oranı 0-100 arası olmalıdır.');
+                    return false;
+                } else {
+                    input.setCustomValidity('');
+                    return true;
+                }
+            }
+
+            const oranInputs = document.querySelectorAll('input[name="Oran"]');
+            oranInputs.forEach(input => {
+                input.addEventListener('input', () => validateOran(input));
+            });
+
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    const oranInput = this.querySelector('input[name="Oran"]');
+                    if (oranInput && !validateOran(oranInput)) {
+                        e.preventDefault();
+                        alert('Lütfen 0-100 arası geçerli bir oran giriniz.');
+                    }
+                });
+            });
+
+            // Modal kapandığında sıfırla
+            ['ekleModal', 'duzenleModal'].forEach(id => {
+                const modal = document.getElementById(id);
+                if (modal) {
+                    modal.addEventListener('hidden.bs.modal', () => {
+                        modal.querySelector('form')?.reset();
+                        modal.querySelectorAll('input').forEach(i => i.setCustomValidity(''));
+                    });
+                }
+            });
+
+            // Alert'leri 5 sn sonra kapat
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alert => {
+                    bootstrap.Alert.getOrCreateInstance(alert).close();
+                });
+            }, 5000);
+        });
+    </script>
+}

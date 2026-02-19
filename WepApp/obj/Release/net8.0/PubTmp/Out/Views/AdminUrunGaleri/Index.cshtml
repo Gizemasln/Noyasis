@@ -1,0 +1,227 @@
+﻿@* Views/AdminUrunGaleri/Index.cshtml *@
+@using WebApp.Models
+@using WepApp.Models
+@{
+    ViewData["Title"] = "Ürün Galeri Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- Başarı/Hata Mesajları -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- EKLE BUTONU HER ZAMAN GÖRÜNÜR OLMASI İÇİN BAĞIMSIZ YERLEŞTİRİLDİ -->
+   
+
+        <div class="card" style="margin-top:70px;">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>Ürün Galerisi Resimleri</span>
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                            <i class="fas fa-plus"></i> Yeni Resim Ekle
+                        </button>
+                    </div>
+                </div>
+            
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-head-bg-primary">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Resim</th>
+                                <th scope="col">Ürün</th>
+                                <th scope="col">Kategori</th>
+                                <th scope="col">Eklenme Tarihi</th>
+                                <th scope="col">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.GaleriList != null && ((List<UrunGaleri>)ViewBag.GaleriList).Count > 0)
+                            {
+                                var counter = 1;
+                                foreach (var item in ViewBag.GaleriList)
+                                {
+                                    <tr>
+                                        <td>@counter</td>
+                                        <td>
+                                            <img src="@item.FotografKucuk" alt="" style="width: 80px; height: 80px; object-fit: cover;" class="img-thumbnail">
+                                        </td>
+                                        <td>@(item.Urun != null ? item.Urun.Adi : "Bilinmeyen Ürün")</td>
+                                        <td>@(item.Urun != null && item.Urun.Kategori != null ? item.Urun.Kategori.Adi : "Bilinmeyen Kategori")</td>
+                                        <td>@item.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id)">
+                                                <i class="fas fa-trash"></i> 
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center">Henüz resim eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-success btn-sm">Yeni Resim Ekle</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ekle Modal -->
+<div class="modal fade" id="ekleModal" tabindex="-1" aria-labelledby="ekleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            @using (Html.BeginForm("Ekle", "AdminUrunGaleri", FormMethod.Post, new { enctype = "multipart/form-data", id = "ekleForm" }))
+            {
+                <input type="hidden" id="selectedUrunId" name="UrunId" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ekleModalLabel">Yeni Ürün Galeri Resmi Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Kategori Seçin</label>
+                            <select class="form-select" id="ekleKategoriSelect" onchange="loadEkleUrunler();">
+                                <option value="">Kategori Seçin</option>
+                                @foreach (var kategori in ViewBag.Kategoriler)
+                                {
+                                    <option value="@kategori.Id">@kategori.Adi</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Ürün Seçin</label>
+                            <select class="form-select" id="ekleUrunSelect" disabled>
+                                <option value="">Önce Kategori Seçin</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="imagefile" class="form-label">Resim Seçin (Birden Fazla)</label>
+                            <input type="file" class="form-control" id="imagefile" name="imagefile" accept="image/*" multiple required>
+                            <div class="form-text">Birden fazla resim seçebilirsiniz. Büyük boyutlu resimler otomatik olarak küçültülecektir.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary" id="ekleSubmit" disabled>Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Sil Onay Modal -->
+<div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Sil","AdminUrunGaleri")" method="post" id="silForm">
+                <input type="hidden" id="silId" name="Id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="silModalLabel">Silme Onayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bu galeriyi silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><small>Bu işlem geri alınamaz. Resim hem veritabanından hem de sunucudan silinecektir.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        // Ekle Modal için
+        function loadEkleUrunler() {
+            const kategoriId = document.getElementById('ekleKategoriSelect').value;
+            const urunSelect = document.getElementById('ekleUrunSelect');
+            const submitBtn = document.getElementById('ekleSubmit');
+            urunSelect.innerHTML = '<option value="">Yükleniyor...</option>';
+            urunSelect.disabled = true;
+            submitBtn.disabled = true;
+
+            if (kategoriId) {
+                fetch('@Url.Action("UrunlerByKategori", "AdminUrunGaleri")' + '?kategoriId=' + kategoriId)
+                    .then(response => response.json())
+                    .then(data => {
+                        urunSelect.innerHTML = '<option value="">Ürün Seçin</option>';
+                        data.forEach(urun => {
+                            const option = document.createElement('option');
+                            option.value = urun.id;
+                            option.textContent = urun.adi;
+                            urunSelect.appendChild(option);
+                        });
+                        urunSelect.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        urunSelect.innerHTML = '<option value="">Hata Oluştu</option>';
+                    });
+            } else {
+                urunSelect.innerHTML = '<option value="">Önce Kategori Seçin</option>';
+                urunSelect.disabled = true;
+            }
+        }
+
+        document.getElementById('ekleUrunSelect').addEventListener('change', function() {
+            const urunId = this.value;
+            document.getElementById('selectedUrunId').value = urunId;
+            document.getElementById('ekleSubmit').disabled = !urunId || !document.getElementById('imagefile').files.length;
+        });
+
+        document.getElementById('imagefile').addEventListener('change', function() {
+            const urunId = document.getElementById('ekleUrunSelect').value;
+            document.getElementById('ekleSubmit').disabled = !urunId || this.files.length === 0;
+        });
+
+        // Modal kapandığında formları temizle
+        document.getElementById('ekleModal').addEventListener('hidden.bs.modal', function () {
+            this.querySelector('form').reset();
+            loadEkleUrunler(); // Sıfırla
+            document.getElementById('ekleSubmit').disabled = true;
+        });
+
+        function silOnay(id) {
+            document.getElementById('silId').value = id;
+            var silModal = new bootstrap.Modal(document.getElementById('silModal'));
+            silModal.show();
+        }
+
+        // Başarı mesajlarını 5 saniye sonra otomatik kapat
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
+}

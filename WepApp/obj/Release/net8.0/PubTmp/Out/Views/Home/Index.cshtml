@@ -1,0 +1,502 @@
+﻿@using WebApp.Models
+@using WepApp.Models
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutWebUI.cshtml";
+}
+<main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section">
+        @if (ViewBag.AnaSayfaBanner != null)
+        {
+            <div class="container">
+                <div class="row gy-4">
+                    <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
+                        <h1 data-aos="fade-up">@ViewBag.AnaSayfaBanner.Baslik</h1>
+                        <p data-aos="fade-up" data-aos-delay="100">@ViewBag.AnaSayfaBanner.Metin</p>
+                        <div class="d-flex flex-column flex-md-row" data-aos="fade-up" data-aos-delay="200">
+                            <a href="#about" class="btn-get-started">Get Started <i class="bi bi-arrow-right"></i></a>
+                            <a href="https://www.youtube.com/watch?v=MFffFXKBOXs" class="glightbox btn-watch-video d-flex align-items-center justify-content-center ms-0 ms-md-4 mt-4 mt-md-0"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out">
+                        <img src="@ViewBag.AnaSayfaBanner.FotografBuyuk" class="img-fluid animated" alt="">
+                    </div>
+                </div>
+            </div>
+        }
+ 
+
+    </section><!-- /Hero Section -->
+    <!-- About Section -->
+    <section id="about" class="about section">
+
+        <div class="container" data-aos="fade-up">
+            <div class="row gx-0">
+
+                <div class="col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="200">
+                    <div class="content">
+                        <h3>@ViewBag.Hakkimizda.Baslik</h3>
+                        <h2>@ViewBag.Hakkimizda.AltBaslik</h2>
+                        <p>
+                            @ViewBag.Hakkimizda.Metin
+                        </p>
+                      
+                    </div>
+                </div>
+
+                <div class="col-lg-6 d-flex align-items-center" data-aos="zoom-out" data-aos-delay="200">
+                    <img src="@ViewBag.HakkimizdaFotograf.FotografBuyuk" class="img-fluid" alt="">
+                </div>
+
+            </div>
+        </div>
+
+    </section><!-- /About Section -->
+    <!-- Values Section -->
+    <section id="values" class="values section">
+
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <h2>Değerlerimiz</h2>
+            <p>Bizim için başarının temeli güçlü değerlere dayanır</p>
+        </div><!-- End Section Title -->
+
+        <div class="container">
+
+            <div class="row gy-4">
+
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card">
+                        <img src="/WebUITheme/assets/img/values-1.png" class="img-fluid" alt="">
+                        <h3>Yenilikçilik</h3>
+                        <p>Gelişen teknolojileri yakından takip ederek müşterilerimize sürekli yenilenen, geleceğe dönük yazılım çözümleri sunarız.</p>
+                    </div>
+                </div><!-- End Card Item -->
+
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card">
+                        <img src="/WebUITheme/assets/img/values-2.png" class="img-fluid" alt="">
+                        <h3>Güven ve Kalite</h3>
+                        <p>Müşterilerimize güven veren, yüksek standartlarda ve sürdürülebilir çözümler geliştirmeyi ilke ediniriz.</p>
+                    </div>
+                </div><!-- End Card Item -->
+
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card">
+                        <img src="/WebUITheme/assets/img/values-3.png" class="img-fluid" alt="">
+                        <h3>Müşteri Odaklılık</h3>
+                        <p>Her müşterimizin ihtiyaçlarını önceliklendirir, hedeflerine ulaşmalarını sağlayan kişiye özel çözümler sunarız.</p>
+                    </div>
+                </div><!-- End Card Item -->
+
+            </div>
+
+        </div>
+
+    </section>
+    <!-- Blog Posts Section -->
+<section id="blog-posts" class="blog-posts section">
+         <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <h2>Makalelerimiz</h2>
+            <p>Bilgi ve deneyimlerimizi sizlerle paylaştığımız yazılarımızı keşfedin</p>
+        </div><!-- End Section Title -->
+    <div class="container">
+        <div class="row gy-4">
+            @if (ViewBag.Makale != null)
+            {
+                var makaleler = (List<Makale>)ViewBag.Makale;
+                int counter = 0;
+
+                foreach (var item in makaleler)
+                {
+                    if (counter % 2 == 0 && counter != 0)
+                    {
+                        @:</div><div class="row gy-4">
+                    }
+
+                    <div class="col-md-6">
+                        <article>
+                            <h2 class="title">
+                                <a href="/MakaleDetay/Index/@item.Id">@item.Baslik</a>
+                            </h2>
+                            <div class="content">
+                                <p>
+                                    @Html.Raw(item.Metin.Length > 150 ? item.Metin.Substring(0, 350) + "..." : item.Metin)
+                                </p>
+                                <div class="read-more">
+                                    <a href="/MakaleDetay/Index/@item.Id">Daha Fazla</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+
+                    counter++;
+                }
+            }
+        </div><!-- End blog posts list -->
+    </div>
+</section>
+<!-- /Blog Posts Section -->
+@*     <section id="features" class="features section">
+
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <h2>Özelliklerimiz</h2>
+            <p>Yenilikçi yazılım çözümleriyle geleceği şekillendiriyoruz<br></p>
+        </div><!-- End Section Title -->
+
+        <div class="container">
+
+            <div class="row gy-5">
+
+                <div class="col-xl-6" data-aos="zoom-out" data-aos-delay="100">
+                    <img src="/WebUITheme/assets/img/features.png" class="img-fluid" alt="">
+                </div>
+
+                <div class="col-xl-6 d-flex">
+                    <div class="row align-self-center gy-4">
+
+                        <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+                            <div class="feature-box d-flex align-items-center">
+                                <i class="bi bi-check"></i>
+                                <h3>Yenilikçi Teknoloji</h3>
+                            </div>
+                        </div><!-- End Feature Item -->
+
+                        <div class="col-md-6" data-aos="fade-up" data-aos-delay="300">
+                            <div class="feature-box d-flex align-items-center">
+                                <i class="bi bi-check"></i>
+                                <h3>Deneyimli Kadro</h3>
+                            </div>
+                        </div><!-- End Feature Item -->
+
+                        <div class="col-md-6" data-aos="fade-up" data-aos-delay="400">
+                            <div class="feature-box d-flex align-items-center">
+                                <i class="bi bi-check"></i>
+                                <h3>Kurumsal Güven</h3>
+                            </div>
+                        </div><!-- End Feature Item -->
+
+                        <div class="col-md-6" data-aos="fade-up" data-aos-delay="500">
+                            <div class="feature-box d-flex align-items-center">
+                                <i class="bi bi-check"></i>
+                                <h3>7/24 Destek</h3>
+                            </div>
+                        </div><!-- End Feature Item -->
+
+                        <div class="col-md-6" data-aos="fade-up" data-aos-delay="600">
+                            <div class="feature-box d-flex align-items-center">
+                                <i class="bi bi-check"></i>
+                                <h3>Esnek Çözümler</h3>
+                            </div>
+                        </div><!-- End Feature Item -->
+
+                        <div class="col-md-6" data-aos="fade-up" data-aos-delay="700">
+                            <div class="feature-box d-flex align-items-center">
+                                <i class="bi bi-check"></i>
+                                <h3>Müşteri Odaklılık</h3>
+                            </div>
+                        </div><!-- End Feature Item -->
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section> *@
+    <!-- /Features Section -->
+    <!-- Alt Features Section -->
+    <section id="alt-features" class="alt-features section">
+
+        <div class="container">
+
+            <div class="row gy-5">
+
+                <div class="col-xl-7 d-flex order-2 order-xl-1" data-aos="fade-up" data-aos-delay="200">
+
+                    <div class="row align-self-center gy-5">
+
+                        <div class="col-md-6 icon-box">
+                            <i class="bi bi-cpu"></i>
+                            <div>
+                                <h4>Yenilikçi Teknoloji</h4>
+                                <p>En yeni teknolojileri kullanarak işletmelerin dijital dönüşümüne yön veriyoruz. Her çözüm, performans ve sürdürülebilirlik odaklı geliştiriliyor.</p>
+                            </div>
+                        </div><!-- End Feature Item -->
+
+                        <div class="col-md-6 icon-box">
+                            <i class="bi bi-code-slash"></i>
+                            <div>
+                                <h4>Özel Yazılım Çözümleri</h4>
+                                <p>İş ihtiyaçlarınıza özel, tamamen size göre tasarlanmış yazılımlar geliştiriyoruz. Her satır kod, verimlilik ve güvenlik için yazılıyor.</p>
+                            </div>
+                        </div><!-- End Feature Item -->
+
+                        <div class="col-md-6 icon-box">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                            <div>
+                                <h4>Bulut Altyapısı</h4>
+                                <p>Güvenli ve ölçeklenebilir bulut sistemleriyle iş süreçlerinizi her yerden yönetmenizi sağlıyoruz. Hızlı, esnek ve güvenli çözümler sunuyoruz.</p>
+                            </div>
+                        </div><!-- End Feature Item -->
+
+                        <div class="col-md-6 icon-box">
+                            <i class="bi bi-shield-check"></i>
+                            <div>
+                                <h4>Veri Güvenliği</h4>
+                                <p>Verileriniz bizim için en değerli varlıktır. Tüm sistemlerimizde güçlü şifreleme ve siber güvenlik standartları uygulanır.</p>
+                            </div>
+                        </div><!-- End Feature Item -->
+
+                        <div class="col-md-6 icon-box">
+                            <i class="bi bi-graph-up-arrow"></i>
+                            <div>
+                                <h4>Performans Odaklı Gelişim</h4>
+                                <p>Her projemizde hız, kullanıcı deneyimi ve optimizasyonu ön planda tutuyoruz. Amacımız, markanızı bir adım öne taşımak.</p>
+                            </div>
+                        </div><!-- End Feature Item -->
+
+                        <div class="col-md-6 icon-box">
+                            <i class="bi bi-people"></i>
+                            <div>
+                                <h4>Uzman Ekip</h4>
+                                <p>Deneyimli yazılım mühendisleri, tasarımcılar ve stratejistlerimizle, fikrinizi güçlü bir dijital ürüne dönüştürüyoruz.</p>
+                            </div>
+                        </div><!-- End Feature Item -->
+
+                    </div>
+
+                </div>
+
+                <div class="col-xl-5 d-flex align-items-center order-1 order-xl-2" data-aos="fade-up" data-aos-delay="100">
+                    <img src="/WebUITheme/assets/img/alt-features.png" class="img-fluid" alt="Yenilikçi Yazılım Şirketi">
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+    <section id="faq" class="faq section">
+
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <h2>S.S.S</h2>
+            <p>Sıkça Sorulan Sorular</p>
+        </div><!-- End Section Title -->
+
+        <div class="container">
+
+            <div class="row">
+
+                @{
+                    var sssList = ViewBag.SSSList as List<SSS> ?? new List<SSS>();
+                    var firstHalf = sssList.Take((int)Math.Ceiling(sssList.Count / 2.0)).ToList();
+                    var secondHalf = sssList.Skip((int)Math.Ceiling(sssList.Count / 2.0)).ToList();
+                    var isFirst = true;
+                }
+
+                @if (sssList.Any())
+                {
+                    <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="faq-container">
+                            @foreach (var item in firstHalf)
+                            {
+                                <div class="faq-item @(isFirst ? "faq-active" : "")">
+                                    <h3>@item.Soru</h3>
+                                    <div class="faq-content">
+                                        <p>@item.Cevap</p>
+                                    </div>
+                                    <i class="faq-toggle bi bi-chevron-right"></i>
+                                </div>
+
+                                <!-- End Faq item-->
+                                isFirst = false;
+                            }
+                        </div>
+                    </div>
+
+                    <!-- End Faq Column-->
+
+                    <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+                        <div class="faq-container">
+                            @foreach (var item in secondHalf)
+                            {
+                                <div class="faq-item">
+                                    <h3>@item.Soru</h3>
+                                    <div class="faq-content">
+                                        <p>@item.Cevap</p>
+                                    </div>
+                                    <i class="faq-toggle bi bi-chevron-right"></i>
+                                </div>
+
+                                <!-- End Faq item-->
+                            }
+                        </div>
+                    </div>
+
+                    <!-- End Faq Column-->
+                }
+                else
+                {
+                    <div class="col-12 text-center">
+                        <p>Henüz SSS eklenmemiş.</p>
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+    </section>    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio section">
+
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <h2>Ürünlerimiz</h2>
+            <p>Ürün Görselleri</p>
+        </div><!-- End Section Title -->
+
+        <div class="container">
+
+            <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
+
+                <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
+                    <li data-filter="*" class="filter-active">Tümü</li>
+                    @foreach (var kategori in ViewBag.Kategoriler)
+                    {
+                        <li data-filter=".filter-@kategori.Id">@kategori.Adi</li>
+                    }
+                </ul><!-- End Portfolio Filters -->
+
+                <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
+
+                    @foreach (var urun in ViewBag.Urunler)
+                    {
+                        @foreach (var galeri in urun.UrunGaleri ?? new List<UrunGaleri>())
+                        {
+                            if (galeri.Durumu == 1) // Yalnızca aktif görseller
+                            {
+                                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-@urun.KategoriId">
+                                    <div class="portfolio-content h-100">
+                                        <img src="@galeri.FotografBuyuk" class="img-fluid" alt="@urun.Adi">
+                                        <div class="portfolio-info">
+                                            <a href="@galeri.FotografBuyuk" title="@urun.Adi" data-gallery="portfolio-gallery-@urun.KategoriId" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
+                                            <a href="/Urun/Detay/@urun.Id" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- End Portfolio Item -->
+                            }
+                        }
+                    }
+
+                </div><!-- End Portfolio Container -->
+
+            </div>
+
+        </div>
+
+    </section>    <section id="contact" class="contact section">
+
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <h2>İletişim</h2>
+            <p>
+                Bize Ulaşın
+
+            </p>
+        </div><!-- End Section Title -->
+
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+            <div class="row gy-4">
+
+                <div class="col-lg-6">
+
+                    <div class="row gy-4">
+                        <div class="col-md-6">
+                            <div class="info-item" data-aos="fade" data-aos-delay="200">
+                                <i class="bi bi-geo-alt"></i>
+                                <h3>Adres</h3>
+                                <p>@ViewBag.Iletisim.Adres</p>
+                            </div>
+                        </div><!-- End Info Item -->
+
+                        <div class="col-md-6">
+                            <div class="info-item" data-aos="fade" data-aos-delay="300">
+                                <i class="bi bi-telephone"></i>
+                                <h3>Bizi Arayın</h3>
+                                <p>@ViewBag.Iletisim.Telefon1</p>
+                                <p>@ViewBag.Iletisim.Telefon2</p>
+                            </div>
+                        </div><!-- End Info Item -->
+
+                        <div class="col-md-6">
+                            <div class="info-item" data-aos="fade" data-aos-delay="400">
+                                <i class="bi bi-envelope"></i>
+                                <h3>Email </h3>
+                                <p>@ViewBag.Iletisim.Email1</p>
+                               
+                            </div>
+                        </div><!-- End Info Item -->
+
+                        <div class="col-md-6">
+                            <div class="info-item" data-aos="fade" data-aos-delay="500">
+                                <i class="bi bi-clock"></i>
+                                <h3>Çalışma Saatleri</h3>
+                                <p>Pazartesi - Cumartesi</p>
+                                <p>09.00 - 18.00</p>
+                            </div>
+                        </div><!-- End Info Item -->
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-6">
+                    <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="200">
+                        <div class="row gy-4">
+
+                            <div class="col-md-6">
+                                <input type="text" name="name" class="form-control" placeholder="Adınız" required="">
+                            </div>
+
+                            <div class="col-md-6 ">
+                                <input type="email" class="form-control" name="email" placeholder="Email" required="">
+                            </div>
+
+                            <div class="col-12">
+                                <input type="text" class="form-control" name="subject" placeholder="Konu" required="">
+                            </div>
+
+                            <div class="col-12">
+                                <textarea class="form-control" name="message" rows="6" placeholder="Mesaj" required=""></textarea>
+                            </div>
+
+                            <div class="col-12 text-center">
+                                <div class="loading">Loading</div>
+                                <div class="error-message"></div>
+                                <div class="sent-message">Mesajınız gönderildi. Teşekkür ederiz!</div>
+
+                                <button type="submit">Mesaj Gönder</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div><!-- End Contact Form -->
+
+            </div>
+
+        </div>
+
+    </section><!-- /Contact Section -->
+
+</main>

@@ -1,0 +1,360 @@
+﻿@using WepApp.Models
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Yönetim Paneli</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+    <link rel="icon" href="/WebAdminTheme/assets/img/kaiadmin/favicon.ico" type="image/x-icon" />
+
+    <script src="/WebAdminTheme/assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+        WebFont.load({
+            google: { families: ["Public Sans:300,400,500,600,700"] },
+            custom: {
+                families: ["Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"],
+                urls: ["assets/css/fonts.min.css"],
+            },
+            active: function () { sessionStorage.fonts = true; },
+        });
+    </script>
+
+    <link rel="stylesheet" href="/WebAdminTheme/assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/WebAdminTheme/assets/css/plugins.min.css" />
+    <link rel="stylesheet" href="/WebAdminTheme/assets/css/kaiadmin.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/WebAdminTheme/assets/css/demo.css" />
+</head>
+<body>
+    <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
+        <div class="container-fluid">
+            <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+                <li class="nav-item topbar-user dropdown hidden-caret">
+                    <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                        <div class="avatar-sm"></div>
+                        <span class="profile-username">
+                            <span class="fw-bold">
+                                @(
+                                    !string.IsNullOrWhiteSpace(ViewBag.Bayi?.Unvan)
+                                    ? ViewBag.Bayi.Unvan
+                                    : !string.IsNullOrWhiteSpace(ViewBag.Musteri?.TicariUnvan ?? ViewBag.Musteri?.Ad)
+                                    ? (ViewBag.Musteri.TicariUnvan ?? ViewBag.Musteri.Ad + " " + ViewBag.Musteri.Soyad)
+                                    : "Admin"
+                                    )
+                            </span>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user animated fadeIn">
+                        <div class="dropdown-user-scroll scrollbar-outer">
+                        <li>
+                            <div class="user-box">
+                                <div class="u-text">
+                                    <a href="/Login/Logout" class="btn btn-xs btn-secondary btn-sm">Çıkış Yap</a>
+                                </div>
+                            </div>
+                        </li>
+        </div>
+        </ul>
+        </li>
+        </ul>
+        </div>
+    </nav>
+
+    <div class="wrapper">
+        <div class="sidebar" data-background-color="dark">
+            <div class="sidebar-logo">
+                <div class="logo-header" data-background-color="dark">
+                    <a href="/AdminAnaSayfa" class="logo">
+                        <img style="height: 120px;" src="/WebAdminTheme/assets/img/kaiadmin/LOGO.png"
+                             alt="navbar brand" class="navbar-brand" />
+                    </a>
+                    <div class="nav-toggle">
+                        <button class="btn btn-toggle toggle-sidebar"><i class="gg-menu-right"></i></button>
+                        <button class="btn btn-toggle sidenav-toggler"><i class="gg-menu-left"></i></button>
+                    </div>
+                    <button class="topbar-toggler more"><i class="gg-more-vertical-alt"></i></button>
+                </div>
+            </div>
+
+            <div class="sidebar-wrapper scrollbar scrollbar-inner">
+                <div class="sidebar-content">
+                    @{
+                        // Kullanıcı tipini belirle
+                        string kullaniciTipi = "Admin";
+                        string displayName = "";
+
+                        if (ViewBag.Kullanici != null)
+                        {
+                            kullaniciTipi = "Admin";
+                            displayName = ViewBag.Kullanici.Adi;
+                        }
+                        else if (ViewBag.Musteri != null)
+                        {
+                            kullaniciTipi = "Musteri";
+                            displayName = ViewBag.Musteri.TicariUnvan;
+                        }
+                        else if (ViewBag.Bayi != null)
+                        {
+                            var bayi = ViewBag.Bayi as Bayi;
+                            if (bayi?.Distributor == true)
+                            {
+                                kullaniciTipi = "Distributor";
+                            }
+                            else
+                            {
+                                kullaniciTipi = "Bayi";
+                            }
+                            displayName = bayi?.Unvan;
+                        }
+
+                        // İzinli menüleri veritabanından çek
+                        var menuRepo = new WepApp.Repositories.MenuIzinRepository();
+                        var tumIzinler = menuRepo.Listele();
+                        var izinliMenuler = tumIzinler
+                        .Where(x => x.KullaniciTipi == kullaniciTipi)
+                        .OrderBy(x => x.Siralama)
+                        .ToList();
+
+                        // Ana menüleri (ParentMenuUrl'si null olanlar) al - sadece # ile başlayanlar veya normal menüler
+                        var anaMenuler = izinliMenuler
+                        .Where(m => string.IsNullOrEmpty(m.ParentMenuUrl))
+                        .OrderBy(m => m.Siralama)
+                        .ToList();
+                    }
+
+                    <ul class="nav nav-secondary">
+                        @if (anaMenuler.Any())
+                        {
+                            @foreach (var menu in anaMenuler)
+                            {
+                                var altMenuler = izinliMenuler.Where(m => m.ParentMenuUrl == menu.MenuUrl).OrderBy(m => m.Siralama).ToList();
+                                var menuId = "menu_" + menu.Id;
+
+                                if (altMenuler.Any())
+                                {
+                                    <!-- Alt menülü menü -->
+                                    <li class="nav-item">
+                                        <a data-bs-toggle="collapse" href="#@menuId" aria-expanded="false">
+                                            @if (!string.IsNullOrEmpty(menu.Icon))
+                                            {
+                                                <i class="@menu.Icon"></i>
+                                            }
+                                            <p>@menu.MenuBaslik</p>
+                                            <span class="caret"></span>
+                                        </a>
+                                        <div class="collapse" id="@menuId">
+                                            <ul class="nav nav-collapse">
+                                                @foreach (var alt1 in altMenuler)
+                                                {
+                                                    var altMenulerSeviye2 = izinliMenuler.Where(m => m.ParentMenuUrl == alt1.MenuUrl).OrderBy(m => m.Siralama).ToList();
+                                                    var altMenuId = "submenu_" + alt1.Id;
+
+                                                    if (altMenulerSeviye2.Any())
+                                                    {
+                                                        <!-- 2. Seviye menü (alt menülü) -->
+                                                        <li>
+                                                            <a data-bs-toggle="collapse" href="#@altMenuId">
+                                                                <span class="sub-item">@alt1.MenuBaslik</span>
+                                                                <span class="caret"></span>
+                                                            </a>
+                                                            <div class="collapse" id="@altMenuId">
+                                                                <ul class="nav nav-collapse submenu">
+                                                                    @foreach (var alt2 in altMenulerSeviye2)
+                                                                    {
+                                                                        <li>
+                                                                            <a href="@(alt2.MenuUrl.StartsWith("#") ? "#" : alt2.MenuUrl)">
+                                                                                <span class="sub-item">@alt2.MenuBaslik</span>
+                                                                            </a>
+                                                                        </li>
+                                                                    }
+                                                                </ul>
+                                                            </div>
+                                                        </li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <!-- 2. Seviye menü (tek başına) -->
+                                                        <li>
+                                                            <a href="@(alt1.MenuUrl.StartsWith("#") ? "#" : alt1.MenuUrl)">
+                                                                <span class="sub-item">@alt1.MenuBaslik</span>
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <!-- Tek başına menü -->
+                                    <li class="nav-item">
+                                        <a href="@(menu.MenuUrl.StartsWith("#") ? "#" : menu.MenuUrl)">
+                                            @if (!string.IsNullOrEmpty(menu.Icon))
+                                            {
+                                                <i class="@menu.Icon"></i>
+                                            }
+                                            <p>@menu.MenuBaslik</p>
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a href="#">
+                                    <i class="fas fa-ban"></i>
+                                    <p>Yetkili menü bulunamadı</p>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-panel">
+            @RenderBody()
+        </div>
+
+        <!-- Settings Template -->
+        <div class="custom-template">
+            <div class="title">Settings</div>
+            <div class="custom-content">
+                <div class="switcher">
+                    <div class="switch-block">
+                        <h4>Logo Header</h4>
+                        <div class="btnSwitch">
+                            <button type="button" class="selected changeLogoHeaderColor" data-color="dark"></button>
+                            <button type="button" class="changeLogoHeaderColor" data-color="blue"></button>
+                            <button type="button" class="changeLogoHeaderColor" data-color="purple"></button>
+                            <button type="button" class="changeLogoHeaderColor" data-color="light-blue"></button>
+                            <button type="button" class="changeLogoHeaderColor" data-color="green"></button>
+                            <button type="button" class="changeLogoHeaderColor" data-color="orange"></button>
+                            <button type="button" class="changeLogoHeaderColor" data-color="red"></button>
+                            <button type="button" class="changeLogoHeaderColor" data-color="white"></button>
+                            <br />
+                            <button type="button" class="changeLogoHeaderColor" data-color="dark2"></button>
+                            <button type="button" class="changeLogoHeaderColor" data-color="blue2"></button>
+                            <button type="button" class="changeLogoHeaderColor" data-color="purple2"></button>
+                            <button type="button" class="changeLogoHeaderColor" data-color="light-blue2"></button>
+                            <button type="button" class="changeLogoHeaderColor" data-color="green2"></button>
+                            <button type="button" class="changeLogoHeaderColor" data-color="orange2"></button>
+                            <button type="button" class="changeLogoHeaderColor" data-color="red2"></button>
+                        </div>
+                    </div>
+                    <div class="switch-block">
+                        <h4>Navbar Header</h4>
+                        <div class="btnSwitch">
+                            <button type="button" class="changeTopBarColor" data-color="dark"></button>
+                            <button type="button" class="changeTopBarColor" data-color="blue"></button>
+                            <button type="button" class="changeTopBarColor" data-color="purple"></button>
+                            <button type="button" class="changeTopBarColor" data-color="light-blue"></button>
+                            <button type="button" class="changeTopBarColor" data-color="green"></button>
+                            <button type="button" class="changeTopBarColor" data-color="orange"></button>
+                            <button type="button" class="changeTopBarColor" data-color="red"></button>
+                            <button type="button" class="selected changeTopBarColor" data-color="white"></button>
+                            <br />
+                            <button type="button" class="changeTopBarColor" data-color="dark2"></button>
+                            <button type="button" class="changeTopBarColor" data-color="blue2"></button>
+                            <button type="button" class="changeTopBarColor" data-color="purple2"></button>
+                            <button type="button" class="changeTopBarColor" data-color="light-blue2"></button>
+                            <button type="button" class="changeTopBarColor" data-color="green2"></button>
+                            <button type="button" class="changeTopBarColor" data-color="orange2"></button>
+                            <button type="button" class="changeTopBarColor" data-color="red2"></button>
+                        </div>
+                    </div>
+                    <div class="switch-block">
+                        <h4>Sidebar</h4>
+                        <div class="btnSwitch">
+                            <button type="button" class="changeSideBarColor" data-color="white"></button>
+                            <button type="button" class="selected changeSideBarColor" data-color="dark"></button>
+                            <button type="button" class="changeSideBarColor" data-color="dark2"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/WebAdminTheme/assets/js/ckeditor/ckeditor.js"></script>
+    <script src="/WebAdminTheme/assets/js/core/jquery-3.7.1.min.js"></script>
+    <script src="/WebAdminTheme/assets/js/core/popper.min.js"></script>
+    <script src="/WebAdminTheme/assets/js/core/bootstrap.min.js"></script>
+    <script src="/WebAdminTheme/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="/WebAdminTheme/assets/js/plugin/chart.js/chart.min.js"></script>
+    <script src="/WebAdminTheme/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+    <script src="/WebAdminTheme/assets/js/plugin/chart-circle/circles.min.js"></script>
+    <script src="/WebAdminTheme/assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="/WebAdminTheme/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+    <script src="/WebAdminTheme/assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+    <script src="/WebAdminTheme/assets/js/plugin/jsvectormap/world.js"></script>
+    <script src="/WebAdminTheme/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+    <script src="/WebAdminTheme/assets/js/kaiadmin.min.js"></script>
+
+    <script src="/WebAdminTheme/assets/js/setting-demo.js"></script>
+    <script src="/WebAdminTheme/assets/js/button-permission.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const sidebarKey = "sidebar_open_menus";
+
+            function loadOpenMenus() {
+                try {
+                    const saved = localStorage.getItem(sidebarKey);
+                    if (saved) {
+                        const openIds = JSON.parse(saved);
+                        openIds.forEach(id => {
+                            $(`#${id}`).addClass('show');
+                            $(`a[href="#${id}"] .caret`).css('transform', 'rotate(90deg)');
+                        });
+                    }
+                } catch (e) { }
+            }
+
+            // Tüm collapse elementlerini dinle (1. ve 2. seviye)
+            $('a[data-bs-toggle="collapse"]').on('click', function () {
+                const collapseId = $(this).attr('href').substring(1);
+                setTimeout(() => {
+                    const currentlyOpen = [];
+                    $('.collapse').each(function () {
+                        if ($(this).hasClass('show')) {
+                            currentlyOpen.push($(this).attr('id'));
+                        }
+                    });
+                    localStorage.setItem(sidebarKey, JSON.stringify(currentlyOpen));
+                }, 350);
+            });
+
+            loadOpenMenus();
+
+            // Aktif sayfaya göre menüyü aç
+            const currentPath = window.location.pathname.toLowerCase();
+            $('.nav a[href]').each(function () {
+                const href = $(this).attr('href')?.toLowerCase();
+                if (href && href.startsWith('/') && (href === currentPath || currentPath.startsWith(href + '/'))) {
+                    $(this).parents('.collapse').each(function () {
+                        const id = $(this).attr('id');
+                        if (id) {
+                            $(this).addClass('show');
+                            $(`a[href="#${id}"] .caret`).css('transform', 'rotate(90deg)');
+
+                            let saved = localStorage.getItem(sidebarKey);
+                            saved = saved ? JSON.parse(saved) : [];
+                            if (!saved.includes(id)) {
+                                saved.push(id);
+                                localStorage.setItem(sidebarKey, JSON.stringify(saved));
+                            }
+                        }
+                    });
+                    $(this).closest('li').addClass('active');
+                }
+            });
+        });
+    </script>
+
+    @RenderSection("Script", false)
+</body>
+</html>

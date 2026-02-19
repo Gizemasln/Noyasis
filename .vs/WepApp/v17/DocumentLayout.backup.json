@@ -3,16 +3,8 @@
   "WorkspaceRootPath": "D:\\PROJELER\\Noyasis\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\wwwroot\\webadmintheme\\assets\\js\\button-permission.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\wwwroot\\webadmintheme\\assets\\js\\button-permission.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\views\\adminanasayfabannerresim\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\views\\adminanasayfabannerresim\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\views\\shared\\_layoutwebadmin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\views\\shared\\_layoutwebadmin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\wwwroot\\raporlar\\teklif.rdlc||{46F6D2A1-5E86-4080-A799-01F3D0E23796}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\wwwroot\\raporlar\\teklif.rdlc||{46F6D2A1-5E86-4080-A799-01F3D0E23796}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,7 +14,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 214,
-          "SelectedChildIndex": 15,
+          "SelectedChildIndex": 13,
           "Children": [
             {
               "$type": "Bookmark",
@@ -78,42 +70,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminAnaSayfaBannerResim\\Index.cshtml",
-              "RelativeDocumentMoniker": "WepApp\\Views\\AdminAnaSayfaBannerResim\\Index.cshtml",
-              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminAnaSayfaBannerResim\\Index.cshtml",
-              "RelativeToolTip": "WepApp\\Views\\AdminAnaSayfaBannerResim\\Index.cshtml",
-              "ViewState": "AgIAACQAAAAAAAAAAAAAAEEAAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-18T13:55:42.516Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "_LayoutWebAdmin.cshtml",
-              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\Shared\\_LayoutWebAdmin.cshtml",
-              "RelativeDocumentMoniker": "WepApp\\Views\\Shared\\_LayoutWebAdmin.cshtml",
-              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\Shared\\_LayoutWebAdmin.cshtml",
-              "RelativeToolTip": "WepApp\\Views\\Shared\\_LayoutWebAdmin.cshtml",
-              "ViewState": "AgIAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-18T13:54:31.254Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "button-permission.js",
-              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\assets\\js\\button-permission.js",
-              "RelativeDocumentMoniker": "WepApp\\wwwroot\\WebAdminTheme\\assets\\js\\button-permission.js",
-              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\assets\\js\\button-permission.js",
-              "RelativeToolTip": "WepApp\\wwwroot\\WebAdminTheme\\assets\\js\\button-permission.js",
-              "ViewState": "AgIAAEoBAAAAAAAAAAAIwGwBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-02-18T13:48:01.091Z",
-              "EditorCaption": ""
+              "Title": "Teklif.rdlc [Design]",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\Raporlar\\Teklif.rdlc",
+              "RelativeDocumentMoniker": "WepApp\\wwwroot\\Raporlar\\Teklif.rdlc",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\Raporlar\\Teklif.rdlc [Design]",
+              "RelativeToolTip": "WepApp\\wwwroot\\Raporlar\\Teklif.rdlc [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001755|",
+              "WhenOpened": "2026-02-19T19:37:20.966Z",
+              "EditorCaption": " [Design]"
             }
           ]
         },

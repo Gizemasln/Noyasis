@@ -1,0 +1,345 @@
+﻿@{
+    ViewData["Title"] = "Sertifika Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+<div class="row">
+    <div class="col-md-12">
+        <!-- Mesajlar -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        <!-- Kullanıcı Bilgisi -->
+        @if (ViewBag.CurrentUserType == "Musteri")
+        {
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                Müşteri olarak giriş yaptınız. Tüm bayilerinizin sertifikalarını görüntülüyorsunuz.
+            </div>
+        }
+        else if (ViewBag.CurrentUserType == "Bayi")
+        {
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                Bayi olarak giriş yaptınız. Sadece kendi sertifikalarınızı görüntülüyorsunuz.
+            </div>
+        }
+        <div class="card" style="margin-top: 70px;">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Sertifikalar</span>
+                @if (ViewBag.Kullanici != null)
+                {
+
+                    <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni Sertifika Ekle
+                    </button>
+                }
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-head-bg-primary">
+                            <tr>
+                                <th>#</th>
+                                @if (ViewBag.CurrentUserType != "Bayi")
+                                {
+                                    <th>Bayi</th>
+                                }
+                                <th>Sertifika Adı</th>
+                                <th>Açıklama</th>
+                                <th>Veriliş Tarihi</th>
+                                <th>Geçerlilik Tarihi</th>
+                                <th>Dosya</th>
+                                   @if (ViewBag.Kullanici != null)
+                                        {
+                                          
+                                <th>İşlemler</th>
+                                        }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.Sertifikalar != null && ViewBag.Sertifikalar.Count > 0)
+                            {
+                                var counter = 1;
+                                foreach (var s in ViewBag.Sertifikalar)
+                                {
+                                    <tr>
+                                        <td>@counter</td>
+                                        @if (ViewBag.CurrentUserType != "Bayi")
+                                        {
+                                            <td>@(s.Bayi?.Unvan ?? "Silinmiş Bayi")</td>
+                                        }
+                                        <td>@s.SertifikaAdi</td>
+                                        <td>@s.Aciklama</td>
+                                        <td>@s.VerilisTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>@(s.GecerlilikTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
+                                        <td>
+                                            <a href="@Url.Action("ViewSertifika", new { path = s.DosyaYolu })" target="_blank" class="btn btn-info btn-sm">
+                                                <i class="fas fa-file-pdf"></i> Görüntüle
+                                            </a>
+                                        </td>
+                                        @if (ViewBag.Kullanici != null)
+                                        {
+                                            <td>
+                                                <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@s.Id)">
+                                                    <i class="fas fa-edit"></i> 
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@s.Id, '@s.SertifikaAdi')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        }
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan='@(ViewBag.CurrentUserType != "Bayi" ? "8" : "7")' class="text-center">
+                                        Henüz sertifika eklenmemiş.
+                                        @if (ViewBag.CurrentUserType != "Bayi")
+                                        {
+                                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                                                Yeni Sertifika Ekle
+                                            </button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@if (ViewBag.CurrentUserType != "Bayi")
+{
+    <!-- Ekle Modal -->
+    <div class="modal fade" id="ekleModal" tabindex="-1" aria-labelledby="ekleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form method="post" action="@Url.Action("Ekle")" id="ekleForm" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ekleModalLabel">Yeni Sertifika Ekle</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            @if (ViewBag.CurrentUserType != "Musteri")
+                            {
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label">Müşteri</label>
+                                    <select name="MusteriId" id="musteriSelect" class="form-select" required onchange="loadBayiler()">
+                                        <option value="">Müşteri Seçiniz</option>
+                                        @foreach (var m in ViewBag.Musteriler)
+                                        {
+                                            <option value="@m.Id">@m.Ad @m.Soyad (@m.KullaniciAdi)</option>
+                                        }
+                                    </select>
+                                </div>
+                            }
+                            else
+                            {
+                                <input type="hidden" name="MusteriId" id="musteriSelect" value="@ViewBag.CurrentUserId" />
+                            }
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Bayi</label>
+                                <select name="BayiId" id="bayiSelect" class="form-select" required>
+                                    <option value="">Bayi Seçiniz</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Sertifika Adı</label>
+                                <input type="text" name="SertifikaAdi" class="form-control" required />
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Açıklama (isteğe bağlı)</label>
+                                <input type="text" name="Aciklama" class="form-control" placeholder="Örn: Teknik Eğitim Sertifikası" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Veriliş Tarihi</label>
+                                <input type="datetime-local" name="VerilisTarihi" class="form-control" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Geçerlilik Tarihi (isteğe bağlı)</label>
+                                <input type="datetime-local" name="GecerlilikTarihi" class="form-control" />
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Sertifika Dosyası (PDF)</label>
+                                <input type="file" name="Dosya" class="form-control" accept=".pdf" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+<!-- Düzenle Modal -->
+<div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" action="@Url.Action("Guncelle")" id="duzenleForm" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="editId" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="duzenleModalLabel">Sertifika Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Sertifika Adı</label>
+                            <input type="text" name="SertifikaAdi" id="editSertifikaAdi" class="form-control" required />
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Açıklama</label>
+                            <input type="text" name="Aciklama" id="editAciklama" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Veriliş Tarihi</label>
+                            <input type="datetime-local" name="VerilisTarihi" id="editVerilisTarihi" class="form-control" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Geçerlilik Tarihi</label>
+                            <input type="datetime-local" name="GecerlilikTarihi" id="editGecerlilikTarihi" class="form-control" />
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Sertifika Dosyası (Mevcut dosya değiştirilmek istenirse)</label>
+                            <input type="file" name="Dosya" class="form-control" accept=".pdf" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Sil Onay Modal -->
+<div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="@Url.Action("Sil")">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="silId" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="silModalLabel">Sertifika Sil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>"<span id="silSertifikaAdi"></span>"</strong> sertifikasını pasif yapmak istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><small>Bu işlem geri alınamaz. Sertifika pasif hale getirilecek.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Pasif Yap</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Script {
+    <script>
+        // Sayfa yüklendiğinde müşteri ise bayileri yükle
+        document.addEventListener('DOMContentLoaded', function() {
+        @if (ViewBag.CurrentUserType == "Musteri")
+        {
+            @:loadBayiler();
+        }
+        });
+
+        function loadBayiler() {
+            const musteriSelect = document.getElementById('musteriSelect');
+            const bayiSelect = document.getElementById('bayiSelect');
+            const musteriId = musteriSelect ? musteriSelect.value : '@ViewBag.CurrentUserId';
+
+            // Reset bayi select
+            bayiSelect.innerHTML = '<option value="">Bayi Seçiniz</option>';
+
+            if (musteriId) {
+                fetch('@Url.Action("GetBayilerByMusteri")' + '?musteriId=' + encodeURIComponent(musteriId))
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok: ' + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data && Array.isArray(data)) {
+                            data.forEach(bayi => {
+                                const option = document.createElement('option');
+                                option.value = bayi.id;
+                                option.textContent = bayi.ad;
+                                bayiSelect.appendChild(option);
+                            });
+                        } else {
+                            console.warn('No bayiler returned or invalid data format');
+                            alert('Bayiler yüklenemedi: Veri formatı hatalı.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching bayiler:', error);
+                        alert('Bayiler yüklenemedi: ' + error.message);
+                    });
+            } else {
+                console.warn('No musteriId selected');
+                alert('Lütfen bir müşteri seçiniz.');
+            }
+        }
+
+        function duzenleGetir(id) {
+            fetch('@Url.Action("Getir")' + '?id=' + id)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('editId').value = data.id;
+                    document.getElementById('editSertifikaAdi').value = data.sertifikaAdi || '';
+                    document.getElementById('editAciklama').value = data.aciklama || '';
+                    document.getElementById('editVerilisTarihi').value = data.verilisTarihi || '';
+                    document.getElementById('editGecerlilikTarihi').value = data.gecerlilikTarihi || '';
+                    new bootstrap.Modal(document.getElementById('duzenleModal')).show();
+                })
+                .catch(error => {
+                    console.error('Error fetching sertifika:', error);
+                    alert('Sertifika bilgileri alınamadı: ' + error.message);
+                });
+        }
+
+        function silOnay(id, sertifikaAdi) {
+            document.getElementById('silId').value = id;
+            document.getElementById('silSertifikaAdi').textContent = sertifikaAdi;
+            new bootstrap.Modal(document.getElementById('silModal')).show();
+        }
+
+        // Mesajları 5 saniye sonra kapat
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(a => {
+                new bootstrap.Alert(a).close();
+            });
+        }, 5000);
+    </script>
+}

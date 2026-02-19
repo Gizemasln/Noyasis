@@ -1,0 +1,408 @@
+﻿@{
+    ViewData["Title"] = "KVKK Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- Başarı/Hata Mesajları -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <!-- EKLE BUTONU HER ZAMAN GÖRÜNÜR OLMASI İÇİN BAĞIMSIZ YERLEŞTİRİLDİ -->
+        <div class="mb-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                <i class="fas fa-plus"></i> Yeni KVKK Ekle
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>KVKK Bilgileri</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-head-bg-primary">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Metin</th>
+                                <th scope="col">Eklenme Tarihi</th>
+                                <th scope="col">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.KVKKList != null && ViewBag.KVKKList.Count > 0)
+                            {
+                                var counter = 1;
+                                foreach (var item in ViewBag.KVKKList)
+                                {
+                                    <tr>
+                                        <td>@counter</td>
+                                        <td>@Html.Raw(item.Metin != null && item.Metin.Length > 50 ? item.Metin.Substring(0, 50) + "..." : item.Metin)</td>
+                                        <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>
+                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center">Henüz KVKK bilgisi eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Bilgi Ekle</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ekle Modal -->
+<div class="modal fade" id="ekleModal" tabindex="-1" aria-labelledby="ekleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            @using (Html.BeginForm("Ekle", "AdminKVKK", FormMethod.Post, new { id = "ekleForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ekleModalLabel">Yeni KVKK Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="Metin" class="form-label">KVKK Metni</label>
+                            <textarea class="form-control" id="Metin" name="Metin" rows="10"></textarea>
+                            <div class="form-text">KVKK metnini buraya yazın. CKEditor ile formatlayabilirsiniz.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Düzenle Modal -->
+<div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form action="@Url.Action("Guncelle","AdminKVKK")" method="post" id="duzenleForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editId" name="Id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="duzenleModalLabel">KVKK Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="editMetin" class="form-label">KVKK Metni</label>
+                            <textarea class="form-control" id="editMetin" name="Metin" rows="10"></textarea>
+                            <div class="form-text">KVKK metnini buraya yazın. CKEditor ile formatlayabilirsiniz.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Sil Onay Modal -->
+<div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Sil","AdminKVKK")" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="silId" name="Id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="silModalLabel">Silme Onayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Seçili KVKK bilgisini silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><small>Bu işlem geri alınamaz. Bilgi durumu pasif hale getirilecektir.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        // Global editor değişkenleri
+        var ekleEditor = null;
+        var duzenleEditor = null;
+
+        // CKEditor başlatma fonksiyonu
+        function initCKEditors() {
+            console.log('CKEditor başlatılıyor...');
+
+            // CKEditor'ün yüklenip yüklenmediğini kontrol et
+            if (typeof CKEDITOR === 'undefined') {
+                console.error('CKEDITOR hala tanımlı değil, 500ms sonra tekrar denenecek');
+                setTimeout(initCKEditors, 500);
+                return;
+            }
+
+            try {
+                // Ekleme editorünü başlat
+                if (document.getElementById('Metin') && !ekleEditor) {
+                    ekleEditor = CKEDITOR.replace('Metin', {
+                        height: 300,
+                        toolbar: [
+                            { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'] },
+                            { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote'] },
+                            { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+                            { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
+                            { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
+                            { name: 'colors', items: ['TextColor', 'BGColor'] },
+                            { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
+                        ],
+                        language: 'tr',
+                        removePlugins: 'elementspath',
+                        resize_enabled: true
+                    });
+                    console.log('Ekleme editorü başlatıldı');
+                }
+
+                // Düzenleme editorünü başlat
+                if (document.getElementById('editMetin') && !duzenleEditor) {
+                    duzenleEditor = CKEDITOR.replace('editMetin', {
+                        height: 300,
+                        toolbar: [
+                            { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'] },
+                            { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote'] },
+                            { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+                            { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
+                            { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
+                            { name: 'colors', items: ['TextColor', 'BGColor'] },
+                            { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
+                        ],
+                        language: 'tr',
+                        removePlugins: 'elementspath',
+                        resize_enabled: true
+                    });
+                    console.log('Düzenleme editorü başlatıldı');
+                }
+            } catch (error) {
+                console.error('CKEditor başlatma hatası:', error);
+            }
+        }
+
+        // Sayfa tamamen yüklendiğinde CKEditor'ü başlat
+        function initializePage() {
+            console.log('Sayfa başlatılıyor...');
+
+            // Önce CKEditor'ün yüklenmesini bekle
+            if (typeof CKEDITOR === 'undefined') {
+                console.log('CKEDITOR henüz yüklenmedi, bekleniyor...');
+                setTimeout(initializePage, 100);
+                return;
+            }
+
+            console.log('CKEDITOR yüklendi, editorler başlatılıyor');
+            initCKEditors();
+            setupModalEvents();
+        }
+
+        // Modal event'lerini ayarla
+        function setupModalEvents() {
+            var ekleModal = document.getElementById('ekleModal');
+            var duzenleModal = document.getElementById('duzenleModal');
+
+            if (ekleModal) {
+                ekleModal.addEventListener('shown.bs.modal', function() {
+                    setTimeout(function() {
+                        if (ekleEditor) {
+                            ekleEditor.resize('100%', 300);
+                            ekleEditor.focus();
+                        } else {
+                            // Editor henüz başlatılmadıysa, modal gösterildikten sonra başlat
+                            setTimeout(initCKEditors, 50);
+                        }
+                    }, 100);
+                });
+
+                ekleModal.addEventListener('hidden.bs.modal', function() {
+                    if (ekleEditor) {
+                        ekleEditor.setData('');
+                    }
+                });
+            }
+
+            if (duzenleModal) {
+                duzenleModal.addEventListener('shown.bs.modal', function() {
+                    setTimeout(function() {
+                        if (duzenleEditor) {
+                            duzenleEditor.resize('100%', 300);
+                            duzenleEditor.focus();
+                        } else {
+                            // Editor henüz başlatılmadıysa, modal gösterildikten sonra başlat
+                            setTimeout(initCKEditors, 50);
+                        }
+                    }, 100);
+                });
+
+                duzenleModal.addEventListener('hidden.bs.modal', function() {
+                    if (duzenleEditor) {
+                        duzenleEditor.setData('');
+                    }
+                    document.getElementById('duzenleForm').reset();
+                });
+            }
+        }
+
+        // Fonksiyonlar
+        function duzenleGetir(id) {
+            fetch('@Url.Action("Getir", "AdminKVKK")' + '?id=' + id)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('editId').value = data.id;
+
+                    // Editor hazırsa veriyi set et, değilse textarea'ya yaz ve editorü başlat
+                    if (duzenleEditor) {
+                        duzenleEditor.setData(data.metin || '');
+                    } else {
+                        document.getElementById('editMetin').value = data.metin || '';
+                        // Editor'ü tekrar başlatmayı dene
+                        setTimeout(initCKEditors, 100);
+                    }
+
+                    var duzenleModal = new bootstrap.Modal(document.getElementById('duzenleModal'));
+                    duzenleModal.show();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Kayıt getirilirken bir hata oluştu.');
+                });
+        }
+
+        function silOnay(id) {
+            document.getElementById('silId').value = id;
+            var silModal = new bootstrap.Modal(document.getElementById('silModal'));
+            silModal.show();
+        }
+
+        // Form submit işlemleri
+        document.addEventListener('DOMContentLoaded', function() {
+            var ekleForm = document.getElementById('ekleForm');
+            if (ekleForm) {
+                ekleForm.addEventListener('submit', function(e) {
+                    // CKEditor verisini textarea'ya aktar
+                    if (ekleEditor && ekleEditor.status === 'ready') {
+                        var data = ekleEditor.getData();
+                        if (!data.trim()) {
+                            alert('Lütfen metin girin.');
+                            e.preventDefault();
+                            return false;
+                        }
+                        document.getElementById('Metin').value = data;
+                    } else {
+                        // CKEditor yoksa normal textarea değerini kontrol et
+                        var textareaValue = document.getElementById('Metin').value;
+                        if (!textareaValue.trim()) {
+                            alert('Lütfen metin girin.');
+                            e.preventDefault();
+                            return false;
+                        }
+                    }
+                });
+            }
+
+            var duzenleForm = document.getElementById('duzenleForm');
+            if (duzenleForm) {
+                duzenleForm.addEventListener('submit', function(e) {
+                    // CKEditor verisini textarea'ya aktar
+                    if (duzenleEditor && duzenleEditor.status === 'ready') {
+                        var data = duzenleEditor.getData();
+                        if (!data.trim()) {
+                            alert('Lütfen metin girin.');
+                            e.preventDefault();
+                            return false;
+                        }
+                        document.getElementById('editMetin').value = data;
+                    } else {
+                        // CKEditor yoksa normal textarea değerini kontrol et
+                        var textareaValue = document.getElementById('editMetin').value;
+                        if (!textareaValue.trim()) {
+                            alert('Lütfen metin girin.');
+                            e.preventDefault();
+                            return false;
+                        }
+                    }
+                });
+            }
+        });
+
+        // Başarı mesajlarını 5 saniye sonra otomatik kapat
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+
+        // Sayfa yükleme event'leri
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOMContentLoaded event fired');
+            initializePage();
+        });
+
+        // Fallback: Sayfa tamamen yüklendiğinde
+        window.addEventListener('load', function() {
+            console.log('Window load event fired');
+            if (typeof CKEDITOR === 'undefined') {
+                console.warn('CKEditor hala yüklenmedi, manuel olarak tekrar denenecek');
+                setTimeout(initializePage, 1000);
+            }
+        });
+
+        // Eğer DOM zaten yüklenmişse
+        if (document.readyState === 'interactive' || document.readyState === 'complete') {
+            console.log('Document already ready, initializing directly');
+            setTimeout(initializePage, 100);
+        }
+    </script>
+}

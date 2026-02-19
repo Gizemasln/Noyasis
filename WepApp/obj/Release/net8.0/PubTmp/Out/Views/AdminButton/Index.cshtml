@@ -1,0 +1,946 @@
+﻿@model WepApp.Models.AdminButtonViewModel
+@{
+    ViewData["Title"] = "Buton Yetkilendirme";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+
+    // Sayfa adı çeviri sözlüğü
+    var sayfaAdlari = new Dictionary<string, string>
+            {
+                ["AdminMusteri"] = "Müşteriler",
+                ["AdminAnaSayfaBannerResim"] = "Ana Sayfa Banner",
+                ["AdminBayi"] = "Bayiler",
+                ["AdminARGEDurum"] = "Arge Durum",
+                ["AdminArgeHata"] = "ARGE/Hata",
+                ["AdminBayiDuyuru"] = "Bayi Duyurular",
+                ["AdminBayiSozlesme"] = "Bayi Sözleşmesi",
+                ["AdminBayiSozlesmeKriteri"] = "Bayi Sözleşme Kriteri",
+                ["AdminUrun"] = "Ürünler",
+                ["AdminBirim"] = "Birimler",
+                ["AdminEntegrator"] = "Entegratörler",
+                ["AdminButton"] = "Buton İzin",
+                ["AdminKategori"] = "Kategoriler",
+                ["AdminTeklif"] = "Teklifler",
+                ["AdminKampanya"] = "Kampanyalar",
+                ["AdminDuyuru"] = "Duyurular",
+                ["AdminMakale"] = "Makaleler",
+                ["AdminSertifika"] = "Sertifikalar",
+                ["AdminPaket"] = "Modüller",
+                ["AdminIstekOneri"] = "İstek/Öneri",
+                ["AdminArge"] = "ARGE/Hata",
+                ["AdminMenuIzin"] = "Menü Yetkilendirme",
+                ["AdminButtonController"] = "Buton Yetkilendirme",
+                ["AdminGenelAydinlatma"] = "Genel Aydınlatma Metni",
+                ["AdminHakkimizdaBilgileri"] = "Hakkımızda",
+                ["AdminHakkimizdaFotograf"] = "Hakkımızda Görsel",
+                ["AdminIK"] = "Başvuru Formları",
+                ["AdminIletisimBilgileri"] = "İletişim Bilgileri",
+                ["AdminIstekOneriDurum"] = "İstek Öneri Durum",
+                ["AdminKDV"] = "KDV Oranları",
+                ["AdminDepartman"] = "Departman Tipleri",
+                ["AdminKVKK"] = "KVKK Metni",
+                ["AdminLisansDurumu"] = "Lisans Durumu",
+                ["AdminLisansTip"] = "Lisans Tipleri",
+                ["AdminLokasyon"] = "Lokasyonlar",
+                ["AdminMusteriSozlesme"] = "Müşteri Sözleşmesi",
+                ["AdminMusteriTipi"] = "Müşteri Tipleri",
+                ["AdminNedenler"] = "Teklif Kaybedilme Nedenleri",
+                ["AdminNeredenDuydu"] = "Nereden Duydu",
+                ["AdminPaketBaglama"] = "Paket Bağlama",
+                ["AdminPaketGrup"] = "Paket Grupları",
+                ["AdminSSS"] = "Sıkça Sorulan Sorular",
+                ["AdminTeklifDurum"] = "Teklif Durumları",
+                ["AdminTeklifler"] = "Ürün Teklifleri",
+                ["AdminTeklifVer"] = "Teklif Oluştur",
+                ["AdminUrunGaleri"] = "Ürün Görselleri",
+                ["AdminUYB"] = "Genel Ayarlar",
+                ["AdminYetki"] = "Yetkilendirme"
+            };
+
+    // BUTON AKSİYONU ÇEVİRİ SÖZLÜĞÜ
+    var butonAdlari = new Dictionary<string, dynamic>
+            {
+                ["create"] = new { Ad = "Ekle", Icon = "fa-plus", Renk = "success" },
+                ["edit"] = new { Ad = "Düzenle", Icon = "fa-edit", Renk = "warning" },
+                ["delete"] = new { Ad = "Sil", Icon = "fa-trash", Renk = "danger" },
+                ["view"] = new { Ad = "Detay", Icon = "fa-eye", Renk = "info" }
+            };
+
+    // Gizlenecek controller'lar
+    var gizlenecekler = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    {
+        "Home",
+        "AdminKullanici",
+        "AdminKullanicilar",
+        "AdminPaketGrupDetay",
+        "_LayoutWebAdmin",
+        "_LayoutWebUI",
+        "InsanKaynaklari",
+        "UrunDetay",
+        "Shared",
+        "Login"
+    };
+}
+
+<style>
+    /* ANA TASARIM */
+    * {
+        box-sizing: border-box;
+    }
+
+    .permission-wrapper {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        padding: 15px;
+        margin: 10px 0 30px 0;
+    }
+
+    /* KULLANICI TİPİ ÇUBUĞU */
+    .user-type-bar {
+        background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+        border-radius: 8px;
+        padding: 12px 15px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        color: white;
+    }
+
+    .user-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+        .user-buttons .btn {
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .user-buttons .btn-primary {
+            background: white;
+            border-color: white;
+            color: #2c3e50;
+        }
+
+        .user-buttons .btn-outline-primary {
+            border-color: rgba(255,255,255,0.5);
+            color: white;
+        }
+
+    .stats-box {
+        background: rgba(255,255,255,0.15);
+        padding: 5px 15px;
+        border-radius: 30px;
+        display: flex;
+        gap: 15px;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .stat-value {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
+        opacity: 0.9;
+    }
+
+    /* ARAMA ALANI - SAĞA YASLI KÜÇÜK */
+    .search-section {
+        background: transparent;
+        padding: 5px 0 15px 0;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .search-icon {
+        color: #6c757d;
+        font-size: 0.85rem;
+    }
+
+    .search-input {
+        border: 1px solid #dee2e6;
+        border-radius: 30px;
+        padding: 6px 15px;
+        font-size: 0.8rem;
+        transition: all 0.2s;
+        background: white;
+        width: 220px;
+    }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+    .search-clear {
+        background: none;
+        border: none;
+        color: #6c757d;
+        cursor: pointer;
+        padding: 3px 8px;
+        border-radius: 20px;
+        display: none;
+        font-size: 0.8rem;
+    }
+
+        .search-clear:hover {
+            background: #e9ecef;
+            color: #dc3545;
+        }
+
+        .search-clear.visible {
+            display: block;
+        }
+
+    .search-count {
+        background: #e9ecef;
+        color: #495057;
+        padding: 3px 12px;
+        border-radius: 30px;
+        font-size: 0.7rem;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    /* TOPLU YETKİ ALANI */
+    .bulk-permission-area {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid #e9ecef;
+    }
+
+    .bulk-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .bulk-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .action-group {
+        display: flex;
+        align-items: center;
+        background: white;
+        border-radius: 30px;
+        padding: 2px;
+        border: 1px solid #dee2e6;
+    }
+
+    .action-label {
+        padding: 0 10px;
+        font-weight: 500;
+        color: #6c757d;
+        font-size: 0.8rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 2px;
+    }
+
+    .btn-bulk {
+        border-radius: 30px;
+        padding: 4px 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        border: none;
+    }
+
+    .btn-bulk-success {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .btn-bulk-danger {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    /* GRID SİSTEMİ - 4'LÜ KOLON */
+    .pages-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        max-height: 450px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 5px;
+        margin-bottom: 20px;
+        transition: all 0.3s;
+    }
+
+    /* TABLET İÇİN 2'Lİ KOLON */
+    @@media (max-width: 1200px) {
+        .pages-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .pages-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    /* MOBİL İÇİN 1'Lİ KOLON */
+    @@media (max-width: 768px) {
+        .pages-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* SAYFA KARTLARI */
+    .page-card {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        transition: all 0.2s;
+        height: fit-content;
+        break-inside: avoid;
+    }
+
+        .page-card:hover {
+            border-color: #cbd5e0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .page-card.filtered-out {
+            display: none;
+        }
+
+    .page-header {
+        background: #f8f9fa;
+        padding: 8px 10px;
+        border-radius: 8px 8px 0 0;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-title {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        overflow: hidden;
+        flex: 1;
+    }
+
+        .page-title i {
+            color: #3498db;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+
+        .page-title span {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+    .badge-count {
+        background: #e9ecef;
+        color: #495057;
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-size: 0.6rem;
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+
+    .page-actions {
+        display: flex;
+        gap: 3px;
+        flex-shrink: 0;
+    }
+
+    .btn-xs {
+        padding: 2px 8px;
+        font-size: 0.65rem;
+        border-radius: 12px;
+    }
+
+    /* BUTONLAR */
+    .buttons-row {
+        padding: 8px 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .button-item {
+        display: inline-flex;
+        align-items: center;
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 20px;
+        padding: 2px 8px 2px 4px;
+        transition: all 0.2s;
+        cursor: pointer;
+        flex: 0 1 auto;
+    }
+
+        .button-item:hover {
+            border-color: #3498db;
+            background: #f8f9fa;
+        }
+
+        .button-item.izinli {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+
+        .button-item input {
+            margin-right: 3px;
+            width: 12px;
+            height: 12px;
+            cursor: pointer;
+        }
+
+        .button-item label {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin: 0;
+            color: #495057;
+        }
+
+        .button-item i {
+            font-size: 0.65rem;
+        }
+
+    .action-badge {
+        padding: 1px 5px;
+        border-radius: 10px;
+        font-size: 0.55rem;
+        font-weight: 600;
+        color: white;
+    }
+
+    /* SONUÇ BULUNAMADI MESAJI */
+    .no-results {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 40px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        color: #6c757d;
+        font-size: 0.95rem;
+    }
+
+        .no-results i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #adb5bd;
+        }
+
+    /* KAYDET BUTONU */
+    .sticky-save-container {
+        position: sticky;
+        bottom: 10px;
+        background: white;
+        padding: 15px 0 5px 0;
+        border-top: 1px solid #e9ecef;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .btn-save {
+        background: #28a745;
+        border: none;
+        padding: 8px 25px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border-radius: 30px;
+        color: white;
+        transition: all 0.2s;
+    }
+
+        .btn-save:hover {
+            background: #218838;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+        }
+</style>
+
+<div class="container-fluid permission-wrapper">
+    <!-- BAŞLIK -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">
+            <i class="fas fa-shield-alt me-2 text-primary"></i>
+            Buton Yetkilendirme
+        </h5>
+    </div>
+
+    <!-- KULLANICI TİPİ VE İSTATİSTİK -->
+    <div class="user-type-bar">
+        <div class="user-buttons">
+            @foreach (var tip in new[] { "Admin", "Musteri", "Bayi", "Distributor" })
+            {
+                <a href="@Url.Action("Index", new { kullaniciTipi = tip })"
+                   class="btn @(Model.SeciliKullaniciTipi == tip ? "btn-primary" : "btn-outline-primary")">
+                    <i class="fas fa-user me-1"></i>@tip
+                </a>
+            }
+        </div>
+        <div class="stats-box">
+            <div class="stat-item">
+                <span class="stat-value" id="totalButtonCount">@Model.DetectedButtons.Count</span>
+                <span class="stat-label">Buton</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="totalPageCount">@Model.GruplanmisButonlar.Count</span>
+                <span class="stat-label">Sayfa</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ARAMA ALANI (YENİ) -->
+    <div class="search-section">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text"
+               class="search-input"
+               id="pageSearch"
+               placeholder="Sayfa ara (Müşteri, Ürün, Kategori...)"
+               autocomplete="off" />
+        <button class="search-clear" id="clearSearch" title="Temizle">
+            <i class="fas fa-times"></i>
+        </button>
+        <span class="search-count" id="searchResultCount">@Model.GruplanmisButonlar.Count sayfa</span>
+    </div>
+
+    <!-- TOPLU YETKİLENDİRME ALANI -->
+    <div class="bulk-permission-area">
+        <div class="bulk-title">
+            <i class="fas fa-bolt text-primary"></i>
+            Toplu Yetkilendirme - @Model.SeciliKullaniciTipi
+        </div>
+        <div class="bulk-actions">
+            <!-- TÜMÜ İÇİN -->
+            <div class="action-group">
+                <span class="action-label">Tümü</span>
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-bulk btn-bulk-success me-1 bulk-action-btn"
+                            data-aksiyon="Tumu" data-durum="true">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-bulk btn-bulk-danger bulk-action-btn"
+                            data-aksiyon="Tumu" data-durum="false">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- EKLE -->
+            <div class="action-group">
+                <span class="action-label"><i class="fas fa-plus text-success"></i></span>
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-bulk btn-bulk-success me-1 bulk-action-btn"
+                            data-aksiyon="create" data-durum="true">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-bulk btn-bulk-danger bulk-action-btn"
+                            data-aksiyon="create" data-durum="false">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- DÜZENLE -->
+            <div class="action-group">
+                <span class="action-label"><i class="fas fa-edit text-warning"></i></span>
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-bulk btn-bulk-success me-1 bulk-action-btn"
+                            data-aksiyon="edit" data-durum="true">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-bulk btn-bulk-danger bulk-action-btn"
+                            data-aksiyon="edit" data-durum="false">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SİL -->
+            <div class="action-group">
+                <span class="action-label"><i class="fas fa-trash text-danger"></i></span>
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-bulk btn-bulk-success me-1 bulk-action-btn"
+                            data-aksiyon="delete" data-durum="true">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-bulk btn-bulk-danger bulk-action-btn"
+                            data-aksiyon="delete" data-durum="false">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- DETAY -->
+            <div class="action-group">
+                <span class="action-label"><i class="fas fa-eye text-info"></i></span>
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-bulk btn-bulk-success me-1 bulk-action-btn"
+                            data-aksiyon="view" data-durum="true">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-bulk btn-bulk-danger bulk-action-btn"
+                            data-aksiyon="view" data-durum="false">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BAŞARI MESAJI MODAL -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 12px; border: none;">
+                <div class="modal-header" style="border-bottom: 1px solid #e9ecef; padding: 15px 20px;">
+                    <h5 class="modal-title">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Başarılı
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="padding: 25px 20px;" id="successMessage">
+                    <!-- Mesaj buraya gelecek -->
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid #e9ecef; padding: 15px 20px;">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" style="border-radius: 30px; padding: 8px 25px;">
+                        <i class="fas fa-check me-2"></i>Tamam
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- YETKİ FORMU -->
+    <form method="post" action="@Url.Action("Kaydet")" id="permissionForm">
+        <input type="hidden" name="kullaniciTipi" value="@Model.SeciliKullaniciTipi" />
+
+        <!-- SAYFALAR GRID - 4'LÜ KOLON -->
+        <div class="pages-grid" id="pagesGrid">
+            @{
+                var controllerList = Model.GruplanmisButonlar.Keys
+                .Where(k => !gizlenecekler.Contains(k))
+                .OrderBy(k => k)
+                .ToList();
+            }
+            @foreach (var controller in controllerList)
+            {
+                var buttons = Model.GruplanmisButonlar[controller];
+                var sayfaAdi = sayfaAdlari.ContainsKey(controller) ? sayfaAdlari[controller] : controller;
+
+                <div class="page-card" data-page-name="@sayfaAdi.ToLower()" data-controller="@controller.ToLower()">
+                    <!-- SAYFA BAŞLIĞI -->
+                    <div class="page-header">
+                        <div class="page-title">
+                            <i class="fas fa-file-alt"></i>
+                            <span title="@sayfaAdi">@sayfaAdi</span>
+
+                        </div>
+                        <div class="page-actions">
+                            <button type="button" class="btn btn-xs btn-outline-success controller-tumunu-sec" data-controller="@controller" title="Tümünü Seç">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button type="button" class="btn btn-xs btn-outline-danger controller-tumunu-kaldir" data-controller="@controller" title="Tümünü Kaldır">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- BUTONLAR -->
+                    <div class="buttons-row">
+                        @foreach (var button in buttons.OrderBy(b => b.Action))
+                        {
+                            string key = $"{button.Controller}|{button.Action}";
+                            bool izinVar = Model.ButtonPermissions.ContainsKey(key) && Model.ButtonPermissions[key];
+
+                            // Buton bilgileri
+                            string buttonIcon = "fa-circle";
+                            string buttonColor = "secondary";
+                            string buttonText = button.Action;
+                            string renkClass = "secondary";
+
+                            if (butonAdlari.ContainsKey(button.Action.ToLower()))
+                            {
+                                var butonBilgi = butonAdlari[button.Action.ToLower()];
+                                buttonIcon = butonBilgi.Icon;
+                                buttonColor = butonBilgi.Renk;
+                                buttonText = butonBilgi.Ad;
+                                renkClass = butonBilgi.Renk;
+                            }
+
+                            <div class="button-item @(izinVar ? "izinli" : "")" title="@buttonText">
+                                <input class="form-check-input button-checkbox"
+                                       type="checkbox"
+                                       name="seciliIzinler"
+                                       value="@key"
+                                       id="chk_@(controller)_@(button.Action)"
+                                       data-controller="@controller"
+                                       data-action="@button.Action.ToLower()"
+                                @(izinVar ? "checked" : "") />
+                                <label for="chk_@(controller)_@(button.Action)">
+                                    <i class="fas @buttonIcon text-@renkClass"></i>
+                                    <span class="action-badge bg-@renkClass">@buttonText</span>
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- SONUÇ BULUNAMADI MESAJİ (JavaScript ile gösterilecek) -->
+        <div class="no-results" id="noResultsMessage" style="display: none;">
+            <i class="fas fa-search"></i>
+            <h6>Arama sonucu bulunamadı</h6>
+            <p class="mb-0">Farklı bir kelime ile tekrar deneyin.</p>
+        </div>
+
+        <!-- KAYDET BUTONU -->
+        <div class="sticky-save-container">
+            <button type="button" class="btn btn-save" id="savePermissionsBtn">
+                <i class="fas fa-save me-2"></i>Yetkileri Kaydet
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- TOPLU YETKİLENDİRME ONAY MODALI -->
+<div class="modal fade" id="bulkConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px; border: none;">
+            <div class="modal-header" style="border-bottom: 1px solid #e9ecef; padding: 15px 20px;" id="bulkModalHeader">
+                <!-- Dinamik header -->
+            </div>
+            <div class="modal-body" style="padding: 25px 20px;" id="bulkModalBody">
+                <!-- Dinamik body -->
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid #e9ecef; padding: 15px 20px;" id="bulkModalFooter">
+                <!-- Dinamik footer -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        $(document).ready(function() {
+            // Başarı mesajını göster (TempData varsa)
+        @if (TempData["Success"] != null)
+        {
+            <text>
+                    $('#successMessage').text('@TempData["Success"]');
+                    var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                    successModal.show();
+            </text>
+        }
+
+            // Tümünü seç (sayfa bazında)
+            $('.controller-tumunu-sec').click(function(e) {
+                e.preventDefault();
+                var controller = $(this).data('controller');
+                var checkboxes = $(`input[type="checkbox"][data-controller="${controller}"]`);
+                checkboxes.prop('checked', true);
+                checkboxes.each(function() {
+                    $(this).closest('.button-item').addClass('izinli');
+                });
+            });
+
+            // Tümünü kaldır (sayfa bazında)
+            $('.controller-tumunu-kaldir').click(function(e) {
+                e.preventDefault();
+                var controller = $(this).data('controller');
+                var checkboxes = $(`input[type="checkbox"][data-controller="${controller}"]`);
+                checkboxes.prop('checked', false);
+                checkboxes.each(function() {
+                    $(this).closest('.button-item').removeClass('izinli');
+                });
+            });
+
+            // Checkbox değiştiğinde
+            $(document).on('change', '.button-checkbox', function() {
+                if ($(this).is(':checked')) {
+                    $(this).closest('.button-item').addClass('izinli');
+                } else {
+                    $(this).closest('.button-item').removeClass('izinli');
+                }
+            });
+
+            // Sayfa yüklendiğinde
+            $('.button-checkbox:checked').each(function() {
+                $(this).closest('.button-item').addClass('izinli');
+            });
+
+            // Toplu yetkilendirme butonları
+            $('.bulk-action-btn').click(function() {
+                var aksiyon = $(this).data('aksiyon');
+                var durum = $(this).data('durum');
+                var kullaniciTipi = '@Model.SeciliKullaniciTipi';
+
+                var actionText = aksiyon === 'Tumu' ? 'tüm butonları' :
+                                 (aksiyon === 'create' ? 'EKLE butonlarını' :
+                                 (aksiyon === 'edit' ? 'DÜZENLE butonlarını' :
+                                 (aksiyon === 'delete' ? 'SİL butonlarını' :
+                                 (aksiyon === 'view' ? 'DETAY butonlarını' : aksiyon))));
+
+                var durumText = durum ? 'yetkilendirmek' : 'yetkisini kaldırmak';
+                var durumClass = durum ? 'success' : 'danger';
+                var durumIcon = durum ? 'fa-check-circle' : 'fa-times-circle';
+                var buttonText = durum ? 'Yetki Ver' : 'Yetki Kaldır';
+
+                // Modal header
+                $('#bulkModalHeader').html(`
+                    <h5 class="modal-title">
+                        <i class="fas fa-${durumIcon} text-${durumClass} me-2"></i>
+                        Toplu Yetkilendirme Onayı
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                `);
+
+                // Modal body
+                $('#bulkModalBody').html(`
+                    <div class="text-center mb-3">
+                        <i class="fas fa-${durumIcon}" style="font-size: 3rem; color: ${durum ? '#28a745' : '#dc3545'};"></i>
+                    </div>
+                    <h6 class="text-center mb-3" style="color: #2c3e50;">
+                        <strong>${kullaniciTipi}</strong> için <strong>${actionText}</strong>
+                    </h6>
+                    <p class="text-center mb-0" style="color: #6c757d; font-size: 0.9rem;">
+                        ${actionText} ${durumText} istediğinize emin misiniz?
+                    </p>
+                `);
+
+                // Modal footer
+                $('#bulkModalFooter').html(`
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border-radius: 30px; padding: 8px 25px;">
+                        <i class="fas fa-times me-2"></i>İptal
+                    </button>
+                    <form method="post" action="@Url.Action("TopluYetkilendir")" style="display: inline;" id="bulkActionForm">
+                        <input type="hidden" name="kullaniciTipi" value="${kullaniciTipi}" />
+                        <input type="hidden" name="aksiyonTipi" value="${aksiyon}" />
+                        <input type="hidden" name="durum" value="${durum}" />
+                        <button type="submit" class="btn btn-${durumClass}" style="border-radius: 30px; padding: 8px 25px;">
+                            <i class="fas fa-${durumIcon} me-2"></i>${buttonText}
+                        </button>
+                    </form>
+                `);
+
+                // Modal'ı göster
+                var bulkModal = new bootstrap.Modal(document.getElementById('bulkConfirmModal'));
+                bulkModal.show();
+            });
+
+            // Yetkileri kaydet butonu
+            $('#savePermissionsBtn').click(function() {
+                $('#permissionForm').submit();
+            });
+
+            // ARAMA FONKSİYONU
+            var searchInput = $('#pageSearch');
+            var clearButton = $('#clearSearch');
+            var resultCount = $('#searchResultCount');
+            var noResults = $('#noResultsMessage');
+            var pagesGrid = $('#pagesGrid');
+            var totalPages = $('.page-card').length;
+
+            // Arama yap
+            function performSearch() {
+                var searchTerm = searchInput.val().toLowerCase().trim();
+                var visibleCount = 0;
+
+                if (searchTerm === '') {
+                    $('.page-card').removeClass('filtered-out');
+                    visibleCount = totalPages;
+                    clearButton.removeClass('visible');
+                } else {
+                    $('.page-card').each(function() {
+                        var pageName = $(this).data('page-name') || '';
+                        var controller = $(this).data('controller') || '';
+
+                        if (pageName.includes(searchTerm) || controller.includes(searchTerm)) {
+                            $(this).removeClass('filtered-out');
+                            visibleCount++;
+                        } else {
+                            $(this).addClass('filtered-out');
+                        }
+                    });
+                    clearButton.addClass('visible');
+                }
+
+                resultCount.text(visibleCount + ' sayfa');
+
+                if (visibleCount === 0) {
+                    noResults.show();
+                    pagesGrid.hide();
+                } else {
+                    noResults.hide();
+                    pagesGrid.show();
+                }
+            }
+
+            // Input eventleri
+            searchInput.on('input', performSearch);
+
+            // Temizle butonu
+            clearButton.click(function() {
+                searchInput.val('');
+                performSearch();
+                searchInput.focus();
+            });
+
+            // Enter tuşuna basınca submit'i engelle
+            searchInput.keypress(function(e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                }
+            });
+
+            // Escape tuşu ile temizle
+            searchInput.keyup(function(e) {
+                if (e.which === 27) {
+                    clearButton.click();
+                }
+            });
+
+            // Sayfa yüklendiğinde
+            resultCount.text(totalPages + ' sayfa');
+        });
+    </script>
+}

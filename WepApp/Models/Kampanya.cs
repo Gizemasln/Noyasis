@@ -4,8 +4,8 @@
     {
         public int Id { get; set; }
         public int Durumu { get; set; }
-        public string Baslik { get; set; }
-        public string Metin { get; set; }
+        public string? Baslik { get; set; }
+        public string? Metin { get; set; }
         public decimal IndirimYuzdesi { get; set; }
         public DateTime BaslangicTarihi { get; set; }
         public DateTime BitisTarihi { get; set; }

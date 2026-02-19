@@ -1,0 +1,300 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB YÖNETİM</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            position: relative;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 26px;
+        }
+
+        .user-types {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            gap: 10px;
+        }
+
+        .user-type {
+            flex: 1;
+            padding: 14px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+            .user-type.active {
+                background: #667eea;
+                color: white;
+                border-color: #667eea;
+            }
+
+            .user-type:hover:not(.active) {
+                border-color: #667eea;
+            }
+
+        .login-form {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+            .login-form.active {
+                display: block;
+            }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 14px;
+            margin: 12px 0;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+
+            button:hover {
+                transform: translateY(-2px);
+            }
+
+        .alert {
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+
+            .alert.error {
+                background: #fee2e2;
+                color: #991b1b;
+                border: 1px solid #fecaca;
+            }
+
+        /* GİRİŞ YAP butonunun hemen altındaki Anasayfa bağlantısı */
+        .home-link {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+            .home-link:hover {
+                background: #667eea;
+                color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            }
+
+        keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        media (max-width: 480px) {
+            .container
+
+        {
+            margin: 20px;
+            padding: 30px;
+        }
+
+        .user-types {
+            flex-direction: column;
+        }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>WEB YÖNETİM</h2>
+
+        <!-- Kullanıcı Tipi Seçimi -->
+        <div class="user-types">
+            <div class="user-type active" data-tip="1">Müşteri</div>
+            <div class="user-type" data-tip="2">Bayi</div>
+        </div>
+
+        <!-- Giriş Formu -->
+        <form id="girisForm">
+            <input type="hidden" name="tip" id="tip" value="1">
+
+            <div class="login-form active" id="form-musteri">
+                <input type="text" name="KullaniciAdi_musteri" placeholder="Müşteri Kullanıcı Adı" required>
+                <input type="password" name="Sifre_musteri" placeholder="Şifre" required>
+            </div>
+
+            <div class="login-form" id="form-bayi">
+                <input type="text" name="KullaniciAdi_bayi" placeholder="Bayi Kullanıcı Adı">
+                <input type="password" name="Sifre_bayi" placeholder="Şifre">
+            </div>
+
+            <div class="alert error" id="hataMesaji"></div>
+
+            <button type="submit">GİRİŞ YAP</button>
+
+            <!-- GİRİŞ YAP butonunun hemen altında, aynı tasarımda Anasayfa bağlantısı -->
+            <a href="/Home/Index" class="home-link">
+                <i class="fas fa-home"></i> Anasayfa
+            </a>
+        </form>
+    </div>
+
+    <script>
+        const tipler = document.querySelectorAll('.user-type');
+        const formlar = document.querySelectorAll('.login-form');
+        const tipInput = document.getElementById('tip');
+        const hataMesaji = document.getElementById('hataMesaji');
+        const girisForm = document.getElementById('girisForm');
+
+        tipler.forEach(tip => {
+            tip.addEventListener('click', () => {
+                tipler.forEach(t => t.classList.remove('active'));
+                tip.classList.add('active');
+                const secilenTip = tip.getAttribute('data-tip');
+                tipInput.value = secilenTip;
+
+                formlar.forEach(form => {
+                    const inputs = form.querySelectorAll('input[type="text"], input[type="password"]');
+                    inputs.forEach(input => input.removeAttribute('required'));
+                });
+
+                const aktifFormId = secilenTip == 1 ? 'musteri' : 'bayi';
+                const aktifForm = document.getElementById(`form-${aktifFormId}`);
+                const aktifInputs = aktifForm.querySelectorAll('input[type="text"], input[type="password"]');
+                aktifInputs.forEach(input => input.setAttribute('required', ''));
+
+                formlar.forEach(form => {
+                    form.classList.remove('active');
+                    if (form.id === `form-${aktifFormId}`) {
+                        form.classList.add('active');
+                    }
+                });
+                hataMesaji.style.display = 'none';
+            });
+        });
+
+        girisForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            hataMesaji.style.display = 'none';
+
+            const aktifTip = document.querySelector('.user-type.active').getAttribute('data-tip');
+            const aktifFormId = aktifTip == 1 ? 'musteri' : 'bayi';
+            const aktifForm = document.getElementById(`form-${aktifFormId}`);
+            const kullaniciAdi = aktifForm.querySelector('input[type="text"]').value;
+            const sifre = aktifForm.querySelector('input[type="password"]').value;
+
+            if (!kullaniciAdi || !sifre) {
+                hataMesaji.textContent = 'Kullanıcı adı ve şifre zorunludur.';
+                hataMesaji.style.display = 'block';
+                return;
+            }
+
+            const girisVerisi = {
+                KullaniciAdi: kullaniciAdi,
+                Sifre: sifre,
+                tip: parseInt(aktifTip)
+            };
+
+            try {
+                const response = await fetch('/Login/Giris', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(girisVerisi)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Sunucu hatası: ' + response.status);
+                }
+
+                const result = await response.json();
+                if (result.success) {
+                    window.location.href = result.redirect;
+                } else {
+                    hataMesaji.textContent = result.message || 'Giriş başarısız.';
+                    hataMesaji.style.display = 'block';
+                }
+            } catch (err) {
+                console.error('Giriş hatası:', err);
+                hataMesaji.textContent = 'Sunucu hatası. Lütfen tekrar deneyin.';
+                hataMesaji.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

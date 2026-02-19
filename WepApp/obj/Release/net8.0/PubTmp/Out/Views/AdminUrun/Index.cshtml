@@ -1,0 +1,395 @@
+﻿@using WepApp.Models
+@{
+    ViewData["Title"] = "Ürün Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+<div class="row">
+    <div class="col-md-12">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="card" style="margin-top: 70px;">
+            @if (ViewBag.Kullanici != null)
+            {
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span>Ürünler</span>
+                    <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni Ürün Ekle
+                    </button>
+                </div>
+            }
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-head-bg-primary">
+                            <tr>
+                                <th>#</th>
+                                <th>Adı</th>
+                                <th>Kategori</th>
+                                <th>Stok</th>
+                                <th>Kodu</th>
+                                <th>Fiyat</th>
+                                <th>İndirim</th>
+                                <th>Son Fiyat</th>
+                                @if (ViewBag.Kullanici != null)
+                                {
+                                    <th>İşlemler</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.UrunList != null && ((List<Urun>)ViewBag.UrunList).Count > 0)
+                            {
+                                var urunList = ViewBag.UrunList as List<Urun>;
+                                int counter = 1;
+                                foreach (var item in urunList)
+                                {
+                                    var suresizIndirim = item.SureSizIndirimYuzdesi ?? 0;
+                                    <tr>
+                                        <td>@counter</td>
+                                        <td>@item.Adi</td>
+                                        <td>@(item.Kategori?.Adi ?? "")</td>
+                                        <td>
+                                            <span class="badge @(item.Stok == 1 ? "bg-success" : "bg-danger")">
+                                                @(item.Stok == 1 ? "Var" : "Yok")
+                                            </span>
+                                        </td>
+                                        <td>@item.UrunKodu</td>
+                                        <td>@item.Fiyat TL</td>
+                                        <td>
+                                            @if (suresizIndirim > 0)
+                                            {
+                                                <span class="badge bg-warning">Süresiz %@suresizIndirim</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (suresizIndirim > 0)
+                                            {
+                                                <strong class="text-danger">@item.SonFiyat TL</strong>
+                                                <br />
+                                                <small><del>@item.Fiyat TL</del></small>
+                                            }
+                                            else
+                                            {
+                                                @item.Fiyat <span>TL</span>
+                                            }
+                                        </td>
+                                        @if (ViewBag.Kullanici != null)
+                                        {
+                                            <td>
+                                                <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id)">
+                                                    <i class="fas fa-edit"></i> 
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.Adi')">
+                                                    <i class="fas fa-trash"></i> 
+                                                </button>
+                                            </td>
+                                        }
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                @if (ViewBag.Kullanici != null)
+                                {
+                                    <tr>
+                                        <td colspan="8" class="text-center">
+                                            Henüz ürün eklenmemiş.
+                                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ekleModal">Yeni Ürün Ekle</button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== EKLE MODAL ==================== -->
+<div class="modal fade" id="ekleModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form method="post" action="@Url.Action("Ekle")" id="ekleForm">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5>Yeni Ürün Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <input type="text" name="Adi" class="form-control" placeholder="Ürün Adı" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="text" name="UrunKodu" class="form-control" placeholder="Ürün Kodu" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <select name="KategoriId" class="form-select" required>
+                                <option value="">Kategori Seç</option>
+                                @foreach (var k in ViewBag.Kategoriler)
+                                {
+                                    <option value="@k.Id">@k.Adi</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="number" step="0.01" name="Fiyat" class="form-control" placeholder="Fiyat (TL)" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="number" step="0.01" name="SureSizIndirimYuzdesi"
+                                   class="form-control" placeholder="Süresiz İndirim %" min="0" max="100" />
+                            <small class="text-muted">Boş bırak = indirim yok</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="ekleStok" checked />
+                                <input type="hidden" name="Stok" id="ekleStokHidden" value="1" />
+                                <label for="ekleStok">Stokta Var</label>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <textarea name="Aciklama" id="Aciklama" rows="8" class="form-control" placeholder="Açıklama"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== DÜZENLE MODAL ==================== -->
+<div class="modal fade" id="duzenleModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form method="post" action="@Url.Action("Guncelle")" id="duzenleForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="editId" />
+                <div class="modal-header">
+                    <h5>Ürün Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <input type="text" name="Adi" id="editAdi" class="form-control" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="text" name="UrunKodu" id="editUrunKodu" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <select name="KategoriId" id="editKategoriId" class="form-select" required>
+                                <option value="">Kategori Seç</option>
+                                @foreach (var k in ViewBag.Kategoriler)
+                                {
+                                    <option value="@k.Id">@k.Adi</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="number" step="0.01" name="Fiyat" id="editFiyat" class="form-control" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <input type="number" step="0.01" name="SureSizIndirimYuzdesi"
+                                   id="editSureSizIndirimYuzdesi" class="form-control" min="0" max="100" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="editStok" />
+                                <input type="hidden" name="Stok" id="editStokHidden" value="0" />
+                                <label for="editStok">Stokta Var</label>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <textarea name="Aciklama" id="editAciklama" rows="8" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SİL MODAL ==================== -->
+<div class="modal fade" id="silModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="@Url.Action("Sil")">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="silId" />
+                <div class="modal-body">
+                    "<span id="silAdi"></span>"Silinsin mi?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <script>
+        let ekleEditor = null, duzenleEditor = null;
+
+        function initCKEditors() {
+            if (typeof CKEDITOR === 'undefined') {
+                setTimeout(initCKEditors, 300);
+                return;
+            }
+            if (!ekleEditor && document.getElementById('Aciklama')) {
+                ekleEditor = CKEDITOR.replace('Aciklama', {
+                    height: 300,
+                    language: 'tr',
+                    removePlugins: 'elementspath',
+                    resize_enabled: true
+                });
+            }
+            if (!duzenleEditor && document.getElementById('editAciklama')) {
+                duzenleEditor = CKEDITOR.replace('editAciklama', {
+                    height: 300,
+                    language: 'tr',
+                    removePlugins: 'elementspath',
+                    resize_enabled: true
+                });
+            }
+        }
+
+        function setupStokHandlers() {
+            // Ekle modal stok handler
+            const ekleStokCheckbox = document.getElementById('ekleStok');
+            const ekleStokHidden = document.getElementById('ekleStokHidden');
+
+            if (ekleStokCheckbox && ekleStokHidden) {
+                ekleStokCheckbox.addEventListener('change', function() {
+                    ekleStokHidden.value = this.checked ? '1' : '0';
+                });
+            }
+
+            // Düzenle modal stok handler
+            const editStokCheckbox = document.getElementById('editStok');
+            const editStokHidden = document.getElementById('editStokHidden');
+
+            if (editStokCheckbox && editStokHidden) {
+                editStokCheckbox.addEventListener('change', function() {
+                    editStokHidden.value = this.checked ? '1' : '0';
+                });
+            }
+        }
+
+        function setupModalEvents() {
+            const ekleModalEl = document.getElementById('ekleModal');
+            const duzenleModalEl = document.getElementById('duzenleModal');
+            if (ekleModalEl) {
+                ekleModalEl.addEventListener('shown.bs.modal', () => {
+                    setTimeout(() => ekleEditor && ekleEditor.resize('100%', 300), 100);
+                });
+                ekleModalEl.addEventListener('hidden.bs.modal', () => {
+                    ekleEditor && ekleEditor.setData('');
+                    ekleModalEl.querySelector('form').reset();
+                    document.querySelector('#ekleStok').checked = true;
+                    document.getElementById('ekleStokHidden').value = '1';
+                });
+            }
+            if (duzenleModalEl) {
+                duzenleModalEl.addEventListener('shown.bs.modal', () => {
+                    setTimeout(() => duzenleEditor && duzenleEditor.resize('100%', 300), 100);
+                });
+                duzenleModalEl.addEventListener('hidden.bs.modal', () => {
+                    duzenleEditor && duzenleEditor.setData('');
+                    duzenleModalEl.querySelector('form').reset();
+                });
+            }
+        }
+
+        function duzenleGetir(id) {
+            fetch(`@Url.Action("Getir", "AdminUrun")?id=${id}`)
+                .then(r => {
+                    if (!r.ok) throw new Error('Network error');
+                    return r.json();
+                })
+                .then(data => {
+                    document.getElementById('editId').value = data.id;
+                    document.getElementById('editAdi').value = data.adi || '';
+                    document.getElementById('editUrunKodu').value = data.urunKodu || '';
+                    document.getElementById('editKategoriId').value = data.kategoriId || '';
+                    document.getElementById('editFiyat').value = data.fiyat;
+                    document.getElementById('editSureSizIndirimYuzdesi').value = data.sureSizIndirimYuzdesi ?? '';
+
+                    // Stok değerini ayarla
+                    const stokChecked = data.stok === 1;
+                    document.getElementById('editStok').checked = stokChecked;
+                    document.getElementById('editStokHidden').value = stokChecked ? '1' : '0';
+
+                    if (duzenleEditor) {
+                        duzenleEditor.setData(data.aciklama || '');
+                    } else {
+                        document.getElementById('editAciklama').value = data.aciklama || '';
+                    }
+
+                    new bootstrap.Modal(document.getElementById('duzenleModal')).show();
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Ürün getirilirken hata oluştu.');
+                });
+        }
+
+        function silOnay(id, adi) {
+            document.getElementById('silId').value = id;
+            document.getElementById('silAdi').textContent = adi;
+            new bootstrap.Modal(document.getElementById('silModal')).show();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            ['ekleForm', 'duzenleForm'].forEach(fid => {
+                const form = document.getElementById(fid);
+                if (form) {
+                    form.addEventListener('submit', e => {
+                        const editor = fid === 'ekleForm' ? ekleEditor : duzenleEditor;
+                        if (editor && editor.status === 'ready') {
+                            editor.updateElement();
+                        }
+                    });
+                }
+            });
+
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(a => bootstrap.Alert.getOrCreateInstance(a).close());
+            }, 5000);
+
+            setupStokHandlers();
+        });
+
+        window.addEventListener('load', () => {
+            initCKEditors();
+            setupModalEvents();
+        });
+    </script>
+}

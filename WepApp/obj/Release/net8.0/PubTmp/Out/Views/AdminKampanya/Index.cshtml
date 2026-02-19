@@ -1,0 +1,581 @@
+﻿@model dynamic
+@using WepApp.Models
+@{
+    ViewData["Title"] = "Kampanya Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<style>
+    .table-actions {
+        white-space: nowrap;
+        width: 150px;
+    }
+
+    .card {
+        margin-top: 70px;
+    }
+
+    .summary-info {
+        background: #f8f9fa;
+        border-radius: 0.35rem;
+        padding: 15px;
+        margin-top: 15px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+    }
+
+    .paket-table tbody tr {
+        height: 52px;
+    }
+
+    .paket-table th, .paket-table td {
+        vertical-align: middle;
+    }
+
+    .paket-table .form-check {
+        margin: 0;
+        padding-left: 2.5rem;
+    }
+
+    .paket-table .form-check-input {
+        margin-left: -2rem;
+    }
+
+    .paket-table small {
+        font-size: 0.8rem;
+    }
+
+    .single-table-container {
+        max-height: 500px;
+        overflow-y: auto;
+        border: 1px solid #e3e6f0;
+        border-radius: 0.35rem;
+        margin-top: 10px;
+    }
+
+    .tur-badge {
+        font-size: 0.7rem;
+        padding: 0.25em 0.6em;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="card" style="margin-top: 70px;">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Kampanyalar</span>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                    <i class="fas fa-plus"></i> Yeni Kampanya Ekle
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="50">#</th>
+                                <th>Başlık</th>
+                                <th>Metin</th>
+                                <th>İndirim %</th>
+                                <th>Başlangıç</th>
+                                <th>Bitiş</th>
+                                <th>İçerik</th>
+                                <th width="150" class="text-center">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.Kampanyalar != null && ViewBag.Kampanyalar.Count > 0)
+                            {
+                                var counter = 1;
+                                foreach (var k in ViewBag.Kampanyalar)
+                                {
+                                    <tr>
+                                        <td>@counter</td>
+                                        <td>@k.Baslik</td>
+                                        <td>@k.Metin</td>
+                                        <td>%@k.IndirimYuzdesi</td>
+                                        <td>@k.BaslangicTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>@k.BitisTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-success me-1" onclick="paketleriGoster(@k.Id)" title="Sadece Paketler">
+                                                <i class="fas fa-box"></i> Paketler
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="gruplariGoster(@k.Id)" title="Sadece Paket Grupları">
+                                                <i class="fas fa-layer-group"></i> Gruplar
+                                            </button>
+                                        </td>
+                                        <td class="table-actions text-center">
+                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@k.Id)">
+                                                <i class="fas fa-edit"></i> 
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@k.Id, '@k.Baslik')">
+                                                <i class="fas fa-trash"></i> 
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="8" class="text-center py-5">
+                                        <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">Henüz kampanya eklenmemiş.</p>
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">Yeni Kampanya Ekle</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- EKLE MODAL -->
+<div class="modal fade" id="ekleModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form method="post" action="@Url.Action("Ekle")" id="ekleForm">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Kampanya Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3"><label class="form-label">Başlık</label><input type="text" name="Baslik" class="form-control" required /></div>
+                        <div class="col-md-3 mb-3"><label class="form-label">İndirim Yüzdesi</label><input type="number" step="0.01" name="IndirimYuzdesi" class="form-control" min="0" max="100" required /></div>
+                        <div class="col-md-3 mb-3"><label class="form-label">Başlangıç Tarihi</label><input type="datetime-local" name="BaslangicTarihi" class="form-control" required /></div>
+                        <div class="col-md-3 mb-3"><label class="form-label">Bitiş Tarihi</label><input type="datetime-local" name="BitisTarihi" class="form-control" required /></div>
+                        <div class="col-md-12 mb-3"><label class="form-label">Metin (isteğe bağlı)</label><input type="text" name="Metin" class="form-control" /></div>
+                    </div>
+                    <hr>
+                    <h6 class="border-bottom pb-2">Kampanya İçeriği</h6>
+                    <p class="text-muted">Kampanyaya dahil edilecek modül ve paketleri aşağıdan seçin.</p>
+                    <div class="mb-3">
+                        <input type="text" id="genelArama" class="form-control" placeholder="Modül veya paket ara...">
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="selectAllTumu">
+                        <label class="form-check-label fw-bold" for="selectAllTumu">Tümünü Seç</label>
+                    </div>
+                    <div class="single-table-container">
+                        <table class="table table-sm table-hover paket-table">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th width="50">Seç</th>
+                                    <th width="80">Tür</th>
+                                    <th>Adı</th>
+                                    <th>Detay</th>
+                                    <th width="120" class="text-end">Liste Fiyatı</th>
+                                </tr>
+                            </thead>
+                            <tbody id="birlesikListe">
+                                <!-- GRUPLAR ÖNCE -->
+                                @foreach (var grup in ViewBag.PaketGruplari ?? new List<dynamic>())
+                                {
+                                    <tr data-tur="grup">
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input birlesik-checkbox" type="checkbox" name="seciliPaketGruplari" value="@grup.Id">
+                                                <label class="form-check-label"></label>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-primary tur-badge">PAKET</span></td>
+                                        <td><strong>@grup.Adi</strong></td>
+                                        <td><small class="text-muted">@grup.LisansTip?.Adi</small></td>
+                                        <td class="text-end text-success fw-bold">@grup.Fiyat.ToString("N2") ₺</td>
+                                    </tr>
+                                }
+                                <!-- PAKETLER SONRA -->
+                                @foreach (var paket in ViewBag.Paketler ?? new List<dynamic>())
+                                {
+                                    <tr data-tur="paket">
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input birlesik-checkbox" type="checkbox" name="seciliPaketler" value="@paket.Id">
+                                                <label class="form-check-label"></label>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-info tur-badge">MODÜL</span></td>
+                                        <td><strong>@paket.Adi</strong></td>
+                                        <td><small class="text-muted">@paket.LisansTip?.Adi • @paket.Birim?.Adi • @paket.EgitimSuresi gün</small></td>
+                                        <td class="text-end text-success fw-bold">@paket.Fiyat.ToString("N2") ₺</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="summary-info mt-3">
+                        <div class="summary-item"><span>Seçili Modül:</span> <strong id="seciliPaketSayisi">0</strong></div>
+                        <div class="summary-item"><span>Seçili Paket :</span> <strong id="seciliPaketGrupSayisi">0</strong></div>
+                        <div class="summary-item"><span>Toplam İçerik:</span> <strong id="toplamIcerikSayisi" class="text-success">0</strong></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- DÜZENLE MODAL -->
+<div class="modal fade" id="duzenleModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form method="post" action="@Url.Action("Guncelle")" id="duzenleForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="editId" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Kampanya Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3"><label class="form-label">Başlık</label><input type="text" name="Baslik" id="editBaslik" class="form-control" required /></div>
+                        <div class="col-md-3 mb-3"><label class="form-label">İndirim Yüzdesi</label><input type="number" step="0.01" name="IndirimYuzdesi" id="editIndirimYuzdesi" class="form-control" min="0" max="100" required /></div>
+                        <div class="col-md-3 mb-3"><label class="form-label">Başlangıç Tarihi</label><input type="datetime-local" name="BaslangicTarihi" id="editBaslangicTarihi" class="form-control" required /></div>
+                        <div class="col-md-3 mb-3"><label class="form-label">Bitiş Tarihi</label><input type="datetime-local" name="BitisTarihi" id="editBitisTarihi" class="form-control" required /></div>
+                        <div class="col-md-12 mb-3"><label class="form-label">Metin</label><input type="text" name="Metin" id="editMetin" class="form-control" /></div>
+                    </div>
+                    <hr>
+                    <h6 class="border-bottom pb-2">Kampanya İçeriği</h6>
+                    <div class="mb-3">
+                        <input type="text" id="editGenelArama" class="form-control" placeholder="Modül veya paket ara...">
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="editSelectAllTumu">
+                        <label class="form-check-label fw-bold" for="editSelectAllTumu">Tümünü Seç</label>
+                    </div>
+                    <div class="single-table-container">
+                        <table class="table table-sm table-hover paket-table">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th width="50">Seç</th>
+                                    <th width="80">Tür</th>
+                                    <th>Adı</th>
+                                    <th>Detay</th>
+                                    <th width="120" class="text-end">Fiyat</th>
+                                </tr>
+                            </thead>
+                            <tbody id="editBirlesikListe"></tbody>
+                        </table>
+                    </div>
+                    <div class="summary-info mt-3">
+                        <div class="summary-item"><span>Seçili Modül:</span> <strong id="editSeciliPaketSayisi">0</strong></div>
+                        <div class="summary-item"><span>Seçili Paket :</span> <strong id="editSeciliPaketGrupSayisi">0</strong></div>
+                        <div class="summary-item"><span>Toplam İçerik:</span> <strong id="editToplamIcerikSayisi" class="text-success">0</strong></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- PAKETLER MODAL (Sadece direkt paketler) -->
+<div class="modal fade" id="paketlerModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-box me-2"></i>
+                    <span id="paketModalBaslik">Modüller</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center text-muted mb-3">
+                  <h5>Kampanya Tarih Aralığı</h5>  <small id="paketTarihAraligi"></small>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Modül Adı</th>
+                                <th>Liste Fiyatı</th>
+                                <th class="text-success fw-bold">Kampanyalı Fiyat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paketlerListesi"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GRUPLAR MODAL (Sadece paket grupları) -->
+<div class="modal fade" id="gruplarModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-layer-group me-2"></i>
+                    <span id="grupModalBaslik">Paketler</span>
+
+                </h5>
+               
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+
+                            <tr>
+                                <th>#</th>
+                                <th>Grup Adı</th>
+                                <th>İçerdiği Modül Sayısı</th>
+                                <th>Fiyat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gruplarListesi"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SİL MODAL -->
+<div class="modal fade" id="silModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="@Url.Action("Sil")">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="silId" />
+                <div class="modal-header"><h5 class="modal-title">Kampanya Sil</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <p><strong>"<span id="silBaslik"></span>"</strong> kampanyasını pasif yapmak istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><small>Bu işlem geri alınamaz.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Pasif Yap</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        // ÖZET GÜNCELLEME (ekle ve düzenle modalı için ortak)
+        function updateSummary(prefix = '') {
+            const paketSelector = prefix
+                ? `input[name="${prefix}seciliPaketler"]:checked`
+                : `input[name="seciliPaketler"]:checked`;
+
+            const grupSelector = prefix
+                ? `input[name="${prefix}seciliPaketGruplari"]:checked`
+                : `input[name="seciliPaketGruplari"]:checked`;
+
+            const paketSayisi = document.querySelectorAll(paketSelector).length;
+            const grupSayisi = document.querySelectorAll(grupSelector).length;
+
+            // ID'leri doğru büyük harfle oluştur
+            const paketId = prefix ? `${prefix}SeciliPaketSayisi` : 'seciliPaketSayisi';
+            const grupId   = prefix ? `${prefix}SeciliPaketGrupSayisi` : 'seciliPaketGrupSayisi';
+            const toplamId = prefix ? `${prefix}ToplamIcerikSayisi` : 'toplamIcerikSayisi';
+
+            const elPaket = document.getElementById(paketId);
+            const elGrup  = document.getElementById(grupId);
+            const elToplam = document.getElementById(toplamId);
+
+            if (elPaket)  elPaket.textContent  = paketSayisi;
+            if (elGrup)   elGrup.textContent   = grupSayisi;
+            if (elToplam) elToplam.textContent = paketSayisi + grupSayisi;
+        }
+
+        // GENEL ARAMA (ekle ve düzenle modalı için)
+        function genelArama(inputId, tbodyId) {
+            const term = document.getElementById(inputId).value.toLowerCase();
+            document.querySelectorAll(`#${tbodyId} tr`).forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(term) ? '' : 'none';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Ekle modalı başlangıç değerleri
+            updateSummary();
+
+            // === EKLE MODALI EVENTLERI ===
+            const genelAramaInput = document.getElementById('genelArama');
+            if (genelAramaInput) {
+                genelAramaInput.addEventListener('input', () => genelArama('genelArama', 'birlesikListe'));
+            }
+
+            const selectAllTumu = document.getElementById('selectAllTumu');
+            if (selectAllTumu) {
+                selectAllTumu.addEventListener('change', function () {
+                    document.querySelectorAll('#birlesikListe .birlesik-checkbox').forEach(cb => {
+                        cb.checked = this.checked;
+                    });
+                    updateSummary();
+                });
+            }
+
+            document.getElementById('birlesikListe')?.addEventListener('change', e => {
+                if (e.target.matches('.birlesik-checkbox')) {
+                    updateSummary();
+                }
+            });
+
+            // Alert 5 saniye sonra otomatik kapanır
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(a => {
+                    const bsAlert = bootstrap.Alert.getInstance(a);
+                    if (bsAlert) bsAlert.close();
+                });
+            }, 5000);
+        });
+
+        // ===================== DÜZENLE MODALI =====================
+        function duzenleGetir(id) {
+            fetch('@Url.Action("Getir")' + '?id=' + id)
+                .then(r => r.json())
+                .then(data => {
+                    // Form alanlarını doldur
+                    document.getElementById('editId').value = data.id;
+                    document.getElementById('editBaslik').value = data.baslik || '';
+                    document.getElementById('editMetin').value = data.metin || '';
+                    document.getElementById('editIndirimYuzdesi').value = data.indirimYuzdesi;
+                    document.getElementById('editBaslangicTarihi').value = data.baslangicTarihi;
+                    document.getElementById('editBitisTarihi').value = data.bitisTarihi;
+
+                    // Tabloyu yeniden oluştur
+                    document.getElementById('editBirlesikListe').innerHTML = data.birlesikHtml || '';
+
+                    // Özet sıfırla
+                    updateSummary('edit');
+
+                    // === DÜZENLE MODALI EVENTLERİNİ YENİDEN BAĞLA ===
+                    // Checkbox değişim
+                    document.querySelectorAll('#editBirlesikListe .birlesik-checkbox').forEach(cb => {
+                        cb.onchange = () => updateSummary('edit');
+                    });
+
+                    // Tümünü seç
+                    const editSelectAll = document.getElementById('editSelectAllTumu');
+                    if (editSelectAll) {
+                        editSelectAll.onchange = function () {
+                            document.querySelectorAll('#editBirlesikListe .birlesik-checkbox').forEach(cb => {
+                                cb.checked = this.checked;
+                            });
+                            updateSummary('edit');
+                        };
+                    }
+
+                    // Arama
+                    const editAramaInput = document.getElementById('editGenelArama');
+                    if (editAramaInput) {
+                        editAramaInput.oninput = () => genelArama('editGenelArama', 'editBirlesikListe');
+                    }
+
+                    // Modalı aç
+                    new bootstrap.Modal(document.getElementById('duzenleModal')).show();
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Kampanya bilgileri yüklenirken hata oluştu.');
+                });
+        }
+
+        // ===================== PAKETLER MODALI =====================
+        function paketleriGoster(id) {
+            fetch('@Url.Action("GetirKampanyaPaketleri")' + '?id=' + id)
+                .then(r => r.json())
+                .then(res => {
+                    document.getElementById('paketModalBaslik').textContent = res.kampanyaBaslik + " - Paketler";
+                    document.getElementById('paketTarihAraligi').textContent = res.baslangic + " - " + res.bitis;
+
+                    const tbody = document.getElementById('paketlerListesi');
+                    if (!res.success || res.data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Bu kampanyaya direkt paket eklenmemiş.</td></tr>';
+                    } else {
+                        let html = '';
+                        res.data.forEach((p, i) => {
+                            html += `<tr>
+                                <td>${i + 1}</td>
+                                <td><strong>${p.adi}</strong></td>
+                                <td class="text-decoration-line-through text-muted">${p.normalFiyat.toFixed(2)} ₺</td>
+                                <td class="text-success fw-bold">${p.kampanyaFiyat.toFixed(2)} ₺</td>
+                            </tr>`;
+                        });
+                        tbody.innerHTML = html;
+                    }
+                    new bootstrap.Modal(document.getElementById('paketlerModal')).show();
+                });
+        }
+
+        // ===================== GRUPLAR MODALI =====================
+        function gruplariGoster(id) {
+            fetch('@Url.Action("GetirKampanyaPaketGruplari")' + '?id=' + id)
+                .then(r => r.json())
+                .then(res => {
+                    document.getElementById('grupModalBaslik').textContent = res.kampanyaBaslik + " - Paket Grupları";
+                    const tbody = document.getElementById('gruplarListesi');
+
+                    if (!res.success || res.data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">Bu kampanyaya paket grubu eklenmemiş.</td></tr>';
+                    } else {
+                        let html = '';
+                        res.data.forEach((g, i) => {
+                            html += `<tr>
+                                <td>${i + 1}</td>
+                                <td><strong>${g.adi}</strong></td>
+                                <td><span class="badge bg-primary">${g.icerikSayisi}</span></td>
+                                <td class="fw-bold">${parseFloat(g.fiyat).toFixed(2)} ₺</td>
+                            </tr>`;
+                        });
+                        tbody.innerHTML = html;
+                    }
+                    new bootstrap.Modal(document.getElementById('gruplarModal')).show();
+                });
+        }
+
+        // ===================== SİL MODALI =====================
+        function silOnay(id, baslik) {
+            document.getElementById('silId').value = id;
+            document.getElementById('silBaslik').textContent = baslik;
+            new bootstrap.Modal(document.getElementById('silModal')).show();
+        }
+    </script>
+}

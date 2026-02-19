@@ -1,0 +1,160 @@
+﻿@{
+    ViewData["Title"] = "İnsan Kaynakları";
+    Layout = "~/Views/Shared/_LayoutWebUI.cshtml";
+}
+
+<main class="main">
+
+    <div class="page-title">
+        <div class="heading">
+            <div class="container">
+                <div class="row d-flex justify-content-center text-center">
+                    <div class="col-lg-8">
+                        <h1>İnsan Kaynakları</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="breadcrumbs">
+            <div class="container">
+                <ol>
+                    <li><a href="/Home">Ana Sayfa</a></li>
+                    <li class="current">İnsan Kaynakları</li>
+                </ol>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+
+                <section id="ik-form" class="ik-form section">
+                    <form id="ikForm" action="@Url.Action("Kaydet","InsanKaynaklari")" method="post" enctype="multipart/form-data">
+
+                        <h4>Başvuru Formu</h4>
+                        <div class="row">
+                            <div class="col-md-6 form-group mb-3">
+                                <input asp-for="AdiSoyadi" name="AdiSoyadi" type="text" class="form-control" placeholder="Adı Soyadı*">
+                                <span asp-validation-for="AdiSoyadi" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 form-group mb-3">
+                                <input asp-for="Telefon" name="Telefon" type="text" class="form-control" placeholder="Telefon*">
+                                <span asp-validation-for="Telefon" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 form-group mb-3">
+                                <input asp-for="Eposta" name="Eposta" type="email" class="form-control" placeholder="E-posta*">
+                                <span asp-validation-for="Eposta" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 form-group mb-3">
+                                <input asp-for="TC" name="TC" type="text" class="form-control" placeholder="TC Kimlik No">
+                                <span asp-validation-for="TC" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 form-group mb-3">
+                                <input asp-for="DosyaYolu" name="DosyaYolu" type="file" class="form-control" accept=".pdf,.doc,.docx">
+                                <small class="form-text text-muted">Özgeçmiş dosyanızı yükleyin (PDF, DOC, DOCX)</small>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 form-group mb-3">
+                                <textarea asp-for="Mesaj" name="Mesaj" class="form-control" placeholder="Mesajınız" rows="5"></textarea>
+                                <span asp-validation-for="Mesaj" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" id="submitBtn" class="btn btn-primary">Başvuruyu Gönder</button>
+                        </div>
+                    </form>
+                </section>
+
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<!-- Modal HTML - Sadece başarılı durumda gösterilecek -->
+@if (ViewData["Basarili"] as bool? == true)
+{
+    <div id="successModal" class="modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;">
+        <div style="background:white; max-width:500px; width:90%; margin:0 auto; padding:40px; border-radius:15px; text-align:center; position:relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+            <button id="closeModal" style="position:absolute; top:10px; right:15px; background:none; border:none; font-size:24px; cursor:pointer; color:#999; padding:0;">&times;</button>
+            <div style="font-size:48px; color:#28a745; margin-bottom:20px;">&#10004;</div>
+            <h4 style="color:#333; margin-bottom:10px;">Başvurunuz başarıyla gönderildi!</h4>
+            <p style="color:#666; margin:0;">Teşekkür ederiz, en kısa sürede sizinle iletişime geçeceğiz.</p>
+        </div>
+    </div>
+}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Form submit engelleme - birden fazla göndermeyi önle
+        var form = document.getElementById("ikForm");
+        var submitBtn = document.getElementById("submitBtn");
+        var modal = document.getElementById("successModal");
+        var isSubmitting = false;
+
+        if (form) {
+            form.addEventListener("submit", function(e) {
+                if (isSubmitting) {
+                    e.preventDefault();
+                    return false;
+                }
+                isSubmitting = true;
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = "Gönderiliyor...";
+                }
+            });
+        }
+
+        // Modal varsa kapatma işlemlerini ayarla
+        if (modal) {
+            // Formu temizle
+            if (form) {
+                form.reset();
+            }
+
+            // Otomatik kapatma - 4 saniye sonra
+            setTimeout(function() {
+                closeModal();
+            }, 4000);
+
+            // Kapatma butonu - manuel kapatma
+            var closeBtn = document.getElementById("closeModal");
+            if (closeBtn) {
+                closeBtn.addEventListener("click", function(e) {
+                    e.stopPropagation();
+                    closeModal();
+                });
+            }
+
+            // Dışarı tıklama ile kapatma
+            modal.addEventListener("click", function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        }
+
+        function closeModal() {
+            if (modal) {
+                modal.style.display = "none";
+            }
+            // Submit durumunu sıfırla (tekrar gönderme için)
+            isSubmitting = false;
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = "Başvuruyu Gönder";
+            }
+        }
+    });
+</script>

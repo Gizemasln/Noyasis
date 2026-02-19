@@ -10,3 +10,9 @@ D:\GİTHUBPROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.pdb
 D:\PROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.csproj.AssemblyReference.cache
 D:\PROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.exe
 D:\PROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.pdb
+D:\PROJELER\Noyasis\WinAppReport\bin\Debug\WinAppReport.exe.config
+D:\PROJELER\Noyasis\WinAppReport\bin\Debug\WinAppReport.exe
+D:\PROJELER\Noyasis\WinAppReport\bin\Debug\WinAppReport.pdb
+D:\PROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.Properties.Resources.resources
+D:\PROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.csproj.GenerateResource.cache
+D:\PROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.csproj.CoreCompileInputs.cache

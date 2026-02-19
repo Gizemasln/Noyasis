@@ -150,25 +150,179 @@ namespace WebApp.Controllers
         private List<DetectedButton> ScanViewsForButtons()
         {
             var buttons = new List<DetectedButton>();
-            var viewsPath = Path.Combine(_env.ContentRootPath, "Views");
+
+            // ÖNCE WEBROOTPATH'İ DENE (wwwroot içinde olabilir)
+            var viewsPath = Path.Combine(_env.WebRootPath, "Views");
 
             if (!Directory.Exists(viewsPath))
-                return buttons;
-
-            // Tüm cshtml dosyalarını tara
-            var viewFiles = Directory.GetFiles(viewsPath, "*.cshtml", SearchOption.AllDirectories);
-
-            foreach (var viewFile in viewFiles)
             {
-                var content = System.IO.File.ReadAllText(viewFile);
-                var fileName = Path.GetFileNameWithoutExtension(viewFile);
-                var folderName = Path.GetFileName(Path.GetDirectoryName(viewFile));
+                // ContentRootPath'i dene
+                viewsPath = Path.Combine(_env.ContentRootPath, "Views");
+            }
 
-                // Controller adını belirle
-                var controllerName = folderName;
+            if (!Directory.Exists(viewsPath))
+            {
+                // BaseDirectory'i dene
+                viewsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Views");
+            }
 
-                // Gerçek butonları bul
-                FindButtonsInContent(content, controllerName, fileName, buttons);
+            // Hala yoksa, tüm alt dizinlerde Views ara
+            if (!Directory.Exists(viewsPath))
+            {
+                var allViews = Directory.GetDirectories(_env.ContentRootPath, "Views", SearchOption.AllDirectories);
+                if (allViews.Any())
+                {
+                    viewsPath = allViews.First();
+                }
+            }
+
+            // Log yaz
+            string logPath = Path.Combine(_env.ContentRootPath, "buton_yolu_log.txt");
+            System.IO.File.WriteAllText(logPath, $"Kullanılan views yolu: {viewsPath} - Var mı: {Directory.Exists(viewsPath)}");
+
+            // TÜM OLASI YOLLARI DENE
+            var possiblePaths = new List<string>();
+
+            // 1. ContentRootPath
+            possiblePaths.Add(Path.Combine(_env.ContentRootPath, "Views"));
+
+            // 2. WebRootPath
+            if (!string.IsNullOrEmpty(_env.WebRootPath))
+                possiblePaths.Add(Path.Combine(_env.WebRootPath, "Views"));
+
+            // 3. BaseDirectory
+            possiblePaths.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Views"));
+
+            // 4. CurrentDirectory
+            possiblePaths.Add(Path.Combine(Directory.GetCurrentDirectory(), "Views"));
+
+            // 5. Bir üst dizin
+            possiblePaths.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "Views"));
+
+            // 6. İki üst dizin
+            possiblePaths.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "Views"));
+
+            // 7. Publish klasöründeki tüm alt dizinlerde "Views" ara
+            var allDirs = Directory.GetDirectories(AppDomain.CurrentDomain.BaseDirectory, "*", SearchOption.AllDirectories);
+            foreach (var dir in allDirs.Where(d => d.EndsWith("Views")))
+            {
+                possiblePaths.Add(dir);
+            }
+
+
+
+            using (StreamWriter log = new StreamWriter(logPath, false))
+            {
+                log.WriteLine($"=== BUTON TARAMA LOGU - {DateTime.Now} ===");
+                log.WriteLine($"ContentRootPath: {_env.ContentRootPath}");
+                log.WriteLine($"WebRootPath: {_env.WebRootPath}");
+                log.WriteLine($"BaseDirectory: {AppDomain.CurrentDomain.BaseDirectory}");
+                log.WriteLine($"CurrentDirectory: {Directory.GetCurrentDirectory()}");
+                log.WriteLine("");
+                log.WriteLine("ARANAN YOLLAR:");
+
+                // Tüm olası yolları dene
+                foreach (var path in possiblePaths.Distinct())
+                {
+                    string fullPath = Path.GetFullPath(path);
+                    log.WriteLine($"- {fullPath} : {(Directory.Exists(fullPath) ? "VAR" : "YOK")}");
+
+                    if (Directory.Exists(fullPath))
+                    {
+                        viewsPath = fullPath;
+                        log.WriteLine($"  >>> BULUNDU! Bu yol kullanılacak: {fullPath}");
+                        break;
+                    }
+                }
+
+                // Eğer hala bulunamadıysa, tüm sürücüde ara (çok yavaş olabilir, son çare)
+                if (viewsPath == null)
+                {
+                    log.WriteLine("");
+                    log.WriteLine("Hiçbir views klasörü bulunamadı! Tüm dizinler taranıyor...");
+
+                    try
+                    {
+                        // Sadece uygulama dizini ve altındakileri tara
+                        var allFolders = Directory.GetDirectories(AppDomain.CurrentDomain.BaseDirectory, "Views", SearchOption.AllDirectories);
+                        if (allFolders.Any())
+                        {
+                            viewsPath = allFolders.First();
+                            log.WriteLine($"Derin taramada bulundu: {viewsPath}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        log.WriteLine($"Derin tarama hatası: {ex.Message}");
+                    }
+                }
+
+                // Views klasörü bulunduysa dosyaları listele
+                if (viewsPath != null && Directory.Exists(viewsPath))
+                {
+                    log.WriteLine("");
+                    log.WriteLine($"VIEWS KLASÖRÜ BULUNDU: {viewsPath}");
+
+                    var viewFiles = Directory.GetFiles(viewsPath, "*.cshtml", SearchOption.AllDirectories);
+                    log.WriteLine($"Toplam {viewFiles.Length} .cshtml dosyası bulundu:");
+
+                    foreach (var file in viewFiles.Take(20)) // İlk 20 dosyayı göster
+                    {
+                        log.WriteLine($"- {file}");
+                    }
+
+                    if (viewFiles.Length > 20)
+                        log.WriteLine($"... ve {viewFiles.Length - 20} dosya daha");
+
+                    // Butonları bul
+                    foreach (var viewFile in viewFiles)
+                    {
+                        try
+                        {
+                            var content = System.IO.File.ReadAllText(viewFile);
+                            var fileName = Path.GetFileNameWithoutExtension(viewFile);
+                            var folderName = Path.GetFileName(Path.GetDirectoryName(viewFile));
+
+                            // Controller adını belirle
+                            var controllerName = folderName;
+
+                            // Gerçek butonları bul
+                            FindButtonsInContent(content, controllerName, fileName, buttons);
+                        }
+                        catch (Exception ex)
+                        {
+                            log.WriteLine($"Dosya okuma hatası {viewFile}: {ex.Message}");
+                        }
+                    }
+
+                    log.WriteLine("");
+                    log.WriteLine($"Toplam {buttons.Count} buton bulundu:");
+                    foreach (var btn in buttons)
+                    {
+                        log.WriteLine($"- {btn.Controller} / {btn.Action}");
+                    }
+                }
+                else
+                {
+                    log.WriteLine("");
+                    log.WriteLine("HATA: Views klasörü bulunamadı!");
+
+                    // Base directory içindeki tüm klasörleri listele
+                    log.WriteLine("");
+                    log.WriteLine($"BaseDirectory içindeki klasörler ({AppDomain.CurrentDomain.BaseDirectory}):");
+                    try
+                    {
+                        var dirs = Directory.GetDirectories(AppDomain.CurrentDomain.BaseDirectory);
+                        foreach (var dir in dirs)
+                        {
+                            log.WriteLine($"- {Path.GetFileName(dir)}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        log.WriteLine($"Klasör listeleme hatası: {ex.Message}");
+                    }
+                }
             }
 
             return buttons;

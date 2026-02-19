@@ -1,0 +1,547 @@
+﻿@using WepApp.Models
+@{
+    ViewData["Title"] = "Paket Bağlama";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+@{
+    var paket = ViewBag.Paket as Paket;
+    var tumPaketler = ViewBag.TumPaketler as List<Paket>;
+    var mevcutBagliPaketIds = ViewBag.MevcutBagliPaketIds as List<int> ?? new List<int>();
+    var caprazBaglantiOlanlar = ViewBag.CaprazBaglantiOlanlar as List<int> ?? new List<int>();
+}
+
+<style>
+    .baglama-container {
+        margin-top: 70px;
+    }
+
+    .paket-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .paket-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.3;
+        }
+
+    .paket-baslik {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .paket-detay {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+
+    .baglama-paneli {
+        display: flex;
+        gap: 20px;
+        min-height: 600px;
+    }
+
+    .tum-paketler-panel {
+        flex: 1;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background: white;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .secili-paketler-panel {
+        flex: 1;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background: white;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .panel-baslik {
+        background: #f8f9fa;
+        padding: 15px;
+        border-bottom: 1px solid #dee2e6;
+        font-weight: bold;
+        color: #495057;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .panel-icerik {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        max-height: 500px;
+    }
+
+    .paket-ara {
+        margin-bottom: 15px;
+    }
+
+    .paket-listesi {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .paket-list-item {
+        padding: 12px 15px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        background: white;
+        cursor: move;
+        transition: all 0.2s ease;
+        user-select: none;
+    }
+
+        .paket-list-item:hover {
+            background-color: #f8f9fa;
+            border-color: #adb5bd;
+            transform: translateX(3px);
+        }
+
+        .paket-list-item.selected {
+            background-color: #e7f3ff;
+            border-color: #007bff;
+            border-left: 4px solid #007bff;
+        }
+
+        .paket-list-item.capraz {
+            background-color: #fff3cd;
+            border-color: #ffc107;
+            border-left: 4px solid #ffc107;
+        }
+
+    .paket-adi {
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 3px;
+    }
+
+    .paket-bilgi {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+
+    .secili-paket-item {
+        padding: 10px 15px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        background: #f8f9fa;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .secili-paket-item:hover {
+            background-color: #e9ecef;
+        }
+
+    .sil-btn {
+        color: #dc3545;
+        background: none;
+        border: none;
+        padding: 2px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        .sil-btn:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+    .aksiyonlar {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #dee2e6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .bos-liste {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6c757d;
+    }
+
+        .bos-liste i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+    .capraz-uyari {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 193, 7, 0.2);
+        border: 1px solid #ffc107;
+        border-radius: 6px;
+        padding: 8px 15px;
+        color: #856404;
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="baglama-container">
+    <div class="row">
+        <div class="col-md-12">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <!-- Paket Başlığı -->
+            <div class="paket-header">
+                <div class="paket-baslik">@paket.Adi - Paket Bağlama</div>
+                <div class="paket-detay">
+                    <strong>Kod:</strong> @(paket.ModulKodu ?? "-") |
+                    <strong>Lisans:</strong> @(paket.LisansTip?.Adi ?? "-") |
+                    <strong>Fiyat:</strong> @paket.Fiyat?.ToString("C") |
+                    <strong>KDV:</strong> @(paket.KDV?.Oran ?? 0)%
+                </div>
+                @if (caprazBaglantiOlanlar.Any())
+                {
+                    <div class="capraz-uyari">
+                        <i class="fas fa-exclamation-triangle"></i> Bu paketin çapraz bağlantıları var!
+                    </div>
+                }
+            </div>
+
+            <!-- Bağlama Paneli -->
+            <div class="baglama-paneli">
+                <!-- Tüm Paketler -->
+                <div class="tum-paketler-panel">
+                    <div class="panel-baslik">
+                        <span>Tüm Paketler</span>
+                        <span class="badge bg-primary" id="tumPaketSayisi">@(tumPaketler?.Count ?? 0)</span>
+                    </div>
+                    <div class="panel-icerik">
+                        <!-- Arama -->
+                        <div class="paket-ara">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" class="form-control" id="paketAra"
+                                       placeholder="Paket ara...">
+                            </div>
+                        </div>
+
+                        <!-- Paket Listesi -->
+                        <div class="paket-listesi" id="tumPaketlerListesi">
+                            @if (tumPaketler != null && tumPaketler.Any())
+                            {
+                                foreach (var p in tumPaketler)
+                                {
+                                    var isSelected = mevcutBagliPaketIds.Contains(p.Id);
+                                    var isCapraz = caprazBaglantiOlanlar.Contains(p.Id);
+                                    var className = "paket-list-item";
+                                    if (isSelected) className += " selected";
+                                    if (isCapraz) className += " capraz";
+
+                                    <div class="@className"
+                                         data-id="@p.Id"
+                                         data-search="@(p.Adi?.ToLower()) @(p.ModulKodu?.ToLower())">
+                                        <div class="paket-adi">@p.Adi</div>
+                                        <div class="paket-bilgi">
+                                            @(p.LisansTip?.Adi ?? "-") | @(p.Birim?.Adi ?? "-") | @p.Fiyat?.ToString("C")
+                                            @if (isCapraz)
+                                            {
+                                                <span class="badge bg-warning float-end">
+                                                    <i class="fas fa-exchange-alt"></i> Çapraz
+                                                </span>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="bos-liste">
+                                    <i class="fas fa-inbox"></i>
+                                    <p>Bağlanabilecek paket bulunmuyor</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seçili Paketler -->
+                <div class="secili-paketler-panel">
+                    <div class="panel-baslik">
+                        <span>Seçili Paketler</span>
+                        <span class="badge bg-success" id="seciliPaketSayisi">@mevcutBagliPaketIds.Count</span>
+                    </div>
+                    <div class="panel-icerik" id="seciliPaketlerListesi">
+                        @if (mevcutBagliPaketIds.Any())
+                        {
+                            foreach (var paketId in mevcutBagliPaketIds)
+                            {
+                                var p = tumPaketler?.FirstOrDefault(x => x.Id == paketId);
+                                if (p != null)
+                                {
+                                    <div class="secili-paket-item" data-id="@p.Id">
+                                        <div>
+                                            <div class="paket-adi">@p.Adi</div>
+                                            <div class="paket-bilgi">
+                                                @(p.LisansTip?.Adi ?? "-") | @p.Fiyat?.ToString("C")
+                                            </div>
+                                        </div>
+                                        <button type="button" class="sil-btn" onclick="paketiKaldir(@p.Id)">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <div class="bos-liste">
+                                <i class="fas fa-hand-point-left"></i>
+                                <p>Paket seçmek için soldan paketlere tıklayın</p>
+                                <p class="small text-muted">Veya sürükleyip bırakın</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aksiyonlar -->
+            <div class="aksiyonlar">
+                <div>
+                    <a href="/AdminPaketBaglama" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Geri Dön
+                    </a>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-warning" onclick="secimleriTemizle()">
+                        <i class="fas fa-broom"></i> Temizle
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="baglamalariKaydet()">
+                        <i class="fas fa-save"></i> Kaydet
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        // Seçili paket ID'leri
+        let seciliPaketIds = @Html.Raw(Json.Serialize(mevcutBagliPaketIds));
+        let anaPaketId = @paket.Id;
+
+        // Paket arama
+        function initArama() {
+            $('#paketAra').on('input', function() {
+                const term = $(this).val().toLowerCase().trim();
+                $('.paket-list-item').each(function() {
+                    const $item = $(this);
+                    const searchData = $item.data('search') || '';
+                    $item.toggle(searchData.includes(term));
+                });
+            });
+        }
+
+        // Paket seçme
+        function initPaketSecim() {
+            $('#tumPaketlerListesi').on('click', '.paket-list-item', function() {
+                const paketId = parseInt($(this).data('id'));
+                const $item = $(this);
+
+                if ($item.hasClass('selected')) {
+                    // Kaldır
+                    $item.removeClass('selected');
+                    seciliPaketIds = seciliPaketIds.filter(id => id !== paketId);
+                    $(`#seciliPaketlerListesi .secili-paket-item[data-id="${paketId}"]`).remove();
+                } else {
+                    // Ekle
+                    $item.addClass('selected');
+                    seciliPaketIds.push(paketId);
+
+                    const paketAdi = $item.find('.paket-adi').text();
+                    const paketBilgi = $item.find('.paket-bilgi').text().split('|')[0];
+
+                    const seciliItem = `
+                        <div class="secili-paket-item" data-id="${paketId}">
+                            <div>
+                                <div class="paket-adi">${paketAdi}</div>
+                                <div class="paket-bilgi">${paketBilgi.trim()}</div>
+                            </div>
+                            <button type="button" class="sil-btn" onclick="paketiKaldir(${paketId})">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                    $('#seciliPaketlerListesi .bos-liste').remove();
+                    $('#seciliPaketlerListesi').append(seciliItem);
+                }
+
+                updateCounters();
+            });
+        }
+
+        // Paketi kaldır
+        function paketiKaldir(paketId) {
+            seciliPaketIds = seciliPaketIds.filter(id => id !== paketId);
+            $(`#seciliPaketlerListesi .secili-paket-item[data-id="${paketId}"]`).remove();
+            $(`#tumPaketlerListesi .paket-list-item[data-id="${paketId}"]`).removeClass('selected');
+
+            if (seciliPaketIds.length === 0) {
+                $('#seciliPaketlerListesi').html(`
+                    <div class="bos-liste">
+                        <i class="fas fa-hand-point-left"></i>
+                        <p>Paket seçmek için soldan paketlere tıklayın</p>
+                        <p class="small text-muted">Veya sürükleyip bırakın</p>
+                    </div>
+                `);
+            }
+
+            updateCounters();
+        }
+
+        // Sayacları güncelle
+        function updateCounters() {
+            $('#seciliPaketSayisi').text(seciliPaketIds.length);
+            $('#tumPaketSayisi').text($('.paket-list-item:visible').length);
+        }
+
+        // Seçimleri temizle
+        function secimleriTemizle() {
+            if (confirm('Tüm seçimleri temizlemek istediğinizden emin misiniz?')) {
+                seciliPaketIds = [];
+                $('.paket-list-item').removeClass('selected');
+                $('#seciliPaketlerListesi').html(`
+                    <div class="bos-liste">
+                        <i class="fas fa-hand-point-left"></i>
+                        <p>Paket seçmek için soldan paketlere tıklayın</p>
+                        <p class="small text-muted">Veya sürükleyip bırakın</p>
+                    </div>
+                `);
+                updateCounters();
+            }
+        }
+
+        // Bağlamaları kaydet
+        function baglamalariKaydet() {
+            if (seciliPaketIds.length === 0) {
+                if (!confirm('Hiç paket seçmediniz. Kaydetmek istediğinizden emin misiniz?')) {
+                    return;
+                }
+            }
+
+            // Çapraz bağlantı kontrolü
+            const caprazPaketler = [];
+            $('.paket-list-item.capraz').each(function() {
+                const paketId = parseInt($(this).data('id'));
+                if (seciliPaketIds.includes(paketId)) {
+                    const paketAdi = $(this).find('.paket-adi').text();
+                    caprazPaketler.push(paketAdi);
+                }
+            });
+
+            if (caprazPaketler.length > 0) {
+                if (!confirm(`Çapraz bağlantı uyarısı:\n${caprazPaketler.join(', ')}\n\nDevam etmek istiyor musunuz?`)) {
+                    return;
+                }
+            }
+
+            $.ajax({
+                url: '/AdminPaketBaglama/BaglamaKaydet',
+                type: 'POST',
+                data: {
+                    paketId: anaPaketId,
+                    bagliPaketIds: seciliPaketIds
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        if (response.redirectUrl) {
+                            window.location.href = response.redirectUrl;
+                        }
+                    } else {
+                        alert('Hata: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('İşlem sırasında hata oluştu.');
+                }
+            });
+        }
+
+        // Sürükle bırak desteği
+        function initDragDrop() {
+            $('.paket-list-item').attr('draggable', 'true');
+
+            $('.paket-list-item').on('dragstart', function(e) {
+                e.originalEvent.dataTransfer.setData('text/plain', $(this).data('id'));
+                $(this).addClass('dragging');
+            });
+
+            $('.paket-list-item').on('dragend', function() {
+                $(this).removeClass('dragging');
+            });
+
+            $('#seciliPaketlerListesi').on('dragover', function(e) {
+                e.preventDefault();
+                $(this).addClass('drag-over');
+            });
+
+            $('#seciliPaketlerListesi').on('dragleave', function() {
+                $(this).removeClass('drag-over');
+            });
+
+            $('#seciliPaketlerListesi').on('drop', function(e) {
+                e.preventDefault();
+                $(this).removeClass('drag-over');
+
+                const paketId = parseInt(e.originalEvent.dataTransfer.getData('text/plain'));
+                const $item = $(`.paket-list-item[data-id="${paketId}"]`);
+
+                if (!$item.hasClass('selected')) {
+                    $item.trigger('click');
+                }
+            });
+        }
+
+        // Sayfa yüklendiğinde
+        $(function() {
+            initArama();
+            initPaketSecim();
+            initDragDrop();
+            updateCounters();
+        });
+    </script>
+}

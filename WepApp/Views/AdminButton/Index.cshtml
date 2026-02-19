@@ -505,15 +505,6 @@
         </h5>
     </div>
 
-    <!-- MESAJ -->
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show py-2 mb-3">
-            <i class="fas fa-check-circle me-2"></i>@TempData["Success"]
-            <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
-        </div>
-    }
-
     <!-- KULLANICI TİPİ VE İSTATİSTİK -->
     <div class="user-type-bar">
         <div class="user-buttons">
@@ -562,22 +553,14 @@
             <div class="action-group">
                 <span class="action-label">Tümü</span>
                 <div class="action-buttons">
-                    <form method="post" action="@Url.Action("TopluYetkilendir")" style="display: inline;" class="bulk-form">
-                        <input type="hidden" name="kullaniciTipi" value="@Model.SeciliKullaniciTipi" />
-                        <input type="hidden" name="aksiyonTipi" value="Tumu" />
-                        <input type="hidden" name="durum" value="true" />
-                        <button type="submit" class="btn btn-bulk btn-bulk-success me-1" onclick="return confirm('Tüm butonları yetkilendirmek istediğinize emin misiniz?')">
-                            <i class="fas fa-check"></i>
-                        </button>
-                    </form>
-                    <form method="post" action="@Url.Action("TopluYetkilendir")" style="display: inline;" class="bulk-form">
-                        <input type="hidden" name="kullaniciTipi" value="@Model.SeciliKullaniciTipi" />
-                        <input type="hidden" name="aksiyonTipi" value="Tumu" />
-                        <input type="hidden" name="durum" value="false" />
-                        <button type="submit" class="btn btn-bulk btn-bulk-danger" onclick="return confirm('Tüm butonların yetkisini kaldırmak istediğinize emin misiniz?')">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </form>
+                    <button type="button" class="btn btn-bulk btn-bulk-success me-1 bulk-action-btn"
+                            data-aksiyon="Tumu" data-durum="true">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-bulk btn-bulk-danger bulk-action-btn"
+                            data-aksiyon="Tumu" data-durum="false">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             </div>
 
@@ -585,18 +568,14 @@
             <div class="action-group">
                 <span class="action-label"><i class="fas fa-plus text-success"></i></span>
                 <div class="action-buttons">
-                    <form method="post" action="@Url.Action("TopluYetkilendir")" style="display: inline;" class="bulk-form">
-                        <input type="hidden" name="kullaniciTipi" value="@Model.SeciliKullaniciTipi" />
-                        <input type="hidden" name="aksiyonTipi" value="create" />
-                        <input type="hidden" name="durum" value="true" />
-                        <button type="submit" class="btn btn-bulk btn-bulk-success me-1"><i class="fas fa-check"></i></button>
-                    </form>
-                    <form method="post" action="@Url.Action("TopluYetkilendir")" style="display: inline;" class="bulk-form">
-                        <input type="hidden" name="kullaniciTipi" value="@Model.SeciliKullaniciTipi" />
-                        <input type="hidden" name="aksiyonTipi" value="create" />
-                        <input type="hidden" name="durum" value="false" />
-                        <button type="submit" class="btn btn-bulk btn-bulk-danger"><i class="fas fa-times"></i></button>
-                    </form>
+                    <button type="button" class="btn btn-bulk btn-bulk-success me-1 bulk-action-btn"
+                            data-aksiyon="create" data-durum="true">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-bulk btn-bulk-danger bulk-action-btn"
+                            data-aksiyon="create" data-durum="false">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             </div>
 
@@ -604,18 +583,14 @@
             <div class="action-group">
                 <span class="action-label"><i class="fas fa-edit text-warning"></i></span>
                 <div class="action-buttons">
-                    <form method="post" action="@Url.Action("TopluYetkilendir")" style="display: inline;" class="bulk-form">
-                        <input type="hidden" name="kullaniciTipi" value="@Model.SeciliKullaniciTipi" />
-                        <input type="hidden" name="aksiyonTipi" value="edit" />
-                        <input type="hidden" name="durum" value="true" />
-                        <button type="submit" class="btn btn-bulk btn-bulk-success me-1"><i class="fas fa-check"></i></button>
-                    </form>
-                    <form method="post" action="@Url.Action("TopluYetkilendir")" style="display: inline;" class="bulk-form">
-                        <input type="hidden" name="kullaniciTipi" value="@Model.SeciliKullaniciTipi" />
-                        <input type="hidden" name="aksiyonTipi" value="edit" />
-                        <input type="hidden" name="durum" value="false" />
-                        <button type="submit" class="btn btn-bulk btn-bulk-danger"><i class="fas fa-times"></i></button>
-                    </form>
+                    <button type="button" class="btn btn-bulk btn-bulk-success me-1 bulk-action-btn"
+                            data-aksiyon="edit" data-durum="true">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-bulk btn-bulk-danger bulk-action-btn"
+                            data-aksiyon="edit" data-durum="false">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             </div>
 
@@ -623,18 +598,14 @@
             <div class="action-group">
                 <span class="action-label"><i class="fas fa-trash text-danger"></i></span>
                 <div class="action-buttons">
-                    <form method="post" action="@Url.Action("TopluYetkilendir")" style="display: inline;" class="bulk-form">
-                        <input type="hidden" name="kullaniciTipi" value="@Model.SeciliKullaniciTipi" />
-                        <input type="hidden" name="aksiyonTipi" value="delete" />
-                        <input type="hidden" name="durum" value="true" />
-                        <button type="submit" class="btn btn-bulk btn-bulk-success me-1"><i class="fas fa-check"></i></button>
-                    </form>
-                    <form method="post" action="@Url.Action("TopluYetkilendir")" style="display: inline;" class="bulk-form">
-                        <input type="hidden" name="kullaniciTipi" value="@Model.SeciliKullaniciTipi" />
-                        <input type="hidden" name="aksiyonTipi" value="delete" />
-                        <input type="hidden" name="durum" value="false" />
-                        <button type="submit" class="btn btn-bulk btn-bulk-danger"><i class="fas fa-times"></i></button>
-                    </form>
+                    <button type="button" class="btn btn-bulk btn-bulk-success me-1 bulk-action-btn"
+                            data-aksiyon="delete" data-durum="true">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-bulk btn-bulk-danger bulk-action-btn"
+                            data-aksiyon="delete" data-durum="false">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             </div>
 
@@ -642,18 +613,37 @@
             <div class="action-group">
                 <span class="action-label"><i class="fas fa-eye text-info"></i></span>
                 <div class="action-buttons">
-                    <form method="post" action="@Url.Action("TopluYetkilendir")" style="display: inline;" class="bulk-form">
-                        <input type="hidden" name="kullaniciTipi" value="@Model.SeciliKullaniciTipi" />
-                        <input type="hidden" name="aksiyonTipi" value="view" />
-                        <input type="hidden" name="durum" value="true" />
-                        <button type="submit" class="btn btn-bulk btn-bulk-success me-1"><i class="fas fa-check"></i></button>
-                    </form>
-                    <form method="post" action="@Url.Action("TopluYetkilendir")" style="display: inline;" class="bulk-form">
-                        <input type="hidden" name="kullaniciTipi" value="@Model.SeciliKullaniciTipi" />
-                        <input type="hidden" name="aksiyonTipi" value="view" />
-                        <input type="hidden" name="durum" value="false" />
-                        <button type="submit" class="btn btn-bulk btn-bulk-danger"><i class="fas fa-times"></i></button>
-                    </form>
+                    <button type="button" class="btn btn-bulk btn-bulk-success me-1 bulk-action-btn"
+                            data-aksiyon="view" data-durum="true">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-bulk btn-bulk-danger bulk-action-btn"
+                            data-aksiyon="view" data-durum="false">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BAŞARI MESAJI MODAL -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 12px; border: none;">
+                <div class="modal-header" style="border-bottom: 1px solid #e9ecef; padding: 15px 20px;">
+                    <h5 class="modal-title">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Başarılı
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="padding: 25px 20px;" id="successMessage">
+                    <!-- Mesaj buraya gelecek -->
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid #e9ecef; padding: 15px 20px;">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" style="border-radius: 30px; padding: 8px 25px;">
+                        <i class="fas fa-check me-2"></i>Tamam
+                    </button>
                 </div>
             </div>
         </div>
@@ -682,7 +672,7 @@
                         <div class="page-title">
                             <i class="fas fa-file-alt"></i>
                             <span title="@sayfaAdi">@sayfaAdi</span>
-           
+
                         </div>
                         <div class="page-actions">
                             <button type="button" class="btn btn-xs btn-outline-success controller-tumunu-sec" data-controller="@controller" title="Tümünü Seç">
@@ -745,16 +735,43 @@
 
         <!-- KAYDET BUTONU -->
         <div class="sticky-save-container">
-            <button type="submit" class="btn btn-save">
+            <button type="button" class="btn btn-save" id="savePermissionsBtn">
                 <i class="fas fa-save me-2"></i>Yetkileri Kaydet
             </button>
         </div>
     </form>
 </div>
 
+<!-- TOPLU YETKİLENDİRME ONAY MODALI -->
+<div class="modal fade" id="bulkConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px; border: none;">
+            <div class="modal-header" style="border-bottom: 1px solid #e9ecef; padding: 15px 20px;" id="bulkModalHeader">
+                <!-- Dinamik header -->
+            </div>
+            <div class="modal-body" style="padding: 25px 20px;" id="bulkModalBody">
+                <!-- Dinamik body -->
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid #e9ecef; padding: 15px 20px;" id="bulkModalFooter">
+                <!-- Dinamik footer -->
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Script {
     <script>
         $(document).ready(function() {
+            // Başarı mesajını göster (TempData varsa)
+        @if (TempData["Success"] != null)
+        {
+            <text>
+                    $('#successMessage').text('@TempData["Success"]');
+                    var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                    successModal.show();
+            </text>
+        }
+
             // Tümünü seç (sayfa bazında)
             $('.controller-tumunu-sec').click(function(e) {
                 e.preventDefault();
@@ -791,77 +808,68 @@
                 $(this).closest('.button-item').addClass('izinli');
             });
 
-            // Toplu yetkilendirme için modal onay
-            $('.bulk-form').submit(function(e) {
-                e.preventDefault(); // Form submit'i engelle
+            // Toplu yetkilendirme butonları
+            $('.bulk-action-btn').click(function() {
+                var aksiyon = $(this).data('aksiyon');
+                var durum = $(this).data('durum');
+                var kullaniciTipi = '@Model.SeciliKullaniciTipi';
 
-                var form = $(this);
-                var action = form.find('input[name="aksiyonTipi"]').val();
-                var durum = form.find('input[name="durum"]').val() === 'true';
-                var kullaniciTipi = form.find('input[name="kullaniciTipi"]').val();
-
-                var actionText = action === 'Tumu' ? 'tüm butonları' :
-                                 (action === 'create' ? 'EKLE butonlarını' :
-                                 (action === 'edit' ? 'DÜZENLE butonlarını' :
-                                 (action === 'delete' ? 'SİL butonlarını' :
-                                 (action === 'view' ? 'DETAY butonlarını' : action))));
+                var actionText = aksiyon === 'Tumu' ? 'tüm butonları' :
+                                 (aksiyon === 'create' ? 'EKLE butonlarını' :
+                                 (aksiyon === 'edit' ? 'DÜZENLE butonlarını' :
+                                 (aksiyon === 'delete' ? 'SİL butonlarını' :
+                                 (aksiyon === 'view' ? 'DETAY butonlarını' : aksiyon))));
 
                 var durumText = durum ? 'yetkilendirmek' : 'yetkisini kaldırmak';
                 var durumClass = durum ? 'success' : 'danger';
                 var durumIcon = durum ? 'fa-check-circle' : 'fa-times-circle';
                 var buttonText = durum ? 'Yetki Ver' : 'Yetki Kaldır';
 
-                // Modal içeriğini oluştur
-                var modalHtml = `
-                    <div class="modal fade" id="confirmModal" tabindex="-1">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content" style="border-radius: 12px; border: none;">
-                                <div class="modal-header" style="border-bottom: 1px solid #e9ecef; padding: 15px 20px;">
-                                    <h5 class="modal-title">
-                                        <i class="fas fa-${durumIcon} text-${durumClass} me-2"></i>
-                                        Toplu Yetkilendirme Onayı
-                                    </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body" style="padding: 25px 20px;">
-                                    <div class="text-center mb-3">
-                                        <i class="fas fa-${durumIcon}" style="font-size: 3rem; color: ${durum ? '#28a745' : '#dc3545'};"></i>
-                                    </div>
-                                    <h6 class="text-center mb-3" style="color: #2c3e50;">
-                                        <strong>${kullaniciTipi}</strong> için <strong>${actionText}</strong>
-                                    </h6>
-                                    <p class="text-center mb-0" style="color: #6c757d; font-size: 0.9rem;">
-                                        ${actionText} ${durumText} istediğinize emin misiniz?
-                                    </p>
-                                </div>
-                                <div class="modal-footer" style="border-top: 1px solid #e9ecef; padding: 15px 20px;">
-                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border-radius: 30px; padding: 8px 25px;">
-                                        <i class="fas fa-times me-2"></i>İptal
-                                    </button>
-                                    <button type="button" class="btn btn-${durumClass}" id="confirmAction" style="border-radius: 30px; padding: 8px 25px;">
-                                        <i class="fas fa-${durumIcon} me-2"></i>${buttonText}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                // Modal header
+                $('#bulkModalHeader').html(`
+                    <h5 class="modal-title">
+                        <i class="fas fa-${durumIcon} text-${durumClass} me-2"></i>
+                        Toplu Yetkilendirme Onayı
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                `);
+
+                // Modal body
+                $('#bulkModalBody').html(`
+                    <div class="text-center mb-3">
+                        <i class="fas fa-${durumIcon}" style="font-size: 3rem; color: ${durum ? '#28a745' : '#dc3545'};"></i>
                     </div>
-                `;
+                    <h6 class="text-center mb-3" style="color: #2c3e50;">
+                        <strong>${kullaniciTipi}</strong> için <strong>${actionText}</strong>
+                    </h6>
+                    <p class="text-center mb-0" style="color: #6c757d; font-size: 0.9rem;">
+                        ${actionText} ${durumText} istediğinize emin misiniz?
+                    </p>
+                `);
 
-                // Modal'ı ekle ve göster
-                $('body').append(modalHtml);
-                var confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
-                confirmModal.show();
+                // Modal footer
+                $('#bulkModalFooter').html(`
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border-radius: 30px; padding: 8px 25px;">
+                        <i class="fas fa-times me-2"></i>İptal
+                    </button>
+                    <form method="post" action="@Url.Action("TopluYetkilendir")" style="display: inline;" id="bulkActionForm">
+                        <input type="hidden" name="kullaniciTipi" value="${kullaniciTipi}" />
+                        <input type="hidden" name="aksiyonTipi" value="${aksiyon}" />
+                        <input type="hidden" name="durum" value="${durum}" />
+                        <button type="submit" class="btn btn-${durumClass}" style="border-radius: 30px; padding: 8px 25px;">
+                            <i class="fas fa-${durumIcon} me-2"></i>${buttonText}
+                        </button>
+                    </form>
+                `);
 
-                // Onay butonuna tıklandığında
-                $('#confirmAction').click(function() {
-                    form.off('submit').submit(); // Form submit'i gönder
-                    confirmModal.hide();
-                });
+                // Modal'ı göster
+                var bulkModal = new bootstrap.Modal(document.getElementById('bulkConfirmModal'));
+                bulkModal.show();
+            });
 
-                // Modal kapandığında DOM'dan temizle
-                $('#confirmModal').on('hidden.bs.modal', function() {
-                    $(this).remove();
-                });
+            // Yetkileri kaydet butonu
+            $('#savePermissionsBtn').click(function() {
+                $('#permissionForm').submit();
             });
 
             // ARAMA FONKSİYONU

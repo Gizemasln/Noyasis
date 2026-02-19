@@ -1,0 +1,159 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+<!-- Navbar Header -->
+<!-- End Navbar -->
+<div class="container">
+    <div class="page-inner">
+   
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="card card-round">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="fa fa-bullhorn me-2"></i> Bayi Duyuruları
+                        </h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table align-items-center mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Başlık</th>
+                                        <th scope="col">İçerik</th>
+                                        <th scope="col">Tarihi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.BayiDuyuru != null)
+                                    {
+                                        foreach (var duyuru in ViewBag.BayiDuyuru)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    •
+                                                    @duyuru.Baslik
+                                                    @if ((DateTime.Now - duyuru.EklenmeTarihi).TotalDays <= 5)
+                                                    {
+                                                        <span class="badge bg-info ms-1">Yeni</span>
+                                                    }
+                                                </td>
+                                                <td>@duyuru.Metin</td>
+                                                <td>@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="3" class="text-center">Hiç duyuru bulunamadı.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-round">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="fa fa-bullhorn me-2"></i>Web  Duyuruları
+                        </h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table align-items-center mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Başlık</th>
+                                        <th scope="col" >İçerik</th>
+                                        <th scope="col" >Tarihi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.Duyuru != null)
+                                    {
+                                        foreach (var duyuru in (List<WebApp.Models.Duyuru>)ViewBag.Duyuru)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    •
+                                                    @duyuru.Baslik
+                                                    @if ((DateTime.Now - duyuru.EklenmeTarihi).TotalDays <= 5)
+                                                    {
+                                                        <span class="badge bg-info ms-1">Yeni</span>
+                                                    }
+                                                </td>
+                                                <td>@duyuru.Metin</td>
+                                                <td>@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="3" class="text-center">Hiç duyuru bulunamadı.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-round">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="fa fa-bullhorn me-2"></i> Kampanyalar
+                        </h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table align-items-center mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Başlık</th>
+                                        <th scope="col">İçerik</th>
+                                        <th scope="col"> Sonlanma Tarihi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.Kampanya != null)
+                                    {
+                                        foreach (var duyuru in ViewBag.Kampanya)
+                                        {
+                                            <tr>
+                                              
+                                                <td>
+                                               
+                                                    @duyuru.Baslik
+                                                    @if ((DateTime.Now - duyuru.EklenmeTarihi).TotalDays <= 5)
+                                                    {
+                                                        <span class="badge bg-info ms-1">Yeni</span>
+                                                    }
+                                                </td>
+                                                <td>@duyuru.Metin</td>
+                                                <td>@duyuru.BitisTarihi.ToString("dd.MM.yyyy")</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="3" class="text-center">Hiç duyuru bulunamadı.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2898,8 +2898,6 @@ D:\GİTHUBPROJELER\Noyasis\WepApp\bin\Debug\net8.0\WinAppReport.exe
 D:\GİTHUBPROJELER\Noyasis\WepApp\bin\Debug\net8.0\WinAppReport.pdb
 D:\GİTHUBPROJELER\Noyasis\WepApp\bin\Debug\net8.0\WinAppReport.exe.config
 D:\GİTHUBPROJELER\Noyasis\WepApp\bin\Debug\net8.0\SixLabors.ImageSharp.dll
-D:\PROJELER\Noyasis\WepApp\bin\Debug\net8.0\appsettings.Development.json
-D:\PROJELER\Noyasis\WepApp\bin\Debug\net8.0\appsettings.json
 D:\PROJELER\Noyasis\WepApp\bin\Debug\net8.0\LatoFont\Lato-Black.ttf
 D:\PROJELER\Noyasis\WepApp\bin\Debug\net8.0\LatoFont\Lato-BlackItalic.ttf
 D:\PROJELER\Noyasis\WepApp\bin\Debug\net8.0\LatoFont\Lato-Bold.ttf
@@ -3413,3 +3411,5 @@ D:\PROJELER\Noyasis\WepApp\obj\Debug\net8.0\WepApp.pdb
 D:\PROJELER\Noyasis\WepApp\obj\Debug\net8.0\WepApp.genruntimeconfig.cache
 D:\PROJELER\Noyasis\WepApp\obj\Debug\net8.0\ref\WepApp.dll
 D:\PROJELER\Noyasis\WepApp\bin\Debug\net8.0\Dapper.dll
+D:\PROJELER\Noyasis\WepApp\bin\Debug\net8.0\appsettings.Development.json
+D:\PROJELER\Noyasis\WepApp\bin\Debug\net8.0\appsettings.json

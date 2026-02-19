@@ -1,0 +1,278 @@
+﻿@using WebApp.Models
+@{
+    ViewData["Title"] = "Lokasyon Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- Başarı/Hata Mesajları -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="card" style="margin-top: 70px;">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>Lokasyonlar</span>
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni Lokasyon Ekle
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-head-bg-primary">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Şehir</th>
+                                <th scope="col">Adres</th>
+                                <th scope="col">Tip</th>
+                                <th scope="col">Telefon</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Eklenme Tarihi</th>
+                                <th scope="col">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.LokasyonList != null && ViewBag.LokasyonList.Count > 0)
+                            {
+                                var counter = 1;
+                                foreach (var item in ViewBag.LokasyonList)
+                                {
+                                    <tr>
+                                        <td>@counter</td>
+                                        <td>@item.SehirAdi</td>
+                                        <td>@(item.Adres?.Length > 50 ? item.Adres.Substring(0, 50) + "..." : item.Adres)</td>
+                                        <td>@item.Tip</td>
+                                        <td>@item.Telefon</td>
+                                        <td>@item.Email</td>
+                                        <td>@item.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>
+                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id)">
+                                                <i class="fas fa-edit"></i> 
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.SehirAdi')">
+                                                <i class="fas fa-trash"></i> 
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="8" class="text-center">Henüz lokasyon eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Lokasyon Ekle</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ekle Modal -->
+<div class="modal fade" id="ekleModal" tabindex="-1" aria-labelledby="ekleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            @using (Html.BeginForm("Ekle", "AdminLokasyon", FormMethod.Post, new { id = "ekleForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ekleModalLabel">Yeni Lokasyon Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="SehirAdi" name="SehirAdi" placeholder="Şehir Adı" required>
+                                <label for="SehirAdi">Şehir Adı</label>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="Adres" class="form-label">Adres</label>
+                            <textarea class="form-control" id="Adres" name="Adres" rows="3" placeholder="Adres" required></textarea>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="Tip" name="Tip" placeholder="Tip">
+                                <label for="Tip">Tip (Örn: Bölge Müdürlüğü)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="Telefon" name="Telefon" placeholder="Telefon">
+                                <label for="Telefon">Telefon</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="Email" name="Email" placeholder="Email">
+                                <label for="Email">Email</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Düzenle Modal -->
+<div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form action="@Url.Action("Guncelle","AdminLokasyon")" method="post" id="duzenleForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editId" name="Id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="duzenleModalLabel">Lokasyon Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="editSehirAdi" name="SehirAdi" placeholder="Şehir Adı" required>
+                                <label for="editSehirAdi">Şehir Adı</label>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="editAdres" class="form-label">Adres</label>
+                            <textarea class="form-control" id="editAdres" name="Adres" rows="3" placeholder="Adres" required></textarea>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="editTip" name="Tip" placeholder="Tip">
+                                <label for="editTip">Tip (Örn: Bölge Müdürlüğü)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="editTelefon" name="Telefon" placeholder="Telefon">
+                                <label for="editTelefon">Telefon</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="editEmail" name="Email" placeholder="Email">
+                                <label for="editEmail">Email</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Sil Onay Modal -->
+<div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Sil","AdminLokasyon")" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="silId" name="Id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="silModalLabel">Silme Onayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>"<span id="silAdi"></span>"</strong> adlı lokasyonu silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><small>Bu işlem geri alınamaz. Lokasyon durumu pasif hale getirilecektir.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        function duzenleGetir(id) {
+            fetch('@Url.Action("Getir", "AdminLokasyon")' + '?id=' + id)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('editId').value = data.id;
+                    document.getElementById('editSehirAdi').value = data.sehirAdi || '';
+                    document.getElementById('editAdres').value = data.adres || '';
+                    document.getElementById('editTip').value = data.tip || '';
+                    document.getElementById('editTelefon').value = data.telefon || '';
+                    document.getElementById('editEmail').value = data.email || '';
+
+                    var duzenleModal = new bootstrap.Modal(document.getElementById('duzenleModal'));
+                    duzenleModal.show();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Kayıt getirilirken bir hata oluştu.');
+                });
+        }
+
+        function silOnay(id, adi) {
+            document.getElementById('silId').value = id;
+            document.getElementById('silAdi').textContent = adi;
+
+            var silModal = new bootstrap.Modal(document.getElementById('silModal'));
+            silModal.show();
+        }
+
+        // Modal kapandığında formları temizle
+        document.addEventListener('DOMContentLoaded', function() {
+            var ekleModal = document.getElementById('ekleModal');
+            if (ekleModal) {
+                ekleModal.addEventListener('hidden.bs.modal', function () {
+                    this.querySelector('form').reset();
+                });
+            }
+
+            var duzenleModal = document.getElementById('duzenleModal');
+            if (duzenleModal) {
+                duzenleModal.addEventListener('hidden.bs.modal', function () {
+                    this.querySelector('form').reset();
+                });
+            }
+        });
+
+        // Başarı mesajlarını 5 saniye sonra otomatik kapat
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    </script>
+}

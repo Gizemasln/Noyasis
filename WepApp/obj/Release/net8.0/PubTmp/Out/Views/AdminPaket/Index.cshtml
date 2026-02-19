@@ -1,0 +1,1020 @@
+﻿@functions {
+    int FiyatOranAdedi(int paketId)
+    {
+        var dict = ViewBag.FiyatOranSayilari as System.Collections.Generic.Dictionary<int, int>;
+        return dict != null && dict.ContainsKey(paketId) ? dict[paketId] : 0;
+    }
+}
+@using WepApp.Models
+@{
+    ViewData["Title"] = "Modül Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+<style>
+    .table-actions {
+        white-space: nowrap;
+        width: 180px;
+    }
+
+    .card {
+        margin-top: 70px;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .status-toggle {
+        cursor: pointer;
+    }
+
+    .badge-active {
+        background-color: #28a745;
+    }
+
+    .badge-inactive {
+        background-color: #6c757d;
+    }
+
+    .fiyat-oranlari-table {
+        font-size: 0.9rem;
+    }
+
+        .fiyat-oranlari-table th {
+            background-color: #e9ecef;
+        }
+
+    /* Arama Stilleri */
+    .table-search-container {
+        margin-bottom: 20px;
+    }
+
+    .search-input-group {
+        max-width: 400px;
+    }
+
+    .search-info {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 5px;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 40px 20px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+    }
+
+    .highlight {
+        background-color: #fff3cd;
+        font-weight: bold;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>Modül</span>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni Modül Ekle
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Arama Kutusu -->
+                <div class="table-search-container">
+                    <div class="input-group search-input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" id="tableSearch" class="form-control" placeholder="Modül adı, kodu, lisans tipi, birim vb. arayın...">
+                        <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="search-info">
+                        <span id="searchResultCount"></span>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="paketTable">
+                        <thead>
+                            <tr>
+                                <th width="50">#</th>
+                                <th>Modül Adı</th>
+                                <th>Modül Kodu</th>
+                                <th>Lisans Tipi</th>
+                                <th>Birim</th>
+                                <th>Liste Fiyatı</th>
+                                <th>İnd. Oranı</th>
+                                <th>KDV Oranı</th>
+                                <th>Eğitim Süresi</th>
+                                <th>Fiyat Oranları</th>
+                                <th>Durum</th>
+                                <th width="180" class="text-center">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            @if (ViewBag.Paketler != null && ((List<Paket>)ViewBag.Paketler).Count > 0)
+                            {
+                                var counter = 1;
+                                foreach (var item in (List<Paket>)ViewBag.Paketler)
+                                {
+                                    <tr data-search="@(item.Adi?.ToLower()) @(item.ModulKodu?.ToLower()) @(item.LisansTip?.Adi?.ToLower()) @(item.Birim?.Adi?.ToLower()) @item.Fiyat @item.IndOran @(item.KDV?.Oran) @item.EgitimSuresi @(item.Aktif == 1 ? "aktif" : "pasif")">
+                                        <td>@counter</td>
+                                        <td><strong>@item.Adi</strong></td>
+                                        <td>@(item.ModulKodu ?? "-")</td>
+                                        <td>@(item.LisansTip?.Adi ?? "-")</td>
+                                        <td>@(item.Birim?.Adi ?? "-")</td>
+                                        <td>@item.Fiyat.ToString() ₺</td>
+                                        <td>%@item.IndOran</td>
+                                        <td>
+                                            @if (item.KDV != null)
+                                            {
+                                                @:%@item.KDV.Oran
+                                            }
+                                            else
+                                            {
+                                                @:-
+                                            }
+                                        </td>
+                                        <td>@item.EgitimSuresi gün</td>
+                                        <td class="text-center">
+                                            @{
+                                                var dict = ViewBag.FiyatOranSayilari as System.Collections.Generic.Dictionary<int, int>;
+                                                var adet = dict != null && dict.TryGetValue(item.Id, out int count) ? count : 0;
+                                                var sabitCarpimVarMi = ViewBag.SabitCarpimVarMi as Dictionary<int, bool>;
+                                                var sabitCarpimVar = sabitCarpimVarMi != null && sabitCarpimVarMi.ContainsKey(item.Id) ? sabitCarpimVarMi[item.Id] : false;
+                                            }
+
+                                            @if (adet > 0)
+                                            {
+                                                <button type="button" class="btn btn-outline-info btn-sm"
+                                                        onclick="fiyatOranlariGoster(@item.Id, '@item.Adi')">
+                                                    <i class="fas fa-list"></i> Oranları Gör
+                                                    @if (sabitCarpimVar)
+                                                    {
+                                                        <span class="badge bg-warning ms-1" title="Sabit Çarpım Oranı Var">
+                                                            <i class="fas fa-exclamation">Sabit Çarpım Oranı Var</i>
+                                                        </span>
+                                                    }
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-danger fw-bold">
+                                                    <i class="fas fa-times-circle"></i> Oran Yok
+                                                </span>
+                                            }
+                                        </td>
+
+                                        <td>
+                                            <span class="badge @(item.Aktif == 1 ? "bg-success" : "bg-secondary") status-toggle"
+                                                  onclick="durumGuncelle(@item.Id, @item.Aktif)">
+                                                @(item.Aktif == 1 ? "Aktif" : "Pasif")
+                                            </span>
+                                        </td>
+                                        <td class="table-actions text-center">
+                                            @{
+                                                var sabitCarpimVarMiDict = ViewBag.SabitCarpimVarMi as Dictionary<int, bool>;
+                                                var sabitCarpimIdleriDict = ViewBag.SabitCarpimIdleri as Dictionary<int, int>;
+                                                var sabitCarpimVarLocal = sabitCarpimVarMiDict != null && sabitCarpimVarMiDict.ContainsKey(item.Id) ? sabitCarpimVarMiDict[item.Id] : false;
+                                                var sabitCarpimIdLocal = sabitCarpimIdleriDict != null && sabitCarpimIdleriDict.ContainsKey(item.Id) ? sabitCarpimIdleriDict[item.Id] : 0;
+                                            }
+
+                                            @if (sabitCarpimVarLocal)
+                                            {
+                                                <button type="button" class="btn btn-warning btn-sm"
+                                                        onclick="sabitCarpimSilOnay(@sabitCarpimIdLocal, '@item.Adi')"
+                                                        title="Önce Sabit Çarpım Oranını Silin">
+                                                    <i class="fas fa-exclamation-triangle"></i> Sabit Çarpım Var
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button type="button" class="btn btn-info btn-sm"
+                                                        onclick="fiyatOraniEkle(@item.Id)" title="Fiyat Oranı Ekle">
+                                                    <i class="fas fa-percentage"></i> Oran Ekle
+                                                </button>
+                                            }
+
+                                            <button type="button" class="btn btn-warning btn-sm"
+                                                    onclick="duzenleGetir(@item.Id)">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                    onclick="silOnay(@item.Id, '@item.Adi')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                <tr id="noDataRow">
+                                    <td colspan="12" class="text-center">
+                                        <div class="py-4">
+                                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted">Henüz paket eklenmemiş.</p>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#ekleModal">
+                                                İlk Paketi Ekle
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ekle Modal -->
+<div class="modal fade" id="ekleModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            @using (Html.BeginForm("Ekle", "AdminPaket", FormMethod.Post, new { id = "ekleForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Paket Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Modül Adı *</label>
+                            <input type="text" class="form-control" name="Adi" required maxlength="100" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Modül Kodu</label>
+                            <input type="text" class="form-control" name="ModulKodu" maxlength="50" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Lisans Tipi *</label>
+                            <select class="form-select" name="LisansTipId" required>
+                                <option value="">Seçiniz</option>
+                                @foreach (var tip in ViewBag.LisansTipleri as List<LisansTip>)
+                                {
+                                    <option value="@tip.Id">@tip.Adi</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Birim *</label>
+                            <select class="form-select" name="BirimId" required>
+                                <option value="">Seçiniz</option>
+                                @foreach (var birim in ViewBag.Birimler as List<Birim>)
+                                {
+                                    <option value="@birim.Id">@birim.Adi</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Liste Fiyatı *</label>
+                            <input type="number" step="0.01" class="form-control" name="Fiyat" required />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>İndirim Oranı (%)</label>
+                            <input type="number" class="form-control" name="IndOran" value="0" min="0" max="100" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>KDV Oranı *</label>
+                            <select class="form-select" name="KDVId" required>
+                                <option value="">Seçiniz</option>
+                                @foreach (var kdv in ViewBag.KDV as List<KDV>)
+                                {
+                                    <option value="@kdv.Id">%@kdv.Oran</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Eğitim Süresi (Gün) *</label>
+                            <input type="text" class="form-control" name="EgitimSuresi" required min="1" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Sıra</label>
+                            <input type="number" class="form-control" name="Sira" value="0" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Durum</label>
+                            <select class="form-select" name="Aktif">
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Düzenle Modal -->
+<div class="modal fade" id="duzenleModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form action="@Url.Action("Guncelle","AdminPaket")" method="post" id="duzenleForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="editId" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Paket Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Modül Adı *</label>
+                            <input type="text" class="form-control" name="Adi" id="editAdi" required maxlength="100" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Modül Kodu</label>
+                            <input type="text" class="form-control" name="ModulKodu" id="editModulKodu" maxlength="50" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Lisans Tipi *</label>
+                            <select class="form-select" name="LisansTipId" id="editLisansTipiId" required>
+                                <option value="">Seçiniz</option>
+                                @foreach (var tip in ViewBag.LisansTipleri as List<LisansTip>)
+                                {
+                                    <option value="@tip.Id">@tip.Adi</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Birim *</label>
+                            <select class="form-select" name="BirimId" id="editBirimId" required>
+                                <option value="">Seçiniz</option>
+                                @foreach (var birim in ViewBag.Birimler as List<Birim>)
+                                {
+                                    <option value="@birim.Id">@birim.Adi</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Liste Fiyatı *</label>
+                            <input type="number" step="0.01" class="form-control" name="Fiyat" id="editFiyat" required />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>İndirim Oranı (%)</label>
+                            <input type="number" class="form-control" name="IndOran" id="editIndOran" min="0" max="100" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>KDV Oranı *</label>
+                            <select class="form-select" name="KDVId" id="editKDVId" required>
+                                <option value="">Seçiniz</option>
+                                @foreach (var kdv in ViewBag.KDV as List<KDV>)
+                                {
+                                    <option value="@kdv.Id">%@kdv.Oran</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Eğitim Süresi (Gün) *</label>
+                            <input type="text" class="form-control" name="EgitimSuresi" id="editEgitimSuresi" required min="1" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Sıra</label>
+                            <input type="number" class="form-control" name="Sira" id="editSira" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Durum</label>
+                            <select class="form-select" name="Aktif" id="editAktif">
+                                <option value="1">Aktif</option>
+                                <option value="0">Pasif</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Fiyat Oranı Ekle Modal -->
+<div class="modal fade" id="fiyatOraniModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="fiyatOraniForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="fiyatOraniPaketId" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Fiyat Oranı Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Oran Tipi Seçimi -->
+                    <div class="mb-3">
+                        <label>Oran Tipi *</label>
+                        <select class="form-select" id="oranTipi">
+                            <option value="false">Sabit Çarpım (Modül Fiyatı x Miktar)</option>
+                            <option value="true">Miktar Bazlı (% Uygula)</option>
+                        </select>
+                        <small class="form-text text-muted d-block">
+                            <strong>Sabit Çarpım:</strong> Modül fiyatı x teklif miktarı<br>
+                            <strong>Miktar Bazlı:</strong> Belirli aralıklara % oran uygula
+                        </small>
+                    </div>
+
+                    <!-- Min-Max Grubu (Sadece Miktar Bazlı seçilirse göster) -->
+                    <div id="minMaxGroup" style="display: none;">
+                        <div class="row">
+                            <div class="col-12 mb-2">
+                                <div class="alert alert-info small" id="fiyatOraniBilgi" style="display:none;">
+                                    <i class="fas fa-lightbulb me-1"></i>
+                                    <span id="bilgiIcerik"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Min Miktar *</label>
+                                <input type="number" class="form-control" id="minDeger" min="1" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Max Miktar *</label>
+                                <input type="number" class="form-control" id="maxDeger" min="1" />
+                            </div>
+                            <div class="mb-3">
+                                <label>Oran Yüzdesi (%) *</label>
+                                <input type="number" class="form-control" id="oranYuzde" min="0" max="100" />
+                                <small class="form-text text-muted">
+                                    <strong>Sabit Çarpım için:</strong> Genellikle 0 veya 100 olur<br>
+                                    <strong>Miktar Bazlı için:</strong> Uygulanacak indirim/artış yüzdesi
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Oran Yüzdesi (Her iki tip için de gerekli) -->
+                    <!-- Hata Mesajı Alanı -->
+                    <div class="alert alert-danger" id="hataMesaji" style="display:none;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Fiyat Oranları Görüntüle Modal -->
+<div class="modal fade" id="fiyatOranlariModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fiyatOranlariModalTitle">Fiyat Oranları</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="fiyatOranlariListesi">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Yükleniyor...</span>
+                        </div>
+                        <p class="mt-2">Fiyat oranları yükleniyor...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sil Onay Modal -->
+<div class="modal fade" id="silModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Sil","AdminPaket")" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="silId" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Silme Onayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>"<span id="silAdi"></span>"</strong> paketini silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><small>Bu işlem geri alınamaz.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Sabit Çarpım Sil Onay Modal -->
+<div class="modal fade" id="sabitCarpimSilModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sabit Çarpım Kısıtı</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>"<span id="sabitCarpimAdi"></span>"</strong> modülünde sabit çarpım oranı bulunmaktadır.</p>
+                <p class="text-warning">Öncelikle sabit çarpım oranını silmeniz gerekmektedir.</p>
+                <p class="text-danger"><small>Sabit çarpım oranı silinmeden diğer işlemler yapılamaz.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Uyarı Modal -->
+<div class="modal fade" id="uyariModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Uyarı</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="uyariMesaji"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tamam</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        // Tablo arama/filtreleme fonksiyonu
+        function initTableSearch() {
+            const searchInput = $('#tableSearch');
+            const clearButton = $('#clearSearch');
+            const tableBody = $('#tableBody');
+            const searchResultCount = $('#searchResultCount');
+
+            // Tüm satırları sakla
+            const allRows = tableBody.find('tr:not(#noDataRow)').toArray();
+            const noDataRow = $('#noDataRow');
+
+            // Arama fonksiyonu
+            function performSearch() {
+                const searchTerm = searchInput.val().toLowerCase().trim();
+
+                if (searchTerm === '') {
+                    // Tüm satırları göster
+                    allRows.forEach(row => $(row).show());
+
+                    // Sıra numaralarını düzelt
+                    updateRowNumbers();
+
+                    // Eğer hiç veri yoksa noDataRow'u göster
+                    if (allRows.length === 0) {
+                        noDataRow.show();
+                    } else {
+                        noDataRow.hide();
+                    }
+
+                    searchResultCount.text('');
+                    return;
+                }
+
+                let visibleCount = 0;
+
+                // Her satırı kontrol et
+                allRows.forEach(row => {
+                    const $row = $(row);
+                    const searchData = $row.data('search') || '';
+                    const rowText = $row.text().toLowerCase();
+
+                    // Arama terimini kontrol et
+                    if (searchData.includes(searchTerm) || rowText.includes(searchTerm)) {
+                        $row.show();
+                        visibleCount++;
+
+                        // Eşleşen metni vurgula
+                        highlightText($row, searchTerm);
+                    } else {
+                        $row.hide();
+                    }
+                });
+
+                // Sonuç sayısını göster
+                searchResultCount.text(`${visibleCount} sonuç bulundu`);
+
+                // Eğer hiç sonuç yoksa mesaj göster
+                if (visibleCount === 0) {
+                    tableBody.append(`
+                    
+                    `);
+                } else {
+                    $('#noResultsRow').remove();
+                    // Sıra numaralarını güncelle
+                    updateRowNumbers();
+                }
+
+                // Orijinal noDataRow'u gizle
+                noDataRow.hide();
+            }
+
+            // Metin vurgulama fonksiyonu
+            function highlightText($row, searchTerm) {
+                // Önceki vurgulamaları temizle
+                $row.find('.highlight').each(function() {
+                    $(this).replaceWith($(this).text());
+                });
+
+                // Her hücrede arama yap
+                $row.find('td:not(:first-child):not(:last-child)').each(function() {
+                    const $cell = $(this);
+                    const cellText = $cell.text();
+                    const lowerText = cellText.toLowerCase();
+                    const termIndex = lowerText.indexOf(searchTerm);
+
+                    if (termIndex !== -1) {
+                        const before = cellText.substring(0, termIndex);
+                        const match = cellText.substring(termIndex, termIndex + searchTerm.length);
+                        const after = cellText.substring(termIndex + searchTerm.length);
+
+                        $cell.html(`${before}<span class="highlight">${match}</span>${after}`);
+                    }
+                });
+            }
+
+            // Sıra numaralarını güncelle
+            function updateRowNumbers() {
+                let counter = 1;
+                tableBody.find('tr:visible').each(function() {
+                    const $row = $(this);
+                    if (!$row.is('#noResultsRow')) {
+                        $row.find('td:first').text(counter);
+                        counter++;
+                    }
+                });
+            }
+
+            // Arama kutusu input event
+            searchInput.on('input', function() {
+                performSearch();
+            });
+
+            // Temizle butonu
+            clearButton.on('click', function() {
+                searchInput.val('');
+                performSearch();
+                searchInput.focus();
+            });
+
+            // Escape tuşu ile temizle
+            searchInput.on('keyup', function(e) {
+                if (e.key === 'Escape') {
+                    searchInput.val('');
+                    performSearch();
+                }
+            });
+
+            // Sayfa yüklendiğinde başlangıç durumunu ayarla
+            performSearch();
+        }
+
+        // Paket düzenle modalını doldur
+        function duzenleGetir(id) {
+            $.get('/AdminPaket/Getir/' + id, function (data) {
+                $('#editId').val(data.id);
+                $('#editAdi').val(data.adi);
+                $('#editModulKodu').val(data.modulKodu);
+                $('#editLisansTipiId').val(data.lisansTipiId);
+                $('#editBirimId').val(data.birimId);
+                $('#editFiyat').val(data.fiyat);
+                $('#editIndOran').val(data.indOran);
+                $('#editKDVId').val(data.kdvId);
+                $('#editEgitimSuresi').val(data.egitimSuresi);
+                $('#editSira').val(data.sira);
+                $('#editAktif').val(data.aktif);
+                new bootstrap.Modal('#duzenleModal').show();
+            }).fail(function () {
+                uyariGoster("Paket bilgileri yüklenirken hata oluştu.");
+            });
+        }
+
+        // Durum değiştir (Aktif/Pasif)
+        function durumGuncelle(id, mevcutDurum) {
+            const yeniDurum = mevcutDurum === 1 ? 0 : 1;
+            if (confirm('Paket durumunu değiştirmek istediğinizden emin misiniz?')) {
+                $.post('/AdminPaket/DurumGuncelle', { Id: id, aktif: yeniDurum }, function (response) {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        uyariGoster(response.message);
+                    }
+                }).fail(function () {
+                    uyariGoster('İşlem sırasında hata oluştu.');
+                });
+            }
+        }
+
+        // Fiyat Oranı Ekle modalını aç
+        function fiyatOraniEkle(paketId) {
+            $('#fiyatOraniPaketId').val(paketId);
+            $('#hataMesaji').hide().empty();
+
+            // Mevcut oranları kontrol et
+            $.get('/AdminPaket/FiyatOranlariGetir?paketId=' + paketId, function (response) {
+                let sabitCarpimVar = false;
+                let miktarBazliVar = false;
+
+                if (response.success && response.data.length > 0) {
+                    sabitCarpimVar = response.data.some(x => x.min == 0 && x.max == 0);
+                    miktarBazliVar = response.data.some(x => x.min > 0 && x.max > 0);
+                }
+
+                // Temizlik
+                $('#oranTipi').prop('disabled', false);
+                $('#minMaxGroup').hide();
+                $('#fiyatOraniBilgi').hide();
+                $('#minDeger').prop('readonly', false).val('');
+                $('#maxDeger').val('');
+                $('#oranYuzde').val('');
+
+                if (sabitCarpimVar && miktarBazliVar) {
+                    $('#hataMesaji').html("Bu pakette hem Sabit Çarpım hem Miktar Bazlı oran bulunamaz. Önce mevcut oranları silin.").show();
+                    return;
+                }
+
+                if (sabitCarpimVar) {
+                    $('#oranTipi').val('false').prop('disabled', true);
+                    $('#hataMesaji').html("Bu pakette zaten Sabit Çarpım oranı var. Sadece Sabit Çarpım ekleyebilirsiniz.").show();
+                } else if (miktarBazliVar) {
+                    $('#oranTipi').val('true').prop('disabled', true);
+                    $('#minMaxGroup').show();
+                    $('#hataMesaji').html("Bu pakette zaten Miktar Bazlı oranlar tanımlı. Sadece bu şekilde devam edebilirsiniz.").show();
+
+                    // Tüm miktar bazlı oranları al ve boşlukları kontrol et
+                    const miktarOranlari = response.data.filter(x => x.min > 0).sort((a, b) => a.min - b.min);
+                    if (miktarOranlari.length > 0) {
+                        // Boşlukları bul
+                        let bosluklar = [];
+                        let oncekiMax = 0;
+
+                        for (let i = 0; i < miktarOranlari.length; i++) {
+                            const oran = miktarOranlari[i];
+                            if (oran.min > oncekiMax + 1) {
+                                bosluklar.push({
+                                    baslangic: oncekiMax + 1,
+                                    bitis: oran.min - 1
+                                });
+                            }
+                            oncekiMax = oran.max;
+                        }
+
+                        // Bilgi mesajını güncelle
+                        if (bosluklar.length > 0) {
+                            const ilkBosluk = bosluklar[0];
+                            $('#bilgiIcerik').html(`Mevcut aralıklar arasında boşluklar var. İlk boşluk: <strong>${ilkBosluk.baslangic}-${ilkBosluk.bitis}</strong>`);
+                        } else {
+                            // Boşluk yoksa, son aralıktan sonra başla
+                            const sonOran = miktarOranlari[miktarOranlari.length - 1];
+                            $('#bilgiIcerik').html(`Son aralık: <strong>${sonOran.min}-${sonOran.max}</strong> → Yeni aralık <strong>${sonOran.max + 1}</strong>'dan başlamalı.`);
+                        }
+                        $('#fiyatOraniBilgi').show();
+                    }
+                } else {
+                    $('#oranTipi').prop('disabled', false);
+                }
+
+                new bootstrap.Modal('#fiyatOraniModal').show();
+            });
+        }
+
+        // Oran tipi değiştiğinde min-max göster/gizle
+        $('#oranTipi').off('change').on('change', function () {
+            const miktarBazli = $(this).val() === 'true';
+            if (miktarBazli) {
+                $('#minMaxGroup').show();
+                $('#hataMesaji').hide().empty();
+
+                const paketId = $('#fiyatOraniPaketId').val();
+                $.get('/AdminPaket/FiyatOranlariGetir?paketId=' + paketId, function (response) {
+                    if (response.success && response.data.length > 0) {
+                        const miktarOranlari = response.data.filter(x => x.min > 0).sort((a, b) => a.min - b.min);
+
+                        if (miktarOranlari.length > 0) {
+                            // Boşlukları kontrol et
+                            let bosluklar = [];
+                            let oncekiMax = 0;
+
+                            for (let i = 0; i < miktarOranlari.length; i++) {
+                                const oran = miktarOranlari[i];
+                                if (oran.min > oncekiMax + 1) {
+                                    bosluklar.push({
+                                        baslangic: oncekiMax + 1,
+                                        bitis: oran.min - 1
+                                    });
+                                }
+                                oncekiMax = oran.max;
+                            }
+
+                            if (bosluklar.length > 0) {
+                                const ilkBosluk = bosluklar[0];
+                                $('#bilgiIcerik').html(`Mevcut aralıklar arasında boşluklar var. İlk boşluk: <strong>${ilkBosluk.baslangic}-${ilkBosluk.bitis}</strong>`);
+                                $('#minDeger').val(ilkBosluk.baslangic).prop('readonly', true);
+                                $('#maxDeger').val(ilkBosluk.bitis);
+                            } else {
+                                const sonOran = miktarOranlari[miktarOranlari.length - 1];
+                                $('#bilgiIcerik').html(`Son aralık: <strong>${sonOran.min}-${sonOran.max}</strong> → Yeni aralık <strong>${sonOran.max + 1}</strong>'dan başlamalı.`);
+                                $('#minDeger').val(sonOran.max + 1).prop('readonly', true);
+                                $('#maxDeger').val('');
+                            }
+                            $('#fiyatOraniBilgi').show();
+                        } else {
+                            $('#minDeger').val(1).prop('readonly', false);
+                            $('#bilgiIcerik').html('İlk aralığı ekliyorsunuz. Minimum değer 1 olmalıdır.');
+                            $('#fiyatOraniBilgi').show();
+                        }
+                    } else {
+                        $('#minDeger').val(1).prop('readonly', false);
+                        $('#bilgiIcerik').html('İlk aralığı ekliyorsunuz. Minimum değer 1 olmalıdır.');
+                        $('#fiyatOraniBilgi').show();
+                    }
+                });
+            } else {
+                $('#minMaxGroup').hide();
+                $('#fiyatOraniBilgi').hide();
+            }
+        });
+
+        // Fiyat oranı ekle formu gönder
+        $('#fiyatOraniForm').submit(function (e) {
+            e.preventDefault();
+            $('#hataMesaji').hide().empty();
+
+            const paketId = $('#fiyatOraniPaketId').val();
+            const oranUygula = $('#oranTipi').val() === 'true';
+            const oranYuzde = $('#oranYuzde').val();
+
+
+
+            let min = 0, max = 0;
+            if (oranUygula) {
+                min = $('#minDeger').val();
+                max = $('#maxDeger').val();
+                if (!min || !max) {
+                    $('#hataMesaji').html('Min ve Max değerleri gereklidir.').show();
+                    return;
+                }
+                if (parseInt(min) >= parseInt(max)) {
+                    $('#hataMesaji').html('Max değeri Min değerinden büyük olmalıdır.').show();
+                    return;
+                }
+            }
+
+            $.post('/AdminPaket/FiyatOraniEkle', {
+                paketId: paketId,
+                min: min,
+                max: max,
+                oranYuzde: oranYuzde,
+                oranUygula: oranUygula
+            }, function (response) {
+                if (response.success) {
+                    $('#fiyatOraniModal').modal('hide');
+                    uyariGoster(response.message);
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    $('#hataMesaji').html(response.message).show();
+                }
+            }).fail(function () {
+                $('#hataMesaji').html('İşlem sırasında hata oluştu.').show();
+            });
+        });
+
+        // Fiyat oranlarını göster
+        function fiyatOranlariGoster(paketId, paketAdi) {
+            $('#fiyatOranlariModalTitle').text(paketAdi + ' - Fiyat Oranları');
+            $('#fiyatOranlariListesi').html('<div class="text-center py-4"><div class="spinner-border text-primary"></div><p>Yükleniyor...</p></div>');
+
+            $.get('/AdminPaket/FiyatOranlariGetir?paketId=' + paketId, function (response) {
+                let html = '';
+                if (response.success && response.data.length > 0) {
+                    html = `<div class="table-responsive">
+                        <table class="table table-bordered table-hover fiyat-oranlari-table">
+                            <thead><tr><th>Aralık</th><th>Oran</th><th>İşlem</th></tr></thead>
+                            <tbody>`;
+                    response.data.forEach(oran => {
+                        const aralik = oran.min == 0 && oran.max == 0 ? "Tüm Miktarlar" : `${oran.min} - ${oran.max}`;
+                        const tip = oran.min == 0 && oran.max == 0 ? "Sabit Çarpım" : "Miktar Bazlı";
+                        html += `<tr>
+                            <td>${aralik}</td>
+                            <td>%${oran.oranYuzde} (${tip})</td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-danger btn-sm" onclick="fiyatOraniSil(${oran.id})">
+                                    <i class="fas fa-trash"></i> Sil
+                                </button>
+                            </td>
+                        </tr>`;
+                    });
+                    html += `</tbody></table></div>`;
+                } else {
+                    html = `<div class="text-center py-4"><i class="fas fa-inbox fa-3x text-muted mb-3"></i><p class="text-muted">Henüz fiyat oranı eklenmemiş.</p></div>`;
+                }
+                $('#fiyatOranlariListesi').html(html);
+            });
+
+            new bootstrap.Modal('#fiyatOranlariModal').show();
+        }
+
+        // Fiyat oranı sil
+        function fiyatOraniSil(oranId) {
+            if (confirm('Bu fiyat oranını silmek istediğinizden emin misiniz?')) {
+                $.post('/AdminPaket/FiyatOraniSil', { id: oranId }, function (response) {
+                    if (response.success) {
+                        uyariGoster(response.message);
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        uyariGoster(response.message);
+                    }
+                });
+            }
+        }
+
+        // Sabit çarpım sil onayı
+        function sabitCarpimSilOnay(oranId, paketAdi) {
+            $('#sabitCarpimAdi').text(paketAdi);
+            new bootstrap.Modal('#sabitCarpimSilModal').show();
+        }
+
+        // Paket sil onayı
+        function silOnay(id, adi) {
+            $('#silId').val(id);
+            $('#silAdi').text(adi);
+            new bootstrap.Modal('#silModal').show();
+        }
+
+        // Uyarı gösterme fonksiyonu
+        function uyariGoster(mesaj) {
+            $('#uyariMesaji').text(mesaj);
+            new bootstrap.Modal('#uyariModal').show();
+        }
+
+        // Modal kapandığında temizlik
+        $('#fiyatOraniModal').on('hidden.bs.modal', function () {
+            $('#oranTipi').prop('disabled', false);
+            $('#minMaxGroup').hide();
+            $('#fiyatOraniBilgi').hide();
+            $('#hataMesaji').hide().empty();
+            $('#minDeger').prop('readonly', false).val('');
+            $('#maxDeger').val('');
+            $('#oranYuzde').val('');
+        });
+
+        // Sayfa yüklendiğinde
+        $(function () {
+            // Arama sistemini başlat
+            initTableSearch();
+
+            // Alert 5 saniye sonra kapansın
+            setTimeout(() => {
+                $('.alert').fadeOut();
+            }, 5000);
+        });
+
+        // Enter tuşu ile submit
+        $(document).on('keypress', function (e) {
+            if (e.which == 13 && $('.modal.show').length) {
+                $('.modal.show button[type="submit"]').click();
+            }
+        });
+    </script>
+}

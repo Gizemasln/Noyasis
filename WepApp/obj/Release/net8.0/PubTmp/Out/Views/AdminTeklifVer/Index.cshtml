@@ -1,0 +1,2642 @@
+﻿@model dynamic
+@using WepApp.Models
+@{
+    ViewData["Title"] = "Teklif Oluştur";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+<style>
+    .select2-musteri + .select2-container {
+        width: 100% !important;
+        flex: 1 !important;
+    }
+
+        .select2-musteri + .select2-container .select2-selection--single {
+            height: 32px !important; /* Daha küçük */
+            padding: 0.15rem 0.5rem !important; /* Daha kompakt */
+            font-size: 0.75rem !important; /* Daha küçük font */
+            border: 1px solid #d1d3e2 !important;
+            border-radius: 0.25rem 0 0 0.25rem !important;
+        }
+
+        .select2-musteri + .select2-container .select2-selection__arrow {
+            height: 30px !important;
+        }
+
+        .select2-musteri + .select2-container .select2-selection__rendered {
+            line-height: 1.4 !important;
+            padding-left: 0 !important;
+        }
+
+    .select2-container--bootstrap .select2-search--dropdown .select2-search__field {
+        border: 1px solid #d1d3e2 !important;
+        border-radius: 4px !important;
+        padding: 4px 8px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .select2-results__option {
+        font-size: 0.8rem !important;
+        padding: 4px 8px !important;
+    }
+
+    .input-group .select2-container {
+        flex: 1 !important;
+    }
+
+        .input-group .select2-container .select2-selection--single {
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            border-right: none !important;
+        }
+
+    .input-group .btn-success.btn-sm {
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mevcut-teklif-banner {
+        background-color: #e7f3ff;
+        border-left: 4px solid #0d6efd;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+    }
+
+        .mevcut-teklif-banner h6 {
+            margin: 0;
+            color: #0d6efd;
+            font-weight: 600;
+        }
+
+    #secilenItemler .grup-ozel {
+        background-color: #e3f2fd !important;
+        border-left: 6px solid #1976d2 !important;
+    }
+
+        #secilenItemler .grup-ozel:hover {
+            background-color: #bbdefb !important;
+        }
+
+    #secilenItemler .bagimli-modul {
+        background-color: #c8e6c9 !important;
+        border-left: 6px solid #43a047 !important;
+    }
+
+        #secilenItemler .bagimli-modul:hover {
+            background-color: #a5d6a7 !important;
+        }
+    /* Bağımsız modüller için açık mavi renk */
+    #secilenItemler .bagimsiz-modul {
+        background-color: #e3f2fd !important;
+        border-left: 6px solid #2196f3 !important;
+    }
+
+        #secilenItemler .bagimsiz-modul:hover {
+            background-color: #bbdefb !important;
+        }
+
+    .alt-paket.bagimli-alt {
+        background-color: #f1f8e9 !important;
+    }
+
+    .alt-paket.bagimsiz-alt {
+        background-color: #e8f4fd !important;
+    }
+
+    #secilenItemler .paket-item,
+    #secilenItemler .grup-item {
+        background-color: transparent !important;
+        border-left: none !important;
+    }
+
+    #secilenItemler .bagimli-modul {
+        background-color: #c8e6c9 !important;
+        border-left: 6px solid #43a047 !important;
+    }
+
+        #secilenItemler .bagimli-modul:hover {
+            background-color: #a5d6a7 !important;
+        }
+
+    .teklif-container {
+        height: calc(100vh - 80px);
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    .split-panel {
+        height: 110%;
+        overflow: hidden;
+        background: #ffffff;
+        border: 1px solid #d1d3e2;
+        border-radius: 8px;
+    }
+
+    .left-panel {
+        border-right: 2px solid #d1d3e2;
+    }
+
+    .panel-header {
+        background: #2e2e5d;
+        color: #ffffff;
+        padding: 1rem;
+        margin: -1rem -1rem 1rem -1rem;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    .paket-list {
+        max-height: 500px;
+        overflow-y: auto;
+        border: 1px solid #d1d3e2;
+        border-radius: 6px;
+        background: #ffffff;
+    }
+
+    .paket-item {
+        padding: 0px 10px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        position: relative;
+        font-size: 0.85rem;
+        line-height: 1.2;
+    }
+
+        .paket-item:hover {
+            background-color: #f5f6fa;
+        }
+
+        .paket-item.secili {
+            background-color: #e6f4ea;
+            border-left: 4px solid #28a745;
+        }
+
+        .paket-item.grup-secili-paket {
+            background-color: #e6f4ea;
+            border-left: 4px solid #28a745;
+        }
+
+    .grup-item {
+        background: #f8f9fc !important;
+        font-weight: 600;
+        color: #2e2e5d;
+        border-left: 4px solid #2e2e5d !important;
+        font-size: 0.9rem;
+        padding: 6px 10px !important;
+    }
+
+        .grup-item.secili {
+            background: #e3f2fd !important;
+            border-left: 4px solid #1976d2 !important;
+        }
+
+    .alt-paket {
+        padding-left: 25px !important;
+        background: #ffffff;
+        font-weight: normal;
+        font-size: 0.8rem;
+    }
+
+    .paket-table {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr 30px;
+        align-items: center;
+        padding: 4px 8px;
+        gap: 6px;
+        font-size: 0.8rem;
+        position: relative;
+    }
+
+    .paket-table-header {
+        background: #f1f3f9;
+        font-weight: 600;
+        color: #2e2e5d;
+        padding: 8px 10px;
+        border-bottom: 2px solid #d1d3e2;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr 30px;
+        gap: 6px;
+        font-size: 0.8rem;
+    }
+
+    .secilen-itemler-container {
+        height: 400px !important;
+        max-height: 400px !important;
+        overflow-y: auto !important;
+        flex: none !important;
+    }
+
+    .fiyat-ozet-tablo {
+        margin-top: auto !important;
+    }
+
+    .secilen-paket-table {
+        display: grid;
+        grid-template-columns: 1fr 1.3fr 0.8fr 1.4fr 1.1fr 1.2fr 32px 32px;
+        gap: 6px;
+        align-items: center;
+        padding: 8px 8px; /* biraz daha yüksek satır */
+        font-size: 10px;
+        line-height: 1.4;
+        position: relative;
+        word-break: break-word; /* uzun kelimeleri kır */
+        overflow-wrap: break-word; /* uzun metinleri satıra geçir */
+        hyphens: auto; /* tire ile bölünebilsin */
+    }
+
+    .secilen-paket-header {
+        background: #f1f3f9;
+        font-weight: 600;
+        color: #2e2e5d;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: grid;
+        grid-template-columns: 1fr 1.3fr 0.8fr 1.4fr 1.1fr 1.2fr 32px 32px;
+        gap: 6px;
+        align-items: center;
+        padding: 6px 8px;
+        font-size: 0.75rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 1.5rem;
+        color: #6c757d;
+        font-size: 0.8rem;
+    }
+
+    .discount-input, .miktar-input, .grup-indirim-input {
+        width: 50px;
+        padding: 3px;
+        font-size: 0.75rem;
+        border: 1px solid #d1d3e2;
+        border-radius: 4px;
+    }
+
+    .grup-indirim-satiri {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        font-size: 0.75rem;
+        padding: 6px 10px;
+    }
+
+    .musteri-lisans-section {
+        background: #e8f4fd;
+        border: 1px solid #b8daff;
+    }
+
+    .teklif-no-section {
+        background: #e6f7e6;
+        border: 1px solid #c3e6cb;
+    }
+
+    .aciklama-section {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+    }
+
+    .musteri-lisans-section, .teklif-no-section, .aciklama-section {
+        border-radius: 6px;
+        padding: 0.8rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    .grup-indirim-badge, .kampanya-badge, .fiyat-oran-badge, .item-type-badge {
+        padding: 1px 4px;
+        border-radius: 6px;
+        font-size: 0.6rem;
+        color: white;
+    }
+
+    .grup-indirim-badge {
+        background: #ff6b6b;
+    }
+
+    .kampanya-badge {
+        background: #28a745;
+    }
+
+    .fiyat-oran-badge {
+        background: #17a2b8;
+    }
+
+    .item-type-badge {
+        background: #6c757d;
+    }
+
+    .teklif-no-display {
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: #2e2e5d;
+        background: #ffffff;
+        padding: 4px 8px;
+        border-radius: 4px;
+        border: 1px solid #d1d3e2;
+        min-width: 130px;
+        text-align: center;
+    }
+
+    .form-row-compact {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 0.8rem;
+        align-items: end;
+        font-size: 0.85rem;
+    }
+
+    .paket-list::-webkit-scrollbar, .secilen-itemler-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .paket-list::-webkit-scrollbar-track, .secilen-itemler-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+
+    .paket-list::-webkit-scrollbar-thumb, .secilen-itemler-container::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+
+        .paket-list::-webkit-scrollbar-thumb:hover, .secilen-itemler-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+    .fiyat-ozet-tablo {
+        margin-bottom:65px;   
+        background: #fff;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        width: 100%;
+        margin-top: 1rem;
+        font-size: 0.8rem;
+    }
+
+        .fiyat-ozet-tablo table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+        }
+
+        .fiyat-ozet-tablo th {
+            background: #f4f4f4;
+            padding: 6px;
+            text-align: left;
+            border-bottom: 2px solid #ccc;
+            font-size: 0.75rem;
+        }
+
+        .fiyat-ozet-tablo td {
+            padding: 6px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.75rem;
+        }
+
+        .fiyat-ozet-tablo .net-row td {
+            background: #fafafa;
+            font-weight: bold;
+            border-top: 2px solid #ccc;
+        }
+
+    .btn-tablo {
+        margin-top: 12px;
+        width: 100%;
+        padding: 8px;
+        background: #28a745;
+        border: none;
+        color: white;
+        font-size: 0.8rem;
+        border-radius: 4px;
+        cursor: not-allowed;
+    }
+
+        .btn-tablo:not(:disabled) {
+            cursor: pointer;
+            background: #218838;
+        }
+
+    .kampanya-fiyati {
+        color: #28a745 !important;
+        font-weight: 700 !important;
+    }
+
+    .normal-fiyati {
+        color: #495057;
+        font-weight: 600;
+    }
+
+    h5, h6 {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .panel-header h4 {
+        font-size: 1.1rem;
+    }
+
+    .btn-yeni-musteri {
+        font-size: 0.8rem;
+        padding: 0.35rem 0.7rem;
+    }
+
+    .search-box {
+        margin-bottom: 8px;
+    }
+
+        .search-box input {
+            font-size: 0.8rem;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #d1d3e2;
+        }
+
+    .resize-handle {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 6px;
+        background: transparent;
+        cursor: col-resize;
+        z-index: 11;
+    }
+
+        .resize-handle:hover {
+            background: #007bff;
+        }
+</style>
+@if (ViewBag.MevcutTeklif != null)
+{
+    <div class="mevcut-teklif-banner">
+        <h6>
+            <i class="fas fa-copy me-2"></i>
+            Mevcut Tekliften Kopyalanıyor: @ViewBag.MevcutTeklif.TeklifNo
+            → @ViewBag.YeniTeklifNo
+        </h6>
+        <small class="text-muted">
+            Orijinal teklifin üzerinden kopya oluşturuluyor. Değişiklik yapabilirsiniz.
+        </small>
+    </div>
+}
+<div class="teklif-container">
+    <div class="row h-100">
+        <div class="col-md-5 split-panel left-panel">
+            <div class="h-100 d-flex flex-column p-3">
+                <style>
+                    .form-row-compact {
+                        display: flex;
+                        align-items: flex-start;
+                        gap: 20px; /* Elemanlar arası boşluk */
+                        width: 100%;
+                    }
+
+                        .form-row-compact > div {
+                            display: flex;
+                            flex-direction: column;
+                        }
+
+                        /* Alanların daha kompakt görünmesi için */
+                        .form-row-compact h6 {
+                            margin-bottom: 4px !important;
+                            font-size: 13px;
+                            font-weight: 600;
+                        }
+
+                    /* Müşteri select + buton hizası */
+                    .input-group-sm select {
+                        min-width: 150px;
+                    }
+                </style>
+
+
+                <div class="musteri-lisans-section">
+                    <div class="form-row-compact">
+                        <div>
+                            <h6>Teklif No</h6>
+                            <div class="d-flex align-items-center">
+                                @if (ViewBag.MevcutTeklif != null)
+                                {
+                                    <input type="text" class="teklif-no-display form-control form-control-sm"
+                                           id="teklifNoInput"
+                                           value="@(ViewBag.YeniTeklifNo ?? "")"
+                                           readonly>
+                                }
+                                else
+                                {
+                                    <input type="text" class="teklif-no-display form-control form-control-sm"
+                                           id="teklifNoInput"
+                                           value=""
+                                           readonly>
+                            
+                                }
+                            </div>
+                        </div>
+                        <div>
+                            <h6>Lisans Tipi</h6>
+                            <select id="lisansTipSelect" class="form-select form-select-sm">
+                                @foreach (var lisansTip in ViewBag.LisansTipleri as List<LisansTip>)
+                                {
+                                    var mevcutTeklif = ViewBag.MevcutTeklif as Teklif;
+                                    var selected = mevcutTeklif != null && mevcutTeklif.LisansTipId == lisansTip.Id;
+                                    <option value="@lisansTip.Id" selected="@selected">@lisansTip.Adi</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="flex-fill">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <h6 class="mb-0 small">Müşteri</h6>
+
+                                <button type="button"
+                                        class="btn btn-outline-success btn-sm d-flex align-items-center justify-content-center"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#yeniMusteriModal"
+                                        style="width:22px;height:22px;">
+                                    <i class="fas fa-plus" style="font-size:10px;"></i>
+                                </button>
+                            </div>
+
+                            <div class="input-group input-group-sm" style="border: groove;">
+                                <select id="musteriSelect"
+                                      
+                                        style="font-size:12px;height:32px;">
+                                    <option value="">-- Müşteri Seçiniz --</option>
+                                    @foreach (var musteri in ViewBag.Musteriler as List<Musteri>)
+                                    {
+                                        var mevcutTeklif = ViewBag.MevcutTeklif as Teklif;
+                                        var selected = mevcutTeklif != null && mevcutTeklif.MusteriId == musteri.Id;
+                                        <option value="@musteri.Id" selected="@selected">
+                                            @musteri.Ad @musteri.Soyad
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h6>Geçerlilik Tarihi</h6>
+                            <input type="date"
+                                   class="teklif-no-display form-control form-control-sm"
+                                   id="gecerlilikTarihiInput"
+                                   value="@ViewBag.GecerlilikTarihi"
+                                   required>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; width: 100%;">
+                    <div style="flex: 1;">
+                        <textarea id="genelAciklama"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="Teklif ile ilgili genel açıklamalarınızı buraya yazabilirsiniz...">@(ViewBag.MevcutTeklif?.Aciklama ?? "")</textarea>
+                    </div>
+                </div>
+                <input type="hidden" id="mevcutTeklifId" value="@ViewBag.TeklifId" />
+
+                <div class="flex-grow-1 d-flex flex-column">
+                    <h5 class="d-flex justify-content-between align-items-center mb-3">
+                        <span>Paketler ve Modüller</span>
+                    </h5>
+                    <div class="search-box">
+                        <input type="text" id="paketArama" class="form-control form-control-sm" placeholder="Paket veya modül ara...">
+                    </div>
+                    <div id="paketListesi" class="paket-list flex-grow-1"></div>
+                    <div class="mt-3">
+                        <button id="tumunuSec" class="btn btn-outline-primary btn-sm me-2" disabled>Tümünü Seç</button>
+                        <button id="tumunuKaldir" class="btn btn-outline-secondary btn-sm" disabled>Seçimi Temizle</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7 split-panel">
+            <div class="h-100 d-flex flex-column p-3">
+                <div class="panel-header rounded">
+                    <h4 class="mb-0">Teklif Özeti</h4>
+                </div>
+                <div class="flex-grow-1 d-flex flex-column">
+                    <h5 class="mb-3">Seçilen Öğeler</h5>
+                    <div class="search-box">
+                        <input type="text" id="secilenArama" class="form-control form-control-sm" placeholder="Seçilenlerde ara...">
+                    </div>
+                    <div id="secilenItemler" class="secilen-itemler-container flex-grow-1 mb-3"></div>
+                    <div class="grup-indirim-satiri">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-medium">Genel Grup İndirim Oranı:</span>
+                            <div class="d-flex align-items-center">
+                                <input type="number" class="grup-indirim-input me-2" id="grupIndirimInput" min="0" max="100" value="0" disabled>
+                                <span>%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fiyat-ozet-tablo">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Adı</th>
+                                    <th>Liste</th>
+                                    <th>Kampanya</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Eğitim Süresi</strong></td>
+                                    <td colspan="2" id="ozetEgitimSuresi" class="text-end fw-bold text-primary">0 Saat</td>
+                                </tr>
+                                <tr><td>Toplam </td><td id="ozetListeToplamIndirimsiz">0,00 ₺</td><td id="ozetKampanyaToplamIndirimsiz">0,00 ₺</td></tr>
+                                <tr><td>İndirim Tutarı</td><td id="ozetListeIndirimTutari">0,00 ₺</td><td id="ozetKampanyaIndirimTutari">0,00 ₺</td></tr>
+
+
+                                <tr><td>Ara Toplam</td><td id="ozetListeAraToplam">0,00 ₺</td><td id="ozetKampanyaAraToplam">0,00 ₺</td></tr>
+                                <tr><td>KDV </td><td id="ozetListeKDV">0,00 ₺</td><td id="ozetKampanyaKDV">0,00 ₺</td></tr>
+                                <tr class="net-row"><td><strong>Genel Toplam</strong></td><td id="ozetListeGenelToplam"><strong>0,00 ₺</strong></td><td id="ozetKampanyaGenelToplam"><strong>0,00 ₺</strong></td></tr>
+                            </tbody>
+                        </table>
+                        <button id="teklifOlustur" class="btn-tablo mt-3" disabled>TEKLİF OLUŞTUR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="yeniMusteriModal" tabindex="-1" aria-labelledby="yeniMusteriModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <form id="yeniMusteriForm" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="yeniMusteriModalLabel">Yeni Müşteri Ekle</h5>                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs mb-3" id="yeniMusteriTab" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#yeniTemel" type="button">Temel Bilgiler</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#yeniIletisim" type="button">İletişim & Adres</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#yeniVergi" type="button">Vergi & Resmi</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#yeniAlpemix" type="button">Alpemix</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#yeniDosyalar" type="button">Dosyalar</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="yeniTemel">
+                            <div class="row g-3">
+                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniTicariUnvan" name="TicariUnvan" required><label>Ticari Unvan *</label></div></div>
+                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniAd" name="Ad" required><label>Ad *</label></div></div>
+                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniSoyad" name="Soyad" required><label>Soyad *</label></div></div>
+                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniKullaniciAdi" name="KullaniciAdi" required><label>Kullanıcı Adı *</label><div class="form-text text-danger small" id="yeniKullaniciAdiKontrol"></div></div></div>
+                                <div class="col-md-6"><div class="form-floating"><input type="password" class="form-control" id="yeniSifre" name="Sifre" required ><label>Şifre *</label></div></div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="yeniMusteriDurumuId" name="MusteriDurumuId" required>
+                                            <option value="">Durum *</option>@foreach (var d in ViewBag.MusteriDurumu ?? new List<MusteriDurumu>())
+                                            {
+                                                <option value="@d.Id">@d.Adi</option>
+                                            }
+                                        </select><label>Müşteri Durumu</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="yeniMusteriTipiId" name="MusteriTipiId">
+                                            <option value="">Tip</option>@foreach (var t in ViewBag.MusteriTipleri ?? new List<MusteriTipi>())
+                                            {
+                                                <option value="@t.Id">@t.Adi</option>
+                                            }
+                                        </select><label>Müşteri Tipi</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4" id="yeniDigerContainer" style="display:none;"><div class="form-floating"><input type="text" class="form-control" id="yeniDiger" name="Diger"><label>Diğer Tipi (Zorunlu)</label></div></div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="yeniBayiId" name="BayiId">
+                                            <option value="">Bağımsız Müşteri</option>@foreach (var b in (List<Bayi>)ViewBag.TumBayiler ?? new List<Bayi>())
+                                            {
+                                                var p = string.Concat(Enumerable.Repeat("└─ ", b.Seviye ?? 0));
+                                                <option value="@b.Id">@p @b.Unvan</option>
+                                            }
+                                        </select><label>Bayi</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="yeniIletisim">
+                            <div class="row g-3">
+                                <div class="col-md-6"><div class="form-floating"><input type="email" class="form-control" id="yeniEmail" name="Email"><label>Email</label></div></div>
+                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniTelefon" name="Telefon"><label>Telefon</label></div></div>
+                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniBolge" name="Bolge"><label>Bölge</label></div></div>
+                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniIl" name="Il"><label>İl</label></div></div>
+                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniIlce" name="Ilce"><label>İlçe</label></div></div>
+                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniBelde" name="Belde"><label>Belde</label></div></div>
+                                <div class="col-12"><div class="form-floating"><textarea class="form-control" id="yeniAdres" name="Adres" style="height:100px"></textarea><label>Adres</label></div></div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="yeniVergi">
+                            <div class="row g-3">
+                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniTCVNo" name="TCVNo"><label>TC/Vergi No</label></div></div>
+                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniVergiDairesi" name="VergiDairesi"><label>Vergi Dairesi</label></div></div>
+                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniKepAdresi" name="KepAdresi"><label>KEP Adresi</label></div></div>
+                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniWebAdresi" name="WebAdresi"><label>Web Adresi</label></div></div>
+                                <div class="col-12"><div class="form-floating"><textarea class="form-control" id="yeniAciklama" name="Aciklama" style="height:100px"></textarea><label>Açıklama</label></div></div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="yeniAlpemix">
+                            <div class="row g-3">
+                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniAlpemixFirmaAdi" name="AlpemixFirmaAdi"><label>Alpemix Firma Adı</label></div></div>
+                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniAlpemixGrupAdi" name="AlpemixGrupAdi"><label>Alpemix Grup Adı</label></div></div>
+                                <div class="col-12"><div class="form-floating"><input type="text" class="form-control" id="yeniAlpemixSifre" name="AlpemixSifre"><label>Alpemix Şifre</label></div></div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="yeniDosyalar">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Logo</label>
+                                    <input type="file" class="form-control" id="yeniLogo" name="Logo" accept=".jpg,.jpeg,.png,.gif">
+                                    <div class="form-text">JPG, PNG, GIF - max 5MB</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">İmza</label>
+                                    <input type="file" class="form-control" id="yeniImza" name="Imza" accept=".jpg,.jpeg,.png,.gif">
+                                    <div class="form-text">JPG, PNG, GIF - max 5MB</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vazgeç</button>
+                    <button type="button" class="btn btn-success" id="geciciMusteriKaydetBtn">
+                        <span class="spinner-border spinner-border-sm d-none" id="yeniMusteriSpinner"></span>
+                        Geçici Kaydet ve Kullan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="alertModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="alertModalTitle">Bilgi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="alertModalBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Tamam</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;"></div>
+@section Script {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        let hamVeriler = [];
+        let seciliMusteriId = 0;
+        let seciliLisansTipId = 0;
+        let seciliItemler = new Map();
+        let tumVeriler = [];
+        let grupIndirimOrani = 0;
+        let teklifNo = '';
+        let geciciMusteriVar = false;
+        let geciciMusteriData = null;
+        let geciciMusteri = null;
+        const digerTipId = @((ViewBag.MusteriTipleri as List<MusteriTipi>)
+        ?.FirstOrDefault(x => x.Adi?.Trim().ToLower() == "diğer")
+        ?.Id ?? 0);
+
+        $(document).ready(function () {
+            $('#musteriSelect').select2({
+                theme: 'bootstrap5',
+                placeholder: "Müşteri ara...",
+                allowClear: false,
+                language: {
+                    searching: function() {
+                        return "Müşteri aranıyor...";
+                    },
+                    noResults: function() {
+                        return "Müşteri bulunamadı";
+                    }
+                },
+                width: '100%',
+                dropdownParent: $('.teklif-container'),
+                dropdownCssClass: 'select2-dropdown-sm',
+                minimumResultsForSearch: 1
+            });
+
+            setTimeout(() => {
+                if ($('.miktar-input').length > 0) {
+                    console.log('Sayfa yüklendi, miktar inputları tetikleniyor...');
+                    $('.miktar-input').trigger('change');
+                }
+            }, 1500);
+
+            const mevcutTeklifId = $('#mevcutTeklifId').val();
+            const mevcutTeklifVar = mevcutTeklifId && mevcutTeklifId > 0;
+
+            if (mevcutTeklifVar) {
+                const lisansTipId = $('#lisansTipSelect').val();
+                const musteriId = $('#musteriSelect').val();
+                if (lisansTipId && musteriId) {
+                    seciliLisansTipId = parseInt(lisansTipId);
+                    seciliMusteriId = parseInt(musteriId);
+                    console.log('Mevcut teklif yüklendi, yeni teklif no alınmayacak');
+
+                    if (seciliLisansTipId) {
+                        yukleGruplarVePaketler(seciliLisansTipId).then(() => {
+                            setTimeout(() => {
+                                yukleMevcutTeklifDetaylari(mevcutTeklifId);
+                            }, 500);
+                        });
+                    }
+                }
+            } else {
+                const bugun = new Date();
+                const otuzGunSonra = new Date(bugun);
+                otuzGunSonra.setDate(bugun.getDate() + 30);
+                const yil = otuzGunSonra.getFullYear();
+                const ay = String(otuzGunSonra.getMonth() + 1).padStart(2, '0');
+                const gun = String(otuzGunSonra.getDate()).padStart(2, '0');
+                const otuzGunSonraStr = `${yil}-${ay}-${gun}`;
+                $('#gecerlilikTarihiInput').val(otuzGunSonraStr);
+                yeniTeklifNoAl();
+            }
+
+            const ilkLisansTipId = '@ViewBag.IlkLisansTipId';
+            if (ilkLisansTipId && ilkLisansTipId !== "0" && ilkLisansTipId !== '' && !mevcutTeklifVar) {
+                seciliLisansTipId = parseInt(ilkLisansTipId);
+                $('#lisansTipSelect').val(seciliLisansTipId);
+                yukleGruplarVePaketler(seciliLisansTipId);
+            }
+
+            if (!mevcutTeklifVar && $('#yenileTeklifNo').length) {
+                $('#yenileTeklifNo').click(yeniTeklifNoAl);
+            }
+
+            $('#lisansTipSelect').change(function () {
+                seciliLisansTipId = parseInt($(this).val()) || 0;
+                seciliLisansTipId ? yukleGruplarVePaketler(seciliLisansTipId) : resetPanels();
+            });
+
+            $('#musteriSelect').on('change', function () {
+                seciliMusteriId = parseInt($(this).val()) || 0;
+                console.log('Seçilen müşteri ID:', seciliMusteriId);
+
+                const mevcutTeklifId = $('#mevcutTeklifId').val();
+                const mevcutTeklifVar = mevcutTeklifId && mevcutTeklifId > 0;
+                if (!mevcutTeklifVar) {
+                    yeniTeklifNoAl();
+                }
+            });
+
+            $('#grupIndirimInput').on('input', function () {
+                let val = Math.max(0, Math.min(100, parseInt($(this).val()) || 0));
+                $(this).val(val);
+                grupIndirimOrani = val;
+                hesaplaToplam();
+            });
+
+            $('#tumunuSec').click(() => tumVeriler.filter(x => x.tip === 'grup').forEach(g => toggleItem(g.id, 'grup')));
+            $('#tumunuKaldir').click(() => { seciliItemler.clear(); renderAll(); });
+            $('#paketArama').on('input', renderPaketListesi);
+            $('#secilenArama').on('input', renderSecilenItemler);
+            $('#teklifOlustur').click(teklifOlustur);
+            setupYeniMusteriForm();
+        });
+
+        function setupYeniMusteriForm() {
+            $('#yeniMusteriTipiId').on('change', function () {
+                toggleDigerInputYeniMusteri();
+            });
+            $('#yeniKullaniciAdi').on('input', function () {
+                const kullaniciAdi = $(this).val().trim();
+                if (kullaniciAdi) {
+                    kontrolKullaniciAdiYeniMusteri(kullaniciAdi);
+                } else {
+                    $('#yeniKullaniciAdiKontrol').text('');
+                }
+            });
+            $('#yeniMusteriForm').on('submit', function (e) {
+                e.preventDefault();
+                kaydetGeciciMusteri();
+            });
+
+            $('#yeniMusteriModal').on('hidden.bs.modal', function () {
+                $('#yeniDigerContainer').hide();
+                $('#yeniKullaniciAdiKontrol').text('');
+            });
+        }
+
+        function toggleDigerInputYeniMusteri() {
+            const val = parseInt($('#yeniMusteriTipiId').val()) || 0;
+            const container = $('#yeniDigerContainer');
+            const input = $('#yeniDiger');
+            if (val === digerTipId && digerTipId !== 0) {
+                container.show(300);
+                input.prop('required', true);
+            } else {
+                container.hide(300);
+                input.prop('required', false).val('');
+            }
+        }
+
+        async function kontrolKullaniciAdiYeniMusteri(kullaniciAdi) {
+            try {
+                let url = `/AdminMusteri/KullaniciAdiKontrol?kullaniciAdi=${encodeURIComponent(kullaniciAdi)}`;
+                const res = await fetch(url);
+                const json = await res.json();
+                const el = $('#yeniKullaniciAdiKontrol');
+                el.text(json.message);
+                el.removeClass('text-success text-danger');
+                el.addClass(json.success ? 'text-success' : 'text-danger');
+            } catch (err) {
+                console.error('Kullanıcı adı kontrolü hatası:', err);
+            }
+        }
+
+        function kaydetGeciciMusteri() {
+            const form = $('#yeniMusteriForm')[0];
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const musteriTipiId = parseInt($('#yeniMusteriTipiId').val()) || null;
+            const diger = $('#yeniDiger').val().trim();
+            if (musteriTipiId === digerTipId && !diger) {
+                showToast('Hata', 'Müşteri tipi "Diğer" seçildiyse, lütfen diğer tipi belirtin.', false);
+                return;
+            }
+
+            const spinner = $('#yeniMusteriSpinner');
+            const btn = $('#geciciMusteriKaydetBtn');
+            spinner.removeClass('d-none');
+            btn.prop('disabled', true).text('Kaydediliyor...');
+
+            const formData = {
+                TicariUnvan: $('#yeniTicariUnvan').val().trim(),
+                Ad: $('#yeniAd').val().trim(),
+                Soyad: $('#yeniSoyad').val().trim(),
+                KullaniciAdi: $('#yeniKullaniciAdi').val().trim(),
+                Sifre: $('#yeniSifre').val().trim(),
+                Email: $('#yeniEmail').val().trim(),
+                Telefon: $('#yeniTelefon').val().trim(),
+                Adres: $('#yeniAdres').val().trim(),
+                Il: $('#yeniIl').val().trim(),
+                Ilce: $('#yeniIlce').val().trim(),
+                Belde: $('#yeniBelde').val().trim(),
+                Bolge: $('#yeniBolge').val().trim(),
+                TCVNo: $('#yeniTCVNo').val().trim(),
+                VergiDairesi: $('#yeniVergiDairesi').val().trim(),
+                KepAdresi: $('#yeniKepAdresi').val().trim(),
+                WebAdresi: $('#yeniWebAdresi').val().trim(),
+                Aciklama: $('#yeniAciklama').val().trim(),
+                AlpemixFirmaAdi: $('#yeniAlpemixFirmaAdi').val().trim(),
+                AlpemixGrupAdi: $('#yeniAlpemixGrupAdi').val().trim(),
+                AlpemixSifre: $('#yeniAlpemixSifre').val().trim(),
+                MusteriTipiId: musteriTipiId,
+                MusteriDurumuId: parseInt($('#yeniMusteriDurumuId').val()) || 1,
+                BayiId: parseInt($('#yeniBayiId').val()) || null,
+                Diger: diger
+            };
+
+            $.ajax({
+                url: '/AdminTeklifVer/GeciciMusteriKaydet',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function (res) {
+                    if (res.success) {
+                        geciciMusteriVar = true;
+                        geciciMusteriData = formData;
+                        geciciMusteri = formData;
+                        const musteriAdi = res.musteriAdi || `${formData.Ad} ${formData.Soyad}`.trim();
+                        const newOption = new Option(musteriAdi + ' (Yeni - Kaydedilmedi)', -1, true, true);
+                        $('#musteriSelect').append(newOption).trigger('change');
+                        seciliMusteriId = -1;
+                        showToast('Başarılı', 'Müşteri geçici olarak kaydedildi. Teklif oluşturulduğunda kalıcı olacak.', true);
+                        $('#yeniMusteriModal').modal('hide');
+                    } else {
+                        showToast('Hata', res.message || 'Müşteri kaydedilemedi.', false);
+                    }
+                },
+                error: function () {
+                    showToast('Hata', 'Sunucu hatası oluştu.', false);
+                },
+                complete: function () {
+                    spinner.addClass('d-none');
+                    btn.prop('disabled', false).text('Geçici Olarak Kaydet');
+                }
+            });
+        }
+
+        function doldurYeniMusteriFormu(data) {
+            $('#yeniTicariUnvan').val(data.TicariUnvan || '');
+            $('#yeniAd').val(data.Ad || '');
+            $('#yeniSoyad').val(data.Soyad || '');
+            $('#yeniKullaniciAdi').val(data.KullaniciAdi || '');
+            $('#yeniSifre').val(data.Sifre || '');
+            $('#yeniEmail').val(data.Email || '');
+            $('#yeniTelefon').val(data.Telefon || '');
+            $('#yeniAdres').val(data.Adres || '');
+            $('#yeniIl').val(data.Il || '');
+            $('#yeniIlce').val(data.Ilce || '');
+            $('#yeniBelde').val(data.Belde || '');
+            $('#yeniBolge').val(data.Bolge || '');
+            $('#yeniTCVNo').val(data.TCVNo || '');
+            $('#yeniVergiDairesi').val(data.VergiDairesi || '');
+            $('#yeniKepAdresi').val(data.KepAdresi || '');
+            $('#yeniWebAdresi').val(data.WebAdresi || '');
+            $('#yeniAciklama').val(data.Aciklama || '');
+            $('#yeniAlpemixFirmaAdi').val(data.AlpemixFirmaAdi || '');
+            $('#yeniAlpemixGrupAdi').val(data.AlpemixGrupAdi || '');
+            $('#yeniAlpemixSifre').val(data.AlpemixSifre || '');
+            $('#yeniMusteriTipiId').val(data.MusteriTipiId || '');
+            $('#yeniMusteriDurumuId').val(data.MusteriDurumuId || '');
+            $('#yeniBayiId').val(data.BayiId || '');
+            $('#yeniDiger').val(data.Diger || '');
+            toggleDigerInputYeniMusteri();
+        }
+
+        function showToast(title, message, success = true) {
+            const toastHtml = `
+                <div class="toast align-items-center text-bg-${success ? 'success' : 'danger'} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <strong>${title}:</strong> ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>`;
+            const toastEl = $(toastHtml).appendTo('#toastContainer')[0];
+            const bsToast = new bootstrap.Toast(toastEl, { delay: success ? 3000 : 5000 });
+            bsToast.show();
+            toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+        }
+
+        function yeniTeklifNoAl() {
+            $.get('/AdminTeklifVer/GetirYeniTeklifNo')
+                .done(r => $('#teklifNoInput').val(r.success ? r.teklifNo : 'TK-' + new Date().toISOString().slice(2,10).replace(/-/g,'')))
+                .fail(() => $('#teklifNoInput').val('TK-' + new Date().toISOString().slice(2,10).replace(/-/g,'')));
+        }
+
+        function yukleGruplarVePaketler(lisansTipId) {
+            return new Promise((resolve, reject) => {
+                $.get('/AdminTeklifVer/GetirGruplarVePaketler?lisansTipId=' + lisansTipId)
+                    .done(res => {
+                        if (res.success) {
+                            hamVeriler = res.veriler;
+                            const seenIds = new Set();
+                            tumVeriler = [];
+                            res.veriler.forEach(item => {
+                                if (!seenIds.has(item.id)) {
+                                    seenIds.add(item.id);
+                                    item.icerenGruplar = [];
+                                    tumVeriler.push(item);
+                                }
+                                if (item.tip !== 'grup' && item.parentId) {
+                                    const grup = res.veriler.find(g => g.id == item.parentId && g.tip === 'grup');
+                                    if (grup) {
+                                        const mevcut = tumVeriler.find(x => x.id === item.id);
+                                        if (mevcut && !mevcut.icerenGruplar.includes(grup.adi)) {
+                                            mevcut.icerenGruplar.push(grup.adi);
+                                        }
+                                    }
+                                }
+                            });
+
+                            const mevcutTeklifId = $('#mevcutTeklifId').val();
+                            const mevcutTeklifVar = mevcutTeklifId && mevcutTeklifId > 0;
+                            if (!mevcutTeklifVar) {
+                                seciliItemler.clear();
+                            }
+
+                            renderAll();
+                            $('#tumunuSec, #tumunuKaldir, #grupIndirimInput').prop('disabled', false);
+                            resolve();
+                        } else {
+                            reject();
+                        }
+                    })
+                    .fail(() => reject());
+            });
+        }
+
+        function renderAll(yenidenHesapla = true) {
+            renderPaketListesi();
+            renderSecilenItemler();
+
+            // Otomatik paket tamamlamayı yap ama renderAll() çağırma!
+            const paketOlustu = otomatikPaketTamamla(false); // false = render etme
+
+            if (paketOlustu) {
+                // Sadece yeni oluşan paketi yansıtmak için gerekli render'lar
+                renderPaketListesi();
+                renderSecilenItemler();
+            }
+
+            if (yenidenHesapla) {
+                hesaplaToplam();
+            }
+        }
+
+        function renderPaketListesi() {
+            const container = $('#paketListesi').empty();
+            const arama = $('#paketArama').val().toLowerCase().trim();
+            container.append(`
+                <div class="paket-table-header">
+                    <div>Adı</div><div>Tip</div><div>Lisans</div><div>Birim</div><div>Fiyat</div><div></div>
+                </div>`);
+
+            if (!tumVeriler.length) {
+                container.append('<div class="empty-state"><p>Öğe yok</p></div>');
+                return;
+            }
+
+            const filtered = tumVeriler
+                .filter(item => {
+                    const adiMatch = item.adi.toLowerCase().includes(arama);
+                    const grupMatch = item.icerenGruplar && item.icerenGruplar.some(g => g.toLowerCase().includes(arama));
+                    return adiMatch || grupMatch;
+                })
+                .sort((a, b) => {
+                    const siraA = a.sira || 0;
+                    const siraB = b.sira || 0;
+                    if (siraA !== siraB) return siraA - siraB;
+                    if (a.tip === 'grup' && b.tip !== 'grup') return -1;
+                    if (a.tip !== 'grup' && b.tip === 'grup') return 1;
+                    return (a.adi || '').localeCompare(b.adi || '', 'tr');
+                });
+
+            filtered.forEach(item => {
+                const isGrup = item.tip === 'grup';
+                const itemId = item.id;
+                let secili = seciliItemler.has(itemId);
+                if (!isGrup) {
+                    for (const [key, val] of seciliItemler.entries()) {
+                        if (val.id === itemId && val.paketMi) {
+                            secili = true;
+                            break;
+                        }
+                    }
+                }
+
+                const kampanyaBadge = item.kampanyaVar ? `<span class="badge bg-warning text-dark ms-1">Kampanya</span>` : '';
+                let grupBilgisi = '';
+                if (!isGrup && item.icerenGruplar && item.icerenGruplar.length > 0) {
+                    const text = item.icerenGruplar.length === 1
+                        ? `(${item.icerenGruplar[0]} paketinde)`
+                        : `(${item.icerenGruplar.length} pakette)`;
+                    grupBilgisi = `<br><small style="font-size:9px;" class="text-muted">${text}</small>`;
+                }
+
+                let altText = '';
+                if (isGrup) {
+                    const buGrubaAitHamSatırlar = hamVeriler.filter(x => x.parentId == itemId && x.tip !== 'grup');
+                    const benzersizModulIsimleri = [...new Set(buGrubaAitHamSatırlar.map(x => x.adi.trim()))]
+                        .sort((a, b) => a.localeCompare(b, 'tr'));
+                    if (benzersizModulIsimleri.length > 0) {
+                        altText = `<br><small class="text-muted" style="font-size:9px;">${benzersizModulIsimleri.join(', ')}</small>`;
+                    }
+                }
+
+                const seciliClass = secili ? 'secili' : '';
+                container.append(`
+                    <div class="paket-item ${isGrup ? 'grup-item' : 'alt-paket'} ${seciliClass}"
+                         onclick="toggleItem(${itemId}, '${item.tip || 'modul'}', event)"
+                         title="${!isGrup && item.icerenGruplar?.length > 1 ? 'Paketler: ' + item.icerenGruplar.join(', ') : ''}">
+                        <div class="paket-table">
+                            <div>
+                                <strong>${item.adi}</strong>${kampanyaBadge}
+                                ${isGrup ? altText : grupBilgisi}
+                            </div>
+                            <div><span class="badge ${isGrup ? 'bg-primary' : 'bg-secondary'}">
+                                ${isGrup ? 'PAKET' : 'MODÜL'}
+                            </span></div>
+                            <div>${item.lisansTip || '-'}</div>
+                            <div>${item.birim || '-'}</div>
+                            <div><strong>${format(item.fiyat)} ₺</strong></div>
+                        </div>
+                    </div>`);
+            });
+
+            seciliItemler.forEach((item, key) => {
+                if (item.tip === 'grup') {
+                    const altModulIds = hamVeriler
+                        .filter(x => x.parentId === item.id && x.tip !== 'grup')
+                        .map(x => x.id);
+                    $(`#paketListesi .paket-item`).each(function () {
+                        const onclick = $(this).attr('onclick');
+                        if (onclick && onclick.includes('toggleItem(')) {
+                            const match = onclick.match(/toggleItem\((\d+),/);
+                            if (match) {
+                                const id = parseInt(match[1]);
+                                if (altModulIds.includes(id)) {
+                                    $(this).addClass('secili');
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        function yukleMevcutTeklifDetaylari(teklifId) {
+            console.log('=== MEVCUT TEKLİF DETAYLARI YÜKLENİYOR ===', teklifId);
+
+            $.get('/AdminTeklifVer/GetirTeklifDetaylari?teklifId=' + teklifId)
+                .done(function(res) {
+                    if (!res.success) {
+                        showToast('Hata', 'Teklif detayları alınamadı.', false);
+                        return;
+                    }
+
+                    console.log('Backend detayları:', res.detaylar);
+
+                    // ÖNCE HER ŞEYİ TEMİZLE
+                    seciliItemler.clear();
+                    renderAll();
+
+                    const detaylar = res.detaylar;
+
+                    setTimeout(function() {
+                        let toplamIslenen = 0;
+
+                        // 1. ÖNCE PAKETLERİ İŞLE (grup tipi)
+                        const paketler = detaylar.filter(d => d.tip === 'grup');
+                        console.log('PAKETLER:', paketler);
+
+                        paketler.forEach(function(paket, paketIndex) {
+                            const paketId = paket.id;
+                            const paketAdi = paket.adi;
+
+                            console.log(`PAKET: ${paketAdi} (ID: ${paketId})`);
+
+                            // OFFSET KONTROLÜ - PAKET ID'Sİ 10000 OFFSETLİ
+                            let kullanilacakPaketId = paketId;
+                            let paketVerisi = tumVeriler.find(x => x.id === paketId);
+
+                            if (!paketVerisi) {
+                                // 10000 OFFSET'Lİ VERSİYONUNU ARA
+                                kullanilacakPaketId = paketId + 10000;
+                                paketVerisi = tumVeriler.find(x => x.id === kullanilacakPaketId);
+                            }
+
+                            if (paketVerisi) {
+                                console.log(`✓ PAKET VERİSİ BULUNDU: ${paketAdi} (ID: ${kullanilacakPaketId})`);
+
+                                // PAKETİ EKLE
+                                seciliItemler.set(kullanilacakPaketId, {
+                                    id: kullanilacakPaketId,
+                                    key: kullanilacakPaketId.toString(),
+                                    tip: 'grup',
+                                    adi: paketAdi,
+                                    indirimYuzdesi: 0,
+                                    miktar: 1,
+                                    fiyatOrani: 0,
+                                    kampanyaYuzde: paketVerisi.kampanyaYuzde || 0,
+                                    kampanyaBaslik: paketVerisi.kampanyaBaslik || '',
+                                    kampanyaVar: !!paketVerisi.kampanyaVar,
+                                    fiyat: paketVerisi.fiyat || 0,
+                                    listeFiyati: paketVerisi.KFiyat || paketVerisi.fiyat || 0,
+                                    birimFiyatNet: paketVerisi.fiyat || 0,
+                                    satirToplamNet: paketVerisi.fiyat || 0,
+                                    paketMi: false,
+                                    bagimsizMi: false,
+                                    parentId: 0,
+                                    miktarKademesiVar: false
+                                });
+
+                                toplamIslenen++;
+
+                                // 2. BU PAKETE AİT TÜM MODÜLLERİ EKLE (parentId kontrolü YOK!)
+                                const paketModulleri = detaylar.filter(d =>
+                                    d.tip === 'modul' && d.paketMi === true
+                                );
+
+                                console.log(`Paket için ${paketModulleri.length} modül bulundu`);
+
+                                paketModulleri.forEach(function(modul) {
+                                    const modulId = modul.id;
+                                    const modulHamVerisi = hamVeriler.find(h => h.id === modulId);
+
+                                    if (modulHamVerisi) {
+                                        const modulKey = `${modulId}_p${paketId}`; // Orijinal paketId kullan
+
+                                        seciliItemler.set(modulKey, {
+                                            id: modulId,
+                                            key: modulKey,
+                                            tip: 'modul',
+                                            adi: modul.adi || modulHamVerisi.adi,
+                                            paketMi: true,
+                                            parentId: paketId,
+                                            paketAdi: paketAdi,
+                                            indirimYuzdesi: 0,
+                                            miktar: modul.miktar || 1,
+                                            fiyatOrani: modul.fiyatOrani || 0,
+                                            kampanyaYuzde: modulHamVerisi.kampanyaYuzde || 0,
+                                            kampanyaBaslik: modulHamVerisi.kampanyaBaslik || '',
+                                            kampanyaVar: !!modulHamVerisi.kampanyaVar,
+                                            fiyat: modulHamVerisi.fiyat,
+                                            listeFiyati: modulHamVerisi.KFiyat || modulHamVerisi.fiyat,
+                                            birimFiyatNet: modulHamVerisi.fiyat,
+                                            satirToplamNet: modulHamVerisi.fiyat * (modul.miktar || 1),
+                                            miktarKademesiVar: modulHamVerisi.miktarKademesiVar || false
+                                        });
+
+                                        toplamIslenen++;
+                                        console.log(`✓ MODÜL EKLENDİ: ${modul.adi} (Paket: ${paketAdi})`);
+                                    } else {
+                                        console.log(`✗ MODÜL VERİSİ BULUNAMADI: ${modul.adi} (ID: ${modulId})`);
+                                    }
+                                });
+                            } else {
+                                console.log(`✗ PAKET VERİSİ BULUNAMADI: ${paketAdi}`);
+                            }
+                        });
+
+                        // 3. BAĞIMSIZ MODÜLLER (paketMi: false)
+                        const bagimsizModuller = detaylar.filter(d =>
+                            d.tip === 'modul' && d.paketMi === false
+                        );
+
+                        console.log('BAĞIMSIZ MODÜLLER:', bagimsizModuller.length);
+
+                        bagimsizModuller.forEach(function(modul) {
+                            const modulId = modul.id;
+                            const modulHamVerisi = hamVeriler.find(h => h.id === modulId);
+
+                            if (modulHamVerisi) {
+                                seciliItemler.set(modulId, {
+                                    id: modulId,
+                                    key: modulId.toString(),
+                                    tip: 'modul',
+                                    adi: modul.adi || modulHamVerisi.adi,
+                                    indirimYuzdesi: 0,
+                                    miktar: modul.miktar || 1,
+                                    fiyatOrani: modul.fiyatOrani || 0,
+                                    kampanyaYuzde: modulHamVerisi.kampanyaYuzde || 0,
+                                    kampanyaBaslik: modulHamVerisi.kampanyaBaslik || '',
+                                    kampanyaVar: !!modulHamVerisi.kampanyaVar,
+                                    fiyat: modulHamVerisi.fiyat,
+                                    listeFiyati: modulHamVerisi.KFiyat || modulHamVerisi.fiyat,
+                                    birimFiyatNet: modulHamVerisi.fiyat,
+                                    satirToplamNet: modulHamVerisi.fiyat * (modul.miktar || 1),
+                                    paketMi: false,
+                                    bagimsizMi: true,
+                                    parentId: 0,
+                                    miktarKademesiVar: modulHamVerisi.miktarKademesiVar || false
+                                });
+
+                                toplamIslenen++;
+                                console.log(`✓ BAĞIMSIZ MODÜL EKLENDİ: ${modul.adi}`);
+                            }
+                        });
+
+                        // 4. SONUÇ VE RENDER
+                        console.log(`TOPLAM ${toplamIslenen} ÖĞE EKLENDİ`);
+                        console.log('seciliItemler:', Array.from(seciliItemler.values()));
+
+                        // GRUP İNDİRİMİ
+                        if (res.grupIndirimOrani > 0) {
+                            grupIndirimOrani = res.grupIndirimOrani;
+                            $('#grupIndirimInput').val(grupIndirimOrani);
+                            console.log('Grup indirimi:', grupIndirimOrani);
+                        }
+
+                        // RENDER İŞLEMLERİ
+                        setTimeout(function() {
+                            // SOL PANELDE SEÇİLİ GÖSTER
+                            renderPaketListesi();
+
+                            // SAĞ PANEL
+                            renderSecilenItemler();
+
+                            // MİKTAR INPUTLARI TETİKLE
+                            setTimeout(function() {
+                                $('.miktar-input').each(function() {
+                                    $(this).trigger('change');
+                                });
+                                hesaplaToplam();
+                            }, 300);
+
+                            showToast('Başarılı',
+                                `Mevcut teklif yüklendi!<br>
+                                Paket: 1<br>
+                                Modüller: ${toplamIslenen - 1}<br>
+                                Toplam: ${toplamIslenen} öğe`,
+                                true
+                            );
+                        }, 500);
+                    }, 500);
+                })
+                .fail(function() {
+                    showToast('Hata', 'Teklif detayları yüklenemedi.', false);
+                });
+        }
+
+        function hesaplaFiyatOrani(itemId, miktar, itemKey) {
+            const hamVeri = hamVeriler.find(v => v.id === itemId);
+            const miktarKademesiVar = hamVeri?.miktarKademesiVar || false;
+            if (!miktarKademesiVar) {
+                console.log(`Miktar kademesi yok: ${itemId} için fiyat oranı sıfırlandı`);
+                let targetItem = seciliItemler.get(itemKey);
+                if (!targetItem) {
+                    for (const [key, val] of seciliItemler.entries()) {
+                        if (val.id === itemId && val.tip !== 'grup') {
+                            targetItem = val;
+                            itemKey = key;
+                            break;
+                        }
+                    }
+                }
+                if (targetItem) {
+                    targetItem.fiyatOrani = 0;
+                }
+                return;
+            }
+
+            $.get('/AdminTeklifVer/GetirFiyatOrani?paketId=' + itemId + '&miktar=' + miktar)
+                .done(r => {
+                    if (r.success) {
+                        let targetItem = seciliItemler.get(itemKey);
+                        if (!targetItem) {
+                            for (const [key, val] of seciliItemler.entries()) {
+                                if (val.id === itemId && val.tip !== 'grup') {
+                                    targetItem = val;
+                                    itemKey = key;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (targetItem) {
+                            const eskiOran = targetItem.fiyatOrani || 0;
+                            targetItem.fiyatOrani = r.oranYuzde || 0;
+                            console.log(`Fiyat oranı güncellendi: ${itemId} için miktar ${miktar}, eski oran: ${eskiOran}%, yeni oran: ${r.oranYuzde}%`);
+                        }
+                    } else {
+                        let targetItem = seciliItemler.get(itemKey);
+                        if (!targetItem) {
+                            for (const [key, val] of seciliItemler.entries()) {
+                                if (val.id === itemId && val.tip !== 'grup') {
+                                    targetItem = val;
+                                    itemKey = key;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (targetItem) {
+                            targetItem.fiyatOrani = 0;
+                        }
+                    }
+                })
+                .fail(() => {
+                    console.log('Fiyat oranı alınamadı, oran sıfırlanıyor');
+                    let targetItem = seciliItemler.get(itemKey);
+                    if (!targetItem) {
+                        for (const [key, val] of seciliItemler.entries()) {
+                            if (val.id === itemId && val.tip !== 'grup') {
+                                targetItem = val;
+                                itemKey = key;
+                                break;
+                            }
+                        }
+                    }
+                    if (targetItem) {
+                        targetItem.fiyatOrani = 0;
+                    }
+                });
+        }
+
+        function renderSecilenItemler() {
+            const container = $('#secilenItemler').empty();
+            const arama = $('#secilenArama').val().toLowerCase().trim();
+
+            if (seciliItemler.size === 0) {
+                container.append('<div class="empty-state"><p>Henüz öğe seçmediniz</p></div>');
+                $('#teklifOlustur').prop('disabled', true);
+                return;
+            }
+
+            $('#teklifOlustur').prop('disabled', false);
+            container.append(`
+                <div class="secilen-paket-header">
+                    <div>Paket</div><div>Modül</div><div>Tip</div><div>Kampanya</div><div>Liste</div><div><strong>Net Fiyat</strong></div><div>Miktar</div><div></div>
+                    <div class="resize-handle"></div>
+                </div>`);
+
+            const sirali = Array.from(seciliItemler.values())
+                .map(item => {
+                    let modulSira = 0;
+                    let miktarKademesiVar = false;
+                    if (item.tip === 'grup') {
+                        const grupVeri = tumVeriler.find(v => v.id === item.id) || {};
+                        modulSira = grupVeri.sira || 0;
+                    } else {
+                        const hamVeri = hamVeriler.find(v => v.id === item.id) || {};
+                        modulSira = hamVeri.sira || 0;
+                        miktarKademesiVar = hamVeri.miktarKademesiVar || false;
+                    }
+                    return {
+                        ...item,
+                        modulSira: modulSira,
+                        miktarKademesiVar: miktarKademesiVar,
+                        tipSirasi: item.tip === 'grup' ? 1 : 2
+                    };
+                })
+                .sort((a, b) => {
+                    if (a.tipSirasi !== b.tipSirasi) return a.tipSirasi - b.tipSirasi;
+                    if (a.modulSira !== b.modulSira) return a.modulSira - b.modulSira;
+                    return (a.adi || '').localeCompare(b.adi || '', 'tr');
+                });
+
+            sirali.forEach(item => {
+                const veri = tumVeriler.find(v => v.id === item.id) || {};
+                const hamVeri = hamVeriler.find(v => v.id === item.id) || {};
+                const parentId = item.paketMi ? item.parentId : (veri.parentId || hamVeri.parentId || 0);
+                const paketAdi = parentId ? (tumVeriler.find(x => x.id === parentId)?.adi || '') : '';
+                const kampanyaBadge = item.kampanyaBaslik ? `<span class="badge bg-success">${item.kampanyaBaslik}</span>` : '-';
+                const fiyatClass = (item.kampanyaYuzde > 0 || item.indirimYuzdesi > 0) ? 'text-danger fw-bold' : '';
+                let tipBadge = '';
+                if (item.tip === 'grup') {
+                    tipBadge = '<span class="badge bg-primary">PAKET</span>';
+                } else if (item.paketMi) {
+                    tipBadge = '<span class="badge bg-secondary">PAKET MODÜLÜ</span>';
+                } else {
+                    tipBadge = '<span class="badge bg-info">BAĞIMSIZ MODÜL</span>';
+                }
+
+                let miktarHtml = '';
+                if (item.tip === 'grup') {
+                    miktarHtml = '<span class="fw-bold text-success">1</span>';
+                } else {
+                    const hasMiktarKademesi = item.miktarKademesiVar || veri.miktarKademesiVar || hamVeri.miktarKademesiVar;
+                    if (hasMiktarKademesi) {
+                        const currentMiktar = item.miktar || 1;
+                        miktarHtml = `
+                            <input type="number"
+                                   class="miktar-input form-control form-control-sm"
+                                   value="${currentMiktar}"
+                                   min="1"
+                                   step="1"
+                                   style="width:70px;"
+                                   data-item-id="${item.id}"
+                                   data-item-key="${item.key}">`;
+                    } else {
+                        miktarHtml = '<span class="fw-bold text-success">1</span>';
+                    }
+                }
+
+                // DEĞİŞTİR: Net fiyat (kampanya indirimli) göster
+                const netFiyat = item.miktar === 0 ? format(0) :
+                                 (item.birimFiyatNet ? format((item.birimFiyatNet || 0) * (item.miktar || 1)) :
+                                 format(item.fiyat || 0));
+
+                container.append(`
+                   <div class="paket-item secili ${item.tip === 'grup' ? 'grup-ozel' : item.paketMi ? 'bagimli-modul' : 'bagimsiz-modul'}"
+         ondblclick="itemKaldirSağPanelden('${item.key}', event)">
+        <div class="secilen-paket-table">
+                            <div><strong>${item.tip === 'grup' ? item.adi : (item.paketAdi || paketAdi || 'Bağımsız')}</strong></div>
+                            <div>${item.tip === 'grup' ? '-' : item.adi}</div>
+                            <div>${tipBadge}</div>
+                            <div>${kampanyaBadge}</div>
+                            <div>${format(item.listeFiyati || item.fiyat)} ₺</div>
+                            <div class="${fiyatClass}">${netFiyat} ₺</div>
+                            <div>${miktarHtml}</div>
+                        </div>
+                        <div class="resize-handle"></div>
+                    </div>`);
+            });
+
+            container.off('change', '.miktar-input').on('change', '.miktar-input', function() {
+                const itemId = parseInt($(this).data('item-id'));
+                const itemKey = $(this).data('item-key');
+                let yeniMiktar = Math.max(1, parseInt($(this).val()) || 1);
+                let item = seciliItemler.get(itemKey);
+                if (!item) {
+                    for (const [key, val] of seciliItemler.entries()) {
+                        if (val.id === itemId) {
+                            item = val;
+                            itemKey = key;
+                            break;
+                        }
+                    }
+                }
+
+                if (item) {
+                    item.miktar = yeniMiktar;
+                    $(this).val(yeniMiktar);
+                    hesaplaFiyatOrani(itemId, yeniMiktar, itemKey);
+                    setTimeout(() => hesaplaToplam(), 100);
+                }
+            });
+
+            container.off('input', '.miktar-input').on('input', '.miktar-input', function() {
+                const val = $(this).val();
+                if (!/^\d*$/.test(val)) {
+                    $(this).val(val.replace(/\D/g, ''));
+                }
+            });
+
+            container.off('blur', '.miktar-input').on('blur', '.miktar-input', function() {
+                const itemId = parseInt($(this).data('item-id'));
+                const itemKey = $(this).data('item-key');
+                let yeniMiktar = Math.max(1, parseInt($(this).val()) || 1);
+                const maxLimit = 1000;
+                if (yeniMiktar > maxLimit) {
+                    yeniMiktar = maxLimit;
+                    $(this).val(maxLimit);
+                }
+                let item = seciliItemler.get(itemKey);
+                if (!item) {
+                    for (const [key, val] of seciliItemler.entries()) {
+                        if (val.id === itemId) {
+                            item = val;
+                            break;
+                        }
+                    }
+                }
+                if (item && item.miktar !== yeniMiktar) {
+                    item.miktar = yeniMiktar;
+                    hesaplaFiyatOrani(itemId, yeniMiktar, itemKey);
+                    setTimeout(() => hesaplaToplam(), 150);
+                }
+            });
+        }
+
+        function toggleItem(id, tip, event) {
+            const item = tumVeriler.find(x => x.id === id);
+            if (!item) return;
+
+            // Çift tıklama kontrolü
+            if (!event || event.detail < 2) {
+                const seciliClass = $(event.currentTarget).hasClass('secili') ? 'secili' : '';
+                if (tip === 'grup') {
+                    if (seciliItemler.has(id)) {
+                        $(event.currentTarget).addClass('secili');
+                    } else {
+                        $(event.currentTarget).removeClass('secili');
+                    }
+                } else {
+                    const modulSecili = Array.from(seciliItemler.values()).some(x =>
+                        x.id === id && x.tip !== 'grup'
+                    );
+                    if (modulSecili) {
+                        $(event.currentTarget).addClass('secili');
+                    } else {
+                        $(event.currentTarget).removeClass('secili');
+                    }
+                }
+                return;
+            }
+
+            console.log('Çift tıklandı:', item.adi, 'tip:', tip);
+
+            // Paket kontrolü
+            if (item.tip === 'grup' && tip !== 'grup') {
+                showToast('Hata', `"${item.adi}" bir pakettir ve modül olarak eklenemez!`, false);
+                return;
+            }
+
+            // Paket çakışma kontrolü
+            if (tip === 'grup' && !seciliItemler.has(id)) {
+                const yeniGrupModulIds = hamVeriler
+                    .filter(x => x.parentId == id && x.tip !== 'grup')
+                    .map(x => x.id);
+
+                const mevcutPaketler = Array.from(seciliItemler.values())
+                    .filter(x => x.tip === 'grup');
+
+                for (const mevcutGrup of mevcutPaketler) {
+                    const mevcutGrupModulIds = hamVeriler
+                        .filter(x => x.parentId == mevcutGrup.id && x.tip !== 'grup')
+                        .map(x => x.id);
+
+                    if (mevcutGrup.id === id) continue;
+
+                    const yeniModulSayisi = yeniGrupModulIds.length;
+                    const mevcutModulSayisi = mevcutGrupModulIds.length;
+
+                    if (mevcutModulSayisi > 0 && yeniModulSayisi > 0) {
+                        seciliItemler.delete(mevcutGrup.id);
+                        for (const [key, val] of seciliItemler.entries()) {
+                            if (val.paketMi && val.parentId === mevcutGrup.id) {
+                                seciliItemler.delete(key);
+                            }
+                        }
+                        showToast('Bilgi', `"${mevcutGrup.adi}" paketi kaldırıldı, yerine "${item.adi}" paketi eklenecek.`);
+                    }
+                }
+
+                if (tip !== 'grup') {
+                    const icerenPaketler = hamVeriler
+                        .filter(x => x.id === id && x.parentId)
+                        .map(x => x.parentId);
+
+                    for (const paketId of icerenPaketler) {
+                        if (seciliItemler.has(paketId)) {
+                            const paket = tumVeriler.find(x => x.id === paketId);
+                            showToast('Uyarı', `"${item.adi}" modülü "${paket?.adi}" paketi içeriğinde bulunmaktadır.`, false);
+                            return;
+                        }
+                    }
+                }
+
+                // Paket kontrolü
+                for (const mevcutGrup of mevcutPaketler) {
+                    const mevcutGrupModulIds = hamVeriler
+                        .filter(x => x.parentId == mevcutGrup.id && x.tip !== 'grup')
+                        .map(x => x.id);
+
+                    if (mevcutGrupModulIds.length > yeniGrupModulIds.length &&
+                        yeniGrupModulIds.every(modulId => mevcutGrupModulIds.includes(modulId))) {
+                        showToast('Uyarı', `"${mevcutGrup.adi}" paketi daha kapsamlı olduğu için "${item.adi}" eklenemez.`, false);
+                        return;
+                    }
+                }
+            }
+
+            if (seciliItemler.has(id) || [...seciliItemler.values()].some(x => x.id === id && x.paketMi)) {
+                itemKaldir(id);
+            } else {
+                if (tip === 'grup') {
+                    itemEkle(id, 'grup');
+                    const altModuller = hamVeriler.filter(x => x.parentId == id && x.tip !== 'grup');
+                    altModuller.forEach(modul => {
+                        const key = modul.id + '_p' + id;
+                        seciliItemler.set(key, {
+                            id: modul.id,
+                            key: key,
+                            tip: 'modul',
+                            adi: modul.adi,
+                            paketMi: true,
+                            parentId: id,
+                            paketAdi: item.adi,
+                            indirimYuzdesi: 0,
+                            miktar: 1,
+                            fiyatOrani: 0,
+                            kampanyaYuzde: modul.kampanyaYuzde || 0,
+                            kampanyaBaslik: modul.kampanyaBaslik || '',
+                            kampanyaVar: !!modul.kampanyaVar,
+                            fiyat: modul.fiyat,
+                            listeFiyati: modul.KFiyat || modul.fiyat,
+                            birimFiyatNet: modul.fiyat,
+                            satirToplamNet: modul.fiyat
+                        });
+                    });
+                    showToast('Paket Eklendi', `"${item.adi}" ve tüm modülleri eklendi.`);
+
+                    // YENİ EKLENEN KISIM: Paket seçildiğinde bağlı paketleri kontrol et
+                    setTimeout(() => {
+                        otomatikBagliPaketleriPaketten(id, item.adi);
+                    }, 500);
+
+                } else {
+                    if (item.tip === 'grup') {
+                        showToast('Hata', `"${item.adi}" bir pakettir, modül olarak eklenemez!`, false);
+                        return;
+                    }
+                    itemEkle(id, 'modul', false);
+                }
+                renderAll();
+            }
+        }
+
+        function otomatikBagliPaketleriPaketten(paketId, paketAdi) {
+            console.log(`Paket "${paketAdi}" için bağlı paketler kontrol ediliyor...`);
+
+            // Paketin tüm modüllerini bul
+            const paketModulleri = Array.from(seciliItemler.values())
+                .filter(item => item.paketMi && item.parentId === paketId);
+
+            if (paketModulleri.length === 0) {
+                console.log('Pakette modül bulunamadı');
+                return;
+            }
+
+            console.log(`${paketModulleri.length} modül için bağlı paketler kontrol edilecek:`);
+
+            let toplamBagliPaketler = [];
+            let kontrolEdilenModuller = 0;
+
+            // Her modül için bağlı paketleri kontrol et
+            paketModulleri.forEach((modul, index) => {
+                setTimeout(() => {
+                    $.ajax({
+                        url: '/AdminTeklifVer/GetirBagliPaketler',
+                        type: 'GET',
+                        data: { paketId: modul.id },
+                        success: function(response) {
+                            if (response.success && response.bagliPaketler && response.bagliPaketler.length > 0) {
+                                console.log(`"${modul.adi}" modülü için ${response.bagliPaketler.length} bağlı paket bulundu`);
+
+                                response.bagliPaketler.forEach(paket => {
+                                    // Zaten seçili mi kontrol et
+                                    const zatenSecili = Array.from(seciliItemler.values()).some(item =>
+                                        item.id === paket.id
+                                    );
+
+                                    if (!zatenSecili) {
+                                        // Bağlı paket henüz toplam listeye eklenmemişse ekle
+                                        const mevcut = toplamBagliPaketler.find(p => p.id === paket.id);
+                                        if (!mevcut) {
+                                            toplamBagliPaketler.push({
+                                                ...paket,
+                                                anaModul: modul.adi
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+
+                            kontrolEdilenModuller++;
+
+                            // Tüm modüller kontrol edildiğinde
+                            if (kontrolEdilenModuller === paketModulleri.length) {
+                                if (toplamBagliPaketler.length > 0) {
+                                    bagliPaketleriEkleDialog(paketAdi, toplamBagliPaketler);
+                                }
+                            }
+                        },
+                        error: function() {
+                            kontrolEdilenModuller++;
+                            if (kontrolEdilenModuller === paketModulleri.length && toplamBagliPaketler.length > 0) {
+                                bagliPaketleriEkleDialog(paketAdi, toplamBagliPaketler);
+                            }
+                        }
+                    });
+                }, index * 300); // Her istek arasına küçük bir gecikme
+            });
+        }
+
+        function bagliPaketleriEkleDialog(paketAdi, bagliPaketler) {
+            let message = `<strong>"${paketAdi}" paketi için ${bagliPaketler.length} bağlı modül bulundu:</strong><br><br>`;
+            let modulListesi = '';
+
+            bagliPaketler.forEach((paket, index) => {
+                modulListesi += `${index + 1}. <strong>${paket.adi}</strong> (${paket.anaModul} modülüne bağlı)<br>`;
+            });
+
+            message += modulListesi;
+            message += '<br><strong>Otomatik olarak teklife eklemek istiyor musunuz?</strong>';
+
+            Swal.fire({
+                title: 'Bağlı Modüller Bulundu',
+                html: message,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Evet, Tümünü Ekle',
+                cancelButtonText: 'Hayır, Sadece Paketi Ekle',
+                showDenyButton: true,
+                denyButtonText: 'Listeyi Göster ve Seç',
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-secondary',
+                    denyButton: 'btn btn-info'
+                },
+                buttonsStyling: false,
+                width: '600px'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Tümünü ekle
+                    let eklenecekler = [];
+                    bagliPaketler.forEach(paket => {
+                        itemEkle(paket.id, 'modul', false, 0, 1);
+                        eklenecekler.push(paket.adi);
+                    });
+
+                    showToast('Bağlı Modüller Eklendi',
+                        `<strong>${eklenecekler.length} modül otomatik eklendi:</strong><br>` +
+                        eklenecekler.join('<br>'),
+                        true
+                    );
+
+                    setTimeout(() => hesaplaToplam(), 800);
+
+                } else if (result.isDenied) {
+                    // Listeyi göster ve seçim yap
+                    bagliPaketleriListeSecim(paketAdi, bagliPaketler);
+                }
+            });
+        }
+
+        function itemEkle(id, tip, paketMi = false, parentId = 0, miktar = null) {
+            const v = tumVeriler.find(x => x.id === id);
+            if (!v) {
+                console.log('Öğe bulunamadı:', id);
+                return;
+            }
+
+            const hamVeri = hamVeriler.find(x => x.id === id);
+            const miktarKademesiVar = hamVeri?.miktarKademesiVar || false;
+            const varsayilanMiktar = miktar !== null ? miktar : 1;
+            const bagimsizMi = (tip !== 'grup' && !paketMi);
+            const key = paketMi ? `${id}_p${parentId}` : id;
+
+            seciliItemler.set(key, {
+                id: id,
+                key: key,
+                tip: tip,
+                adi: v.adi,
+                indirimYuzdesi: (tip === 'grup' && v.indOran > 0) ? v.indOran : 0,
+                miktar: varsayilanMiktar,
+                fiyatOrani: 0,
+                isOranType: true,
+                kampanyaYuzde: v.kampanyaYuzde || 0,
+                kampanyaBaslik: v.kampanyaVar ? v.kampanyaBaslik : '',
+                kampanyaVar: !!v.kampanyaVar,
+                fiyat: v.fiyat,
+                listeFiyati: v.KFiyat || v.fiyat,
+                birimFiyatNet: v.fiyat,
+                satirToplamNet: v.fiyat * varsayilanMiktar,
+                paketMi: paketMi,
+                bagimsizMi: bagimsizMi,
+                parentId: parentId || v.parentId || 0,
+                paketAdi: paketMi ? tumVeriler.find(g => g.id === parentId)?.adi || '' : '',
+                miktarKademesiVar: miktarKademesiVar
+            });
+
+            renderAll();
+
+            // YENİ: Bağlı paketleri kontrol et (modül ise)
+            if (tip === 'modul' && !paketMi) {
+                otomatikBagliPaketleriSec(id);
+            }
+        }
+
+        function itemKaldir(keyVeyaId, paketIdHint = null) {
+            let item = seciliItemler.get(keyVeyaId);
+            let actualKey = keyVeyaId;
+
+            if (!item) {
+                for (const [key, val] of seciliItemler.entries()) {
+                    if (val.id === keyVeyaId) {
+                        item = val;
+                        actualKey = key;
+                        break;
+                    }
+                }
+            }
+
+            if (!item) {
+                // Hiçbir şey bulunamazsa bile render yap
+                renderPaketListesi();
+                renderSecilenItemler();
+                hesaplaToplam();
+                return;
+            }
+
+            const itemAdi = item.adi;
+
+            if (item.tip === 'grup') {
+                // Tüm bağlı modülleri sil
+                for (const [key, val] of seciliItemler.entries()) {
+                    if (val.paketMi && val.parentId === item.id) {
+                        seciliItemler.delete(key);
+                    }
+                }
+                seciliItemler.delete(actualKey);
+                showToast('Paket Kaldırıldı', `"${itemAdi}" paketi ve tüm modülleri kaldırıldı.`);
+
+                // Paket kaldırıldıktan sonra tüm tabloyu boşalt (eğer başka paket yoksa)
+                const kalanPaketler = Array.from(seciliItemler.values()).filter(x => x.tip === 'grup');
+                if (kalanPaketler.length === 0) {
+                    // Paket yoksa tüm bağımsız modülleri de temizle
+                    seciliItemler.clear();
+                    showToast('Bilgi', 'Tüm paketler kaldırıldı, teklif özeti temizlendi.', true);
+                }
+            }
+            else if (item.paketMi || paketIdHint) {
+                // Paket bozulma durumu (bir modül çıkarılınca paket kalkar)
+                const paketId = item.parentId || paketIdHint;
+                const paket = seciliItemler.get(paketId);
+
+                if (paket && paket.tip === 'grup') {
+                    const paketAdi = paket.adi;
+                    const silinecekBagliKeyler = [];
+                    const kalanModulIds = [];
+
+                    for (const [key, val] of seciliItemler.entries()) {
+                        if (val.paketMi && val.parentId === paketId) {
+                            if (key !== actualKey) {
+                                kalanModulIds.push(val.id);
+                            }
+                            silinecekBagliKeyler.push(key);
+                        }
+                    }
+
+                    seciliItemler.delete(paketId);
+                    silinecekBagliKeyler.forEach(k => seciliItemler.delete(k));
+
+                    // Bağımsız modüllere eklemeden önce kontrol et - eğer paket yoksa temizle
+                    kalanModulIds.forEach(id => itemEkle(id, 'modul', false, 0));
+
+                    showToast('Paket Bozuldu', `"${paketAdi}" paketinden "${itemAdi}" çıkarıldı. Kalan ${kalanModulIds.length} modül bağımsız olarak eklendi.`, true);
+
+                    const paketOlustu = otomatikPaketTamamla();
+                    if (paketOlustu) {
+                        showToast('Otomatik Paket!', 'Kalan modüller başka bir paketi tam olarak karşıladığı için otomatik paket eklendi!', true);
+                    }
+                } else {
+                    seciliItemler.delete(actualKey);
+                }
+            }
+            else {
+                // Bağımsız modül
+                seciliItemler.delete(actualKey);
+                showToast('Kaldırıldı', `"${itemAdi}" kaldırıldı.`, true);
+            }
+
+            // Tekrar render yap
+            renderPaketListesi();
+            renderSecilenItemler();
+            hesaplaToplam();
+        }
+
+        function itemKaldirSağPanelden(itemKey, event) {
+            if (!event || event.detail < 2) return; // Sadece çift tıklama
+
+            const item = seciliItemler.get(itemKey);
+            if (!item) {
+                console.warn('Sağ panelden kaldırılmak istenen öğe bulunamadı:', itemKey);
+                return;
+            }
+
+            console.log('Sağ panelden çift tıklama ile kaldırılıyor:', item.adi, '(Key:', itemKey, ')');
+
+            // Normal kaldırma prosedürünü kullan
+            itemKaldir(itemKey);
+
+            // Toast bildirimi
+            showToast('Kaldırıldı', `"${item.adi}" teklif özetinden kaldırıldı.`, true);
+        }
+
+        function otomatikPaketTamamla() {
+            const bagimsizModulIds = Array.from(seciliItemler.values())
+                .filter(item => item.tip !== 'grup' && !item.paketMi && item.id)
+                .map(item => Number(item.id));
+
+            if (bagimsizModulIds.length < 2) return false;
+
+            let paketOlustu = false;
+
+            for (const grup of tumVeriler.filter(g => g.tip === 'grup')) {
+                const grupId = Number(grup.id);
+                const paketModulIds = hamVeriler
+                    .filter(x => Number(x.parentId) === grupId && x.tip !== 'grup')
+                    .map(x => Number(x.id));
+
+                const tamEslesme =
+                    paketModulIds.length === bagimsizModulIds.length &&
+                    paketModulIds.every(id => bagimsizModulIds.includes(id)) &&
+                    bagimsizModulIds.every(id => paketModulIds.includes(id));
+
+                if (tamEslesme && !seciliItemler.has(grupId)) {
+                    const silinecekKeyler = [];
+                    seciliItemler.forEach((item, key) => {
+                        if (!item.paketMi && item.tip !== 'grup' && bagimsizModulIds.includes(Number(item.id))) {
+                            silinecekKeyler.push(key);
+                        }
+                    });
+                    silinecekKeyler.forEach(key => seciliItemler.delete(key));
+
+                    itemEkle(grupId, 'grup');
+
+                    paketModulIds.forEach(modulId => {
+                        const modul = tumVeriler.find(x => Number(x.id) === modulId);
+                        if (!modul) return;
+
+                        const hamModulVeri = hamVeriler.find(x => Number(x.id) === modulId);
+                        const miktarKademesiVar = hamModulVeri?.miktarKademesiVar || false;
+                        const eskiBagimsizItem = Array.from(seciliItemler.values()).find(i => Number(i.id) === modulId && !i.paketMi);
+                        const eskiMiktar = eskiBagimsizItem?.miktar ?? 1;
+                        const finalMiktar = miktarKademesiVar ? 0 : eskiMiktar;
+
+                        const yeniKey = `${modulId}_p${grupId}`;
+                        seciliItemler.set(yeniKey, {
+                            id: modulId,
+                            key: yeniKey,
+                            tip: 'modul',
+                            adi: modul.adi,
+                            paketMi: true,
+                            parentId: grupId,
+                            paketAdi: grup.adi,
+                            indirimYuzdesi: 0,
+                            miktar: finalMiktar,
+                            fiyatOrani: 0,
+                            kampanyaYuzde: modul.kampanyaYuzde || 0,
+                            kampanyaBaslik: modul.kampanyaVar ? modul.kampanyaBaslik : '',
+                            kampanyaVar: !!modul.kampanyaVar,
+                            fiyat: modul.fiyat,
+                            listeFiyati: modul.KFiyat || modul.fiyat,
+                            birimFiyatNet: modul.fiyat,
+                            satirToplamNet: modul.fiyat * finalMiktar
+                        });
+                    });
+
+                    showToast('Otomatik Paket!', `"${grup.adi}" paketi otomatik seçildi!`, true);
+                    paketOlustu = true;
+
+                    if (renderEt) {
+                        renderPaketListesi();
+                        renderSecilenItemler();
+                        hesaplaToplam();
+                    }
+                    break;
+                }
+            }
+            return paketOlustu;
+        }
+
+        function hesaplaToplam() {
+            // Eğitim süresi hesapla
+            let toplamEgitimSuresi = 0;
+            console.log('=== EĞİTİM SÜRESİ HESAPLAMASI BAŞLADI (Frontend - TAM VERSİYON) ===');
+
+            const duzeltSure = (deger) => {
+                if (deger === null || deger === undefined || deger === '' || deger === '0') return 0;
+                if (typeof deger === 'number') return deger;
+                const temiz = String(deger).trim().replace(',', '.');
+                return parseFloat(temiz) || 0;
+            };
+
+            seciliItemler.forEach(item => {
+                const veri = tumVeriler.find(v => v.id === item.id);
+                const hamVeri = hamVeriler.find(h => h.id === item.id);
+                const kaynak = veri || hamVeri;
+                if (!kaynak) return;
+
+                const sure = duzeltSure(kaynak.egitimSuresi);
+                console.log(`İşleniyor: ${kaynak.adi} (ID: ${kaynak.id}, Tip: ${item.tip}, PaketMi: ${item.paketMi}) - egitimSuresi: "${kaynak.egitimSuresi}" → ${sure} saat`);
+
+                if (item.tip === 'grup') {
+                    if (sure > 0) {
+                        toplamEgitimSuresi += sure;
+                        console.log(`✓ Paket eğitim süresi eklendi: ${kaynak.adi} → ${sure} saat`);
+                    }
+
+                    const paketIciModuller = Array.from(seciliItemler.values())
+                        .filter(i => i.paketMi && i.parentId === item.id);
+                    console.log(`Paket "${kaynak.adi}" içinde seciliItemler'da ${paketIciModuller.length} modül bulundu (paketMi=true)`);
+
+                    paketIciModuller.forEach(modulItem => {
+                        const modulVeri = tumVeriler.find(v => v.id === modulItem.id) || hamVeriler.find(h => h.id === modulItem.id);
+                        if (modulVeri) {
+                            const modulSure = duzeltSure(modulVeri.egitimSuresi);
+                            if (modulSure > 0) {
+                                toplamEgitimSuresi += modulSure;
+                                console.log(` ✓ Paket modülü eğitim süresi eklendi: ${modulVeri.adi} → ${modulSure} saat`);
+                            }
+                        }
+                    });
+                }
+                else if (!item.paketMi) {
+                    if (sure > 0) {
+                        toplamEgitimSuresi += sure;
+                        console.log(`✓ Bağımsız modül eğitim süresi eklendi: ${kaynak.adi} → ${sure} saat`);
+                    }
+                }
+            });
+
+            console.log(`=== TOPLAM EĞİTİM SÜRESİ (Frontend): ${toplamEgitimSuresi} saat ===`);
+
+            const formatSure = (sayi) => {
+                return sayi.toLocaleString('tr-TR', {
+                    minimumFractionDigits: 1,
+                    maximumFractionDigits: 1
+                });
+            };
+
+            $('#ozetEgitimSuresi').text(`${formatSure(toplamEgitimSuresi)} Saat`);
+
+            if (seciliItemler.size === 0) {
+                sifirlaOdeme();
+                return;
+            }
+
+            const toplamMiktarOrani = Array.from(seciliItemler.values())
+                .reduce((s, i) => s + (i.fiyatOrani || 0), 0);
+
+            const gonder = {
+                GrupIndirimOrani: grupIndirimOrani,
+                ToplamMiktarOrani: toplamMiktarOrani,
+                SeciliItemler: Array.from(seciliItemler.values()).map(i => ({
+                    Id: i.id,
+                    Tip: i.tip,
+                    IndirimYuzdesi: i.indirimYuzdesi || 0,
+                    Miktar: i.miktar || 1,
+                    FiyatOrani: i.fiyatOrani || 0,
+                    PaketMi: i.paketMi || false,
+                    isOranType: i.isOranType !== false
+                }))
+            };
+
+            $.ajax({
+                url: '/AdminTeklifVer/HesaplaTeklif',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(gonder),
+                success: function (res) {
+                    if (res.success && res.hesaplanmisItemler) {
+                        res.hesaplanmisItemler.forEach(h => {
+                            seciliItemler.forEach((item, key) => {
+                                if (item.id === h.id) {
+                                    item.listeFiyati = h.listeFiyati || item.fiyat;
+                                    item.birimFiyatNet = h.indirimliFiyat;
+                                    item.satirToplamNet = h.indirimliFiyat * (item.miktar || 1);
+                                    item.kampanyaYuzde = h.kampanyaYuzde || 0;
+                                    item.kampanyaVar = !!h.kampanyaVar;
+                                    item.kampanyaBaslik = h.kampanyaBaslik || '';
+                                }
+                            });
+                        });
+
+                        let paketToplam = 0;
+                        let bagimsizModulToplam = 0;
+
+                        // Liste fiyatı üzerinden hesapla
+                        seciliItemler.forEach(item => {
+                            if (item.tip === 'grup') {
+                                paketToplam += (item.listeFiyati || 0) * (item.miktar || 1);
+                            } else if (!item.paketMi) {
+                                bagimsizModulToplam += (item.listeFiyati || item.fiyat || 0) * (item.miktar || 1);
+                            }
+                        });
+
+                        let araToplam = paketToplam + bagimsizModulToplam;
+                        let toplamFiyatOraniYuzde = 0;
+
+                        seciliItemler.forEach(item => {
+                            if (item.isOranType !== false) {
+                                toplamFiyatOraniYuzde += (item.fiyatOrani || 0);
+                            }
+                        });
+
+                        const miktarEkTutar = araToplam * (toplamFiyatOraniYuzde / 100);
+                        let toplamIndirimsiz = araToplam + miktarEkTutar;
+
+                        let grupIndirimTutari = 0;
+                        if (grupIndirimOrani > 0) {
+                            grupIndirimTutari = toplamIndirimsiz * (grupIndirimOrani / 100);
+                        }
+
+                        const toplamKampanyaIndirimi = res.toplamIndirim || 0;
+                        const toplamIndirimTutari = grupIndirimTutari + toplamKampanyaIndirimi;
+                        let indirimSonrasiToplam = toplamIndirimsiz - toplamIndirimTutari;
+
+                        const kdvValue = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.KDV));
+                        const kdvOrani = Number(kdvValue) / 100;
+                        console.log("kdvValue:", kdvValue);
+                        console.log("kdvOrani:", kdvOrani);
+
+                        const kdvTutari = indirimSonrasiToplam * kdvOrani;
+                        const genelToplam = indirimSonrasiToplam + kdvTutari;
+
+                        // Özet tabloyu güncelle (liste ve kampanya aynı olacak)
+                        $('#ozetListeToplamIndirimsiz').text(format(toplamIndirimsiz) + ' ₺');
+                        $('#ozetListeIndirimTutari').text(format(toplamIndirimTutari) + ' ₺');
+                        $('#ozetListeAraToplam').html(format(indirimSonrasiToplam) + ' ₺');
+                        $('#ozetListeKDV').text(format(kdvTutari) + ' ₺');
+                        $('#ozetListeGenelToplam').html('<strong>' + format(genelToplam) + ' ₺</strong>');
+
+                        $('#ozetKampanyaToplamIndirimsiz').text(format(toplamIndirimsiz) + ' ₺');
+                        $('#ozetKampanyaIndirimTutari').text(format(toplamIndirimTutari) + ' ₺');
+                        $('#ozetKampanyaAraToplam').html(format(indirimSonrasiToplam) + ' ₺');
+                        $('#ozetKampanyaKDV').text(format(kdvTutari) + ' ₺');
+                        $('#ozetKampanyaGenelToplam').html('<strong>' + format(genelToplam) + ' ₺</strong>');
+
+                        // Tabloyu yeniden render et (net fiyatlar kampanya indirimli olacak)
+                        renderSecilenItemler();
+                    }
+                },
+                error: function () {
+                    showToast('Hata', 'Fiyat hesaplanırken bir sorun oluştu.', false);
+                }
+            });
+        }
+
+        function teklifOlustur() {
+            if (seciliItemler.size === 0 || !seciliMusteriId || !seciliLisansTipId) {
+                showToast('Hata', 'Müşteri, lisans tipi ve ürün seçmelisiniz!', false);
+                return;
+            }
+
+            const gecerlilikTarihiStr = $('#gecerlilikTarihiInput').val();
+            if (!gecerlilikTarihiStr) {
+                showToast('Hata', 'Lütfen geçerlilik tarihi seçiniz!', false);
+                return;
+            }
+
+            // Yeni müşteri mi kullanıyoruz?
+            const yeniMusteriMi = seciliMusteriId && String(seciliMusteriId).startsWith('yeni-');
+
+            if (yeniMusteriMi && !geciciMusteri) {
+                showToast('Hata', 'Yeni müşteri bilgileri eksik!', false);
+                return;
+            }
+
+            const mevcutTeklifId = $('#mevcutTeklifId').val();
+            const revizyonMu = mevcutTeklifId && mevcutTeklifId > 0;
+
+            function parsePriceFromElement(elementId) {
+                const element = document.getElementById(elementId);
+                if (!element) {
+                    console.error(`Element ${elementId} bulunamadı!`);
+                    return 0;
+                }
+
+                let text = element.textContent || element.innerText || element.innerHTML || '0';
+                text = text.replace(/<[^>]*>/g, '');
+                text = text.replace('₺', '').replace('TL', '').trim();
+
+                if (text.includes(',')) {
+                    text = text.replace(/\./g, '');
+                    text = text.replace(',', '.');
+                }
+
+                const result = parseFloat(text);
+                return isNaN(result) ? 0 : result;
+            }
+
+            const data = {
+                TeklifNo: $('#teklifNoInput').val(),
+                MusteriId: yeniMusteriMi ? 0 : seciliMusteriId,
+                YeniMusteri: seciliMusteriId === -1 ? geciciMusteriData : null,
+                LisansTipId: seciliLisansTipId,
+                Aciklama: $('#genelAciklama').val().trim(),
+                GrupIndirimOrani: grupIndirimOrani,
+                GecerlilikTarihi: gecerlilikTarihiStr,
+                SeciliItemler: Array.from(seciliItemler.values()).map(i => ({
+                    Id: i.id,
+                    Tip: i.tip,
+                    Adi: i.adi,
+                    IndirimYuzdesi: i.indirimYuzdesi || 0,
+                    Miktar: i.miktar || 1,
+                    FiyatOrani: i.fiyatOrani || 0,
+                    KampanyaBaslik: i.kampanyaBaslik || "",
+                    PaketMi: i.paketMi,
+                    ListeFiyati: i.listeFiyati || 0,
+                    BirimFiyatNet: i.birimFiyatNet || 0,
+                    SatirToplamNet: i.satirToplamNet || 0,
+                    KampanyaYuzde: i.kampanyaYuzde || 0,
+                    KampanyaVar: i.kampanyaVar || false
+                })),
+                FiyatOzete: {
+                    Liste: {
+                        Indirim: parsePriceFromElement('ozetListeIndirimTutari'),
+                        KDVToplam: parsePriceFromElement('ozetListeKDV'),
+                        AraToplam: parsePriceFromElement('ozetListeAraToplam'),
+                        NetToplam: parsePriceFromElement('ozetListeGenelToplam')
+                    },
+                    Kampanya: {
+                        Indirim: parsePriceFromElement('ozetKampanyaIndirimTutari'),
+                        KDVToplam: parsePriceFromElement('ozetKampanyaKDV'),
+                        AraToplam: parsePriceFromElement('ozetKampanyaAraToplam'),
+                        NetToplam: parsePriceFromElement('ozetKampanyaGenelToplam')
+                    }
+                }
+            };
+
+            const btn = $('#teklifOlustur').prop('disabled', true).html('OLUŞTURULUYOR...');
+
+            let url = '/AdminTeklifVer/OlusturTeklif';
+            if (revizyonMu) {
+                url += '?Id=' + mevcutTeklifId;
+            }
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(r) {
+                    if (r.success) {
+                        if (r.teklifId) {
+                            sessionStorage.setItem('lastCreatedTeklifId', r.teklifId);
+                        }
+                        window.location.href = '/AdminTeklif';
+                    } else {
+                        showToast('Hata', r.message || 'Teklif oluşturulamadı', false);
+                        btn.prop('disabled', false).html('TEKLİF OLUŞTUR');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Hata:', error);
+                    showToast('Hata', 'Sunucu hatası: ' + error, false);
+                },
+                complete: function() {
+                    btn.prop('disabled', false).html('TEKLİF OLUŞTUR');
+                }
+            });
+        }
+
+        function sifirlaOdeme() {
+            $('#ozetListeToplamIndirimsiz, #ozetKampanyaToplamIndirimsiz').text('0,00 ₺');
+            $('#ozetListeIndirimTutari, #ozetKampanyaIndirimTutari').text('0,00 ₺');
+            $('#ozetListeKDV, #ozetKampanyaKDV').text('0,00 ₺');
+            $('#ozetListeAraToplam, #ozetKampanyaAraToplam').html('0,00 ₺');
+            $('#ozetListeGenelToplam, #ozetKampanyaGenelToplam').html('<strong>0,00 ₺</strong>');
+            $('#ozetListeIndirim, #ozetKampanyaIndirim').text('0,00 ₺');
+            $('#ozetMiktarEkTutar, #ozetKampanyaMiktarEkTutar').text('0,00 ₺');
+            $('#ozetListeNet, #ozetKampanyaNet').html('<strong>0,00 ₺</strong>');
+            $('#ozetEgitimSuresi').text('0 Saat');
+        }
+
+        function format(num) {
+            return new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num || 0);
+        }
+
+        function resetPanels() {
+            seciliItemler.clear();
+            tumVeriler = [];
+            grupIndirimOrani = 0;
+            $('#grupIndirimInput').val(0).prop('disabled', true);
+            $('#tumunuSec, #tumunuKaldir').prop('disabled', true);
+            renderAll();
+        }
+
+        // Paket seçildiğinde bağlı paketleri otomatik seçen fonksiyon
+        function otomatikBagliPaketleriSec(paketId) {
+            console.log(`Bağlı paketler kontrol ediliyor: ID ${paketId}`);
+
+            $.ajax({
+                url: '/AdminTeklifVer/GetirBagliPaketler',
+                type: 'GET',
+                data: { paketId: paketId },
+                success: function(response) {
+                    if (response.success && response.bagliPaketler && response.bagliPaketler.length > 0) {
+                        console.log(`${response.bagliPaketler.length} bağlı paket bulundu:`, response.bagliPaketler);
+
+                        let otomatikEklenecekler = [];
+                        let baslik = '';
+
+                        if (response.bagliPaketler.length === 1) {
+                            baslik = '1 bağlı modül bulundu';
+                        } else {
+                            baslik = `${response.bagliPaketler.length} bağlı modül bulundu`;
+                        }
+
+                        // SweetAlert ile onay iste
+                        Swal.fire({
+                            title: 'Bağlı Modüller Bulundu',
+                            html: `${baslik}<br><br><strong>Otomatik olarak teklife eklemek istiyor musunuz?</strong>`,
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Evet, Ekle',
+                            cancelButtonText: 'Hayır, Sadece Seçileni Ekle',
+                            customClass: {
+                                confirmButton: 'btn btn-success',
+                                cancelButton: 'btn btn-secondary'
+                            },
+                            buttonsStyling: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Bağlı tüm paketleri ekle
+                                response.bagliPaketler.forEach(function(paket) {
+                                    // Bu paket zaten seçili mi kontrol et
+                                    let zatenSecili = false;
+
+                                    seciliItemler.forEach(function(item, key) {
+                                        if (item.id === paket.id) {
+                                            zatenSecili = true;
+                                        }
+                                    });
+
+                                    if (!zatenSecili) {
+                                        // Paketi seçili listeye ekle
+                                        itemEkle(paket.id, 'modul', false, 0, 1);
+                                        otomatikEklenecekler.push(paket.adi);
+                                    }
+                                });
+
+                                if (otomatikEklenecekler.length > 0) {
+                                    showToast('Bağlı Modüller Eklendi',
+                                        `<strong>${otomatikEklenecekler.length} modül otomatik eklendi:</strong><br>` +
+                                        otomatikEklenecekler.join('<br>'),
+                                        true
+                                    );
+                                }
+
+                                // Teklifi yeniden hesapla
+                                setTimeout(() => hesaplaToplam(), 500);
+                            }
+                        });
+                    }
+                },
+                error: function() {
+                    console.log('Bağlı paketler kontrolü başarısız');
+                }
+            });
+        }
+
+        function geciciMusteriKaydet() {
+            const form = document.getElementById('yeniMusteriForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            geciciMusteri = {
+                TicariUnvan: $('#yeniTicariUnvan').val().trim(),
+                Ad: $('#yeniAd').val().trim(),
+                Soyad: $('#yeniSoyad').val().trim(),
+                KullaniciAdi: $('#yeniKullaniciAdi').val().trim(),
+                Sifre: $('#yeniSifre').val(),
+                Email: $('#yeniEmail').val().trim(),
+                Telefon: $('#yeniTelefon').val().trim(),
+                MusteriDurumuId: parseInt($('#yeniMusteriDurumuId').val()) || 0,
+                MusteriTipiId: parseInt($('#yeniMusteriTipiId').val()) || null,
+                Diger: $('#yeniDiger').val().trim(),
+                BayiId: parseInt($('#yeniBayiId').val()) || null,
+                Bolge: $('#yeniBolge').val().trim(),
+                Il: $('#yeniIl').val().trim(),
+                Ilce: $('#yeniIlce').val().trim(),
+                Belde: $('#yeniBelde').val().trim(),
+                Adres: $('#yeniAdres').val().trim(),
+                TCVNo: $('#yeniTCVNo').val().trim(),
+                VergiDairesi: $('#yeniVergiDairesi').val().trim(),
+                KepAdresi: $('#yeniKepAdresi').val().trim(),
+                WebAdresi: $('#yeniWebAdresi').val().trim(),
+                Aciklama: $('#yeniAciklama').val().trim(),
+                AlpemixFirmaAdi: $('#yeniAlpemixFirmaAdi').val().trim(),
+                AlpemixGrupAdi: $('#yeniAlpemixGrupAdi').val().trim(),
+                AlpemixSifre: $('#yeniAlpemixSifre').val().trim(),
+                Logo: document.getElementById('yeniLogo').files[0] || null,
+                Imza: document.getElementById('yeniImza').files[0] || null
+            };
+
+            const fullName = `${geciciMusteri.Ad} ${geciciMusteri.Soyad}`.trim();
+            const optionHtml = `<option value="yeni-${Date.now()}" selected>${fullName} (Yeni Müşteri)</option>`;
+
+            $('#musteriSelect option[value^="yeni-"]').remove();
+            $('#musteriSelect').append(optionHtml).val(`yeni-${Date.now()}`).trigger('change');
+            seciliMusteriId = `yeni-${Date.now()}`;
+
+            showToast('Başarılı', `"${fullName}" geçici olarak eklendi. Teklif oluşturunca kaydedilecek.`, true);
+            bootstrap.Modal.getInstance(document.getElementById('yeniMusteriModal')).hide();
+        }
+
+        $('#yeniMusteriModal').on('show.bs.modal', function () {
+            if (geciciMusteri) {
+                $('#yeniTicariUnvan').val(geciciMusteri.TicariUnvan || '');
+                $('#yeniAd').val(geciciMusteri.Ad || '');
+                $('#yeniSoyad').val(geciciMusteri.Soyad || '');
+                $('#yeniKullaniciAdi').val(geciciMusteri.KullaniciAdi || '');
+                $('#yeniEmail').val(geciciMusteri.Email || '');
+                $('#yeniTelefon').val(geciciMusteri.Telefon || '');
+                $('#yeniMusteriDurumuId').val(geciciMusteri.MusteriDurumuId || '');
+                $('#yeniMusteriTipiId').val(geciciMusteri.MusteriTipiId || '');
+                $('#yeniDiger').val(geciciMusteri.Diger || '');
+                $('#yeniBayiId').val(geciciMusteri.BayiId || '');
+                $('#yeniBolge').val(geciciMusteri.Bolge || '');
+                $('#yeniIl').val(geciciMusteri.Il || '');
+                $('#yeniIlce').val(geciciMusteri.Ilce || '');
+                $('#yeniBelde').val(geciciMusteri.Belde || '');
+                $('#yeniAdres').val(geciciMusteri.Adres || '');
+                $('#yeniTCVNo').val(geciciMusteri.TCVNo || '');
+                $('#yeniVergiDairesi').val(geciciMusteri.VergiDairesi || '');
+                $('#yeniKepAdresi').val(geciciMusteri.KepAdresi || '');
+                $('#yeniWebAdresi').val(geciciMusteri.WebAdresi || '');
+                $('#yeniAciklama').val(geciciMusteri.Aciklama || '');
+                $('#yeniAlpemixFirmaAdi').val(geciciMusteri.AlpemixFirmaAdi || '');
+                $('#yeniAlpemixGrupAdi').val(geciciMusteri.AlpemixGrupAdi || '');
+                $('#yeniAlpemixSifre').val(geciciMusteri.AlpemixSifre || '');
+                toggleDigerInputYeniMusteri('#yeniMusteriTipiId', '#yeniDigerContainer', '#yeniDiger');
+            } else {
+                document.getElementById('yeniMusteriForm').reset();
+                $('#yeniDigerContainer').hide();
+            }
+        });
+
+        $(document).on('click', '#geciciMusteriKaydetBtn', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            kaydetGeciciMusteri();
+        });
+
+        $(document).on('click', '#yeniMusteriVazgecBtn', function() {
+            $('#yeniMusteriModal').modal('hide');
+        });
+    </script>
+}

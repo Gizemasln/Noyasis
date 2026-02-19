@@ -4479,14 +4479,14 @@
     <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/assets/js/button-permission.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\assets\js\button-permission.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-Vo5xbipw2Li5ZSi4x91rlTUZbTwALpYrkJCH9FVZMTg="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"10590"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022Vo5xbipw2Li5ZSi4x91rlTUZbTwALpYrkJCH9FVZMTg=\u0022"},{"Name":"Last-Modified","Value":"Mon, 16 Feb 2026 12:40:44 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-483sHNYVlrr1zr00xOlTmq2T1g2xpOS2e028FAtkH6E="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"14288"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022483sHNYVlrr1zr00xOlTmq2T1g2xpOS2e028FAtkH6E=\u0022"},{"Name":"Last-Modified","Value":"Wed, 18 Feb 2026 13:56:59 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/assets/js/button-permission.qgtepbykpm.js">
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/assets/js/button-permission.p5586wikvx.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\assets\js\button-permission.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"qgtepbykpm"},{"Name":"integrity","Value":"sha256-Vo5xbipw2Li5ZSi4x91rlTUZbTwALpYrkJCH9FVZMTg="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/assets/js/button-permission.js"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"10590"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022Vo5xbipw2Li5ZSi4x91rlTUZbTwALpYrkJCH9FVZMTg=\u0022"},{"Name":"Last-Modified","Value":"Mon, 16 Feb 2026 12:40:44 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"p5586wikvx"},{"Name":"integrity","Value":"sha256-483sHNYVlrr1zr00xOlTmq2T1g2xpOS2e028FAtkH6E="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/assets/js/button-permission.js"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"14288"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022483sHNYVlrr1zr00xOlTmq2T1g2xpOS2e028FAtkH6E=\u0022"},{"Name":"Last-Modified","Value":"Wed, 18 Feb 2026 13:56:59 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/assets/js/ckeditor/build-config.5coiil74zn.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\assets\js\ckeditor\build-config.js'))</AssetFile>

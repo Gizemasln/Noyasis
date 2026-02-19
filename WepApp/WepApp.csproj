@@ -102,4 +102,13 @@
     <ProjectReference Include="..\WinAppReport\WinAppReport.csproj" />
   </ItemGroup>
 
+  <!-- VIEW DOSYALARINI KOPYALAMAYI ZORLA -->
+  <Target Name="CopyViewsToPublish" AfterTargets="AfterPublish">
+    <Message Text="Views klasörü kopyalanıyor..." Importance="high" />
+    <ItemGroup>
+      <ViewFiles Include="Views\**\*.cshtml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ViewFiles)" DestinationFolder="$(PublishDir)\Views\%(RecursiveDir)" />
+  </Target>
+
 </Project>

@@ -1,0 +1,263 @@
+﻿@using WepApp.Models
+@model List<Nedenler>
+@{
+    ViewData["Title"] = "Nedenler Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<style>
+    .table-actions {
+        white-space: nowrap;
+        width: 120px;
+    }
+
+    .card {
+        margin-top: 70px;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>Nedenler</span>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni Neden Ekle
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th width="50">#</th>
+                                <th>Neden Adı</th>
+                                <th>Eklenme Tarihi</th>
+                                <th>Son Güncelleme</th>
+                                <th width="120" class="text-center">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.Nedenler != null && ((List<Nedenler>)ViewBag.Nedenler).Count > 0)
+                            {
+                                var counter = 1;
+                                foreach (var item in (List<Nedenler>)ViewBag.Nedenler)
+                                {
+                                    <tr>
+                                        <td>@counter</td>
+                                        <td><strong>@item.Adi</strong></td>
+                                        <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>@item.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td class="table-actions text-center">
+                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id)">
+                                                <i class="fas fa-edit"></i> 
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.Adi.Replace("'", "\\'")')">
+                                                <i class="fas fa-trash"></i> 
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        <div class="py-4">
+                                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted">Henüz neden eklenmemiş.</p>
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                                                İlk Nedeni Ekle
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ekle Modal -->
+<div class="modal fade" id="ekleModal" tabindex="-1" aria-labelledby="ekleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("Ekle", "AdminNedenler", FormMethod.Post, new { id = "ekleForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ekleModalLabel">Yeni Neden Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="Adi" class="form-label">Neden Adı *</label>
+                        <input type="text" class="form-control" id="Adi" name="Adi" placeholder="Neden adını giriniz" required maxlength="100">
+                        <div class="form-text">Neden adı benzersiz olmalıdır.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Düzenle Modal -->
+<div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Guncelle","AdminNedenler")" method="post" id="duzenleForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editId" name="Id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="duzenleModalLabel">Neden Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editAdi" class="form-label">Neden Adı *</label>
+                        <input type="text" class="form-control" id="editAdi" name="Adi" required maxlength="100">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Sil Onay Modal -->
+<div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Sil","AdminNedenler")" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="silId" name="Id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="silModalLabel">Silme Onayı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>"<span id="silAdi"></span>"</strong> adlı nedeni silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><small>Bu işlem geri alınamaz.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-danger">Sil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        // Silme onay fonksiyonu
+        function silOnay(id, adi) {
+            $('#silId').val(id);
+            $('#silAdi').text(adi);
+            new bootstrap.Modal(document.getElementById('silModal')).show();
+        }
+
+        // Düzenleme fonksiyonu (API'den veri çeken)
+        async function duzenleGetir(id) {
+            try {
+                const btn = event.target;
+                const originalHtml = btn.innerHTML;
+
+                // Loading state
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Yükleniyor...';
+                btn.disabled = true;
+
+                const response = await fetch('@Url.Action("Getir", "AdminNedenler")?id=' + id);
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => null);
+                    throw new Error(errorData?.error || `HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Modalı doldur
+                document.getElementById('editId').value = data.id;
+                document.getElementById('editAdi').value = data.adi;
+
+                // Modalı göster
+                new bootstrap.Modal(document.getElementById('duzenleModal')).show();
+
+            } catch (error) {
+                console.error('Hata:', error);
+                alert('Neden bilgileri yüklenirken hata oluştu: ' + error.message);
+            } finally {
+                // Butonu eski haline getir
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Form validasyonları
+            const forms = document.querySelectorAll('#ekleForm, #duzenleForm');
+            forms.forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    const adiInput = this.querySelector('input[name="Adi"]');
+                    if (!adiInput.value.trim()) {
+                        e.preventDefault();
+                        alert('Neden adı gereklidir.');
+                        adiInput.focus();
+                    }
+                });
+            });
+
+            // Modal kapandığında formları temizle
+            ['ekleModal', 'duzenleModal'].forEach(modalId => {
+                const modalEl = document.getElementById(modalId);
+                modalEl.addEventListener('hidden.bs.modal', function () {
+                    this.querySelector('form')?.reset();
+                });
+            });
+
+            // Alert 5 saniye sonra otomatik kapan
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alert => {
+                    bootstrap.Alert.getOrCreateInstance(alert).close();
+                });
+            }, 5000);
+        });
+    </script>
+}
