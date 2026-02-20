@@ -1,0 +1,183 @@
+=== BUTON TARAMA LOGU - 20.02.2026 17:02:15 ===
+ContentRootPath: D:\PROJELER\Noyasis\WepApp
+WebRootPath: D:\PROJELER\Noyasis\WepApp\wwwroot
+BaseDirectory: D:\PROJELER\Noyasis\WepApp\bin\Debug\net8.0\
+CurrentDirectory: D:\PROJELER\Noyasis\WepApp
+
+ARANAN YOLLAR:
+- D:\PROJELER\Noyasis\WepApp\Views : VAR
+  >>> BULUNDU! Bu yol kullanılacak: D:\PROJELER\Noyasis\WepApp\Views
+
+VIEWS KLASÖRÜ BULUNDU: D:\PROJELER\Noyasis\WepApp\Views
+Toplam 66 .cshtml dosyası bulundu:
+- D:\PROJELER\Noyasis\WepApp\Views\AdminAnaSayfa\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminAnaSayfaBannerResim\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminARGEDurum\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminArgeHata\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminBayi\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminBayiDuyuru\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminBayiSozlesme\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminBayiSozlesmeKriteri\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminBirim\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminButton\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminDepartman\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminDuyuru\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminEntegrator\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminGenelAydinlatma\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminHakkimizdaBilgileri\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminHakkimizdaFotograf\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminIK\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminIletisimBilgileri\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminIstekOneri\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminIstekOneriDurum\Index.cshtml
+... ve 46 dosya daha
+
+Toplam 148 buton bulundu:
+- AdminAnaSayfaBannerResim / create
+- AdminAnaSayfaBannerResim / edit
+- AdminAnaSayfaBannerResim / delete
+- AdminARGEDurum / create
+- AdminARGEDurum / edit
+- AdminARGEDurum / delete
+- AdminArgeHata / edit
+- AdminArgeHata / delete
+- AdminArgeHata / view
+- AdminBayi / edit
+- AdminBayi / delete
+- AdminBayi / view
+- AdminBayi / create
+- AdminBayiDuyuru / create
+- AdminBayiDuyuru / edit
+- AdminBayiDuyuru / delete
+- AdminBayiSozlesme / create
+- AdminBayiSozlesme / edit
+- AdminBayiSozlesme / delete
+- AdminBayiSozlesmeKriteri / create
+- AdminBayiSozlesmeKriteri / edit
+- AdminBayiSozlesmeKriteri / delete
+- AdminBirim / create
+- AdminBirim / edit
+- AdminBirim / delete
+- AdminButton / create
+- AdminButton / edit
+- AdminButton / delete
+- AdminDepartman / create
+- AdminDepartman / edit
+- AdminDepartman / delete
+- AdminDuyuru / create
+- AdminDuyuru / edit
+- AdminDuyuru / delete
+- AdminEntegrator / create
+- AdminEntegrator / edit
+- AdminEntegrator / delete
+- AdminGenelAydinlatma / create
+- AdminGenelAydinlatma / edit
+- AdminGenelAydinlatma / delete
+- AdminHakkimizdaBilgileri / create
+- AdminHakkimizdaBilgileri / edit
+- AdminHakkimizdaBilgileri / delete
+- AdminHakkimizdaFotograf / create
+- AdminHakkimizdaFotograf / delete
+- AdminIK / create
+- AdminIK / edit
+- AdminIK / delete
+- AdminIK / view
+- AdminIletisimBilgileri / create
+- AdminIletisimBilgileri / edit
+- AdminIletisimBilgileri / delete
+- AdminIstekOneri / edit
+- AdminIstekOneri / delete
+- AdminIstekOneri / view
+- AdminIstekOneriDurum / create
+- AdminIstekOneriDurum / edit
+- AdminIstekOneriDurum / delete
+- AdminKampanya / create
+- AdminKampanya / edit
+- AdminKampanya / delete
+- AdminKategori / edit
+- AdminKategori / delete
+- AdminKategori / create
+- AdminKDV / create
+- AdminKDV / edit
+- AdminKDV / delete
+- AdminKullanici / delete
+- AdminKullanicilar / edit
+- AdminKullanicilar / delete
+- AdminKullanicilar / create
+- AdminKVKK / create
+- AdminKVKK / edit
+- AdminKVKK / delete
+- AdminLisansDurumu / create
+- AdminLisansDurumu / edit
+- AdminLisansDurumu / delete
+- AdminLisansTip / create
+- AdminLisansTip / edit
+- AdminLisansTip / delete
+- AdminLokasyon / edit
+- AdminLokasyon / delete
+- AdminLokasyon / create
+- AdminMakale / create
+- AdminMakale / edit
+- AdminMakale / delete
+- AdminMakale / view
+- AdminMusteri / create
+- AdminMusteri / edit
+- AdminMusteri / delete
+- AdminMusteri / view
+- AdminMusteriSozlesme / edit
+- AdminMusteriSozlesme / delete
+- AdminMusteriTipi / create
+- AdminMusteriTipi / edit
+- AdminMusteriTipi / delete
+- AdminNedenler / create
+- AdminNedenler / edit
+- AdminNedenler / delete
+- AdminNeredenDuydu / create
+- AdminNeredenDuydu / edit
+- AdminNeredenDuydu / delete
+- AdminPaket / create
+- AdminPaket / edit
+- AdminPaket / delete
+- AdminPaket / view
+- AdminPaketBaglama / delete
+- AdminPaketBaglama / create
+- AdminPaketGrup / create
+- AdminPaketGrup / edit
+- AdminPaketGrup / delete
+- AdminPaketGrupDetay / edit
+- AdminSertifika / edit
+- AdminSertifika / delete
+- AdminSertifika / create
+- AdminSozlesmeDurumu / create
+- AdminSozlesmeDurumu / edit
+- AdminSozlesmeDurumu / delete
+- AdminSSS / create
+- AdminSSS / edit
+- AdminSSS / delete
+- AdminTeklif / delete
+- AdminTeklif / view
+- AdminTeklif / create
+- AdminTeklifDurum / create
+- AdminTeklifDurum / edit
+- AdminTeklifDurum / delete
+- AdminTeklifler / create
+- AdminTeklifler / edit
+- AdminTeklifler / delete
+- AdminUrun / edit
+- AdminUrun / delete
+- AdminUrun / create
+- AdminUrunGaleri / delete
+- AdminUrunGaleri / create
+- AdminUYB / create
+- AdminUYB / edit
+- AdminYetki / edit
+- AdminYetki / delete
+- AdminYetki / create
+- Arge / edit
+- Arge / delete
+- Arge / view
+- Home / view
+- IstekOneri / edit
+- IstekOneri / delete
+- Shared / view
+- UrunDetay / view

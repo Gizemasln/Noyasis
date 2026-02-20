@@ -1875,19 +1875,59 @@
                             // Tüm modüller kontrol edildiğinde
                             if (kontrolEdilenModuller === paketModulleri.length) {
                                 if (toplamBagliPaketler.length > 0) {
-                                    bagliPaketleriEkleDialog(paketAdi, toplamBagliPaketler);
+                                    bagliPaketleriOtomatikEkle(paketAdi, toplamBagliPaketler);
                                 }
                             }
                         },
                         error: function() {
                             kontrolEdilenModuller++;
                             if (kontrolEdilenModuller === paketModulleri.length && toplamBagliPaketler.length > 0) {
-                                bagliPaketleriEkleDialog(paketAdi, toplamBagliPaketler);
+                                bagliPaketleriOtomatikEkle(paketAdi, toplamBagliPaketler);
                             }
                         }
                     });
                 }, index * 300); // Her istek arasına küçük bir gecikme
             });
+        }
+
+        // Yeni fonksiyon: Bağlı paketleri otomatik ekle ve bilgi modalı göster
+        function bagliPaketleriOtomatikEkle(paketAdi, bagliPaketler) {
+            let eklenecekler = [];
+            let eklenecekListe = '';
+
+            // Tümünü otomatik ekle
+            bagliPaketler.forEach(paket => {
+                itemEkle(paket.id, 'modul', false, 0, 1);
+                eklenecekler.push(paket.adi);
+                eklenecekListe += `<li style="margin-left: 20px; font-size: 12px;">${paket.adi} <span style="color: #6c757d; font-size: 11px;">(${paket.anaModul} modülüne bağlı)</span></li>`;
+            });
+
+            // Bilgi modalını göster
+            Swal.fire({
+                title: 'Bağlı Modüller Otomatik Eklendi',
+                html: `
+                    <div style="text-align: left;">
+                        <p style="margin-bottom: 10px;">
+                            <strong>"${paketAdi}" paketi için ${eklenecekler.length} bağlı modül otomatik eklendi:</strong>
+                        </p>
+                        <ul style="list-style-type: disc; padding-left: 20px; max-height: 200px; overflow-y: auto;">
+                            ${eklenecekListe}
+                        </ul>
+                        <p style="margin-top: 15px; color: #28a745; font-size: 13px;">
+                            <i class="fas fa-info-circle"></i> Bu modüller bağımlı modül olduğu için otomatik eklendi.
+                        </p>
+                    </div>
+                `,
+                icon: 'success',
+                confirmButtonText: 'Tamam',
+                customClass: {
+                    confirmButton: 'btn btn-success'
+                },
+                buttonsStyling: false,
+                width: '550px'
+            });
+
+            setTimeout(() => hesaplaToplam(), 800);
         }
 
         function bagliPaketleriEkleDialog(paketAdi, bagliPaketler) {
@@ -2477,6 +2517,7 @@
         }
 
         // Paket seçildiğinde bağlı paketleri otomatik seçen fonksiyon
+          // Paket seçildiğinde bağlı paketleri otomatik seçen fonksiyon
         function otomatikBagliPaketleriSec(paketId) {
             console.log(`Bağlı paketler kontrol ediliyor: ID ${paketId}`);
 
@@ -2489,59 +2530,54 @@
                         console.log(`${response.bagliPaketler.length} bağlı paket bulundu:`, response.bagliPaketler);
 
                         let otomatikEklenecekler = [];
-                        let baslik = '';
+                        let eklenecekListe = '';
 
-                        if (response.bagliPaketler.length === 1) {
-                            baslik = '1 bağlı modül bulundu';
-                        } else {
-                            baslik = `${response.bagliPaketler.length} bağlı modül bulundu`;
-                        }
+                        // Bağlı tüm paketleri otomatik ekle (sormadan)
+                        response.bagliPaketler.forEach(function(paket) {
+                            // Bu paket zaten seçili mi kontrol et
+                            let zatenSecili = false;
 
-                        // SweetAlert ile onay iste
-                        Swal.fire({
-                            title: 'Bağlı Modüller Bulundu',
-                            html: `${baslik}<br><br><strong>Otomatik olarak teklife eklemek istiyor musunuz?</strong>`,
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonText: 'Evet, Ekle',
-                            cancelButtonText: 'Hayır, Sadece Seçileni Ekle',
-                            customClass: {
-                                confirmButton: 'btn btn-success',
-                                cancelButton: 'btn btn-secondary'
-                            },
-                            buttonsStyling: false
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Bağlı tüm paketleri ekle
-                                response.bagliPaketler.forEach(function(paket) {
-                                    // Bu paket zaten seçili mi kontrol et
-                                    let zatenSecili = false;
-
-                                    seciliItemler.forEach(function(item, key) {
-                                        if (item.id === paket.id) {
-                                            zatenSecili = true;
-                                        }
-                                    });
-
-                                    if (!zatenSecili) {
-                                        // Paketi seçili listeye ekle
-                                        itemEkle(paket.id, 'modul', false, 0, 1);
-                                        otomatikEklenecekler.push(paket.adi);
-                                    }
-                                });
-
-                                if (otomatikEklenecekler.length > 0) {
-                                    showToast('Bağlı Modüller Eklendi',
-                                        `<strong>${otomatikEklenecekler.length} modül otomatik eklendi:</strong><br>` +
-                                        otomatikEklenecekler.join('<br>'),
-                                        true
-                                    );
+                            seciliItemler.forEach(function(item, key) {
+                                if (item.id === paket.id) {
+                                    zatenSecili = true;
                                 }
+                            });
 
-                                // Teklifi yeniden hesapla
-                                setTimeout(() => hesaplaToplam(), 500);
+                            if (!zatenSecili) {
+                                // Paketi seçili listeye ekle
+                                itemEkle(paket.id, 'modul', false, 0, 1);
+                                otomatikEklenecekler.push(paket.adi);
+                                eklenecekListe += `<li style="margin-left: 20px; font-size: 12px;">${paket.adi}</li>`;
                             }
                         });
+
+                        if (otomatikEklenecekler.length > 0) {
+                            // SADECE BİLGİ MODALI - Onay sormadan ekledik, sadece bilgi ver
+                            Swal.fire({
+                                title: 'Bağlı Modüller Otomatik Eklendi',
+                                html: `
+                                    <div style="text-align: left;">
+                                        <p style="margin-bottom: 10px;"><strong>${otomatikEklenecekler.length} modül otomatik olarak teklife eklendi:</strong></p>
+                                        <ul style="list-style-type: disc; padding-left: 20px;">
+                                            ${eklenecekListe}
+                                        </ul>
+                                        <p style="margin-top: 15px; color: #28a745; font-size: 13px;">
+                                            <i class="fas fa-info-circle"></i> Bu modüller bağımlı modül olduğu için otomatik eklendi.
+                                        </p>
+                                    </div>
+                                `,
+                                icon: 'success',
+                                confirmButtonText: 'Tamam',
+                                customClass: {
+                                    confirmButton: 'btn btn-success'
+                                },
+                                buttonsStyling: false,
+                                width: '500px'
+                            });
+                        }
+
+                        // Teklifi yeniden hesapla
+                        setTimeout(() => hesaplaToplam(), 500);
                     }
                 },
                 error: function() {

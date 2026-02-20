@@ -75,7 +75,6 @@
                     <button class="topbar-toggler more"><i class="gg-more-vertical-alt"></i></button>
                 </div>
             </div>
-
             <div class="sidebar-wrapper scrollbar scrollbar-inner">
                 <div class="sidebar-content">
                     @{
@@ -125,6 +124,7 @@
                     <ul class="nav nav-secondary">
                         @if (anaMenuler.Any())
                         {
+                            int anaMenuSayac = 1;
                             @foreach (var menu in anaMenuler)
                             {
                                 var altMenuler = izinliMenuler.Where(m => m.ParentMenuUrl == menu.MenuUrl).OrderBy(m => m.Siralama).ToList();
@@ -139,11 +139,14 @@
                                             {
                                                 <i class="@menu.Icon"></i>
                                             }
-                                            <p>@menu.MenuBaslik</p>
+                                            <p><span class="menu-number">@anaMenuSayac</span> @menu.MenuBaslik</p>
                                             <span class="caret"></span>
                                         </a>
                                         <div class="collapse" id="@menuId">
                                             <ul class="nav nav-collapse">
+                                                @{
+                                                    int altMenuSayac = 1;
+                                                }
                                                 @foreach (var alt1 in altMenuler)
                                                 {
                                                     var altMenulerSeviye2 = izinliMenuler.Where(m => m.ParentMenuUrl == alt1.MenuUrl).OrderBy(m => m.Siralama).ToList();
@@ -154,18 +157,26 @@
                                                         <!-- 2. Seviye menü (alt menülü) -->
                                                         <li>
                                                             <a data-bs-toggle="collapse" href="#@altMenuId">
-                                                                <span class="sub-item">@alt1.MenuBaslik</span>
+                                                                <span class="sub-item">
+                                                                    <span class="submenu-number">@anaMenuSayac-@altMenuSayac</span> @alt1.MenuBaslik
+                                                                </span>
                                                                 <span class="caret"></span>
                                                             </a>
                                                             <div class="collapse" id="@altMenuId">
                                                                 <ul class="nav nav-collapse submenu">
+                                                                    @{
+                                                                        int ucuncuSeviyeSayac = 1;
+                                                                    }
                                                                     @foreach (var alt2 in altMenulerSeviye2)
                                                                     {
                                                                         <li>
                                                                             <a href="@(alt2.MenuUrl.StartsWith("#") ? "#" : alt2.MenuUrl)">
-                                                                                <span class="sub-item">@alt2.MenuBaslik</span>
+                                                                                <span  style="padding-left:20px;">
+                                                                                    <span class="third-level-number">@anaMenuSayac-@altMenuSayac-@ucuncuSeviyeSayac</span> @alt2.MenuBaslik
+                                                                                </span>
                                                                             </a>
                                                                         </li>
+                                                                        ucuncuSeviyeSayac++;
                                                                     }
                                                                 </ul>
                                                             </div>
@@ -176,10 +187,13 @@
                                                         <!-- 2. Seviye menü (tek başına) -->
                                                         <li>
                                                             <a href="@(alt1.MenuUrl.StartsWith("#") ? "#" : alt1.MenuUrl)">
-                                                                <span class="sub-item">@alt1.MenuBaslik</span>
+                                                                <span class="sub-item">
+                                                                    <span class="submenu-number">@anaMenuSayac-@altMenuSayac</span> @alt1.MenuBaslik
+                                                                </span>
                                                             </a>
                                                         </li>
                                                     }
+                                                    altMenuSayac++;
                                                 }
                                             </ul>
                                         </div>
@@ -194,10 +208,11 @@
                                             {
                                                 <i class="@menu.Icon"></i>
                                             }
-                                            <p>@menu.MenuBaslik</p>
+                                            <p><span class="menu-number">@anaMenuSayac</span> @menu.MenuBaslik</p>
                                         </a>
                                     </li>
                                 }
+                                anaMenuSayac++;
                             }
                         }
                         else
@@ -212,6 +227,34 @@
                     </ul>
                 </div>
             </div>
+
+            <style>
+                .menu-number, .submenu-number, .third-level-number {
+                    font-weight: 600;
+                    margin-right: 5px;
+                    color: #6c757d;
+                    font-size: 0.9em;
+                }
+
+                .submenu-number {
+                    color: #28a745;
+                }
+
+                .third-level-number {
+                    color: #dc3545;
+                    font-size: 0.85em;
+                }
+
+                .nav-item .sub-item {
+                    display: flex;
+                    align-items: center;
+                }
+
+                .nav-collapse.submenu li a span {
+                    display: flex;
+                    align-items: center;
+                }
+            </style>
         </div>
 
         <div class="main-panel">
