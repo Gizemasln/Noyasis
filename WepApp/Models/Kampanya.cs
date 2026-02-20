@@ -6,6 +6,7 @@
         public int Durumu { get; set; }
         public string? Baslik { get; set; }
         public string? Metin { get; set; }
+        public string? GorselYolu { get; set; } // Yeni eklenen alan
         public decimal IndirimYuzdesi { get; set; }
         public DateTime BaslangicTarihi { get; set; }
         public DateTime BitisTarihi { get; set; }

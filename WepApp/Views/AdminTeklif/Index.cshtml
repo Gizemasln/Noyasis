@@ -592,9 +592,13 @@
                                         <th width="150">Bayi</th>
                                         <th width="120">Lisans Tipi</th>
                                         <th width="110">Net Toplam</th>
+                                        <th width="110">Toplam İndirim</th>
+                                        <th width="110">Ara Toplam</th>
+                                        <th width="110">KDV Tutarı</th>
                                         <th width="110">Oluşturulma Tarihi</th>
                                         <th width="110">Geçerlilik Tarihi</th>
                                         <th width="90" class="durum-hucresi">Durum</th>
+
                                         <th width="270" class="text-center">İşlemler</th>
                                     </tr>
                                 </thead>
@@ -684,6 +688,9 @@
                                                 </td>
                                                 <td>@teklif.LisansTip?.Adi</td>
                                                 <td class="tutar">@teklif.NetToplam.ToString("N2") ₺</td>
+                                                <td class="tutar">@teklif.ToplamIndirim.ToString("N2") ₺ </td>
+                                                <td class="tutar">@teklif.AraToplam.ToString("N2") ₺ </td>
+                                                <td class="tutar">@teklif.KdvTutari.ToString("N2") ₺ </td>
                                                 <td><small>@teklif.EklenmeTarihi?.ToString("dd.MM.yyyy")</small></td>
                                                 <td><small>@teklif.GecerlilikTarihi?.ToString("dd.MM.yyyy")</small></td>
                                                 <td class="durum-hucresi">

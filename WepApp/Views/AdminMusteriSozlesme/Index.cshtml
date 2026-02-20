@@ -618,7 +618,11 @@
                                         <th width="120">Doküman No</th>
                                         <th width="180">Müşteri</th>
                                         <th width="150">Lisans No</th>
-                                        <th width="120">Yıllık Bakım</th>
+                                        <th width="150">Lisans Türü</th>
+                                        <th width="150">Yazılım Paket Adı</th>
+                                        <th width="150">Yazılım Lisans Fiyat</th>
+                                        <th width="150">Toplam Ödenecek Tutar</th>
+                                        <th width="150">Yıllık Bakım</th>
                                         <th width="110">Yayın Tarihi</th>
                                         <th width="110">Revizyon</th>
                                         <th width="160" class="durum-hucresi">Durum</th>
@@ -634,7 +638,6 @@
                                             var satirCss = "";
                                             var durumCss = "";
                                             var durumAdi = sozlesme.SozlesmeDurumu?.Adi ?? "Belirtilmemiş";
-
                                             // Satır CSS sınıfını belirle
                                             switch (durumId)
                                             {
@@ -667,7 +670,6 @@
                                                     durumCss = "durum-belirtilmemis";
                                                     break;
                                             }
-
                                             <tr data-sozlesme-id="@sozlesme.Id" class="@satirCss" data-durum-id="@durumId">
                                                 <td><span class="dokuman-no">@sozlesme.DokumanNo</span></td>
                                                 <td>
@@ -684,6 +686,18 @@
                                                         <span class="text-muted">-</span>
                                                     }
                                                 </td>
+                                                <td>@sozlesme.Teklif.LisansTip.Adi</td>                      <!-- EKLENDİ -->
+                                                <td>
+                                                    @(sozlesme.Teklif?.Detaylar != null
+                                                        ? string.Join(", ", sozlesme.Teklif.Detaylar.Select(d => d.ItemAdi))
+                                                        : "")
+                                                </td><!-- EKLENDİ -->
+                                                <td>
+                                                    @(sozlesme.Teklif?.Detaylar != null
+                                                        ? string.Join(", ", sozlesme.Teklif.Detaylar.Select(d => d.ListeFiyati))
+                                                        : "")
+                                                </td>                     <!-- EKLENDİ -->
+                                                <td>@sozlesme.Teklif.NetToplam.ToString("N2") ₺</td>                    <!-- EKLENDİ -->
                                                 <td class="yillik-bakim">@sozlesme.YillikBakim.ToString("N2") ₺</td>
                                                 <td><small>@sozlesme.YayinTarihi.ToString("dd.MM.yyyy")</small></td>
                                                 <td>
@@ -700,7 +714,6 @@
                                                         {
                                                             var isDisabled = !IsValidTwoWayTransition(durumId, d.Id);
                                                             var isSelected = durumId == d.Id;
-
                                                             <option value="@d.Id"
                                                                     data-durum-adi="@d.Adi"
                                                             @(isDisabled ? "disabled" : "")

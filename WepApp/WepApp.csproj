@@ -90,6 +90,8 @@
     <Folder Include="wwwroot\WebAdminTheme\BayiSozlesme\" />
     <Folder Include="wwwroot\WebAdminTheme\MusteriSozlesme\" />
     <Folder Include="wwwroot\WebAdminTheme\Arge\" />
+    <Folder Include="wwwroot\WebAdminTheme\Duyuru\" />
+    <Folder Include="wwwroot\WebAdminTheme\Kampanya\" />
     <Folder Include="wwwroot\WebAdminTheme\SozlesmeDokumanlar\" />
     <Folder Include="wwwroot\WebAdminTheme\Sertifika\" />
     <Folder Include="wwwroot\WebAdminTheme\Sponsor\Buyuk\" />

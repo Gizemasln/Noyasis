@@ -6,6 +6,8 @@ using WepApp.Controllers;
 using System.Collections.Generic;
 using WebApp.Models;
 using System.Text;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace WebApp.Controllers
 {
@@ -16,6 +18,12 @@ namespace WebApp.Controllers
         private readonly PaketGrupRepository _paketGrupRepo = new();
         private readonly KampanyaPaketRepository _kampanyaPaketRepo = new();
         private readonly PaketGrupDetayRepository _paketGrupDetayRepo = new();
+        private readonly IWebHostEnvironment _hostEnvironment;
+
+        public AdminKampanyaController(IWebHostEnvironment hostEnvironment)
+        {
+            _hostEnvironment = hostEnvironment;
+        }
 
         public IActionResult Index()
         {
@@ -39,7 +47,7 @@ namespace WebApp.Controllers
 
         [HttpPost]
         public IActionResult Ekle(string Baslik, string Metin, decimal IndirimYuzdesi,
-            DateTime BaslangicTarihi, DateTime BitisTarihi, int[] seciliPaketler, int[] seciliPaketGruplari)
+            DateTime BaslangicTarihi, DateTime BitisTarihi, int[] seciliPaketler, int[] seciliPaketGruplari, IFormFile? Gorsel = null)
         {
             LoadCommonData();
 
@@ -65,6 +73,12 @@ namespace WebApp.Controllers
                     EkleyenKullaniciId = kullanici.Id,
                     GuncelleyenKullaniciId = kullanici.Id
                 };
+
+                // Görsel yükleme işlemi
+                if (Gorsel != null && Gorsel.Length > 0)
+                {
+                    kampanya.GorselYolu = GorselYukle(Gorsel);
+                }
 
                 _kampanyaRepo.Ekle(kampanya);
 
@@ -132,7 +146,7 @@ namespace WebApp.Controllers
 
         [HttpPost]
         public IActionResult Guncelle(int Id, string Baslik, string Metin, decimal IndirimYuzdesi,
-            DateTime BaslangicTarihi, DateTime BitisTarihi, int[] seciliPaketler, int[] seciliPaketGruplari)
+            DateTime BaslangicTarihi, DateTime BitisTarihi, int[] seciliPaketler, int[] seciliPaketGruplari, IFormFile? Gorsel = null, string? MevcutGorsel = null)
         {
             LoadCommonData();
 
@@ -164,6 +178,18 @@ namespace WebApp.Controllers
                 k.BitisTarihi = BitisTarihi;
                 k.GuncellenmeTarihi = DateTime.Now;
                 k.GuncelleyenKullaniciId = kullanici.Id;
+
+                // Görsel yükleme işlemi
+                if (Gorsel != null && Gorsel.Length > 0)
+                {
+                    // Eski görseli sil
+                    if (!string.IsNullOrEmpty(k.GorselYolu))
+                    {
+                        GorselSil(k.GorselYolu);
+                    }
+                    k.GorselYolu = GorselYukle(Gorsel);
+                }
+
                 _kampanyaRepo.Guncelle(k);
 
                 decimal indirimOrani = 1 - (IndirimYuzdesi / 100m);
@@ -250,6 +276,12 @@ namespace WebApp.Controllers
             Kampanya k = _kampanyaRepo.Getir(Id);
             if (k != null)
             {
+                // Görseli sil
+                if (!string.IsNullOrEmpty(k.GorselYolu))
+                {
+                    GorselSil(k.GorselYolu);
+                }
+
                 k.Durumu = 0;
                 _kampanyaRepo.Guncelle(k);
 
@@ -332,6 +364,7 @@ namespace WebApp.Controllers
                 indirimYuzdesi = k.IndirimYuzdesi,
                 baslangicTarihi = k.BaslangicTarihi.ToString("yyyy-MM-ddTHH:mm"),
                 bitisTarihi = k.BitisTarihi.ToString("yyyy-MM-ddTHH:mm"),
+                gorselyolu = k.GorselYolu,
                 birlesikHtml = sb.ToString()   // tek alan
             });
         }
@@ -372,6 +405,7 @@ namespace WebApp.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+
         // Sadece kampanyaya direkt eklenen PAKETLER
         [HttpGet]
         public IActionResult GetirKampanyaPaketleri(int id)
@@ -434,7 +468,7 @@ namespace WebApp.Controllers
                 {
                     id = kp.PaketGrup.Id,
                     adi = kp.PaketGrup.Adi,
-                    fiyat = kp.PaketGrup.Fiyat ,
+                    fiyat = kp.PaketGrup.Fiyat,
                     lisansTip = kp.PaketGrup.LisansTip?.Adi,
                     icerikSayisi = _paketGrupDetayRepo.GetirList(x => x.PaketGrupId == kp.PaketGrupId && x.Durumu == 1).Count
                 }).ToList();
@@ -449,6 +483,86 @@ namespace WebApp.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult GorselSilAjax(int id)
+        {
+            try
+            {
+                Kampanya kampanya = _kampanyaRepo.Getir(id);
+                if (kampanya != null && !string.IsNullOrEmpty(kampanya.GorselYolu))
+                {
+                    GorselSil(kampanya.GorselYolu);
+                    kampanya.GorselYolu = null;
+                    kampanya.GuncellenmeTarihi = DateTime.Now;
+                    _kampanyaRepo.Guncelle(kampanya);
+                    return Json(new { success = true, message = "Görsel başarıyla silindi." });
+                }
+                return Json(new { success = false, message = "Görsel bulunamadı." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Hata: " + ex.Message });
+            }
+        }
+
+        private string GorselYukle(IFormFile file)
+        {
+            try
+            {
+                // Klasör yolunu oluştur
+                string uploadFolder = Path.Combine(_hostEnvironment.WebRootPath, "WebAdminTheme", "Kampanya");
+
+                // Klasör yoksa oluştur
+                if (!Directory.Exists(uploadFolder))
+                {
+                    Directory.CreateDirectory(uploadFolder);
+                }
+
+                // Benzersiz dosya adı oluştur
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(file.FileName);
+                string filePath = Path.Combine(uploadFolder, uniqueFileName);
+
+                // Dosyayı kaydet
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+
+                // Veritabanına kaydedilecek yol
+                return "/WebAdminTheme/Kampanya/" + uniqueFileName;
+            }
+            catch (Exception ex)
+            {
+                // Hata durumunda loglama yapılabilir
+                Console.WriteLine($"Görsel yüklenirken hata: {ex.Message}");
+                return null;
+            }
+        }
+
+        private void GorselSil(string gorselYolu)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(gorselYolu))
+                {
+                    // Fiziksel dosya yolunu oluştur
+                    string fileName = Path.GetFileName(gorselYolu);
+                    string filePath = Path.Combine(_hostEnvironment.WebRootPath, "WebAdminTheme", "Kampanya", fileName);
+
+                    // Dosya varsa sil
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Hata durumunda loglama yapılabilir
+                Console.WriteLine($"Görsel silinirken hata: {ex.Message}");
             }
         }
     }

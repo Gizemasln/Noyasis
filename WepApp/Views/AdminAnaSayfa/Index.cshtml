@@ -2,18 +2,124 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
-<!-- Navbar Header -->
-<!-- End Navbar -->
+
+<style>
+    .duyuru-gorsel-mini {
+        width: 35px;
+        height: 35px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+        .duyuru-gorsel-mini:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+    .gorsel-yok {
+        width: 35px;
+        height: 35px;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #adb5bd;
+        font-size: 12px;
+        border: 1px dashed #dee2e6;
+    }
+
+    .modal-gorsel-buyuk {
+        max-width: 100%;
+        max-height: 70vh;
+        object-fit: contain;
+    }
+
+    .badge-yeni {
+        background-color: #0dcaf0;
+        color: #fff;
+        font-size: 0.7rem;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        margin-left: 5px;
+    }
+
+    .badge-oncelik {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        background-color: #fff;
+        border-bottom: 2px solid #f1f5f9;
+        padding: 1rem 1.5rem;
+    }
+
+        .card-header h4 {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+    .table th {
+        font-weight: 600;
+        color: #64748b;
+        border-bottom-width: 1px;
+    }
+
+    .table td {
+        vertical-align: middle;
+        color: #334155;
+    }
+
+    .icerik-metin {
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+
+<!-- Görsel Modal -->
+<div class="modal fade" id="gorselModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-image me-2 text-primary"></i>
+                    <span id="modalGorselBaslik">Görsel</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-3">
+                <img src="" id="modalGorsel" class="modal-gorsel-buyuk" alt="Görsel">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container">
     <div class="page-inner">
-   
         <div class="row">
-
+            <!-- Bayi Duyuruları -->
             <div class="col-md-4">
                 <div class="card card-round">
                     <div class="card-header">
                         <h4 class="card-title mb-0">
-                            <i class="fa fa-bullhorn me-2"></i> Bayi Duyuruları
+                            <i class="fa fa-store me-2 text-info"></i> Bayi Duyuruları
                         </h4>
                     </div>
                     <div class="card-body p-0">
@@ -21,34 +127,62 @@
                             <table class="table align-items-center mb-0">
                                 <thead class="thead-light">
                                     <tr>
+                                        <th scope="col" style="width: 45px">Görsel</th>
                                         <th scope="col">Başlık</th>
                                         <th scope="col">İçerik</th>
-                                        <th scope="col">Tarihi</th>
+                                        <th scope="col" style="width: 85px">Tarih</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (ViewBag.BayiDuyuru != null)
+                                    @if (ViewBag.BayiDuyuru != null && ((List<BayiDuyuru>)ViewBag.BayiDuyuru).Count > 0)
                                     {
                                         foreach (var duyuru in ViewBag.BayiDuyuru)
                                         {
                                             <tr>
-                                                <td>
-                                                    •
-                                                    @duyuru.Baslik
-                                                    @if ((DateTime.Now - duyuru.EklenmeTarihi).TotalDays <= 5)
+                                                <td class="text-center">
+                                                    @if (!string.IsNullOrEmpty(duyuru.GorselYolu))
                                                     {
-                                                        <span class="badge bg-info ms-1">Yeni</span>
+                                                        <img src="@duyuru.GorselYolu" class="duyuru-gorsel-mini"
+                                                             onclick="gorselGoster('@duyuru.GorselYolu', '@duyuru.Baslik')"
+                                                             alt="Görsel" title="Büyütmek için tıklayın">
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="gorsel-yok">
+                                                            <i class="fas fa-image fa-sm"></i>
+                                                        </div>
                                                     }
                                                 </td>
-                                                <td>@duyuru.Metin</td>
-                                                <td>@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")</td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <span>@duyuru.Baslik</span>
+                                                        @if ((DateTime.Now - duyuru.EklenmeTarihi).TotalDays <= 5)
+                                                        {
+                                                            <span class="badge-yeni">Yeni</span>
+                                                        }
+                                                        @if (duyuru.Oncelik == 1)
+                                                        {
+                                                            <span class="badge bg-warning text-dark ms-1 badge-oncelik">Yüksek</span>
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="icerik-metin" title="@duyuru.Metin">
+                                                        @(duyuru.Metin?.Length > 30 ? duyuru.Metin.Substring(0, 30) + "..." : duyuru.Metin)
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <small>@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")</small>
+                                                </td>
                                             </tr>
                                         }
                                     }
                                     else
                                     {
                                         <tr>
-                                            <td colspan="3" class="text-center">Hiç duyuru bulunamadı.</td>
+                                            <td colspan="4" class="text-center py-3 text-muted">
+                                                <i class="fas fa-info-circle me-1"></i> Hiç bayi duyurusu bulunamadı.
+                                            </td>
                                         </tr>
                                     }
                                 </tbody>
@@ -57,11 +191,13 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Web Duyuruları -->
             <div class="col-md-4">
                 <div class="card card-round">
                     <div class="card-header">
                         <h4 class="card-title mb-0">
-                            <i class="fa fa-bullhorn me-2"></i>Web  Duyuruları
+                            <i class="fa fa-globe me-2 text-primary"></i> Web Duyuruları
                         </h4>
                     </div>
                     <div class="card-body p-0">
@@ -69,83 +205,139 @@
                             <table class="table align-items-center mb-0">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th scope="col">Başlık</th>
-                                        <th scope="col" >İçerik</th>
-                                        <th scope="col" >Tarihi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (ViewBag.Duyuru != null)
-                                    {
-                                        foreach (var duyuru in (List<WebApp.Models.Duyuru>)ViewBag.Duyuru)
-                                        {
-                                            <tr>
-                                                <td>
-                                                    •
-                                                    @duyuru.Baslik
-                                                    @if ((DateTime.Now - duyuru.EklenmeTarihi).TotalDays <= 5)
-                                                    {
-                                                        <span class="badge bg-info ms-1">Yeni</span>
-                                                    }
-                                                </td>
-                                                <td>@duyuru.Metin</td>
-                                                <td>@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")</td>
-                                            </tr>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <tr>
-                                            <td colspan="3" class="text-center">Hiç duyuru bulunamadı.</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card card-round">
-                    <div class="card-header">
-                        <h4 class="card-title mb-0">
-                            <i class="fa fa-bullhorn me-2"></i> Kampanyalar
-                        </h4>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table align-items-center mb-0">
-                                <thead class="thead-light">
-                                    <tr>
+                                        <th scope="col" style="width: 45px">Görsel</th>
                                         <th scope="col">Başlık</th>
                                         <th scope="col">İçerik</th>
-                                        <th scope="col"> Sonlanma Tarihi</th>
+                                        <th scope="col" style="width: 85px">Tarih</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (ViewBag.Kampanya != null)
+                                    @if (ViewBag.Duyuru != null && ((List<WebApp.Models.Duyuru>)ViewBag.Duyuru).Count > 0)
                                     {
-                                        foreach (var duyuru in ViewBag.Kampanya)
+                                        foreach (var duyuru in ViewBag.Duyuru)
                                         {
                                             <tr>
-                                              
-                                                <td>
-                                               
-                                                    @duyuru.Baslik
-                                                    @if ((DateTime.Now - duyuru.EklenmeTarihi).TotalDays <= 5)
+                                                <td class="text-center">
+                                                    @if (!string.IsNullOrEmpty(duyuru.GorselYolu))
                                                     {
-                                                        <span class="badge bg-info ms-1">Yeni</span>
+                                                        <img src="@duyuru.GorselYolu" class="duyuru-gorsel-mini"
+                                                             onclick="gorselGoster('@duyuru.GorselYolu', '@duyuru.Baslik')"
+                                                             alt="Görsel" title="Büyütmek için tıklayın">
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="gorsel-yok">
+                                                            <i class="fas fa-image fa-sm"></i>
+                                                        </div>
                                                     }
                                                 </td>
-                                                <td>@duyuru.Metin</td>
-                                                <td>@duyuru.BitisTarihi.ToString("dd.MM.yyyy")</td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <span>@duyuru.Baslik</span>
+                                                        @if ((DateTime.Now - duyuru.EklenmeTarihi).TotalDays <= 5)
+                                                        {
+                                                            <span class="badge-yeni">Yeni</span>
+                                                        }
+                                                        @if (duyuru.Oncelik == 1)
+                                                        {
+                                                            <span class="badge bg-warning text-dark ms-1 badge-oncelik">Yüksek</span>
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="icerik-metin" title="@duyuru.Metin">
+                                                        @(duyuru.Metin?.Length > 30 ? duyuru.Metin.Substring(0, 30) + "..." : duyuru.Metin)
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <small>@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")</small>
+                                                </td>
                                             </tr>
                                         }
                                     }
                                     else
                                     {
                                         <tr>
-                                            <td colspan="3" class="text-center">Hiç duyuru bulunamadı.</td>
+                                            <td colspan="4" class="text-center py-3 text-muted">
+                                                <i class="fas fa-info-circle me-1"></i> Hiç web duyurusu bulunamadı.
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kampanyalar -->
+            <div class="col-md-4">
+                <div class="card card-round">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="fa fa-tags me-2 text-success"></i> Kampanyalar
+                        </h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table align-items-center mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col" style="width: 45px">Görsel</th>
+                                        <th scope="col">Başlık</th>
+                                        <th scope="col">İçerik</th>
+                                        <th scope="col" style="width: 85px">Bitiş</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.Kampanya != null && ((List<Kampanya>)ViewBag.Kampanya).Count > 0)
+                                    {
+                                        foreach (var kampanya in ViewBag.Kampanya)
+                                        {
+                                            <tr>
+                                                <td class="text-center">
+                                                    @if (!string.IsNullOrEmpty(kampanya.GorselYolu))
+                                                    {
+                                                        <img src="@kampanya.GorselYolu" class="duyuru-gorsel-mini"
+                                                             onclick="gorselGoster('@kampanya.GorselYolu', '@kampanya.Baslik')"
+                                                             alt="Görsel" title="Büyütmek için tıklayın">
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="gorsel-yok">
+                                                            <i class="fas fa-image fa-sm"></i>
+                                                        </div>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <span>@kampanya.Baslik</span>
+                                                        @if ((DateTime.Now - kampanya.EklenmeTarihi).TotalDays <= 5)
+                                                        {
+                                                            <span class="badge-yeni">Yeni</span>
+                                                        }
+                                                        <span class="badge bg-success ms-1 badge-oncelik">%@kampanya.IndirimYuzdesi</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="icerik-metin" title="@kampanya.Metin">
+                                                        @(kampanya.Metin?.Length > 30 ? kampanya.Metin.Substring(0, 30) + "..." : kampanya.Metin)
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <small class="@(kampanya.BitisTarihi < DateTime.Now ? "text-danger" : "")">
+                                                        @kampanya.BitisTarihi.ToString("dd.MM.yyyy")
+                                                    </small>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="4" class="text-center py-3 text-muted">
+                                                <i class="fas fa-info-circle me-1"></i> Hiç kampanya bulunamadı.
+                                            </td>
                                         </tr>
                                     }
                                 </tbody>
@@ -157,3 +349,14 @@
         </div>
     </div>
 </div>
+
+@section Script {
+    <script>
+        function gorselGoster(gorselYolu, baslik) {
+            document.getElementById('modalGorsel').src = gorselYolu;
+            document.getElementById('modalGorselBaslik').textContent = baslik + ' - Görsel';
+            var gorselModal = new bootstrap.Modal(document.getElementById('gorselModal'));
+            gorselModal.show();
+        }
+    </script>
+}

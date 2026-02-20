@@ -27,9 +27,12 @@ namespace WepApp.Controllers
         public IActionResult Index()
         {
             LoadCommonData();
-
+            List<string> join = new List<string>();
+            join.Add("Teklif");
+            join.Add("Teklif.LisansTip");
+            join.Add("Teklif.Detaylar");
             // Tüm aktif sözleşmeleri getir
-            List<MusteriSozlesme> sozlesmeler = _sozlesmeRepo.GetirList(x => x.Durumu == 1)
+            List<MusteriSozlesme> sozlesmeler = _sozlesmeRepo.GetirList(x => x.Durumu == 1, join)
                 .OrderByDescending(s => s.EklenmeTarihi)
                 .ToList();
 
@@ -38,9 +41,20 @@ namespace WepApp.Controllers
             {
                 s.Musteri = _musteriRepo.Getir(s.MusteriId);
                 s.SozlesmeDurumu = _durumRepo.Getir(s.SozlesmeDurumuId);
-                s.Teklif = _teklifRepo.Getir(s.TeklifId);
-            }
 
+                s.Teklif = _teklifRepo.Getir(
+                    x => x.Id == s.TeklifId,
+                    new List<string> { "LisansTip", "Detaylar" }
+                );
+
+                // Detaylar listesinden SADECE "grup" olanları tut
+                if (s.Teklif?.Detaylar != null)
+                {
+                    s.Teklif.Detaylar = s.Teklif.Detaylar
+                        .Where(d => d.Tip == "grup")
+                        .ToList();
+                }
+            }
             ViewBag.Sozlesmeler = sozlesmeler;
             ViewBag.Durumlar = _durumRepo.GetirList(x => x.Durumu == 1)
                 .OrderBy(x => x.Id)
