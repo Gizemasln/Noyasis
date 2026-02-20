@@ -1,7 +1,12 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "D:\\PROJELER\\Noyasis\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\wwwroot\\raporlar\\teklif.rdlc||{46F6D2A1-5E86-4080-A799-01F3D0E23796}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\wwwroot\\raporlar\\teklif.rdlc||{46F6D2A1-5E86-4080-A799-01F3D0E23796}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +14,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 214,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 13,
           "Children": [
             {
               "$type": "Bookmark",
@@ -62,6 +67,18 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Teklif.rdlc [Design]",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\Raporlar\\Teklif.rdlc",
+              "RelativeDocumentMoniker": "WepApp\\wwwroot\\Raporlar\\Teklif.rdlc",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\Raporlar\\Teklif.rdlc [Design]",
+              "RelativeToolTip": "WepApp\\wwwroot\\Raporlar\\Teklif.rdlc [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001755|",
+              "WhenOpened": "2026-02-20T07:29:33.695Z",
+              "EditorCaption": " [Design]"
             }
           ]
         },
