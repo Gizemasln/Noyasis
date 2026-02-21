@@ -29,6 +29,14 @@
       "PackagePath": "staticwebassets\\WebAdminTheme\\BayiSozlesme\\c3d7f9cd-dea6-4118-a627-75cae0114a0b.pdf"
     },
     {
+      "Id": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Duyuru\\0215cfd0-32ae-4624-a3e3-ebc01c6fa668_Ataturk_Mavi_Vatan.jpg",
+      "PackagePath": "staticwebassets\\WebAdminTheme\\Duyuru\\0215cfd0-32ae-4624-a3e3-ebc01c6fa668_Ataturk_Mavi_Vatan.jpg"
+    },
+    {
+      "Id": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Duyuru\\3968c136-e812-4f7d-8ffc-44e86034aeae_Ataturk_Mavi_Vatan.jpg",
+      "PackagePath": "staticwebassets\\WebAdminTheme\\Duyuru\\3968c136-e812-4f7d-8ffc-44e86034aeae_Ataturk_Mavi_Vatan.jpg"
+    },
+    {
       "Id": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Hakkimizda\\Buyuk\\fd1031a5-e283-4a34-bce3-ba3ea5accb34.jpg",
       "PackagePath": "staticwebassets\\WebAdminTheme\\Hakkimizda\\Buyuk\\fd1031a5-e283-4a34-bce3-ba3ea5accb34.jpg"
     },
@@ -121,6 +129,10 @@
       "PackagePath": "staticwebassets\\WebAdminTheme\\IK\\f716aefa-9ed3-49e4-9091-0cbde7d4e6c8_Satis_Raporu_20250920_143043.pdf"
     },
     {
+      "Id": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Kampanya\\6c8f0420-7b4c-4f2d-82e3-01e3d15f429a_1703998149747.png",
+      "PackagePath": "staticwebassets\\WebAdminTheme\\Kampanya\\6c8f0420-7b4c-4f2d-82e3-01e3d15f429a_1703998149747.png"
+    },
+    {
       "Id": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\LICENSE",
       "PackagePath": "staticwebassets\\WebAdminTheme"
     },
@@ -187,6 +199,18 @@
     {
       "Id": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Sertifika\\4e32a6d9-ec25-4a45-8c3f-364bf17219e4.pdf",
       "PackagePath": "staticwebassets\\WebAdminTheme\\Sertifika\\4e32a6d9-ec25-4a45-8c3f-364bf17219e4.pdf"
+    },
+    {
+      "Id": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\SliderVideo\\b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.mp4",
+      "PackagePath": "staticwebassets\\WebAdminTheme\\SliderVideo\\b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.mp4"
+    },
+    {
+      "Id": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Slider\\905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.jpg",
+      "PackagePath": "staticwebassets\\WebAdminTheme\\Slider\\905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.jpg"
+    },
+    {
+      "Id": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Slider\\afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png",
+      "PackagePath": "staticwebassets\\WebAdminTheme\\Slider\\afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png"
     },
     {
       "Id": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\SozlesmeDokumanlar\\imza_sirkusu_SOZ-20251216-C0CB003C.png",

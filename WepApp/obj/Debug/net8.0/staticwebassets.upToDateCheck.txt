@@ -639,6 +639,8 @@ wwwroot\WebAdminTheme\components\panels.html
 wwwroot\WebAdminTheme\components\simple-line-icons.html
 wwwroot\WebAdminTheme\components\sweetalert.html
 wwwroot\WebAdminTheme\components\typography.html
+wwwroot\WebAdminTheme\Duyuru\0215cfd0-32ae-4624-a3e3-ebc01c6fa668_Ataturk_Mavi_Vatan.jpg
+wwwroot\WebAdminTheme\Duyuru\3968c136-e812-4f7d-8ffc-44e86034aeae_Ataturk_Mavi_Vatan.jpg
 wwwroot\WebAdminTheme\forms\forms.html
 wwwroot\WebAdminTheme\Hakkimizda\Buyuk\fd1031a5-e283-4a34-bce3-ba3ea5accb34.jpg
 wwwroot\WebAdminTheme\Hakkimizda\Kucuk\fd1031a5-e283-4a34-bce3-ba3ea5accb34.jpg
@@ -669,6 +671,7 @@ wwwroot\WebAdminTheme\imza\7b1080eb-2f1f-43bc-b9cd-22ffb1e60805.png
 wwwroot\WebAdminTheme\imza\c4081bfe-d762-4574-ab1f-c3505da24874.png
 wwwroot\WebAdminTheme\imza\cbffc4a1-2a1d-4546-9960-8853f6bff9a2.png
 wwwroot\WebAdminTheme\index.html
+wwwroot\WebAdminTheme\Kampanya\6c8f0420-7b4c-4f2d-82e3-01e3d15f429a_1703998149747.png
 wwwroot\WebAdminTheme\LICENSE
 wwwroot\WebAdminTheme\logo\13906ea6-9d47-4ae3-9b4f-dcd2edcc37fc.png
 wwwroot\WebAdminTheme\logo\24429ea8-9259-486d-af3e-18dd7cd23d75.png
@@ -693,6 +696,9 @@ wwwroot\WebAdminTheme\MusteriSozlesme\vergikimliklevhası_SOZ_38_20251217133506.
 wwwroot\WebAdminTheme\README.md
 wwwroot\WebAdminTheme\Sertifika\4e32a6d9-ec25-4a45-8c3f-364bf17219e4.pdf
 wwwroot\WebAdminTheme\sidebar-style-2.html
+wwwroot\WebAdminTheme\Slider\905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.jpg
+wwwroot\WebAdminTheme\Slider\afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png
+wwwroot\WebAdminTheme\SliderVideo\b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.mp4
 wwwroot\WebAdminTheme\SozlesmeDokumanlar\imza_sirkusu_SOZ-20251216-C0CB003C.png
 wwwroot\WebAdminTheme\SozlesmeDokumanlar\vergi_kimlik_SOZ-20251216-C0CB003C.png
 wwwroot\WebAdminTheme\Sponsor\assets\css\main.css

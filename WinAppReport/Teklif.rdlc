@@ -1682,7 +1682,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Fields!UrunAdi.Value</Value>
+                    <Value>=Fields!Ek1.Value</Value>
                     <Style>
                       <FontFamily>Arial Black</FontFamily>
                     </Style>
@@ -2512,7 +2512,27 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>-        Teklif, gönderilme tarihinden itibaren 10.11.2025 tarihine kadar geçerlidir.</Value>
+                    <Value>-        Teklif, gönderilme tarihinden itibaren   </Value>
+                    <Style>
+                      <FontStyle>Normal</FontStyle>
+                      <FontFamily>Times New Roman</FontFamily>
+                      <FontWeight>Normal</FontWeight>
+                      <TextDecoration>None</TextDecoration>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                  <TextRun>
+                    <Value>=Fields!Ek2.Value</Value>
+                    <Style>
+                      <FontStyle>Normal</FontStyle>
+                      <FontFamily>Times New Roman</FontFamily>
+                      <FontWeight>Normal</FontWeight>
+                      <TextDecoration>None</TextDecoration>
+                      <Color>#000000</Color>
+                    </Style>
+                  </TextRun>
+                  <TextRun>
+                    <Value>   tarihine kadar geçerlidir.</Value>
                     <Style>
                       <FontStyle>Normal</FontStyle>
                       <FontFamily>Times New Roman</FontFamily>
@@ -2664,39 +2684,6 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="Textbox40">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>Teklif Adı</Value>
-                    <Style>
-                      <FontFamily>Arial Black</FontFamily>
-                      <FontSize>12pt</FontSize>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style />
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox40</rd:DefaultName>
-            <Top>11.48525cm</Top>
-            <Left>10.15414cm</Left>
-            <Height>0.8734cm</Height>
-            <Width>2.5cm</Width>
-            <ZIndex>8</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
           <Image Name="Image18">
             <Source>Embedded</Source>
             <Value>Ekrangörüntüsü20251124143020</Value>
@@ -2705,7 +2692,7 @@
             <Left>1.461cm</Left>
             <Height>3.22861cm</Height>
             <Width>6.92333cm</Width>
-            <ZIndex>9</ZIndex>
+            <ZIndex>8</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -2737,7 +2724,7 @@
             <Left>8.92224cm</Left>
             <Height>0.6cm</Height>
             <Width>2.5cm</Width>
-            <ZIndex>10</ZIndex>
+            <ZIndex>9</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -2773,7 +2760,7 @@
             <Left>8.92224cm</Left>
             <Height>0.6cm</Height>
             <Width>2.5cm</Width>
-            <ZIndex>11</ZIndex>
+            <ZIndex>10</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -2785,11 +2772,11 @@
             </Style>
           </Textbox>
           <Line Name="Line6">
-            <Top>12.57032cm</Top>
+            <Top>12.53504cm</Top>
             <Left>1.12327cm</Left>
-            <Height>3.36973cm</Height>
+            <Height>3.40501cm</Height>
             <Width>0cm</Width>
-            <ZIndex>12</ZIndex>
+            <ZIndex>11</ZIndex>
             <Style>
               <Border>
                 <Style>Solid</Style>
@@ -2801,7 +2788,7 @@
             <Left>15.35162cm</Left>
             <Height>3.33445cm</Height>
             <Width>0cm</Width>
-            <ZIndex>13</ZIndex>
+            <ZIndex>12</ZIndex>
             <Style>
               <Border>
                 <Style>Solid</Style>
@@ -2813,13 +2800,48 @@
             <Left>1.12327cm</Left>
             <Height>0cm</Height>
             <Width>14.26104cm</Width>
-            <ZIndex>14</ZIndex>
+            <ZIndex>13</ZIndex>
             <Style>
               <Border>
                 <Style>Solid</Style>
               </Border>
             </Style>
           </Line>
+          <Textbox Name="Textbox10">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Fields!Ek1.Value</Value>
+                    <Style>
+                      <FontFamily>Arial Black</FontFamily>
+                      <FontSize>12pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox2</rd:DefaultName>
+            <Top>11.48525cm</Top>
+            <Left>9.44728cm</Left>
+            <Height>0.8734cm</Height>
+            <Width>5.50546cm</Width>
+            <ZIndex>14</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
         </ReportItems>
         <PageBreak>
           <BreakLocation>End</BreakLocation>
@@ -2837,7 +2859,7 @@
         </Style>
       </Rectangle>
     </ReportItems>
-    <Height>18.3303in</Height>
+    <Height>18.33031in</Height>
     <Style>
       <Border>
         <Style>None</Style>

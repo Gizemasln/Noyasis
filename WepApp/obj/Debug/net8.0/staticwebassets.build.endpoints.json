@@ -577,6 +577,170 @@
       ]
     },
     {
+      "Route": "WebAdminTheme/Duyuru/0215cfd0-32ae-4624-a3e3-ebc01c6fa668_Ataturk_Mavi_Vatan.godzx7rz86.jpg",
+      "AssetFile": "WebAdminTheme/Duyuru/0215cfd0-32ae-4624-a3e3-ebc01c6fa668_Ataturk_Mavi_Vatan.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "95215"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 06:30:17 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "godzx7rz86"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik="
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/Duyuru/0215cfd0-32ae-4624-a3e3-ebc01c6fa668_Ataturk_Mavi_Vatan.jpg"
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/Duyuru/0215cfd0-32ae-4624-a3e3-ebc01c6fa668_Ataturk_Mavi_Vatan.jpg",
+      "AssetFile": "WebAdminTheme/Duyuru/0215cfd0-32ae-4624-a3e3-ebc01c6fa668_Ataturk_Mavi_Vatan.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "95215"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 06:30:17 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/Duyuru/3968c136-e812-4f7d-8ffc-44e86034aeae_Ataturk_Mavi_Vatan.godzx7rz86.jpg",
+      "AssetFile": "WebAdminTheme/Duyuru/3968c136-e812-4f7d-8ffc-44e86034aeae_Ataturk_Mavi_Vatan.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "95215"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 06:28:23 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "godzx7rz86"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik="
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/Duyuru/3968c136-e812-4f7d-8ffc-44e86034aeae_Ataturk_Mavi_Vatan.jpg"
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/Duyuru/3968c136-e812-4f7d-8ffc-44e86034aeae_Ataturk_Mavi_Vatan.jpg",
+      "AssetFile": "WebAdminTheme/Duyuru/3968c136-e812-4f7d-8ffc-44e86034aeae_Ataturk_Mavi_Vatan.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "95215"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 06:28:23 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik="
+        }
+      ]
+    },
+    {
       "Route": "WebAdminTheme/Hakkimizda/Buyuk/fd1031a5-e283-4a34-bce3-ba3ea5accb34.d8eklyt181.jpg",
       "AssetFile": "WebAdminTheme/Hakkimizda/Buyuk/fd1031a5-e283-4a34-bce3-ba3ea5accb34.jpg",
       "Selectors": [],
@@ -2463,6 +2627,88 @@
       ]
     },
     {
+      "Route": "WebAdminTheme/Kampanya/6c8f0420-7b4c-4f2d-82e3-01e3d15f429a_1703998149747.okqhiz2yig.png",
+      "AssetFile": "WebAdminTheme/Kampanya/6c8f0420-7b4c-4f2d-82e3-01e3d15f429a_1703998149747.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1218267"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 06:28:03 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "okqhiz2yig"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU="
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/Kampanya/6c8f0420-7b4c-4f2d-82e3-01e3d15f429a_1703998149747.png"
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/Kampanya/6c8f0420-7b4c-4f2d-82e3-01e3d15f429a_1703998149747.png",
+      "AssetFile": "WebAdminTheme/Kampanya/6c8f0420-7b4c-4f2d-82e3-01e3d15f429a_1703998149747.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1218267"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 06:28:03 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU="
+        }
+      ]
+    },
+    {
       "Route": "WebAdminTheme/LICENSE",
       "AssetFile": "WebAdminTheme/LICENSE",
       "Selectors": [],
@@ -3853,6 +4099,252 @@
         {
           "Name": "label",
           "Value": "WebAdminTheme/Sertifika/4e32a6d9-ec25-4a45-8c3f-364bf17219e4.pdf"
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/Slider/905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.8meqg7c2mn.jpg",
+      "AssetFile": "WebAdminTheme/Slider/905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1861049"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"gGf1pSFdtS7HYWhpDOuf0//JbpwqHFkrrXPK9t5AAoI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 07:44:06 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "8meqg7c2mn"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-gGf1pSFdtS7HYWhpDOuf0//JbpwqHFkrrXPK9t5AAoI="
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/Slider/905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.jpg"
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/Slider/905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.jpg",
+      "AssetFile": "WebAdminTheme/Slider/905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1861049"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"gGf1pSFdtS7HYWhpDOuf0//JbpwqHFkrrXPK9t5AAoI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 07:44:06 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-gGf1pSFdtS7HYWhpDOuf0//JbpwqHFkrrXPK9t5AAoI="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/Slider/afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.okqhiz2yig.png",
+      "AssetFile": "WebAdminTheme/Slider/afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1218267"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 07:10:50 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "okqhiz2yig"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU="
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/Slider/afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png"
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/Slider/afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png",
+      "AssetFile": "WebAdminTheme/Slider/afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1218267"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 07:10:50 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/SliderVideo/b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.mp4",
+      "AssetFile": "WebAdminTheme/SliderVideo/b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.mp4",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "16026848"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "video/mp4"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"tIirlyVG/5Vz3POkGEN/celspQQiWJaolOjN2snfonM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 07:10:50 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-tIirlyVG/5Vz3POkGEN/celspQQiWJaolOjN2snfonM="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/SliderVideo/b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.sixgjaqqg1.mp4",
+      "AssetFile": "WebAdminTheme/SliderVideo/b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.mp4",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "16026848"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "video/mp4"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"tIirlyVG/5Vz3POkGEN/celspQQiWJaolOjN2snfonM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 07:10:50 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "sixgjaqqg1"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-tIirlyVG/5Vz3POkGEN/celspQQiWJaolOjN2snfonM="
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/SliderVideo/b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.mp4"
         }
       ]
     },

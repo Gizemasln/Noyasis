@@ -160,7 +160,8 @@ namespace WebApp.Controllers
                 ("/AdminTeklif", "Teklif Listesi", "#teklifSubmenu", null, 2, 3),
                 
                 // Diğer menüler
-                ("/AdminButton", "Buton Yetki", null, null, 44, 1)
+                ("/AdminButton", "Buton Yetki", null, null, 44, 1),
+                ("/AdminAnaSayfaSlider", "Slider Ayarları", "#destekSubmenu", null,16 , 3)
             };
         }
 

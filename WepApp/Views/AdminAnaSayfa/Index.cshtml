@@ -1,92 +1,497 @@
-﻿@{
-    ViewData["Title"] = "Index";
+﻿@using WebApp.Models
+@using WepApp.Models
+@{
+    ViewData["Title"] = "Ana Sayfa";
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
 
 <style>
+    /* ===== GENEL STILLER ===== */
     .duyuru-gorsel-mini {
-        width: 35px;
-        height: 35px;
+        width: 40px;
+        height: 40px;
         object-fit: cover;
-        border-radius: 6px;
+        border-radius: 8px;
         border: 2px solid #fff;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         cursor: pointer;
-        transition: transform 0.2s;
+        transition: all 0.2s ease;
     }
 
         .duyuru-gorsel-mini:hover {
             transform: scale(1.1);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
     .gorsel-yok {
-        width: 35px;
-        height: 35px;
-        background-color: #f8f9fa;
-        border-radius: 6px;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #adb5bd;
-        font-size: 12px;
-        border: 1px dashed #dee2e6;
-    }
-
-    .modal-gorsel-buyuk {
-        max-width: 100%;
-        max-height: 70vh;
-        object-fit: contain;
+        color: #6c757d;
+        font-size: 18px;
+        border: 1px dashed #ced4da;
     }
 
     .badge-yeni {
-        background-color: #0dcaf0;
-        color: #fff;
+        background: linear-gradient(135deg, #0dcaf0, #0d6efd);
+        color: white;
         font-size: 0.7rem;
-        padding: 0.2rem 0.4rem;
-        border-radius: 4px;
-        margin-left: 5px;
+        padding: 0.25rem 0.5rem;
+        border-radius: 20px;
+        margin-left: 8px;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(13, 202, 240, 0.2);
     }
 
     .badge-oncelik {
         font-size: 0.7rem;
-        padding: 0.2rem 0.4rem;
-        border-radius: 4px;
-    }
-
-    .card {
-        border: none;
-        box-shadow: 0 0 10px rgba(0,0,0,0.05);
-        margin-bottom: 20px;
-    }
-
-    .card-header {
-        background-color: #fff;
-        border-bottom: 2px solid #f1f5f9;
-        padding: 1rem 1.5rem;
-    }
-
-        .card-header h4 {
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-    .table th {
-        font-weight: 600;
-        color: #64748b;
-        border-bottom-width: 1px;
-    }
-
-    .table td {
-        vertical-align: middle;
-        color: #334155;
+        padding: 0.25rem 0.5rem;
+        border-radius: 20px;
+        font-weight: 500;
+        margin-left: 4px;
     }
 
     .icerik-metin {
-        max-width: 200px;
+        max-width: 180px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        color: #4b5563;
+        font-size: 0.9rem;
+    }
+
+    /* ===== KART STILLERI ===== */
+    .card {
+        border: none;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+        border-radius: 16px;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background: white;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+    .card-header {
+        background: white;
+        border-bottom: 2px solid #f1f5f9;
+        padding: 1.2rem 1.5rem;
+    }
+
+        .card-header h4 {
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+
+            .card-header h4 i {
+                font-size: 1.3rem;
+                margin-right: 10px;
+            }
+
+    .card-body {
+        padding: 0;
+        flex: 1;
+    }
+
+    /* ===== TABLO STILLERI ===== */
+    .table {
+        margin: 0;
+        width: 100%;
+    }
+
+        .table thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 1rem 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+            .table tbody tr:hover {
+                background-color: #f8fafc;
+            }
+
+        .table tbody td {
+            padding: 1rem 0.8rem;
+            vertical-align: middle;
+            color: #334155;
+            font-size: 0.9rem;
+        }
+
+    /* ===== DETAY BUTONU ===== */
+    .detay-btn {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    }
+
+        .detay-btn:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+
+        .detay-btn i {
+            font-size: 1rem;
+        }
+
+    /* ===== MODAL STILLERI ===== */
+    .modal-detay-baslik {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 1rem;
+        border-bottom: 3px solid #3b82f6;
+        padding-bottom: 0.5rem;
+    }
+
+    .modal-detay-metin {
+        font-size: 1rem;
+        line-height: 1.8;
+        color: #334155;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 1.2rem;
+        background: #f8fafc;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .modal-detay-bilgi {
+        background: #ffffff;
+        padding: 1.2rem;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .bilgi-etiketi {
+        font-weight: 600;
+        color: #475569;
+        min-width: 100px;
+        display: inline-block;
+        font-size: 0.9rem;
+    }
+
+    .modal-gorsel-buyuk-detay {
+        width: 100%;
+        max-height: 300px;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* ===== SLIDER STILLERI ===== */
+    .hero-slider {
+        width: 100%;
+        height: 600px;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 40px;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .slider-container {
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+
+    .slider-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+        z-index: 1;
+    }
+
+        .slider-slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 2;
+        }
+
+    .slide-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+        .slide-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
+        }
+
+    .slide-content {
+        position: absolute;
+        top: 50%;
+        left: 10%;
+        transform: translateY(-50%);
+        color: white;
+        max-width: 600px;
+        z-index: 3;
+    }
+
+    .slide-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        animation: fadeInUp 1s ease;
+    }
+
+    .slide-description {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+        opacity: 0.95;
+        text-shadow: 0 1px 5px rgba(0,0,0,0.3);
+        animation: fadeInUp 1s ease 0.2s both;
+    }
+
+    .slide-button {
+        display: inline-block;
+        padding: 1rem 2.5rem;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        animation: fadeInUp 1s ease 0.4s both;
+        border: 2px solid transparent;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    }
+
+        .slide-button:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
+            color: white;
+            text-decoration: none;
+        }
+
+    .slider-controls {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 12px;
+        z-index: 10;
+    }
+
+    .slider-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.5);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+        .slider-dot.active {
+            background: #3b82f6;
+            transform: scale(1.3);
+            border-color: white;
+        }
+
+        .slider-dot:hover {
+            background: rgba(255,255,255,0.9);
+        }
+
+    .slider-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 50px;
+        height: 50px;
+        background: rgba(255,255,255,0.15);
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+        backdrop-filter: blur(5px);
+    }
+
+        .slider-arrow:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.6);
+        }
+
+        .slider-arrow.prev {
+            left: 20px;
+        }
+
+        .slider-arrow.next {
+            right: 20px;
+        }
+
+    .slider-video-container {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        background: #000;
+    }
+
+    .slider-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .video-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+        pointer-events: none;
+    }
+
+
+    /* ===== ANIMASYONLAR ===== */
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @@media (max-width: 1200px) {
+        .table thead th {
+            font-size: 0.75rem;
+            padding: 0.8rem 0.5rem;
+        }
+
+        .table tbody td {
+            padding: 0.8rem 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .icerik-metin {
+            max-width: 120px;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .hero-slider {
+            height: 400px;
+        }
+
+        .slide-title {
+            font-size: 2rem;
+        }
+
+        .slide-description {
+            font-size: 1rem;
+        }
+
+        .slide-button {
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+        }
+
+        .slider-arrow {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+
+        .card-header h4 {
+            font-size: 1rem;
+        }
+
+        .table thead th {
+            font-size: 0.7rem;
+        }
+
+        .icerik-metin {
+            max-width: 80px;
+        }
+
+        .detay-btn {
+            width: 28px;
+            height: 28px;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .table {
+            min-width: 600px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .modal-dialog {
+            margin: 0.5rem;
+        }
     }
 </style>
 
@@ -102,7 +507,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center p-3">
-                <img src="" id="modalGorsel" class="modal-gorsel-buyuk" alt="Görsel">
+                <img src="" id="modalGorsel" class="img-fluid" style="max-height: 70vh; border-radius: 8px;" alt="Görsel">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
@@ -111,26 +516,148 @@
     </div>
 </div>
 
-<div class="container">
+<!-- Detay Modalı -->
+<div class="modal fade" id="detayModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-info-circle me-2 text-primary"></i>
+                    <span id="detayModalBaslik">Detay</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 text-center mb-3">
+                        <img src="" id="detayModalGorsel" class="modal-gorsel-buyuk-detay" alt="Görsel">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="modal-detay-bilgi">
+                            <h4 id="detayModalBaslik2" class="modal-detay-baslik"></h4>
+                            <div class="mb-3">
+                                <span class="bilgi-etiketi"><i class="fas fa-tag me-1"></i>Tür:</span>
+                                <span id="detayModalTur" class="badge bg-info text-white"></span>
+                            </div>
+                            <div class="mb-3">
+                                <span class="bilgi-etiketi"><i class="fas fa-calendar me-1"></i>Tarih:</span>
+                                <span id="detayModalTarih"></span>
+                            </div>
+                            <div class="mb-3">
+                                <span class="bilgi-etiketi"><i class="fas fa-circle me-1"></i>Durum:</span>
+                                <span id="detayModalDurum"></span>
+                            </div>
+                            <div id="detayModalEkstra" class="mb-3"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h6 class="fw-bold mb-2"><i class="fas fa-align-left me-2"></i>İçerik:</h6>
+                        <div id="detayModalMetin" class="modal-detay-metin"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hero Slider -->
+<div class="hero-slider">
+    <div class="slider-container" id="sliderContainer">
+        @if (ViewBag.SliderList != null && ((List<Slider>)ViewBag.SliderList).Count > 0)
+        {
+            var sliderList = (List<Slider>)ViewBag.SliderList;
+            for (int i = 0; i < sliderList.Count; i++)
+            {
+                var slider = sliderList[i];
+                <div class="slider-slide @(i == 0 ? "active" : "")" data-index="@i">
+                    @if (!string.IsNullOrEmpty(slider.VideoYolu))
+                    {
+                        <div class="slider-video-container">
+                            <video class="slider-video" autoplay muted loop playsinline>
+                                <source src="@slider.VideoYolu" type="video/mp4">
+                            </video>
+                            <div class="video-overlay"></div>
+                        </div>
+                    }
+                    else if (!string.IsNullOrEmpty(slider.GorselYolu))
+                    {
+                        <div class="slide-background" style="background-image: url('@slider.GorselYolu');"></div>
+                    }
+
+                    <div class="slide-content">
+                        <h1 class="slide-title">@slider.SlaytBaslik</h1>
+                        @if (!string.IsNullOrEmpty(slider.Aciklama))
+                        {
+                            <p class="slide-description">@slider.Aciklama</p>
+                        }
+                        @if (!string.IsNullOrEmpty(slider.SlaytUrl))
+                        {
+                            <a href="@slider.SlaytUrl" class="slide-button" target="@(slider.YeniSekmeMi == 1 ? "_blank" : "_self")">
+                                @(string.IsNullOrEmpty(slider.SlaytButonAdi) ? "Detaylı Bilgi" : slider.SlaytButonAdi)
+                                <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (sliderList.Count > 1)
+            {
+                <div class="slider-arrow prev" onclick="changeSlide(-1)">
+                    <i class="fas fa-chevron-left"></i>
+                </div>
+                <div class="slider-arrow next" onclick="changeSlide(1)">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+                <div class="slider-controls">
+                    @for (int i = 0; i < sliderList.Count; i++)
+                    {
+                        <div class="slider-dot @(i == 0 ? "active" : "")" onclick="goToSlide(@i)"></div>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <div class="slider-slide active">
+                <div class="slide-background" style="background-image: url('/images/default-slider.jpg');"></div>
+                <div class="slide-content">
+                    <h1 class="slide-title">Hoş Geldiniz</h1>
+                    <p class="slide-description">Firmamızın güncel duyuru ve kampanyalarını takip edebilirsiniz.</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
     <div class="page-inner">
         <div class="row">
             <!-- Bayi Duyuruları -->
             <div class="col-md-4">
-                <div class="card card-round">
+                <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title mb-0">
-                            <i class="fa fa-store me-2 text-info"></i> Bayi Duyuruları
+                        <h4>
+                            <i class="fas fa-store text-info"></i>
+                            Bayi Duyuruları
                         </h4>
                     </div>
-                    <div class="card-body p-0">
+                    <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table align-items-center mb-0">
-                                <thead class="thead-light">
+                            <table class="table">
+                                <thead>
                                     <tr>
-                                        <th scope="col" style="width: 45px">Görsel</th>
-                                        <th scope="col">Başlık</th>
-                                        <th scope="col">İçerik</th>
-                                        <th scope="col" style="width: 85px">Tarih</th>
+                                        <th>Detay</th>
+                                        <th>Görsel</th>
+                                        <th>Başlık</th>
+                                        <th>İçerik</th>
+                                        <th>Tarih</th>
+                                      
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -139,6 +666,21 @@
                                         foreach (var duyuru in ViewBag.BayiDuyuru)
                                         {
                                             <tr>
+                                                <td>
+                                                    <button class="detay-btn" onclick='detayGoster(
+                                            "bayi",
+                                            "@duyuru.Id",
+                                            "@duyuru.Baslik",
+                                            @Html.Raw(Json.Serialize(duyuru.Metin ?? "")),
+                                            "@(duyuru.GorselYolu ?? "")",
+                                            "@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")",
+                                            "@(duyuru.Oncelik == 1 ? "Yüksek Öncelikli" : "Normal")",
+                                            "",
+                                            "@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")"
+                                        )'>
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </td>
                                                 <td class="text-center">
                                                     @if (!string.IsNullOrEmpty(duyuru.GorselYolu))
                                                     {
@@ -149,20 +691,20 @@
                                                     else
                                                     {
                                                         <div class="gorsel-yok">
-                                                            <i class="fas fa-image fa-sm"></i>
+                                                            <i class="fas fa-image"></i>
                                                         </div>
                                                     }
                                                 </td>
                                                 <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <span>@duyuru.Baslik</span>
+                                                    <div class="d-flex align-items-center flex-wrap">
+                                                        <span class="fw-medium">@duyuru.Baslik</span>
                                                         @if ((DateTime.Now - duyuru.EklenmeTarihi).TotalDays <= 5)
                                                         {
                                                             <span class="badge-yeni">Yeni</span>
                                                         }
                                                         @if (duyuru.Oncelik == 1)
                                                         {
-                                                            <span class="badge bg-warning text-dark ms-1 badge-oncelik">Yüksek</span>
+                                                            <span class="badge bg-warning text-dark badge-oncelik">Yüksek</span>
                                                         }
                                                     </div>
                                                 </td>
@@ -172,16 +714,17 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <small>@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")</small>
+                                                    <small class="text-secondary">@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")</small>
                                                 </td>
+                                       
                                             </tr>
                                         }
                                     }
                                     else
                                     {
                                         <tr>
-                                            <td colspan="4" class="text-center py-3 text-muted">
-                                                <i class="fas fa-info-circle me-1"></i> Hiç bayi duyurusu bulunamadı.
+                                            <td colspan="5" class="text-center py-4 text-muted">
+                                                <i class="fas fa-inbox me-2"></i>Hiç bayi duyurusu bulunamadı.
                                             </td>
                                         </tr>
                                     }
@@ -194,21 +737,24 @@
 
             <!-- Web Duyuruları -->
             <div class="col-md-4">
-                <div class="card card-round">
+                <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title mb-0">
-                            <i class="fa fa-globe me-2 text-primary"></i> Web Duyuruları
+                        <h4>
+                            <i class="fas fa-globe text-primary"></i>
+                            Web Duyuruları
                         </h4>
                     </div>
-                    <div class="card-body p-0">
+                    <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table align-items-center mb-0">
-                                <thead class="thead-light">
+                            <table class="table">
+                                <thead>
                                     <tr>
-                                        <th scope="col" style="width: 45px">Görsel</th>
-                                        <th scope="col">Başlık</th>
-                                        <th scope="col">İçerik</th>
-                                        <th scope="col" style="width: 85px">Tarih</th>
+                                        <th>Detay</th>
+
+                                        <th>Görsel</th>
+                                        <th>Başlık</th>
+                                        <th>İçerik</th>
+                                        <th>Tarih</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -217,6 +763,11 @@
                                         foreach (var duyuru in ViewBag.Duyuru)
                                         {
                                             <tr>
+                                                <td>
+                                                    <button class="detay-btn" onclick="detayGoster('web', '@duyuru.Id', '@duyuru.Baslik', '@Html.Raw(duyuru.Metin?.Replace("'", "\\'"))', '@duyuru.GorselYolu', '@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")', '@(duyuru.Oncelik == 1 ? "Yüksek Öncelikli" : "Normal")', '', '@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")')">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </td>
                                                 <td class="text-center">
                                                     @if (!string.IsNullOrEmpty(duyuru.GorselYolu))
                                                     {
@@ -227,20 +778,20 @@
                                                     else
                                                     {
                                                         <div class="gorsel-yok">
-                                                            <i class="fas fa-image fa-sm"></i>
+                                                            <i class="fas fa-image"></i>
                                                         </div>
                                                     }
                                                 </td>
                                                 <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <span>@duyuru.Baslik</span>
+                                                    <div class="d-flex align-items-center flex-wrap">
+                                                        <span class="fw-medium">@duyuru.Baslik</span>
                                                         @if ((DateTime.Now - duyuru.EklenmeTarihi).TotalDays <= 5)
                                                         {
                                                             <span class="badge-yeni">Yeni</span>
                                                         }
                                                         @if (duyuru.Oncelik == 1)
                                                         {
-                                                            <span class="badge bg-warning text-dark ms-1 badge-oncelik">Yüksek</span>
+                                                            <span class="badge bg-warning text-dark badge-oncelik">Yüksek</span>
                                                         }
                                                     </div>
                                                 </td>
@@ -250,16 +801,17 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <small>@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")</small>
+                                                    <small class="text-secondary">@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")</small>
                                                 </td>
+                                         
                                             </tr>
                                         }
                                     }
                                     else
                                     {
                                         <tr>
-                                            <td colspan="4" class="text-center py-3 text-muted">
-                                                <i class="fas fa-info-circle me-1"></i> Hiç web duyurusu bulunamadı.
+                                            <td colspan="5" class="text-center py-4 text-muted">
+                                                <i class="fas fa-inbox me-2"></i>Hiç web duyurusu bulunamadı.
                                             </td>
                                         </tr>
                                     }
@@ -272,21 +824,24 @@
 
             <!-- Kampanyalar -->
             <div class="col-md-4">
-                <div class="card card-round">
+                <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title mb-0">
-                            <i class="fa fa-tags me-2 text-success"></i> Kampanyalar
+                        <h4>
+                            <i class="fas fa-tags text-success"></i>
+                            Kampanyalar
                         </h4>
                     </div>
-                    <div class="card-body p-0">
+                    <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table align-items-center mb-0">
-                                <thead class="thead-light">
+                            <table class="table">
+                                <thead>
                                     <tr>
-                                        <th scope="col" style="width: 45px">Görsel</th>
-                                        <th scope="col">Başlık</th>
-                                        <th scope="col">İçerik</th>
-                                        <th scope="col" style="width: 85px">Bitiş</th>
+                                        <th>Detay</th>
+                                        <th>Görsel</th>
+                                        <th>Başlık</th>
+                                        <th>İçerik</th>
+                                        <th>Bitiş</th>
+                                   
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -295,6 +850,11 @@
                                         foreach (var kampanya in ViewBag.Kampanya)
                                         {
                                             <tr>
+                                                <td>
+                                                    <button class="detay-btn" onclick="detayGoster('kampanya', '@kampanya.Id', '@kampanya.Baslik', '@Html.Raw(kampanya.Metin?.Replace("'", "\\'"))', '@kampanya.GorselYolu', '@kampanya.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")', '@(kampanya.BitisTarihi < DateTime.Now ? "Süresi Doldu" : "Aktif")', '@kampanya.IndirimYuzdesi', '@kampanya.BitisTarihi.ToString("dd.MM.yyyy")')">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </td>
                                                 <td class="text-center">
                                                     @if (!string.IsNullOrEmpty(kampanya.GorselYolu))
                                                     {
@@ -305,18 +865,18 @@
                                                     else
                                                     {
                                                         <div class="gorsel-yok">
-                                                            <i class="fas fa-image fa-sm"></i>
+                                                            <i class="fas fa-image"></i>
                                                         </div>
                                                     }
                                                 </td>
                                                 <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <span>@kampanya.Baslik</span>
+                                                    <div class="d-flex align-items-center flex-wrap">
+                                                        <span class="fw-medium">@kampanya.Baslik</span>
                                                         @if ((DateTime.Now - kampanya.EklenmeTarihi).TotalDays <= 5)
                                                         {
                                                             <span class="badge-yeni">Yeni</span>
                                                         }
-                                                        <span class="badge bg-success ms-1 badge-oncelik">%@kampanya.IndirimYuzdesi</span>
+                                                        <span class="badge bg-success badge-oncelik">%@kampanya.IndirimYuzdesi</span>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -325,18 +885,19 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <small class="@(kampanya.BitisTarihi < DateTime.Now ? "text-danger" : "")">
+                                                    <small class="@(kampanya.BitisTarihi < DateTime.Now ? "text-danger fw-bold" : "text-secondary")">
                                                         @kampanya.BitisTarihi.ToString("dd.MM.yyyy")
                                                     </small>
                                                 </td>
+                                       
                                             </tr>
                                         }
                                     }
                                     else
                                     {
                                         <tr>
-                                            <td colspan="4" class="text-center py-3 text-muted">
-                                                <i class="fas fa-info-circle me-1"></i> Hiç kampanya bulunamadı.
+                                            <td colspan="5" class="text-center py-4 text-muted">
+                                                <i class="fas fa-inbox me-2"></i>Hiç kampanya bulunamadı.
                                             </td>
                                         </tr>
                                     }
@@ -348,15 +909,138 @@
             </div>
         </div>
     </div>
-</div>
+
 
 @section Script {
     <script>
-        function gorselGoster(gorselYolu, baslik) {
-            document.getElementById('modalGorsel').src = gorselYolu;
-            document.getElementById('modalGorselBaslik').textContent = baslik + ' - Görsel';
-            var gorselModal = new bootstrap.Modal(document.getElementById('gorselModal'));
-            gorselModal.show();
+        let currentSlide = 0;
+        let slideInterval;
+        let slides = [];
+        let dots = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            slides = document.querySelectorAll('.slider-slide');
+            dots = document.querySelectorAll('.slider-dot');
+
+            const videos = document.querySelectorAll('.slider-video');
+            videos.forEach(video => {
+                video.play().catch(e => console.log('Video otomatik oynatılamadı:', e));
+            });
+
+            startAutoSlide();
+        });
+
+        function showSlide(index) {
+            if (slides.length === 0) return;
+
+            if (index >= slides.length) index = 0;
+            if (index < 0) index = slides.length - 1;
+
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+
+            if (dots.length > 0) {
+                dots.forEach(dot => dot.classList.remove('active'));
+                dots[index].classList.add('active');
+            }
+
+            const activeSlide = slides[index];
+            const video = activeSlide.querySelector('video');
+            if (video) {
+                video.play().catch(e => console.log('Video oynatılamadı:', e));
+            }
+
+            slides.forEach((slide, i) => {
+                if (i !== index) {
+                    const otherVideo = slide.querySelector('video');
+                    if (otherVideo) {
+                        otherVideo.pause();
+                        otherVideo.currentTime = 0;
+                    }
+                }
+            });
+
+            currentSlide = index;
+        }
+
+        function changeSlide(direction) {
+            stopAutoSlide();
+            showSlide(currentSlide + direction);
+            startAutoSlide();
+        }
+
+        function goToSlide(index) {
+            stopAutoSlide();
+            showSlide(index);
+            startAutoSlide();
+        }
+
+        function startAutoSlide() {
+            if (slides.length > 1) {
+                stopAutoSlide();
+                slideInterval = setInterval(() => {
+                    changeSlide(1);
+                }, 5000);
+            }
+        }
+
+        function stopAutoSlide() {
+            if (slideInterval) {
+                clearInterval(slideInterval);
+                slideInterval = null;
+            }
+        }
+
+        const sliderContainer = document.getElementById('sliderContainer');
+        if (sliderContainer) {
+            sliderContainer.addEventListener('mouseenter', stopAutoSlide);
+            sliderContainer.addEventListener('mouseleave', startAutoSlide);
+        }
+
+        function gorselGoster(imageUrl, title) {
+            document.getElementById('modalGorsel').src = imageUrl;
+            document.getElementById('modalGorselBaslik').textContent = title || 'Görsel';
+            var modal = new bootstrap.Modal(document.getElementById('gorselModal'));
+            modal.show();
+        }
+
+        function detayGoster(tur, id, baslik, metin, gorselYolu, eklenmeTarihi, durum, indirim, bitisTarihi) {
+            let turAdi = '';
+            let ekstraBilgi = '';
+
+            switch(tur) {
+                case 'bayi':
+                    turAdi = 'Bayi Duyurusu';
+                    break;
+                case 'web':
+                    turAdi = 'Web Duyurusu';
+                    break;
+                case 'kampanya':
+                    turAdi = 'Kampanya';
+                    ekstraBilgi = `<div class="mt-2"><span class="bilgi-etiketi"><i class="fas fa-percent me-1"></i>İndirim:</span> <span class="badge bg-success">%${indirim}</span></div>
+                                   <div class="mt-2"><span class="bilgi-etiketi"><i class="fas fa-clock me-1"></i>Bitiş:</span> <span class="${new Date(bitisTarihi) < new Date() ? 'text-danger' : 'text-success'}">${bitisTarihi}</span></div>`;
+                    break;
+            }
+
+            document.getElementById('detayModalBaslik').textContent = baslik;
+            document.getElementById('detayModalBaslik2').textContent = baslik;
+            document.getElementById('detayModalTur').textContent = turAdi;
+            document.getElementById('detayModalTarih').textContent = eklenmeTarihi;
+            document.getElementById('detayModalDurum').innerHTML = durum.includes('Yüksek') ? '<span class="badge bg-warning text-dark">' + durum + '</span>' : '<span class="badge bg-info">' + durum + '</span>';
+            document.getElementById('detayModalMetin').innerHTML = metin ? metin.replace(/\n/g, '<br>') : '<em class="text-muted">İçerik bulunamadı.</em>';
+            document.getElementById('detayModalEkstra').innerHTML = ekstraBilgi;
+
+            const detayGorsel = document.getElementById('detayModalGorsel');
+            if (gorselYolu) {
+                detayGorsel.src = gorselYolu;
+                detayGorsel.style.display = 'block';
+            } else {
+                detayGorsel.src = '/images/no-image.png';
+                detayGorsel.style.display = 'block';
+            }
+
+            var modal = new bootstrap.Modal(document.getElementById('detayModal'));
+            modal.show();
         }
     </script>
 }

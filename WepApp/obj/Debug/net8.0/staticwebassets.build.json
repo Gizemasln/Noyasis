@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "wCoAbzBP7gWaOi+pW+v5M/N7vO894rlxiB7ngD2IkYU=",
+  "Hash": "fJg4oEnKnX7VDkVJ0Ml/a6SLqWtt4xvssay2Iw1j5bY=",
   "Source": "WepApp",
   "BasePath": "_content/WepApp",
   "Mode": "Default",
@@ -13478,6 +13478,48 @@
       "OriginalItemSpec": "wwwroot\\WebAdminTheme\\components\\typography.html"
     },
     {
+      "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Duyuru\\0215cfd0-32ae-4624-a3e3-ebc01c6fa668_Ataturk_Mavi_Vatan.jpg",
+      "SourceId": "WepApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\",
+      "BasePath": "_content/WepApp",
+      "RelativePath": "WebAdminTheme/Duyuru/0215cfd0-32ae-4624-a3e3-ebc01c6fa668_Ataturk_Mavi_Vatan#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "godzx7rz86",
+      "Integrity": "AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\WebAdminTheme\\Duyuru\\0215cfd0-32ae-4624-a3e3-ebc01c6fa668_Ataturk_Mavi_Vatan.jpg"
+    },
+    {
+      "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Duyuru\\3968c136-e812-4f7d-8ffc-44e86034aeae_Ataturk_Mavi_Vatan.jpg",
+      "SourceId": "WepApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\",
+      "BasePath": "_content/WepApp",
+      "RelativePath": "WebAdminTheme/Duyuru/3968c136-e812-4f7d-8ffc-44e86034aeae_Ataturk_Mavi_Vatan#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "godzx7rz86",
+      "Integrity": "AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\WebAdminTheme\\Duyuru\\3968c136-e812-4f7d-8ffc-44e86034aeae_Ataturk_Mavi_Vatan.jpg"
+    },
+    {
       "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\forms\\forms.html",
       "SourceId": "WepApp",
       "SourceType": "Discovered",
@@ -14108,6 +14150,27 @@
       "OriginalItemSpec": "wwwroot\\WebAdminTheme\\index.html"
     },
     {
+      "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Kampanya\\6c8f0420-7b4c-4f2d-82e3-01e3d15f429a_1703998149747.png",
+      "SourceId": "WepApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\",
+      "BasePath": "_content/WepApp",
+      "RelativePath": "WebAdminTheme/Kampanya/6c8f0420-7b4c-4f2d-82e3-01e3d15f429a_1703998149747#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "okqhiz2yig",
+      "Integrity": "yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\WebAdminTheme\\Kampanya\\6c8f0420-7b4c-4f2d-82e3-01e3d15f429a_1703998149747.png"
+    },
+    {
       "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\LICENSE",
       "SourceId": "WepApp",
       "SourceType": "Discovered",
@@ -14610,6 +14673,69 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\WebAdminTheme\\sidebar-style-2.html"
+    },
+    {
+      "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Slider\\905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.jpg",
+      "SourceId": "WepApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\",
+      "BasePath": "_content/WepApp",
+      "RelativePath": "WebAdminTheme/Slider/905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "8meqg7c2mn",
+      "Integrity": "gGf1pSFdtS7HYWhpDOuf0//JbpwqHFkrrXPK9t5AAoI=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\WebAdminTheme\\Slider\\905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.jpg"
+    },
+    {
+      "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Slider\\afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png",
+      "SourceId": "WepApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\",
+      "BasePath": "_content/WepApp",
+      "RelativePath": "WebAdminTheme/Slider/afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "okqhiz2yig",
+      "Integrity": "yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\WebAdminTheme\\Slider\\afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png"
+    },
+    {
+      "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\SliderVideo\\b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.mp4",
+      "SourceId": "WepApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\",
+      "BasePath": "_content/WepApp",
+      "RelativePath": "WebAdminTheme/SliderVideo/b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps#[.{fingerprint}]?.mp4",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "sixgjaqqg1",
+      "Integrity": "tIirlyVG/5Vz3POkGEN/celspQQiWJaolOjN2snfonM=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\WebAdminTheme\\SliderVideo\\b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.mp4"
     },
     {
       "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\SozlesmeDokumanlar\\imza_sirkusu_SOZ-20251216-C0CB003C.png",
@@ -73434,6 +73560,170 @@
       ]
     },
     {
+      "Route": "WebAdminTheme/Duyuru/0215cfd0-32ae-4624-a3e3-ebc01c6fa668_Ataturk_Mavi_Vatan.godzx7rz86.jpg",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Duyuru\\0215cfd0-32ae-4624-a3e3-ebc01c6fa668_Ataturk_Mavi_Vatan.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "95215"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 06:30:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "godzx7rz86"
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/Duyuru/0215cfd0-32ae-4624-a3e3-ebc01c6fa668_Ataturk_Mavi_Vatan.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/Duyuru/0215cfd0-32ae-4624-a3e3-ebc01c6fa668_Ataturk_Mavi_Vatan.jpg",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Duyuru\\0215cfd0-32ae-4624-a3e3-ebc01c6fa668_Ataturk_Mavi_Vatan.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "95215"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 06:30:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/Duyuru/3968c136-e812-4f7d-8ffc-44e86034aeae_Ataturk_Mavi_Vatan.godzx7rz86.jpg",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Duyuru\\3968c136-e812-4f7d-8ffc-44e86034aeae_Ataturk_Mavi_Vatan.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "95215"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 06:28:23 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "godzx7rz86"
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/Duyuru/3968c136-e812-4f7d-8ffc-44e86034aeae_Ataturk_Mavi_Vatan.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/Duyuru/3968c136-e812-4f7d-8ffc-44e86034aeae_Ataturk_Mavi_Vatan.jpg",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Duyuru\\3968c136-e812-4f7d-8ffc-44e86034aeae_Ataturk_Mavi_Vatan.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "95215"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 06:28:23 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-AN2aV6GBp8FoGp7et/TyQMlXVGcHYr/2HWJH7RxN4ik="
+        }
+      ]
+    },
+    {
       "Route": "WebAdminTheme/forms/forms.html",
       "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\forms\\forms.html",
       "Selectors": [],
@@ -75894,6 +76184,88 @@
       ]
     },
     {
+      "Route": "WebAdminTheme/Kampanya/6c8f0420-7b4c-4f2d-82e3-01e3d15f429a_1703998149747.okqhiz2yig.png",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Kampanya\\6c8f0420-7b4c-4f2d-82e3-01e3d15f429a_1703998149747.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1218267"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 06:28:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "okqhiz2yig"
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/Kampanya/6c8f0420-7b4c-4f2d-82e3-01e3d15f429a_1703998149747.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/Kampanya/6c8f0420-7b4c-4f2d-82e3-01e3d15f429a_1703998149747.png",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Kampanya\\6c8f0420-7b4c-4f2d-82e3-01e3d15f429a_1703998149747.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1218267"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 06:28:03 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU="
+        }
+      ]
+    },
+    {
       "Route": "WebAdminTheme/LICENSE",
       "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\LICENSE",
       "Selectors": [],
@@ -77858,6 +78230,252 @@
         {
           "Name": "integrity",
           "Value": "sha256-o+qXOAYEjUYlFHzl0BxKLyX5VPsNV+e7jru0W08me9c="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/Slider/905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.8meqg7c2mn.jpg",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Slider\\905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1861049"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"gGf1pSFdtS7HYWhpDOuf0//JbpwqHFkrrXPK9t5AAoI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 07:44:06 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "8meqg7c2mn"
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/Slider/905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-gGf1pSFdtS7HYWhpDOuf0//JbpwqHFkrrXPK9t5AAoI="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/Slider/905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.jpg",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Slider\\905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1861049"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"gGf1pSFdtS7HYWhpDOuf0//JbpwqHFkrrXPK9t5AAoI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 07:44:06 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-gGf1pSFdtS7HYWhpDOuf0//JbpwqHFkrrXPK9t5AAoI="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/Slider/afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.okqhiz2yig.png",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Slider\\afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1218267"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 07:10:50 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "okqhiz2yig"
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/Slider/afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/Slider/afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Slider\\afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1218267"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 07:10:50 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/SliderVideo/b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.mp4",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\SliderVideo\\b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.mp4",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "16026848"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "video/mp4"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"tIirlyVG/5Vz3POkGEN/celspQQiWJaolOjN2snfonM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 07:10:50 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-tIirlyVG/5Vz3POkGEN/celspQQiWJaolOjN2snfonM="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/SliderVideo/b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.sixgjaqqg1.mp4",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\SliderVideo\\b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.mp4",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "16026848"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "video/mp4"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"tIirlyVG/5Vz3POkGEN/celspQQiWJaolOjN2snfonM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 07:10:50 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "sixgjaqqg1"
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/SliderVideo/b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.mp4"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-tIirlyVG/5Vz3POkGEN/celspQQiWJaolOjN2snfonM="
         }
       ]
     },

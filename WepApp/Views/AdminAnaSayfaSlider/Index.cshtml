@@ -1,0 +1,841 @@
+﻿@{
+    ViewData["Title"] = "Slider Yönetimi";
+    Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
+}
+
+<style>
+    .slider-gorsel-preview {
+        width: 80px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 2px solid #e9ecef;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+        .slider-gorsel-preview:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+    .slider-video-preview {
+        width: 80px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 2px solid #e9ecef;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .video-play-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 24px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .modal-gorsel-preview {
+        max-width: 100%;
+        max-height: 300px;
+        object-fit: contain;
+        border-radius: 8px;
+        border: 2px solid #dee2e6;
+        margin-top: 10px;
+    }
+
+    .modal-video-preview {
+        width: 100%;
+        max-height: 400px;
+        border-radius: 8px;
+    }
+
+    .gorsel-upload-area, .video-upload-area {
+        border: 2px dashed #dee2e6;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        background-color: #f8f9fa;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+        .gorsel-upload-area:hover, .video-upload-area:hover {
+            border-color: #0d6efd;
+            background-color: #e7f1ff;
+        }
+
+        .gorsel-upload-area i, .video-upload-area i {
+            font-size: 48px;
+            color: #6c757d;
+        }
+
+    .current-image-container, .current-video-container {
+        position: relative;
+        display: inline-block;
+        margin: 10px 0;
+    }
+
+    .remove-image-btn, .remove-video-btn {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 14px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+        .remove-image-btn:hover, .remove-video-btn:hover {
+            background-color: #bb2d3b;
+        }
+
+    .sira-badge {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background-color: #3498db;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .video-badge {
+        background-color: #e74c3c;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+        .video-badge i {
+            font-size: 12px;
+        }
+
+    .file-type-badge {
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background-color: #6c757d;
+        color: white;
+        margin-left: 5px;
+    }
+</style>
+
+<!-- Görsel Modal -->
+<div class="modal fade" id="gorselModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Slider Görseli</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="" id="modalGorsel" class="img-fluid" alt="Slider Görseli">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Video Modal -->
+<div class="modal fade" id="videoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Slider Videosu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <video id="modalVideo" class="modal-video-preview" controls>
+                    <source src="" type="video/mp4">
+                    Tarayıcınız video etiketini desteklemiyor.
+                </video>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="card" style="margin-top:70px;">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-sliders-h me-2"></i>Slider Yönetimi</span>
+                    <div>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                            <i class="fas fa-plus"></i> Yeni Slider Ekle
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-head-bg-primary">
+                            <tr>
+                                <th width="50">Sıra</th>
+                                <th width="80">Görsel</th>
+                                <th width="80">Video</th>
+                                <th>Başlık</th>
+                                <th>URL/Buton</th>
+                                <th width="100">Yayın</th>
+                                <th width="120">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.SliderList != null && ViewBag.SliderList.Count > 0)
+                            {
+                                foreach (var item in ViewBag.SliderList)
+                                {
+                                    <tr>
+                                        <td class="text-center">
+                                            <div class="sira-badge mx-auto">@item.SlaytSiraNo</div>
+                                        </td>
+                                        <td class="text-center">
+                                            @if (!string.IsNullOrEmpty(item.GorselYolu))
+                                            {
+                                                <img src="@item.GorselYolu" class="slider-gorsel-preview"
+                                                     onclick="gorselGoster('@item.GorselYolu')"
+                                                     alt="Görsel" title="Büyütmek için tıklayın">
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Görsel Yok</span>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            @if (!string.IsNullOrEmpty(item.VideoYolu))
+                                            {
+                                                <div style="position: relative; display: inline-block;">
+                                                    <video class="slider-video-preview" style="width:80px; height:60px; object-fit:cover;">
+                                                        <source src="@item.VideoYolu" type="video/mp4">
+                                                    </video>
+                                                    <div class="video-play-icon" onclick="videoGoster('@item.VideoYolu')">
+                                                        <i class="fas fa-play-circle"></i>
+                                                    </div>
+                                                </div>
+                                                <span class="file-type-badge">@System.IO.Path.GetExtension(item.VideoYolu)?.ToUpper()</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Video Yok</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <strong>@item.SlaytBaslik</strong>
+                                            @if (!string.IsNullOrEmpty(item.Aciklama))
+                                            {
+                                                <br>
+                                                <small class="text-muted" title="@item.Aciklama">
+                                                    @(item.Aciklama.Length > 30 ? item.Aciklama.Substring(0, 30) + "..." : item.Aciklama)
+                                                </small>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.SlaytUrl))
+                                            {
+                                                <a href="@item.SlaytUrl" target="@(item.YeniSekmeMi == 1 ? "_blank" : "_self")" class="text-truncate d-inline-block" style="max-width:150px;">
+                                                    @item.SlaytUrl
+                                                </a>
+                                                @if (!string.IsNullOrEmpty(item.SlaytButonAdi))
+                                                {
+                                                    <br>
+                                                    <span class="badge bg-info mt-1">@item.SlaytButonAdi</span>
+                                                }
+                                            }
+                                            else if (!string.IsNullOrEmpty(item.SlaytButonAdi))
+                                            {
+                                                <span class="badge bg-info">@item.SlaytButonAdi</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            @if (item.YayindaMi == 1)
+                                            {
+                                                <span class="badge bg-success">Yayında</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Pasif</span>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id)" title="Düzenle">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.SlaytBaslik')" title="Sil">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center py-4">
+                                        <i class="fas fa-sliders-h fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">Henüz slider eklenmemiş.</p>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                                            <i class="fas fa-plus"></i> İlk Slider'ı Ekle
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ekle Modal -->
+<div class="modal fade" id="ekleModal" tabindex="-1" aria-labelledby="ekleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            @using (Html.BeginForm("Ekle", "AdminAnaSayfaSlider", FormMethod.Post, new { id = "ekleForm", enctype = "multipart/form-data" }))
+            {
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ekleModalLabel">
+                        <i class="fas fa-plus-circle me-2"></i>Yeni Slider Ekle
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Sıra No -->
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Slayt Sıra No <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" name="SlaytSiraNo" min="1" value="1" required>
+                            <small class="text-muted">Küçük sayılar önce gösterilir</small>
+                        </div>
+
+                        <!-- Yayın Durumu -->
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Yayın Durumu</label>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" id="YayindaMi" name="YayindaMi" value="true" checked>
+                                <label class="form-check-label" for="YayindaMi">Aktif / Pasif</label>
+                            </div>
+                        </div>
+
+                        <!-- Yeni Sekme -->
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Link Açılma Şekli</label>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" id="YeniSekmeMi" name="YeniSekmeMi" value="true" checked>
+                                <label class="form-check-label" for="YeniSekmeMi">Yeni Sekmede Açılsın</label>
+                            </div>
+                        </div>
+
+                        <!-- Başlık -->
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-bold">Slayt Başlığı</label>
+                            <input type="text" class="form-control" name="SlaytBaslik" placeholder="Örn: Yaz Kampanyaları Başladı">
+                        </div>
+
+                        <!-- Açıklama -->
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-bold">Açıklama</label>
+                            <textarea class="form-control" name="Aciklama" rows="2" placeholder="Slider açıklaması..."></textarea>
+                        </div>
+
+                        <!-- URL ve Buton Adı -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Slayt URL</label>
+                            <input type="url" class="form-control" name="SlaytUrl" placeholder="https://example.com">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Buton Adı</label>
+                            <input type="text" class="form-control" name="SlaytButonAdi" placeholder="Örn: Hemen İncele">
+                        </div>
+
+                        <!-- Görsel Yükleme -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Slider Görseli</label>
+                            <div class="gorsel-upload-area" onclick="document.getElementById('Gorsel').click();">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p class="mb-1 mt-2">Görsel yüklemek için tıklayın</p>
+                                <small class="text-muted">Önerilen: 1920x600 px (jpg, png)</small>
+                            </div>
+                            <input type="file" class="d-none" id="Gorsel" name="Gorsel" accept="image/*" onchange="previewImage(this, 'eklePreview')">
+                            <div id="eklePreview" class="text-center mt-2"></div>
+                        </div>
+
+                        <!-- Video Yükleme -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Slider Videosu</label>
+                            <div class="video-upload-area" onclick="document.getElementById('Video').click();">
+                                <i class="fas fa-video"></i>
+                                <p class="mb-1 mt-2">Video yüklemek için tıklayın</p>
+                                <small class="text-muted">Desteklenen: mp4, webm, ogg (max 50MB)</small>
+                            </div>
+                            <input type="file" class="d-none" id="Video" name="Video" accept="video/mp4,video/webm,video/ogg" onchange="previewVideo(this, 'ekleVideoPreview')">
+                            <div id="ekleVideoPreview" class="text-center mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>İptal
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Kaydet
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Düzenle Modal -->
+<div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form action="@Url.Action("Guncelle","AdminAnaSayfaSlider")" method="post" id="duzenleForm" enctype="multipart/form-data">
+                <input type="hidden" id="editId" name="Id">
+                <input type="hidden" id="editMevcutGorsel" name="MevcutGorsel">
+                <input type="hidden" id="editMevcutVideo" name="MevcutVideo">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="duzenleModalLabel">
+                        <i class="fas fa-edit me-2"></i>Slider Düzenle
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Sıra No -->
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Slayt Sıra No <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="editSlaytSiraNo" name="SlaytSiraNo" min="1" required>
+                        </div>
+
+                        <!-- Yayın Durumu -->
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Yayın Durumu</label>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" id="editYayindaMi" name="YayindaMi" value="true">
+                                <label class="form-check-label" for="editYayindaMi">Aktif / Pasif</label>
+                            </div>
+                        </div>
+
+                        <!-- Yeni Sekme -->
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Link Açılma Şekli</label>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" id="editYeniSekmeMi" name="YeniSekmeMi" value="true">
+                                <label class="form-check-label" for="editYeniSekmeMi">Yeni Sekmede Açılsın</label>
+                            </div>
+                        </div>
+
+                        <!-- Başlık -->
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-bold">Slayt Başlığı</label>
+                            <input type="text" class="form-control" id="editSlaytBaslik" name="SlaytBaslik">
+                        </div>
+
+                        <!-- Açıklama -->
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-bold">Açıklama</label>
+                            <textarea class="form-control" id="editAciklama" name="Aciklama" rows="2"></textarea>
+                        </div>
+
+                        <!-- URL ve Buton Adı -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Slayt URL</label>
+                            <input type="url" class="form-control" id="editSlaytUrl" name="SlaytUrl">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Buton Adı</label>
+                            <input type="text" class="form-control" id="editSlaytButonAdi" name="SlaytButonAdi">
+                        </div>
+
+                        <!-- Mevcut Görsel ve Yükleme -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Slider Görseli</label>
+
+                            <!-- Mevcut Görsel -->
+                            <div id="mevcutGorselAlani" class="mb-2" style="display: none;">
+                                <div class="current-image-container">
+                                    <img id="mevcutGorselImg" src="" class="modal-gorsel-preview" alt="Mevcut Görsel">
+                                    <button type="button" class="remove-image-btn" onclick="mevcutGorselSil()" title="Görseli Kaldır">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <small class="text-muted d-block mt-1">Mevcut görsel</small>
+                            </div>
+
+                            <!-- Yeni Görsel Yükleme -->
+                            <div class="gorsel-upload-area" onclick="document.getElementById('editGorsel').click();">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p class="mb-1 mt-2">Yeni görsel yükleyin</p>
+                            </div>
+                            <input type="file" class="d-none" id="editGorsel" name="Gorsel" accept="image/*" onchange="previewImage(this, 'editPreview')">
+                            <div id="editPreview" class="text-center mt-2"></div>
+                        </div>
+
+                        <!-- Mevcut Video ve Yükleme -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Slider Videosu</label>
+
+                            <!-- Mevcut Video -->
+                            <div id="mevcutVideoAlani" class="mb-2" style="display: none;">
+                                <div class="current-video-container">
+                                    <video width="100" height="60" style="object-fit:cover; border-radius:6px;" controls>
+                                        <source id="mevcutVideoSrc" src="" type="video/mp4">
+                                    </video>
+                                    <button type="button" class="remove-video-btn" onclick="mevcutVideoSil()" title="Videoyu Kaldır">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <small class="text-muted d-block mt-1">Mevcut video</small>
+                            </div>
+
+                            <!-- Yeni Video Yükleme -->
+                            <div class="video-upload-area" onclick="document.getElementById('editVideo').click();">
+                                <i class="fas fa-video"></i>
+                                <p class="mb-1 mt-2">Yeni video yükleyin</p>
+                            </div>
+                            <input type="file" class="d-none" id="editVideo" name="Video" accept="video/mp4,video/webm,video/ogg" onchange="previewVideo(this, 'editVideoPreview')">
+                            <div id="editVideoPreview" class="text-center mt-2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>İptal
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Güncelle
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Sil Onay Modal -->
+<div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="@Url.Action("Sil","AdminAnaSayfaSlider")" method="post">
+                <input type="hidden" id="silId" name="Id">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="silModalLabel">
+                        <i class="fas fa-exclamation-triangle text-danger me-2"></i>Silme Onayı
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="fs-5">"<strong class="text-primary"><span id="silBaslik"></span></strong>" başlıklı slider'ı silmek istediğinizden emin misiniz?</p>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <small>Bu işlem geri alınamaz. Slider, görseli ve videosu silinecektir.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>İptal
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>Sil
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Script {
+    <script>
+        let silinecekGorselId = null;
+        let silinecekVideoId = null;
+
+        // Görsel önizleme
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            preview.innerHTML = '';
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'modal-gorsel-preview';
+                    img.alt = 'Görsel önizleme';
+                    preview.appendChild(img);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Video önizleme
+        function previewVideo(input, previewId) {
+            const preview = document.getElementById(previewId);
+            preview.innerHTML = '';
+
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const video = document.createElement('video');
+                video.className = 'modal-video-preview';
+                video.controls = true;
+                video.style.maxHeight = '150px';
+
+                const source = document.createElement('source');
+                source.src = URL.createObjectURL(file);
+                source.type = file.type;
+
+                video.appendChild(source);
+                preview.appendChild(video);
+            }
+        }
+
+        // Görsel gösterme
+        function gorselGoster(gorselYolu) {
+            document.getElementById('modalGorsel').src = gorselYolu;
+            var gorselModal = new bootstrap.Modal(document.getElementById('gorselModal'));
+            gorselModal.show();
+        }
+
+        // Video gösterme
+        function videoGoster(videoYolu) {
+            const video = document.getElementById('modalVideo');
+            const source = video.querySelector('source');
+            source.src = videoYolu;
+            video.load();
+
+            var videoModal = new bootstrap.Modal(document.getElementById('videoModal'));
+            videoModal.show();
+        }
+
+        function duzenleGetir(id) {
+            fetch('@Url.Action("Getir", "AdminAnaSayfaSlider")' + '?id=' + id)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('editId').value = data.id;
+                    document.getElementById('editSlaytSiraNo').value = data.slaytSiraNo;
+                    document.getElementById('editSlaytBaslik').value = data.slaytBaslik || '';
+                    document.getElementById('editSlaytUrl').value = data.slaytUrl || '';
+                    document.getElementById('editSlaytButonAdi').value = data.slaytButonAdi || '';
+                    document.getElementById('editAciklama').value = data.aciklama || '';
+                    document.getElementById('editYayindaMi').checked = data.yayindaMi;
+                    document.getElementById('editYeniSekmeMi').checked = data.yeniSekmeMi;
+
+                    // Mevcut Görsel
+                    const mevcutGorselAlani = document.getElementById('mevcutGorselAlani');
+                    const mevcutGorselImg = document.getElementById('mevcutGorselImg');
+                    const editMevcutGorsel = document.getElementById('editMevcutGorsel');
+
+                    if (data.gorselyolu) {
+                        mevcutGorselImg.src = data.gorselyolu;
+                        mevcutGorselAlani.style.display = 'block';
+                        editMevcutGorsel.value = data.gorselyolu;
+                        silinecekGorselId = data.id;
+                    } else {
+                        mevcutGorselAlani.style.display = 'none';
+                        editMevcutGorsel.value = '';
+                        silinecekGorselId = null;
+                    }
+
+                    // Mevcut Video
+                    const mevcutVideoAlani = document.getElementById('mevcutVideoAlani');
+                    const mevcutVideoSrc = document.getElementById('mevcutVideoSrc');
+                    const editMevcutVideo = document.getElementById('editMevcutVideo');
+
+                    if (data.videoyolu) {
+                        mevcutVideoSrc.src = data.videoyolu;
+                        mevcutVideoAlani.style.display = 'block';
+                        editMevcutVideo.value = data.videoyolu;
+                        silinecekVideoId = data.id;
+
+                        // Video elementini reload et
+                        const video = mevcutVideoAlani.querySelector('video');
+                        video.load();
+                    } else {
+                        mevcutVideoAlani.style.display = 'none';
+                        editMevcutVideo.value = '';
+                        silinecekVideoId = null;
+                    }
+
+                    // Önizleme alanlarını temizle
+                    document.getElementById('editPreview').innerHTML = '';
+                    document.getElementById('editVideoPreview').innerHTML = '';
+                    document.getElementById('editGorsel').value = '';
+                    document.getElementById('editVideo').value = '';
+
+                    var duzenleModal = new bootstrap.Modal(document.getElementById('duzenleModal'));
+                    duzenleModal.show();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Slider bilgileri getirilirken hata oluştu.');
+                });
+        }
+
+        function mevcutGorselSil() {
+            if (silinecekGorselId) {
+                if (confirm('Görseli silmek istediğinizden emin misiniz?')) {
+                    fetch('@Url.Action("GorselSilAjax", "AdminAnaSayfaSlider")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'id=' + silinecekGorselId
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('mevcutGorselAlani').style.display = 'none';
+                            document.getElementById('editMevcutGorsel').value = '';
+                            silinecekGorselId = null;
+                            showSuccessMessage(data.message);
+                        } else {
+                            alert('Hata: ' + data.message);
+                        }
+                    });
+                }
+            }
+        }
+
+        function mevcutVideoSil() {
+            if (silinecekVideoId) {
+                if (confirm('Videoyu silmek istediğinizden emin misiniz?')) {
+                    fetch('@Url.Action("VideoSilAjax", "AdminAnaSayfaSlider")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'id=' + silinecekVideoId
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('mevcutVideoAlani').style.display = 'none';
+                            document.getElementById('editMevcutVideo').value = '';
+                            silinecekVideoId = null;
+                            showSuccessMessage(data.message);
+                        } else {
+                            alert('Hata: ' + data.message);
+                        }
+                    });
+                }
+            }
+        }
+
+        function silOnay(id, baslik) {
+            document.getElementById('silId').value = id;
+            document.getElementById('silBaslik').textContent = baslik;
+            var silModal = new bootstrap.Modal(document.getElementById('silModal'));
+            silModal.show();
+        }
+
+        function showSuccessMessage(message) {
+            var alertHtml = '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                message +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                '</div>';
+            document.querySelector('.modal-body').insertAdjacentHTML('afterbegin', alertHtml);
+
+            setTimeout(function() {
+                var alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function(alert) {
+                    alert.remove();
+                });
+            }, 3000);
+        }
+
+        // Modal kapandığında formları temizle
+        document.getElementById('ekleModal').addEventListener('hidden.bs.modal', function () {
+            this.querySelector('form').reset();
+            document.getElementById('eklePreview').innerHTML = '';
+            document.getElementById('ekleVideoPreview').innerHTML = '';
+        });
+
+        document.getElementById('duzenleModal').addEventListener('hidden.bs.modal', function () {
+            this.querySelector('form').reset();
+            document.getElementById('mevcutGorselAlani').style.display = 'none';
+            document.getElementById('mevcutVideoAlani').style.display = 'none';
+            document.getElementById('editPreview').innerHTML = '';
+            document.getElementById('editVideoPreview').innerHTML = '';
+            silinecekGorselId = null;
+            silinecekVideoId = null;
+        });
+
+        // Sürükle-bırak desteği
+        document.querySelectorAll('.gorsel-upload-area, .video-upload-area').forEach(area => {
+            area.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                area.style.borderColor = '#0d6efd';
+                area.style.backgroundColor = '#e7f1ff';
+            });
+
+            area.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                area.style.borderColor = '#dee2e6';
+                area.style.backgroundColor = '#f8f9fa';
+            });
+
+            area.addEventListener('drop', (e) => {
+                e.preventDefault();
+                area.style.borderColor = '#dee2e6';
+                area.style.backgroundColor = '#f8f9fa';
+
+                const files = e.dataTransfer.files;
+                const input = area.nextElementSibling;
+                if (files.length > 0 && input) {
+                    input.files = files;
+
+                    if (area.classList.contains('gorsel-upload-area')) {
+                        const previewId = input.id === 'Gorsel' ? 'eklePreview' : 'editPreview';
+                        previewImage(input, previewId);
+                    } else {
+                        const previewId = input.id === 'Video' ? 'ekleVideoPreview' : 'editVideoPreview';
+                        previewVideo(input, previewId);
+                    }
+                }
+            });
+        });
+    </script>
+}

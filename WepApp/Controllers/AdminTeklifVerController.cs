@@ -875,7 +875,8 @@ namespace WepApp.Controllers
         {
             int kullanilacakMusteriId = model.MusteriId;
             LoadCommonData();
-            Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
+            Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici"); 
+            Bayi bayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
 
             try
             {
@@ -1135,7 +1136,11 @@ namespace WepApp.Controllers
                     ToplamIndirim = model.FiyatOzete.Liste.Indirim,
                     KdvTutari = model.FiyatOzete.Liste.KDVToplam,
                     NetToplam = model.FiyatOzete.Liste.NetToplam,
-
+                    TeklifVerenFirma= bayi != null
+    ? bayi.Unvan
+    : kullanici != null
+        ? kullanici.Adi
+        : "",
                     // EĞİTİM SÜRESİ KAYDI
                     EgitimSuresi = toplamEgitimSuresi,
 
@@ -1345,12 +1350,17 @@ namespace WepApp.Controllers
             decimal genelToplam = teklif.NetToplam;
             string yaziIle = SayiyiYaziyaCevir(genelToplam);
             string tarihStr = DateTime.Now.ToString("dd MMMM yyyy", new CultureInfo("tr-TR"));
+            string tarihStr15 = DateTime.Now
+                .AddDays(15)
+                .ToString("dd MMMM yyyy", new CultureInfo("tr-TR"));
             string gecerlilik = DateTime.Now.AddDays(15).ToString("dd.MM.yyyy");
 
             var baslik = new
             {
                 teklif.TeklifNo,
                 Tarih = tarihStr,
+                TeklifVerenFirma = teklif.TeklifVerenFirma,
+                Tarih15=tarihStr15,
                 MusteriAdi = $"{musteri.Ad} {musteri.Soyad}",
                 MusteriTelefon = musteri.Telefon ?? "",
                 MusteriYetkili = musteri.Ad ?? "Noyasis İş Ortağı",
@@ -1428,6 +1438,8 @@ namespace WepApp.Controllers
                 {
                     TeklifNo = baslik.TeklifNo,
                     Tarih = baslik.Tarih,
+                    Ek1=baslik.TeklifVerenFirma,
+                    Ek2=baslik.Tarih15,
                     MusteriAdi = baslik.MusteriAdi,
                     MusteriTelefon = baslik.MusteriTelefon,
                     MusteriYetkili = baslik.MusteriYetkili,

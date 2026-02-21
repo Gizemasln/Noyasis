@@ -1,4 +1,4 @@
-=== BUTON TARAMA LOGU - 20.02.2026 17:02:15 ===
+=== BUTON TARAMA LOGU - 21.02.2026 10:50:55 ===
 ContentRootPath: D:\PROJELER\Noyasis\WepApp
 WebRootPath: D:\PROJELER\Noyasis\WepApp\wwwroot
 BaseDirectory: D:\PROJELER\Noyasis\WepApp\bin\Debug\net8.0\
@@ -9,9 +9,10 @@ ARANAN YOLLAR:
   >>> BULUNDU! Bu yol kullanılacak: D:\PROJELER\Noyasis\WepApp\Views
 
 VIEWS KLASÖRÜ BULUNDU: D:\PROJELER\Noyasis\WepApp\Views
-Toplam 66 .cshtml dosyası bulundu:
+Toplam 67 .cshtml dosyası bulundu:
 - D:\PROJELER\Noyasis\WepApp\Views\AdminAnaSayfa\Index.cshtml
 - D:\PROJELER\Noyasis\WepApp\Views\AdminAnaSayfaBannerResim\Index.cshtml
+- D:\PROJELER\Noyasis\WepApp\Views\AdminAnaSayfaSlider\Index.cshtml
 - D:\PROJELER\Noyasis\WepApp\Views\AdminARGEDurum\Index.cshtml
 - D:\PROJELER\Noyasis\WepApp\Views\AdminArgeHata\Index.cshtml
 - D:\PROJELER\Noyasis\WepApp\Views\AdminBayi\Index.cshtml
@@ -29,13 +30,16 @@ Toplam 66 .cshtml dosyası bulundu:
 - D:\PROJELER\Noyasis\WepApp\Views\AdminIK\Index.cshtml
 - D:\PROJELER\Noyasis\WepApp\Views\AdminIletisimBilgileri\Index.cshtml
 - D:\PROJELER\Noyasis\WepApp\Views\AdminIstekOneri\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminIstekOneriDurum\Index.cshtml
-... ve 46 dosya daha
+... ve 47 dosya daha
 
-Toplam 148 buton bulundu:
+Toplam 152 buton bulundu:
+- AdminAnaSayfa / view
 - AdminAnaSayfaBannerResim / create
 - AdminAnaSayfaBannerResim / edit
 - AdminAnaSayfaBannerResim / delete
+- AdminAnaSayfaSlider / create
+- AdminAnaSayfaSlider / edit
+- AdminAnaSayfaSlider / delete
 - AdminARGEDurum / create
 - AdminARGEDurum / edit
 - AdminARGEDurum / delete

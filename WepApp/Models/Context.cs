@@ -20,6 +20,7 @@ public partial class Context : DbContext
     public virtual DbSet<HakkimizdaBilgileri> HakkimizdaBilgileri { get; set; }
     public virtual DbSet<Nedenler> Nedenler { get; set; }
     public virtual DbSet<UYB> UYB { get; set; }
+    public virtual DbSet<Slider> Slider { get; set; }
     public virtual DbSet<ButtonPermission> ButtonPermissions { get; set; }
     public virtual DbSet<MenuIzin> MenuIzin { get; set; }
 

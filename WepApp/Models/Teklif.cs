@@ -11,6 +11,7 @@ namespace WepApp.Models
         public int Id { get; set; }
 
         public string TeklifNo { get; set; } = string.Empty;
+        public string? TeklifVerenFirma { get; set; } 
 
         public int MusteriId { get; set; }
 
