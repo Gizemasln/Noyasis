@@ -21,65 +21,76 @@
             </div>
         }
 
-        <!-- EKLE BUTONU HER ZAMAN GÖRÜNÜR OLMASI İÇİN BAĞIMSIZ YERLEŞTİRİLDİ -->
-        <div class="mb-3">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                <i class="fas fa-plus"></i> Yeni Hakkımızda Bilgisi Ekle
-            </button>
-        </div>
-
         <div class="card">
             <div class="card-header">
-                <div class="card-title d-flex justify-content-between align-items-center">
-                    <span>Hakkımızda Bilgileri</span>
+                <div class="card-title">
+                    <span>Hakkımızda Bilgileri Yönetimi</span>
                 </div>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead class="table-head-bg-primary">
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Başlık</th>
-                                <th scope="col">Alt Başlık</th>
-                                <th scope="col">Metin</th>
-                                <th scope="col">Eklenme Tarihi</th>
-                                <th scope="col">İşlemler</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (ViewBag.HakkimizdaList != null && ViewBag.HakkimizdaList.Count > 0)
-                            {
-                                var counter = 1;
-                                foreach (var item in ViewBag.HakkimizdaList)
-                                {
-                                    <tr>
-                                        <td>@counter</td>
-                                        <td>@item.Baslik</td>
-                                        <td>@item.AltBaslik</td>
-                                        <td>@(item.Metin != null && item.Metin.Length > 50 ? item.Metin.Substring(0, 50) + "..." : item.Metin)</td>
-                                        <td>@item.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</td>
-                                        <td>
-                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id)">
-                                                <i class="fas fa-edit"></i>
+                @if (ViewBag.Hakkimizda != null)
+                {
+                    <!-- Mevcut Hakkımızda Bilgisi Kartı -->
+                    <div class="row">
+                        <div class="col-md-12 mb-4">
+                            <div class="card border-primary">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">Aktif Hakkımızda Bilgisi</h5>
+                                </div>
+                                <div class="card-body">
+                                    <h3 class="text-primary">@ViewBag.Hakkimizda.Baslik</h3>
+                                    @if (!string.IsNullOrEmpty(ViewBag.Hakkimizda.AltBaslik))
+                                    {
+                                        <h5 class="text-muted">@ViewBag.Hakkimizda.AltBaslik</h5>
+                                    }
+                                    <hr>
+                                    <p class="lead">@ViewBag.Hakkimizda.Metin</p>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <small class="text-muted">
+                                                <i class="fas fa-calendar"></i> Eklenme: @ViewBag.Hakkimizda.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm")
+                                            </small>
+                                        </div>
+                                        <div class="col-md-6 text-end">
+                                            <button type="button" class="btn btn-warning" onclick="duzenleGetir(@ViewBag.Hakkimizda.Id)">
+                                                <i class="fas fa-edit"></i> Düzenle
                                             </button>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.Baslik')">
-                                                <i class="fas fa-trash"></i>
+                                            <button type="button" class="btn btn-danger" onclick="silOnay(@ViewBag.Hakkimizda.Id, '@ViewBag.Hakkimizda.Baslik')">
+                                                <i class="fas fa-trash"></i> Sil
                                             </button>
-                                        </td>
-                                    </tr>
-                                    counter++;
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="6" class="text-center">Henüz bilgi eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Bilgi Ekle</a></td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yeni Bilgi Ekle Uyarısı -->
+                    <div class="alert alert-warning">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="fas fa-info-circle"></i>
+                                Zaten bir aktif hakkımızda bilgisi bulunmaktadır. Yeni bir bilgi eklemek isterseniz, mevcut bilgi otomatik olarak pasif edilecektir.
+                            </div>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                                <i class="fas fa-plus"></i> Yeni Bilgi Ekle
+                            </button>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <!-- Hiç kayıt yoksa -->
+                    <div class="alert alert-info text-center">
+                        <i class="fas fa-info-circle fa-2x mb-3"></i>
+                        <h5>Henüz bir hakkımızda bilgisi eklenmemiş.</h5>
+                        <p>Hemen yeni bir hakkımızda bilgisi ekleyin.</p>
+                        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                            <i class="fas fa-plus"></i> Yeni Hakkımızda Bilgisi Ekle
+                        </button>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -89,13 +100,19 @@
 <div class="modal fade" id="ekleModal" tabindex="-1" aria-labelledby="ekleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            @using (Html.BeginForm("Ekle", "AdminHakkimizdaBilgileri", FormMethod.Post, new { id = "ekleForm" }))
-            {
+            <form method="post" action="@Url.Action("Ekle", "AdminHakkimizdaBilgileri")" id="ekleForm">
                 <div class="modal-header">
                     <h5 class="modal-title" id="ekleModalLabel">Yeni Hakkımızda Bilgisi Ekle</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    @if (ViewBag.Hakkimizda != null)
+                    {
+                        <div class="alert alert-warning mb-3">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Yeni bilgi eklendiğinde mevcut aktif bilgi otomatik olarak pasif edilecektir.
+                        </div>
+                    }
                     <div class="row">
                         <div class="col-md-12 mb-3">
                             <div class="form-floating">
@@ -111,7 +128,7 @@
                         </div>
                         <div class="col-md-12 mb-3">
                             <div class="form-floating">
-                                <textarea class="form-control" id="Metin" name="Metin" placeholder="Metin" style="height: 100px"></textarea>
+                                <textarea class="form-control" id="Metin" name="Metin" placeholder="Metin" style="height: 200px" required></textarea>
                                 <label for="Metin">Metin</label>
                             </div>
                         </div>
@@ -121,7 +138,7 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
                     <button type="submit" class="btn btn-primary">Kaydet</button>
                 </div>
-            }
+            </form>
         </div>
     </div>
 </div>
@@ -130,8 +147,7 @@
 <div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-        
-            <form action="@Url.Action("Guncelle","AdminHakkimizdaBilgileri")" method="post" id="duzenleForm">
+            <form method="post" action="@Url.Action("Guncelle", "AdminHakkimizdaBilgileri")" id="duzenleForm">
                 <input type="hidden" id="editId" name="Id">
                 <div class="modal-header">
                     <h5 class="modal-title" id="duzenleModalLabel">Hakkımızda Bilgisi Düzenle</h5>
@@ -153,7 +169,7 @@
                         </div>
                         <div class="col-md-12 mb-3">
                             <div class="form-floating">
-                                <textarea class="form-control" id="editMetin" name="Metin" placeholder="Metin" style="height: 100px"></textarea>
+                                <textarea class="form-control" id="editMetin" name="Metin" placeholder="Metin" style="height: 200px" required></textarea>
                                 <label for="editMetin">Metin</label>
                             </div>
                         </div>
@@ -172,15 +188,15 @@
 <div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Sil","AdminHakkimizdaBilgileri")" method="post">
+            <form method="post" action="@Url.Action("Sil", "AdminHakkimizdaBilgileri")">
                 <input type="hidden" id="silId" name="Id">
                 <div class="modal-header">
                     <h5 class="modal-title" id="silModalLabel">Silme Onayı</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>"<span id="silBaslik"></span>"</strong> başlıklı bilgiyi silmek istediğinizden emin misiniz?</p>
-                    <p class="text-danger"><small>Bu işlem geri alınamaz. Bilgi durumu pasif hale getirilecektir.</small></p>
+                    <p><strong>"<span id="silBaslik"></span>"</strong> başlıklı hakkımızda bilgisini silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><small>Bu işlem geri alınamaz. Bilgi pasif hale getirilecektir.</small></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
@@ -225,11 +241,22 @@
         }
 
         // Modal kapandığında formları temizle
-        document.getElementById('ekleModal').addEventListener('hidden.bs.modal', function () {
-            this.querySelector('form').reset();
-        });
-        document.getElementById('duzenleModal').addEventListener('hidden.bs.modal', function () {
-            this.querySelector('form').reset();
+        document.addEventListener('DOMContentLoaded', function() {
+            var ekleModal = document.getElementById('ekleModal');
+            if (ekleModal) {
+                ekleModal.addEventListener('hidden.bs.modal', function () {
+                    var form = this.querySelector('form');
+                    if (form) form.reset();
+                });
+            }
+
+            var duzenleModal = document.getElementById('duzenleModal');
+            if (duzenleModal) {
+                duzenleModal.addEventListener('hidden.bs.modal', function () {
+                    var form = this.querySelector('form');
+                    if (form) form.reset();
+                });
+            }
         });
 
         // Başarı mesajlarını 5 saniye sonra otomatik kapat

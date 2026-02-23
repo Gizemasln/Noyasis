@@ -62,7 +62,94 @@
         font-size: 0.7rem;
         padding: 0.25em 0.6em;
     }
+
+    .kampanya-gorsel-preview {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 2px solid #e9ecef;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+        .kampanya-gorsel-preview:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+    .modal-gorsel-preview {
+        max-width: 100%;
+        max-height: 200px;
+        object-fit: contain;
+        border-radius: 8px;
+        border: 2px solid #dee2e6;
+        margin-top: 10px;
+    }
+
+    .gorsel-upload-area {
+        border: 2px dashed #dee2e6;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        background-color: #f8f9fa;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+        .gorsel-upload-area:hover {
+            border-color: #0d6efd;
+            background-color: #e7f1ff;
+        }
+
+        .gorsel-upload-area i {
+            font-size: 48px;
+            color: #6c757d;
+        }
+
+    .current-image-container {
+        position: relative;
+        display: inline-block;
+        margin: 10px 0;
+    }
+
+    .remove-image-btn {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 14px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+        .remove-image-btn:hover {
+            background-color: #bb2d3b;
+        }
 </style>
+
+<!-- Görsel Modal -->
+<div class="modal fade" id="gorselModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Kampanya Görseli</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="" id="modalGorsel" class="img-fluid" alt="Kampanya Görseli">
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-md-12">
@@ -94,6 +181,7 @@
                         <thead class="table-light">
                             <tr>
                                 <th width="50">#</th>
+                                <th width="70">Görsel</th>
                                 <th>Başlık</th>
                                 <th>Metin</th>
                                 <th>İndirim %</th>
@@ -111,25 +199,37 @@
                                 {
                                     <tr>
                                         <td>@counter</td>
+                                        <td class="text-center">
+                                            @if (!string.IsNullOrEmpty(k.GorselYolu))
+                                            {
+                                                <img src="@k.GorselYolu" class="kampanya-gorsel-preview"
+                                                     onclick="gorselGoster('@k.GorselYolu')"
+                                                     alt="Görsel" title="Büyütmek için tıklayın">
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Görsel Yok</span>
+                                            }
+                                        </td>
                                         <td>@k.Baslik</td>
-                                        <td>@k.Metin</td>
+                                        <td>@(k.Metin?.Length > 30 ? k.Metin.Substring(0, 30) + "..." : k.Metin)</td>
                                         <td>%@k.IndirimYuzdesi</td>
                                         <td>@k.BaslangicTarihi.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>@k.BitisTarihi.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>
                                             <button class="btn btn-sm btn-outline-success me-1" onclick="paketleriGoster(@k.Id)" title="Sadece Paketler">
-                                                <i class="fas fa-box"></i> Paketler
+                                                <i class="fas fa-box"></i>
                                             </button>
                                             <button class="btn btn-sm btn-outline-primary" onclick="gruplariGoster(@k.Id)" title="Sadece Paket Grupları">
-                                                <i class="fas fa-layer-group"></i> Gruplar
+                                                <i class="fas fa-layer-group"></i>
                                             </button>
                                         </td>
                                         <td class="table-actions text-center">
-                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@k.Id)">
-                                                <i class="fas fa-edit"></i> 
+                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@k.Id)" title="Düzenle">
+                                                <i class="fas fa-edit"></i>
                                             </button>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@k.Id, '@k.Baslik')">
-                                                <i class="fas fa-trash"></i> 
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@k.Id, '@k.Baslik')" title="Sil">
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
@@ -139,7 +239,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="8" class="text-center py-5">
+                                    <td colspan="9" class="text-center py-5">
                                         <i class="fas fa-tags fa-3x text-muted mb-3"></i>
                                         <p class="text-muted">Henüz kampanya eklenmemiş.</p>
                                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">Yeni Kampanya Ekle</button>
@@ -158,19 +258,49 @@
 <div class="modal fade" id="ekleModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
-            <form method="post" action="@Url.Action("Ekle")" id="ekleForm">
+            <form method="post" action="@Url.Action("Ekle")" id="ekleForm" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
                 <div class="modal-header">
-                    <h5 class="modal-title">Yeni Kampanya Ekle</h5>
+                    <h5 class="modal-title">
+                        <i class="fas fa-plus-circle me-2"></i>Yeni Kampanya Ekle
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-3 mb-3"><label class="form-label">Başlık</label><input type="text" name="Baslik" class="form-control" required /></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">İndirim Yüzdesi</label><input type="number" step="0.01" name="IndirimYuzdesi" class="form-control" min="0" max="100" required /></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">Başlangıç Tarihi</label><input type="datetime-local" name="BaslangicTarihi" class="form-control" required /></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">Bitiş Tarihi</label><input type="datetime-local" name="BitisTarihi" class="form-control" required /></div>
-                        <div class="col-md-12 mb-3"><label class="form-label">Metin (isteğe bağlı)</label><input type="text" name="Metin" class="form-control" /></div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Başlık <span class="text-danger">*</span></label>
+                            <input type="text" name="Baslik" class="form-control" required />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">İndirim Yüzdesi <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" name="IndirimYuzdesi" class="form-control" min="0" max="100" required />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Başlangıç Tarihi <span class="text-danger">*</span></label>
+                            <input type="datetime-local" name="BaslangicTarihi" class="form-control" required />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Bitiş Tarihi <span class="text-danger">*</span></label>
+                            <input type="datetime-local" name="BitisTarihi" class="form-control" required />
+                        </div>
+
+                        <!-- Görsel Yükleme Alanı -->
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-bold">Kampanya Görseli</label>
+                            <div class="gorsel-upload-area" onclick="document.getElementById('Gorsel').click();">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p class="mb-1 mt-2">Görsel yüklemek için tıklayın veya sürükleyin</p>
+                                <small class="text-muted">Maksimum dosya boyutu: 5MB (jpg, png, gif)</small>
+                            </div>
+                            <input type="file" class="d-none" id="Gorsel" name="Gorsel" accept="image/*" onchange="previewImage(this, 'eklePreview')">
+                            <div id="eklePreview" class="text-center mt-2"></div>
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Metin (isteğe bağlı)</label>
+                            <input type="text" name="Metin" class="form-control" />
+                        </div>
                     </div>
                     <hr>
                     <h6 class="border-bottom pb-2">Kampanya İçeriği</h6>
@@ -204,7 +334,7 @@
                                                 <label class="form-check-label"></label>
                                             </div>
                                         </td>
-                                        <td><span class="badge bg-primary tur-badge">PAKET</span></td>
+                                        <td><span class="badge bg-primary tur-badge">GRUP</span></td>
                                         <td><strong>@grup.Adi</strong></td>
                                         <td><small class="text-muted">@grup.LisansTip?.Adi</small></td>
                                         <td class="text-end text-success fw-bold">@grup.Fiyat.ToString("N2") ₺</td>
@@ -220,7 +350,7 @@
                                                 <label class="form-check-label"></label>
                                             </div>
                                         </td>
-                                        <td><span class="badge bg-info tur-badge">MODÜL</span></td>
+                                        <td><span class="badge bg-info tur-badge">PAKET</span></td>
                                         <td><strong>@paket.Adi</strong></td>
                                         <td><small class="text-muted">@paket.LisansTip?.Adi • @paket.Birim?.Adi • @paket.EgitimSuresi gün</small></td>
                                         <td class="text-end text-success fw-bold">@paket.Fiyat.ToString("N2") ₺</td>
@@ -230,14 +360,18 @@
                         </table>
                     </div>
                     <div class="summary-info mt-3">
-                        <div class="summary-item"><span>Seçili Modül:</span> <strong id="seciliPaketSayisi">0</strong></div>
-                        <div class="summary-item"><span>Seçili Paket :</span> <strong id="seciliPaketGrupSayisi">0</strong></div>
+                        <div class="summary-item"><span>Seçili Paket Grupları:</span> <strong id="seciliPaketGrupSayisi">0</strong></div>
+                        <div class="summary-item"><span>Seçili Paketler:</span> <strong id="seciliPaketSayisi">0</strong></div>
                         <div class="summary-item"><span>Toplam İçerik:</span> <strong id="toplamIcerikSayisi" class="text-success">0</strong></div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>İptal
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Kaydet
+                    </button>
                 </div>
             </form>
         </div>
@@ -248,20 +382,65 @@
 <div class="modal fade" id="duzenleModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
-            <form method="post" action="@Url.Action("Guncelle")" id="duzenleForm">
+            <form method="post" action="@Url.Action("Guncelle")" id="duzenleForm" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="Id" id="editId" />
+                <input type="hidden" id="editMevcutGorsel" name="MevcutGorsel">
+
                 <div class="modal-header">
-                    <h5 class="modal-title">Kampanya Düzenle</h5>
+                    <h5 class="modal-title">
+                        <i class="fas fa-edit me-2"></i>Kampanya Düzenle
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-3 mb-3"><label class="form-label">Başlık</label><input type="text" name="Baslik" id="editBaslik" class="form-control" required /></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">İndirim Yüzdesi</label><input type="number" step="0.01" name="IndirimYuzdesi" id="editIndirimYuzdesi" class="form-control" min="0" max="100" required /></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">Başlangıç Tarihi</label><input type="datetime-local" name="BaslangicTarihi" id="editBaslangicTarihi" class="form-control" required /></div>
-                        <div class="col-md-3 mb-3"><label class="form-label">Bitiş Tarihi</label><input type="datetime-local" name="BitisTarihi" id="editBitisTarihi" class="form-control" required /></div>
-                        <div class="col-md-12 mb-3"><label class="form-label">Metin</label><input type="text" name="Metin" id="editMetin" class="form-control" /></div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Başlık <span class="text-danger">*</span></label>
+                            <input type="text" name="Baslik" id="editBaslik" class="form-control" required />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">İndirim Yüzdesi <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" name="IndirimYuzdesi" id="editIndirimYuzdesi" class="form-control" min="0" max="100" required />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Başlangıç Tarihi <span class="text-danger">*</span></label>
+                            <input type="datetime-local" name="BaslangicTarihi" id="editBaslangicTarihi" class="form-control" required />
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Bitiş Tarihi <span class="text-danger">*</span></label>
+                            <input type="datetime-local" name="BitisTarihi" id="editBitisTarihi" class="form-control" required />
+                        </div>
+
+                        <!-- Görsel Yükleme ve Gösterme Alanı -->
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-bold">Kampanya Görseli</label>
+
+                            <!-- Mevcut Görsel Gösterimi -->
+                            <div id="mevcutGorselAlani" class="mb-2" style="display: none;">
+                                <div class="current-image-container">
+                                    <img id="mevcutGorselImg" src="" class="modal-gorsel-preview" alt="Mevcut Görsel">
+                                    <button type="button" class="remove-image-btn" onclick="mevcutGorselSil()" title="Görseli Kaldır">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <small class="text-muted d-block mt-1">Mevcut görsel</small>
+                            </div>
+
+                            <!-- Yeni Görsel Yükleme -->
+                            <div class="gorsel-upload-area" onclick="document.getElementById('editGorsel').click();">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p class="mb-1 mt-2">Yeni görsel yüklemek için tıklayın</p>
+                                <small class="text-muted">Maksimum dosya boyutu: 5MB (jpg, png, gif)</small>
+                            </div>
+                            <input type="file" class="d-none" id="editGorsel" name="Gorsel" accept="image/*" onchange="previewImage(this, 'editPreview')">
+                            <div id="editPreview" class="text-center mt-2"></div>
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Metin (isteğe bağlı)</label>
+                            <input type="text" name="Metin" id="editMetin" class="form-control" />
+                        </div>
                     </div>
                     <hr>
                     <h6 class="border-bottom pb-2">Kampanya İçeriği</h6>
@@ -287,14 +466,18 @@
                         </table>
                     </div>
                     <div class="summary-info mt-3">
-                        <div class="summary-item"><span>Seçili Modül:</span> <strong id="editSeciliPaketSayisi">0</strong></div>
-                        <div class="summary-item"><span>Seçili Paket :</span> <strong id="editSeciliPaketGrupSayisi">0</strong></div>
+                        <div class="summary-item"><span>Seçili Paket Grupları:</span> <strong id="editSeciliPaketGrupSayisi">0</strong></div>
+                        <div class="summary-item"><span>Seçili Paketler:</span> <strong id="editSeciliPaketSayisi">0</strong></div>
                         <div class="summary-item"><span>Toplam İçerik:</span> <strong id="editToplamIcerikSayisi" class="text-success">0</strong></div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>İptal
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Güncelle
+                    </button>
                 </div>
             </form>
         </div>
@@ -308,20 +491,21 @@
             <div class="modal-header bg-success text-white">
                 <h5 class="modal-title">
                     <i class="fas fa-box me-2"></i>
-                    <span id="paketModalBaslik">Modüller</span>
+                    <span id="paketModalBaslik">Paketler</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div class="text-center text-muted mb-3">
-                  <h5>Kampanya Tarih Aralığı</h5>  <small id="paketTarihAraligi"></small>
+                    <h5>Kampanya Tarih Aralığı</h5>
+                    <small id="paketTarihAraligi"></small>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered">
                         <thead class="table-light">
                             <tr>
                                 <th>#</th>
-                                <th>Modül Adı</th>
+                                <th>Paket Adı</th>
                                 <th>Liste Fiyatı</th>
                                 <th class="text-success fw-bold">Kampanyalı Fiyat</th>
                             </tr>
@@ -344,21 +528,18 @@
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">
                     <i class="fas fa-layer-group me-2"></i>
-                    <span id="grupModalBaslik">Paketler</span>
-
+                    <span id="grupModalBaslik">Paket Grupları</span>
                 </h5>
-               
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead class="table-light">
-
                             <tr>
                                 <th>#</th>
                                 <th>Grup Adı</th>
-                                <th>İçerdiği Modül Sayısı</th>
+                                <th>İçerdiği Paket Sayısı</th>
                                 <th>Fiyat</th>
                             </tr>
                         </thead>
@@ -380,14 +561,26 @@
             <form method="post" action="@Url.Action("Sil")">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="Id" id="silId" />
-                <div class="modal-header"><h5 class="modal-title">Kampanya Sil</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle text-danger me-2"></i>Kampanya Sil
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
                 <div class="modal-body">
-                    <p><strong>"<span id="silBaslik"></span>"</strong> kampanyasını pasif yapmak istediğinizden emin misiniz?</p>
-                    <p class="text-danger"><small>Bu işlem geri alınamaz.</small></p>
+                    <p class="fs-5">"<strong class="text-primary"><span id="silBaslik"></span></strong>" kampanyasını pasif yapmak istediğinizden emin misiniz?</p>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <small>Bu işlem geri alınamaz. Kampanya ve varsa görseli pasif hale getirilecektir.</small>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                    <button type="submit" class="btn btn-danger">Pasif Yap</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>İptal
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>Pasif Yap
+                    </button>
                 </div>
             </form>
         </div>
@@ -396,6 +589,35 @@
 
 @section Script {
     <script>
+        let silinecekGorselId = null;
+
+        // Görsel önizleme fonksiyonu
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            preview.innerHTML = '';
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'modal-gorsel-preview';
+                    img.alt = 'Görsel önizleme';
+                    preview.appendChild(img);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Görsel büyütme fonksiyonu
+        function gorselGoster(gorselYolu) {
+            document.getElementById('modalGorsel').src = gorselYolu;
+            var gorselModal = new bootstrap.Modal(document.getElementById('gorselModal'));
+            gorselModal.show();
+        }
+
         // ÖZET GÜNCELLEME (ekle ve düzenle modalı için ortak)
         function updateSummary(prefix = '') {
             const paketSelector = prefix
@@ -458,6 +680,35 @@
                 }
             });
 
+            // Sürükle-bırak desteği
+            document.querySelectorAll('.gorsel-upload-area').forEach(area => {
+                area.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    area.style.borderColor = '#0d6efd';
+                    area.style.backgroundColor = '#e7f1ff';
+                });
+
+                area.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    area.style.borderColor = '#dee2e6';
+                    area.style.backgroundColor = '#f8f9fa';
+                });
+
+                area.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    area.style.borderColor = '#dee2e6';
+                    area.style.backgroundColor = '#f8f9fa';
+
+                    const files = e.dataTransfer.files;
+                    const input = area.nextElementSibling;
+                    if (files.length > 0 && input) {
+                        input.files = files;
+                        const previewId = input.id === 'Gorsel' ? 'eklePreview' : 'editPreview';
+                        previewImage(input, previewId);
+                    }
+                });
+            });
+
             // Alert 5 saniye sonra otomatik kapanır
             setTimeout(() => {
                 document.querySelectorAll('.alert').forEach(a => {
@@ -479,6 +730,22 @@
                     document.getElementById('editIndirimYuzdesi').value = data.indirimYuzdesi;
                     document.getElementById('editBaslangicTarihi').value = data.baslangicTarihi;
                     document.getElementById('editBitisTarihi').value = data.bitisTarihi;
+
+                    // Mevcut görsel varsa göster
+                    const mevcutGorselAlani = document.getElementById('mevcutGorselAlani');
+                    const mevcutGorselImg = document.getElementById('mevcutGorselImg');
+                    const editMevcutGorsel = document.getElementById('editMevcutGorsel');
+
+                    if (data.gorselyolu) {
+                        mevcutGorselImg.src = data.gorselyolu;
+                        mevcutGorselAlani.style.display = 'block';
+                        editMevcutGorsel.value = data.gorselyolu;
+                        silinecekGorselId = data.id;
+                    } else {
+                        mevcutGorselAlani.style.display = 'none';
+                        editMevcutGorsel.value = '';
+                        silinecekGorselId = null;
+                    }
 
                     // Tabloyu yeniden oluştur
                     document.getElementById('editBirlesikListe').innerHTML = data.birlesikHtml || '';
@@ -509,6 +776,10 @@
                         editAramaInput.oninput = () => genelArama('editGenelArama', 'editBirlesikListe');
                     }
 
+                    // Önizleme alanını temizle
+                    document.getElementById('editPreview').innerHTML = '';
+                    document.getElementById('editGorsel').value = '';
+
                     // Modalı aç
                     new bootstrap.Modal(document.getElementById('duzenleModal')).show();
                 })
@@ -516,6 +787,49 @@
                     console.error(err);
                     alert('Kampanya bilgileri yüklenirken hata oluştu.');
                 });
+        }
+
+        function mevcutGorselSil() {
+            if (silinecekGorselId) {
+                if (confirm('Görseli silmek istediğinizden emin misiniz?')) {
+                    fetch('@Url.Action("GorselSilAjax", "AdminKampanya")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'id=' + silinecekGorselId
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('mevcutGorselAlani').style.display = 'none';
+                            document.getElementById('editMevcutGorsel').value = '';
+                            silinecekGorselId = null;
+
+                            // Başarı mesajı göster
+                            var alertHtml = '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                                data.message +
+                                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                                '</div>';
+                            document.querySelector('.modal-body').insertAdjacentHTML('afterbegin', alertHtml);
+
+                            // 3 saniye sonra mesajı kaldır
+                            setTimeout(function() {
+                                var alerts = document.querySelectorAll('.alert');
+                                alerts.forEach(function(alert) {
+                                    alert.remove();
+                                });
+                            }, 3000);
+                        } else {
+                            alert('Hata: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Görsel silinirken bir hata oluştu.');
+                    });
+                }
+            }
         }
 
         // ===================== PAKETLER MODALI =====================
@@ -528,7 +842,7 @@
 
                     const tbody = document.getElementById('paketlerListesi');
                     if (!res.success || res.data.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Bu kampanyaya direkt paket eklenmemiş.</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">Bu kampanyaya direkt paket eklenmemiş.</td></tr>';
                     } else {
                         let html = '';
                         res.data.forEach((p, i) => {
@@ -577,5 +891,18 @@
             document.getElementById('silBaslik').textContent = baslik;
             new bootstrap.Modal(document.getElementById('silModal')).show();
         }
+
+        // Modal kapandığında formları temizle
+        document.getElementById('ekleModal')?.addEventListener('hidden.bs.modal', function () {
+            this.querySelector('form').reset();
+            document.getElementById('eklePreview').innerHTML = '';
+        });
+
+        document.getElementById('duzenleModal')?.addEventListener('hidden.bs.modal', function () {
+            this.querySelector('form').reset();
+            document.getElementById('mevcutGorselAlani').style.display = 'none';
+            document.getElementById('editPreview').innerHTML = '';
+            silinecekGorselId = null;
+        });
     </script>
 }

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Ana Sayfa Banner Resim Yönetimi";
+    ViewData["Title"] = "Ana Sayfa Banner Yönetimi";
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
 
@@ -21,68 +21,70 @@
             </div>
         }
 
-
-        <div class="mb-3">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                <i class="fas fa-plus"></i> Yeni Resim Ekle
-            </button>
-        </div>
-
         <div class="card">
             <div class="card-header">
-                <div class="card-title d-flex justify-content-between align-items-center">
-                    <span>Ana Sayfa Banner Resimleri</span>
-                    <!-- Buton buradan kaldırıldı, yukarıya taşındı (güvenlik için) -->
+                <div class="card-title">
+                    <span>Ana Sayfa Banner Yönetimi</span>
                 </div>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead class="table-head-bg-primary">
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Resim</th>
-                                <th scope="col">Başlık</th>
-                                <th scope="col">Metin</th>
-                                <th scope="col">Eklenme Tarihi</th>
-                                <th scope="col">İşlemler</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (ViewBag.FotografList != null && ViewBag.FotografList.Count > 0)
-                            {
-                                var counter = 1;
-                                foreach (var item in ViewBag.FotografList)
-                                {
-                                    <tr>
-                                        <td>@counter</td>
-                                        <td>
-                                            <img src="@item.FotografKucuk" alt="@item.Baslik" style="width: 80px; height: 80px; object-fit: cover;" class="img-thumbnail">
-                                        </td>
-                                        <td>@item.Baslik</td>
-                                        <td>@(item.Metin != null && item.Metin.Length > 50 ? item.Metin.Substring(0, 50) + "..." : item.Metin)</td>
-                                        <td>@item.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</td>
-                                        <td>
-                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.Baslik')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    counter++;
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="6" class="text-center">Henüz resim eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Resim Ekle</a></td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                @if (ViewBag.Banner != null)
+                {
+                    <div class="row">
+                        <div class="col-md-12 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <img src="@ViewBag.Banner.FotografBuyuk" alt="@ViewBag.Banner.Baslik" class="img-fluid img-thumbnail">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <h4>@ViewBag.Banner.Baslik</h4>
+                                            <p>@ViewBag.Banner.Metin</p>
+                                            <hr>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <small class="text-muted">Eklenme Tarihi: @ViewBag.Banner.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</small>
+                                                </div>
+                                                <div class="col-md-6 text-end">
+                                                    <button type="button" class="btn btn-warning" onclick="duzenleGetir(@ViewBag.Banner.Id)">
+                                                        <i class="fas fa-edit"></i> Düzenle
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger" onclick="silOnay(@ViewBag.Banner.Id, '@ViewBag.Banner.Baslik')">
+                                                        <i class="fas fa-trash"></i> Sil
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yeni Banner Ekle butonu (mevcut banner varsa uyarı ile) -->
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle"></i>
+                        Zaten bir aktif banner bulunmaktadır. Yeni bir banner eklemek isterseniz, mevcut banner otomatik olarak pasif edilecektir.
+                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                            <i class="fas fa-plus"></i> Yeni Banner Ekle
+                        </button>
+                        <div class="clearfix"></div>
+                    </div>
+                }
+                else
+                {
+                    <!-- Hiç banner yoksa -->
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Henüz bir banner eklenmemiş. Hemen yeni bir banner ekleyin.
+                    </div>
+
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                            <i class="fas fa-plus"></i> Yeni Banner Ekle
+                        </button>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -92,18 +94,17 @@
 <div class="modal fade" id="ekleModal" tabindex="-1" aria-labelledby="ekleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            @using (Html.BeginForm("Ekle", "AdminAnaSayfaBannerResim", FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
+            <form method="post" action="@Url.Action("Ekle", "AdminAnaSayfaBannerResim")" enctype="multipart/form-data">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="ekleModalLabel">Yeni Banner Resim Ekle</h5>
+                    <h5 class="modal-title" id="ekleModalLabel">Yeni Banner Ekle</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12 mb-3">
-                            <label for="imagefile" class="form-label">Resim Seçin</label>
+                            <label for="imagefile" class="form-label">Banner Resmi</label>
                             <input type="file" class="form-control" id="imagefile" name="imagefile" accept="image/*" required>
-                            <div class="form-text">Lütfen banner resmini seçin. Büyük boyutlu resimler otomatik olarak küçültülecektir.</div>
+                            <div class="form-text">Önerilen boyut: 1920x1080 piksel</div>
                         </div>
                         <div class="col-md-12 mb-3">
                             <div class="form-floating">
@@ -113,7 +114,7 @@
                         </div>
                         <div class="col-md-12 mb-3">
                             <div class="form-floating">
-                                <textarea class="form-control" id="Metin" name="Metin" placeholder="Metin" style="height: 100px"></textarea>
+                                <textarea class="form-control" id="Metin" name="Metin" placeholder="Metin" style="height: 100px" required></textarea>
                                 <label for="Metin">Metin</label>
                             </div>
                         </div>
@@ -123,7 +124,8 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
                     <button type="submit" class="btn btn-primary">Kaydet</button>
                 </div>
-}        </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -131,14 +133,20 @@
 <div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form asp-action="Guncelle" method="post">
+            <form method="post" action="@Url.Action("Guncelle", "AdminAnaSayfaBannerResim")">
                 <input type="hidden" id="editId" name="Id">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="duzenleModalLabel">Banner Resim Düzenle</h5>
+                    <h5 class="modal-title" id="duzenleModalLabel">Banner Düzenle</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                Resim değiştirmek için mevcut banner'ı silip yeni banner ekleyebilirsiniz.
+                            </div>
+                        </div>
                         <div class="col-md-12 mb-3">
                             <div class="form-floating">
                                 <input type="text" class="form-control" id="editBaslik" name="Baslik" placeholder="Başlık" required>
@@ -147,13 +155,8 @@
                         </div>
                         <div class="col-md-12 mb-3">
                             <div class="form-floating">
-                                <textarea class="form-control" id="editMetin" name="Metin" placeholder="Metin" style="height: 100px"></textarea>
+                                <textarea class="form-control" id="editMetin" name="Metin" placeholder="Metin" style="height: 100px" required></textarea>
                                 <label for="editMetin">Metin</label>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="alert alert-info">
-                                <small><i class="fas fa-info-circle"></i> Resim değiştirmek için yeni bir resim ekleyip mevcut resmi silmeniz gerekmektedir.</small>
                             </div>
                         </div>
                     </div>
@@ -171,15 +174,15 @@
 <div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form asp-action="Sil" method="post">
+            <form method="post" action="@Url.Action("Sil", "AdminAnaSayfaBannerResim")">
                 <input type="hidden" id="silId" name="Id">
                 <div class="modal-header">
                     <h5 class="modal-title" id="silModalLabel">Silme Onayı</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>"<span id="silBaslik"></span>"</strong> başlıklı resmi silmek istediğinizden emin misiniz?</p>
-                    <p class="text-danger"><small>Bu işlem geri alınamaz. Resim hem veritabanından hem de sunucudan silinecektir.</small></p>
+                    <p><strong>"<span id="silBaslik"></span>"</strong> başlıklı banner'ı silmek istediğinizden emin misiniz?</p>
+                    <p class="text-danger"><small>Bu işlem geri alınamaz. Banner hem veritabanından hem de sunucudan silinecektir.</small></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
@@ -223,8 +226,20 @@
         }
 
         // Modal kapandığında formları temizle
-        document.getElementById('ekleModal').addEventListener('hidden.bs.modal', function () {
-            this.querySelector('form').reset();
+        document.addEventListener('DOMContentLoaded', function() {
+            var ekleModal = document.getElementById('ekleModal');
+            if (ekleModal) {
+                ekleModal.addEventListener('hidden.bs.modal', function () {
+                    this.querySelector('form').reset();
+                });
+            }
+
+            var duzenleModal = document.getElementById('duzenleModal');
+            if (duzenleModal) {
+                duzenleModal.addEventListener('hidden.bs.modal', function () {
+                    this.querySelector('form').reset();
+                });
+            }
         });
 
         // Başarı mesajlarını 5 saniye sonra otomatik kapat

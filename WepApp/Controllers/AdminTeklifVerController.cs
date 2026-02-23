@@ -181,7 +181,28 @@ namespace WepApp.Controllers
             }
         }
 
+        [HttpGet]
+        public JsonResult GetirPaketBagimliliklari()
+        {
+            try
+            {
+                PaketBaglantiRepository paketBaglantiRepository = new PaketBaglantiRepository();
 
+                var bagimliliklar = paketBaglantiRepository.GetirList(x => x.Durumu == 1)
+                    .Select(b => new
+                    {
+                        anaPaketId = b.PaketId,      // küçük harfle başlayan property
+                        bagliPaketId = b.BagliPaketId // küçük harfle başlayan property
+                    })
+                    .ToList();
+
+                return Json(new { success = true, bagimliliklar = bagimliliklar });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
         // Controller'a eklenmesi gereken yeni action
         [HttpGet]
         public IActionResult GetirTeklifDetaylari(int teklifId)

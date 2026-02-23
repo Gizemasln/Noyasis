@@ -6726,8 +6726,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>p5586wikvx</Fingerprint>
-      <Integrity>483sHNYVlrr1zr00xOlTmq2T1g2xpOS2e028FAtkH6E=</Integrity>
+      <Fingerprint>hx87trd9lw</Fingerprint>
+      <Integrity>Cz4L7Eyad7GYxhD/rHUbDPf6uMM171x7Qvuye/r2tmQ=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\assets\js\button-permission.js'))</OriginalItemSpec>
@@ -12581,24 +12581,6 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\Slider\905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.jpg'))</OriginalItemSpec>
-    </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\Slider\afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png'))">
-      <SourceType>Package</SourceType>
-      <SourceId>WepApp</SourceId>
-      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
-      <BasePath>_content/WepApp</BasePath>
-      <RelativePath>WebAdminTheme/Slider/afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png</RelativePath>
-      <AssetKind>All</AssetKind>
-      <AssetMode>All</AssetMode>
-      <AssetRole>Primary</AssetRole>
-      <RelatedAsset></RelatedAsset>
-      <AssetTraitName></AssetTraitName>
-      <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>okqhiz2yig</Fingerprint>
-      <Integrity>yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU=</Integrity>
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\Slider\afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\SliderVideo\b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.mp4'))">
       <SourceType>Package</SourceType>

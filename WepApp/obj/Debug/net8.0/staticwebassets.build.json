@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "fJg4oEnKnX7VDkVJ0Ml/a6SLqWtt4xvssay2Iw1j5bY=",
+  "Hash": "33cV1LuRjL0ZLxWuZNBDmWdOqC1T/4NPT61pGNYRsmQ=",
   "Source": "WepApp",
   "BasePath": "_content/WepApp",
   "Mode": "Default",
@@ -7864,8 +7864,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "p5586wikvx",
-      "Integrity": "483sHNYVlrr1zr00xOlTmq2T1g2xpOS2e028FAtkH6E=",
+      "Fingerprint": "hx87trd9lw",
+      "Integrity": "Cz4L7Eyad7GYxhD/rHUbDPf6uMM171x7Qvuye/r2tmQ=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\WebAdminTheme\\assets\\js\\button-permission.js"
@@ -14694,27 +14694,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\WebAdminTheme\\Slider\\905738d9-d96d-49db-ad6f-723c62f5c884_cyberpunk-girl-motorcycle-sci-fi-4k-wallpaper-uhdpaper.com-598@2@a.jpg"
-    },
-    {
-      "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Slider\\afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png",
-      "SourceId": "WepApp",
-      "SourceType": "Discovered",
-      "ContentRoot": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\",
-      "BasePath": "_content/WepApp",
-      "RelativePath": "WebAdminTheme/Slider/afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747#[.{fingerprint}]?.png",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "Fingerprint": "okqhiz2yig",
-      "Integrity": "yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU=",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\WebAdminTheme\\Slider\\afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png"
     },
     {
       "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\SliderVideo\\b74e2131-e4c0-4def-a95d-b0628a785309_6671806-uhd_3840_2160_24fps.mp4",
@@ -51584,6 +51563,51 @@
       ]
     },
     {
+      "Route": "WebAdminTheme/assets/js/button-permission.hx87trd9lw.js",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\assets\\js\\button-permission.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "11744"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Cz4L7Eyad7GYxhD/rHUbDPf6uMM171x7Qvuye/r2tmQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 21 Feb 2026 09:43:55 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "hx87trd9lw"
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/assets/js/button-permission.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Cz4L7Eyad7GYxhD/rHUbDPf6uMM171x7Qvuye/r2tmQ="
+        }
+      ]
+    },
+    {
       "Route": "WebAdminTheme/assets/js/button-permission.js",
       "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\assets\\js\\button-permission.js",
       "Selectors": [],
@@ -51594,7 +51618,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "14288"
+          "Value": "11744"
         },
         {
           "Name": "Content-Type",
@@ -51602,11 +51626,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"483sHNYVlrr1zr00xOlTmq2T1g2xpOS2e028FAtkH6E=\""
+          "Value": "\"Cz4L7Eyad7GYxhD/rHUbDPf6uMM171x7Qvuye/r2tmQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Wed, 18 Feb 2026 13:56:59 GMT"
+          "Value": "Sat, 21 Feb 2026 09:43:55 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -51616,52 +51640,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-483sHNYVlrr1zr00xOlTmq2T1g2xpOS2e028FAtkH6E="
-        }
-      ]
-    },
-    {
-      "Route": "WebAdminTheme/assets/js/button-permission.p5586wikvx.js",
-      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\assets\\js\\button-permission.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "14288"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"483sHNYVlrr1zr00xOlTmq2T1g2xpOS2e028FAtkH6E=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Wed, 18 Feb 2026 13:56:59 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "p5586wikvx"
-        },
-        {
-          "Name": "label",
-          "Value": "WebAdminTheme/assets/js/button-permission.js"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-483sHNYVlrr1zr00xOlTmq2T1g2xpOS2e028FAtkH6E="
+          "Value": "sha256-Cz4L7Eyad7GYxhD/rHUbDPf6uMM171x7Qvuye/r2tmQ="
         }
       ]
     },
@@ -78312,88 +78291,6 @@
         {
           "Name": "integrity",
           "Value": "sha256-gGf1pSFdtS7HYWhpDOuf0//JbpwqHFkrrXPK9t5AAoI="
-        }
-      ]
-    },
-    {
-      "Route": "WebAdminTheme/Slider/afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.okqhiz2yig.png",
-      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Slider\\afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1218267"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/png"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sat, 21 Feb 2026 07:10:50 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "okqhiz2yig"
-        },
-        {
-          "Name": "label",
-          "Value": "WebAdminTheme/Slider/afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU="
-        }
-      ]
-    },
-    {
-      "Route": "WebAdminTheme/Slider/afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png",
-      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\Slider\\afefc2cd-a924-4098-b015-c5f1efb92bc5_1703998149747.png",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1218267"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "image/png"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Sat, 21 Feb 2026 07:10:50 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=3600, must-revalidate"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-yP6yfZWf0zkCgNXlaQem2Rs3a05WoWFG0vpQUMUDFLU="
         }
       ]
     },

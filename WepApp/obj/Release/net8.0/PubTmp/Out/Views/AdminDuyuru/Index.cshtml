@@ -3,6 +3,95 @@
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
 
+<style>
+    .duyuru-gorsel-preview {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid #e9ecef;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+        .duyuru-gorsel-preview:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+    .modal-gorsel-preview {
+        max-width: 100%;
+        max-height: 200px;
+        object-fit: contain;
+        border-radius: 8px;
+        border: 2px solid #dee2e6;
+        margin-top: 10px;
+    }
+
+    .gorsel-upload-area {
+        border: 2px dashed #dee2e6;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        background-color: #f8f9fa;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+        .gorsel-upload-area:hover {
+            border-color: #0d6efd;
+            background-color: #e7f1ff;
+        }
+
+        .gorsel-upload-area i {
+            font-size: 48px;
+            color: #6c757d;
+        }
+
+    .current-image-container {
+        position: relative;
+        display: inline-block;
+        margin: 10px 0;
+    }
+
+    .remove-image-btn {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 14px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+        .remove-image-btn:hover {
+            background-color: #bb2d3b;
+        }
+</style>
+
+<!-- Görsel Modal -->
+<div class="modal fade" id="gorselModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Duyuru Görseli</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="" id="modalGorsel" class="img-fluid" alt="Duyuru Görseli">
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-md-12">
         <!-- Başarı/Hata Mesajları -->
@@ -38,6 +127,7 @@
                         <thead class="table-head-bg-primary">
                             <tr>
                                 <th scope="col">#</th>
+                                <th scope="col">Görsel</th>
                                 <th scope="col">Başlık</th>
                                 <th scope="col">İçerik</th>
                                 <th scope="col">Oluşturma Tarihi</th>
@@ -54,6 +144,18 @@
                                 {
                                     <tr>
                                         <td>@counter</td>
+                                        <td class="text-center">
+                                            @if (!string.IsNullOrEmpty(item.GorselYolu))
+                                            {
+                                                <img src="@item.GorselYolu" class="duyuru-gorsel-preview"
+                                                     onclick="gorselGoster('@item.GorselYolu')"
+                                                     alt="Görsel" title="Büyütmek için tıklayın">
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Görsel Yok</span>
+                                            }
+                                        </td>
                                         <td>@item.Baslik</td>
                                         <td>@(item.Metin != null && item.Metin.Length > 50 ? item.Metin.Substring(0, 50) + "..." : item.Metin)</td>
                                         <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
@@ -82,10 +184,10 @@
                                             }
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id)">
+                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id)" title="Düzenle">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.Baslik')">
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.Baslik')" title="Sil">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </td>
@@ -96,7 +198,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="7" class="text-center">Henüz duyuru eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Duyuru Ekle</a></td>
+                                    <td colspan="8" class="text-center">Henüz duyuru eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Duyuru Ekle</a></td>
                                 </tr>
                             }
                         </tbody>
@@ -111,10 +213,12 @@
 <div class="modal fade" id="ekleModal" tabindex="-1" aria-labelledby="ekleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            @using (Html.BeginForm("Ekle", "AdminDuyuru", FormMethod.Post, new { id = "ekleForm" }))
+            @using (Html.BeginForm("Ekle", "AdminDuyuru", FormMethod.Post, new { id = "ekleForm", enctype = "multipart/form-data" }))
             {
                 <div class="modal-header">
-                    <h5 class="modal-title" id="ekleModalLabel">Yeni Duyuru Ekle</h5>
+                    <h5 class="modal-title" id="ekleModalLabel">
+                        <i class="fas fa-plus-circle me-2"></i>Yeni Duyuru Ekle
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -122,9 +226,22 @@
                         <div class="col-md-12 mb-3">
                             <div class="form-floating">
                                 <input type="text" class="form-control" id="Baslik" name="Baslik" placeholder="Başlık" required>
-                                <label for="Baslik">Başlık</label>
+                                <label for="Baslik">Başlık <span class="text-danger">*</span></label>
                             </div>
                         </div>
+
+                        <!-- Görsel Yükleme Alanı -->
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-bold">Duyuru Görseli</label>
+                            <div class="gorsel-upload-area" onclick="document.getElementById('Gorsel').click();">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p class="mb-1 mt-2">Görsel yüklemek için tıklayın veya sürükleyin</p>
+                                <small class="text-muted">Maksimum dosya boyutu: 5MB (jpg, png, gif)</small>
+                            </div>
+                            <input type="file" class="d-none" id="Gorsel" name="Gorsel" accept="image/*" onchange="previewImage(this, 'eklePreview')">
+                            <div id="eklePreview" class="text-center mt-2"></div>
+                        </div>
+
                         <div class="col-md-12 mb-3">
                             <div class="form-floating">
                                 <textarea class="form-control" id="Icerik" name="Icerik" placeholder="İçerik" style="height: 100px"></textarea>
@@ -161,8 +278,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>İptal
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Kaydet
+                    </button>
                 </div>
             }
         </div>
@@ -173,11 +294,14 @@
 <div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-
-            <form action="@Url.Action("Guncelle","AdminDuyuru")" method="post" id="duzenleForm">
+            <form action="@Url.Action("Guncelle","AdminDuyuru")" method="post" id="duzenleForm" enctype="multipart/form-data">
                 <input type="hidden" id="editId" name="Id">
+                <input type="hidden" id="editMevcutGorsel" name="MevcutGorsel">
+
                 <div class="modal-header">
-                    <h5 class="modal-title" id="duzenleModalLabel">Duyuru Düzenle</h5>
+                    <h5 class="modal-title" id="duzenleModalLabel">
+                        <i class="fas fa-edit me-2"></i>Duyuru Düzenle
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -185,9 +309,35 @@
                         <div class="col-md-12 mb-3">
                             <div class="form-floating">
                                 <input type="text" class="form-control" id="editBaslik" name="Baslik" placeholder="Başlık" required>
-                                <label for="editBaslik">Başlık</label>
+                                <label for="editBaslik">Başlık <span class="text-danger">*</span></label>
                             </div>
                         </div>
+
+                        <!-- Görsel Yükleme ve Gösterme Alanı -->
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label fw-bold">Duyuru Görseli</label>
+
+                            <!-- Mevcut Görsel Gösterimi -->
+                            <div id="mevcutGorselAlani" class="mb-2" style="display: none;">
+                                <div class="current-image-container">
+                                    <img id="mevcutGorselImg" src="" class="modal-gorsel-preview" alt="Mevcut Görsel">
+                                    <button type="button" class="remove-image-btn" onclick="mevcutGorselSil()" title="Görseli Kaldır">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <small class="text-muted d-block mt-1">Mevcut görsel</small>
+                            </div>
+
+                            <!-- Yeni Görsel Yükleme -->
+                            <div class="gorsel-upload-area" onclick="document.getElementById('editGorsel').click();">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p class="mb-1 mt-2">Yeni görsel yüklemek için tıklayın</p>
+                                <small class="text-muted">Maksimum dosya boyutu: 5MB (jpg, png, gif)</small>
+                            </div>
+                            <input type="file" class="d-none" id="editGorsel" name="Gorsel" accept="image/*" onchange="previewImage(this, 'editPreview')">
+                            <div id="editPreview" class="text-center mt-2"></div>
+                        </div>
+
                         <div class="col-md-12 mb-3">
                             <div class="form-floating">
                                 <textarea class="form-control" id="editIcerik" name="Icerik" placeholder="İçerik" style="height: 100px"></textarea>
@@ -224,8 +374,12 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>İptal
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Güncelle
+                    </button>
                 </div>
             </form>
         </div>
@@ -239,16 +393,25 @@
             <form action="@Url.Action("Sil","AdminDuyuru")" method="post">
                 <input type="hidden" id="silId" name="Id">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="silModalLabel">Silme Onayı</h5>
+                    <h5 class="modal-title" id="silModalLabel">
+                        <i class="fas fa-exclamation-triangle text-danger me-2"></i>Silme Onayı
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>"<span id="silBaslik"></span>"</strong> başlıklı duyuruyu silmek istediğinizden emin misiniz?</p>
-                    <p class="text-danger"><small>Bu işlem geri alınamaz. Duyuru durumu pasif hale getirilecektir.</small></p>
+                    <p class="fs-5">"<strong class="text-primary"><span id="silBaslik"></span></strong>" başlıklı duyuruyu silmek istediğinizden emin misiniz?</p>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <small>Bu işlem geri alınamaz. Duyuru ve varsa görseli tamamen silinecektir.</small>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                    <button type="submit" class="btn btn-danger">Sil</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>İptal
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-1"></i>Sil
+                    </button>
                 </div>
             </form>
         </div>
@@ -257,6 +420,35 @@
 
 @section Script {
     <script>
+        let silinecekGorselId = null;
+
+        // Görsel önizleme fonksiyonu
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            preview.innerHTML = '';
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'modal-gorsel-preview';
+                    img.alt = 'Görsel önizleme';
+                    preview.appendChild(img);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Görsel büyütme fonksiyonu
+        function gorselGoster(gorselYolu) {
+            document.getElementById('modalGorsel').src = gorselYolu;
+            var gorselModal = new bootstrap.Modal(document.getElementById('gorselModal'));
+            gorselModal.show();
+        }
+
         function duzenleGetir(id) {
             fetch('@Url.Action("Getir", "AdminDuyuru")' + '?id=' + id)
                 .then(response => {
@@ -272,9 +464,27 @@
                     document.getElementById('editOncelik').value = data.oncelik || 0;
                     document.getElementById('editYayinBaslangicTarihi').value = data.yayinbaslangictarihi || '';
                     document.getElementById('editYayinBitisTarihi').value = data.yayinbitistarihi || '';
-
-                    // Yayında mı checkbox'ını ayarla
                     document.getElementById('editYayindaMi').checked = data.yayindami == 1;
+
+                    // Mevcut görsel varsa göster
+                    const mevcutGorselAlani = document.getElementById('mevcutGorselAlani');
+                    const mevcutGorselImg = document.getElementById('mevcutGorselImg');
+                    const editMevcutGorsel = document.getElementById('editMevcutGorsel');
+
+                    if (data.gorselyolu) {
+                        mevcutGorselImg.src = data.gorselyolu;
+                        mevcutGorselAlani.style.display = 'block';
+                        editMevcutGorsel.value = data.gorselyolu;
+                        silinecekGorselId = data.id;
+                    } else {
+                        mevcutGorselAlani.style.display = 'none';
+                        editMevcutGorsel.value = '';
+                        silinecekGorselId = null;
+                    }
+
+                    // Önizleme alanını temizle
+                    document.getElementById('editPreview').innerHTML = '';
+                    document.getElementById('editGorsel').value = '';
 
                     var duzenleModal = new bootstrap.Modal(document.getElementById('duzenleModal'));
                     duzenleModal.show();
@@ -283,6 +493,49 @@
                     console.error('Error:', error);
                     alert('Kayıt getirilirken bir hata oluştu.');
                 });
+        }
+
+        function mevcutGorselSil() {
+            if (silinecekGorselId) {
+                if (confirm('Görseli silmek istediğinizden emin misiniz?')) {
+                    fetch('@Url.Action("GorselSilAjax", "AdminDuyuru")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'id=' + silinecekGorselId
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('mevcutGorselAlani').style.display = 'none';
+                            document.getElementById('editMevcutGorsel').value = '';
+                            silinecekGorselId = null;
+
+                            // Başarı mesajı göster
+                            var alertHtml = '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                                data.message +
+                                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                                '</div>';
+                            document.querySelector('.modal-body').insertAdjacentHTML('afterbegin', alertHtml);
+
+                            // 3 saniye sonra mesajı kaldır
+                            setTimeout(function() {
+                                var alerts = document.querySelectorAll('.alert');
+                                alerts.forEach(function(alert) {
+                                    alert.remove();
+                                });
+                            }, 3000);
+                        } else {
+                            alert('Hata: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Görsel silinirken bir hata oluştu.');
+                    });
+                }
+            }
         }
 
         function silOnay(id, baslik) {
@@ -296,9 +549,14 @@
         // Modal kapandığında formları temizle
         document.getElementById('ekleModal').addEventListener('hidden.bs.modal', function () {
             this.querySelector('form').reset();
+            document.getElementById('eklePreview').innerHTML = '';
         });
+
         document.getElementById('duzenleModal').addEventListener('hidden.bs.modal', function () {
             this.querySelector('form').reset();
+            document.getElementById('mevcutGorselAlani').style.display = 'none';
+            document.getElementById('editPreview').innerHTML = '';
+            silinecekGorselId = null;
         });
 
         // Başarı mesajlarını 5 saniye sonra otomatik kapat
@@ -309,5 +567,34 @@
                 bsAlert.close();
             });
         }, 5000);
+
+        // Sürükle-bırak desteği
+        document.querySelectorAll('.gorsel-upload-area').forEach(area => {
+            area.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                area.style.borderColor = '#0d6efd';
+                area.style.backgroundColor = '#e7f1ff';
+            });
+
+            area.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                area.style.borderColor = '#dee2e6';
+                area.style.backgroundColor = '#f8f9fa';
+            });
+
+            area.addEventListener('drop', (e) => {
+                e.preventDefault();
+                area.style.borderColor = '#dee2e6';
+                area.style.backgroundColor = '#f8f9fa';
+
+                const files = e.dataTransfer.files;
+                const input = area.nextElementSibling;
+                if (files.length > 0 && input) {
+                    input.files = files;
+                    const previewId = input.id === 'Gorsel' ? 'eklePreview' : 'editPreview';
+                    previewImage(input, previewId);
+                }
+            });
+        });
     </script>
 }

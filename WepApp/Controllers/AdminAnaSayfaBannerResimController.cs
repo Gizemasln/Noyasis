@@ -21,52 +21,73 @@ namespace WebApp.Controllers
         public IActionResult Index()
         {
             LoadCommonData();
-            List<AnaSayfaBannerResim> list = _repository.Listele().Where(x => x.Durumu == 1).ToList();
-            ViewBag.FotografList = list;
+            // Sadece aktif olan banner'ı getir (en son eklenen veya tek aktif kayıt)
+            AnaSayfaBannerResim banner = _repository.Listele().Where(x => x.Durumu == 1).FirstOrDefault();
+            ViewBag.Banner = banner;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Ekle(List<IFormFile> imagefile, string Metin, string Baslik)
+        public async Task<IActionResult> Ekle(IFormFile imagefile, string Metin, string Baslik)
         {
             LoadCommonData();
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
-            if (imagefile != null && imagefile.Count != 0)
+
+            // Önce mevcut aktif banner varsa pasif yap
+            var mevcutBanner = _repository.Listele().Where(x => x.Durumu == 1).FirstOrDefault();
+            if (mevcutBanner != null)
+            {
+                mevcutBanner.Durumu = 0;
+                mevcutBanner.GuncellenmeTarihi = DateTime.Now;
+                mevcutBanner.KullanicilarId = kullanici.Id;
+                _repository.Guncelle(mevcutBanner);
+            }
+
+            if (imagefile != null && imagefile.Length > 0)
             {
                 string serverpath = _hostEnvironment.ContentRootPath;
-                foreach (IFormFile item in imagefile)
+
+                string extension = Path.GetExtension(imagefile.FileName);
+                string newimagename = Guid.NewGuid() + extension;
+                string bigLocation = Path.Combine(serverpath, "wwwroot", "WebAdminTheme", "AnaSayfaBanner", "Buyuk", newimagename);
+                string smallLocation = Path.Combine(serverpath, "wwwroot", "WebAdminTheme", "AnaSayfaBanner", "Kucuk", newimagename);
+
+                // Klasörlerin varlığını kontrol et, yoksa oluştur
+                string bigDirectory = Path.GetDirectoryName(bigLocation);
+                string smallDirectory = Path.GetDirectoryName(smallLocation);
+
+                if (!Directory.Exists(bigDirectory))
+                    Directory.CreateDirectory(bigDirectory);
+
+                if (!Directory.Exists(smallDirectory))
+                    Directory.CreateDirectory(smallDirectory);
+
+                using (FileStream stream = new FileStream(bigLocation, FileMode.Create))
                 {
-                    string extension = Path.GetExtension(item.FileName);
-                    string newimagename = Guid.NewGuid() + extension;
-                    string bigLocation = Path.Combine(serverpath, "wwwroot", "WebAdminTheme", "AnaSayfaBanner", "Buyuk", newimagename);
-                    string smallLocation = Path.Combine(serverpath, "wwwroot", "WebAdminTheme", "AnaSayfaBanner", "Kucuk", newimagename);
-
-                    using (FileStream stream = new FileStream(bigLocation, FileMode.Create))
-                    {
-                        await item.CopyToAsync(stream);
-                    }
-
-                    using (Bitmap orjinal = new Bitmap(bigLocation))
-                    using (Bitmap kucuk = new Bitmap(orjinal, new Size(400, 400)))
-                    {
-                        kucuk.Save(smallLocation);
-                    }
-
-                    AnaSayfaBannerResim fotograf = new AnaSayfaBannerResim
-                    {
-                        Durumu = 1,
-                        Baslik = Baslik,
-                        KullanicilarId= kullanici.Id,
-                        Metin = Metin,
-                        EklenmeTarihi = DateTime.Now,
-                        GuncellenmeTarihi = DateTime.Now,
-                        FotografBuyuk = "/WebAdminTheme/AnaSayfaBanner/Buyuk/" + newimagename,
-                        FotografKucuk = "/WebAdminTheme/AnaSayfaBanner/Kucuk/" + newimagename
-                    };
-                    _repository.Ekle(fotograf);
+                    await imagefile.CopyToAsync(stream);
                 }
-                TempData["Success"] = "Resim başarıyla eklendi.";
+
+                using (Bitmap orjinal = new Bitmap(bigLocation))
+                using (Bitmap kucuk = new Bitmap(orjinal, new Size(400, 400)))
+                {
+                    kucuk.Save(smallLocation);
+                }
+
+                AnaSayfaBannerResim fotograf = new AnaSayfaBannerResim
+                {
+                    Durumu = 1,
+                    Baslik = Baslik,
+                    KullanicilarId = kullanici.Id,
+                    Metin = Metin,
+                    EklenmeTarihi = DateTime.Now,
+                    GuncellenmeTarihi = DateTime.Now,
+                    FotografBuyuk = "/WebAdminTheme/AnaSayfaBanner/Buyuk/" + newimagename,
+                    FotografKucuk = "/WebAdminTheme/AnaSayfaBanner/Kucuk/" + newimagename
+                };
+                _repository.Ekle(fotograf);
+
+                TempData["Success"] = "Banner başarıyla eklendi.";
             }
             else
             {
@@ -88,9 +109,9 @@ namespace WebApp.Controllers
                 existingEntity.Metin = Metin;
                 existingEntity.Baslik = Baslik;
                 existingEntity.GuncellenmeTarihi = DateTime.Now;
-                existingEntity.KullanicilarId=kullanici.Id;
+                existingEntity.KullanicilarId = kullanici.Id;
                 _repository.Guncelle(existingEntity);
-                TempData["Success"] = "Kayıt başarıyla güncellendi.";
+                TempData["Success"] = "Banner başarıyla güncellendi.";
             }
             else
             {
@@ -121,10 +142,10 @@ namespace WebApp.Controllers
                     System.IO.File.Delete(pathSmall);
                 }
                 anaSayfaFotograf.Durumu = 0;
-                anaSayfaFotograf.GuncellenmeTarihi=DateTime.Now;
+                anaSayfaFotograf.GuncellenmeTarihi = DateTime.Now;
                 anaSayfaFotograf.KullanicilarId = kullanici.Id;
                 _repository.Guncelle(anaSayfaFotograf);
-                TempData["Success"] = "Kayıt başarıyla silindi.";
+                TempData["Success"] = "Banner başarıyla silindi.";
             }
             else
             {

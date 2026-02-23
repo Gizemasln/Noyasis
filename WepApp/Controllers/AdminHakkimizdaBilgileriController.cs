@@ -17,8 +17,9 @@ namespace WebApp.Controllers
         public IActionResult Index()
         {
             LoadCommonData();
-            List<HakkimizdaBilgileri> list = _repository.Listele().Where(x => x.Durumu == 1).ToList();
-            ViewBag.HakkimizdaList = list;
+            // Sadece aktif olan Hakkımızda bilgisini getir
+            HakkimizdaBilgileri hakkimizda = _repository.Listele().Where(x => x.Durumu == 1).FirstOrDefault();
+            ViewBag.Hakkimizda = hakkimizda;
             return View();
         }
 
@@ -28,6 +29,17 @@ namespace WebApp.Controllers
             LoadCommonData();
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
+
+            // Önce mevcut aktif kayıt varsa pasif yap
+            var mevcutKayit = _repository.Listele().Where(x => x.Durumu == 1).FirstOrDefault();
+            if (mevcutKayit != null)
+            {
+                mevcutKayit.Durumu = 0;
+                mevcutKayit.GuncellenmeTarihi = DateTime.Now;
+                mevcutKayit.KullanicilarId = kullanici.Id;
+                _repository.Guncelle(mevcutKayit);
+            }
+
             if (!string.IsNullOrEmpty(Baslik))
             {
                 HakkimizdaBilgileri model = new HakkimizdaBilgileri
@@ -38,10 +50,10 @@ namespace WebApp.Controllers
                     Durumu = 1,
                     EklenmeTarihi = DateTime.Now,
                     GuncellenmeTarihi = DateTime.Now,
-                    KullanicilarId=kullanici.Id
+                    KullanicilarId = kullanici.Id
                 };
                 _repository.Ekle(model);
-                TempData["Success"] = "Bilgi başarıyla eklendi.";
+                TempData["Success"] = "Hakkımızda bilgisi başarıyla eklendi.";
             }
             else
             {
@@ -66,7 +78,7 @@ namespace WebApp.Controllers
                 existingEntity.GuncellenmeTarihi = DateTime.Now;
                 existingEntity.KullanicilarId = kullanici.Id;
                 _repository.Guncelle(existingEntity);
-                TempData["Success"] = "Kayıt başarıyla güncellendi.";
+                TempData["Success"] = "Hakkımızda bilgisi başarıyla güncellendi.";
             }
             else
             {
@@ -87,9 +99,9 @@ namespace WebApp.Controllers
             {
                 hakkimizdaBilgileri.Durumu = 0;
                 hakkimizdaBilgileri.GuncellenmeTarihi = DateTime.Now;
-                hakkimizdaBilgileri.KullanicilarId=kullanici.Id;
+                hakkimizdaBilgileri.KullanicilarId = kullanici.Id;
                 _repository.Guncelle(hakkimizdaBilgileri);
-                TempData["Success"] = "Kayıt başarıyla silindi.";
+                TempData["Success"] = "Hakkımızda bilgisi başarıyla silindi.";
             }
             else
             {
