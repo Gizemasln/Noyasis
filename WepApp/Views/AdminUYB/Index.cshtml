@@ -42,14 +42,14 @@
                     <span>UYB Oranı Yönetimi</span>
                     @if (ViewBag.UYB == null)
                     {
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
                             <i class="fas fa-plus"></i> UYB Oranı Ekle
                         </button>
                     }
                     else
                     {
                         var uyb = (UYB)ViewBag.UYB;
-                        <button type="button"
+                        <button type="button" data-button-permission="duzenle"
                                 class="btn btn-warning"
                                 data-bs-toggle="modal"
                                 data-bs-target="#duzenleModal"

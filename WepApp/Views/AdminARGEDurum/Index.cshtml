@@ -23,7 +23,7 @@
         <div class="card" style="margin-top: 70px;">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span>ARGE Durumları</span>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                <button class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
                     <i class="fas fa-plus"></i> Yeni ARGE Durumu Ekle
                 </button>
             </div>
@@ -50,10 +50,10 @@
                                         <td><strong>@item.Adi</strong></td>
                                         <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>
-                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id, '@item.Adi.Replace("'", "\\'")', @item.Sira)">
+                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id, '@item.Adi.Replace("'", "\\'")', @item.Sira)">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.Adi.Replace("'", "\\'")')">
+                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.Adi.Replace("'", "\\'")')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </td>

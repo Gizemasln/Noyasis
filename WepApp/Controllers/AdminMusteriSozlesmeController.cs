@@ -163,6 +163,7 @@ namespace WepApp.Controllers
                 if (sozlesme == null)
                     return Json(new { success = false, message = "Sözleşme bulunamadı." });
                 // YENİ EKLENEN KOD: Distribütör Onayı için belge kontrolü
+                // YENİ EKLENEN KOD: Distribütör Onayı için belge kontrolü
                 if (durumId == 9) // Distribütör Onayı
                 {
                     bool belgelerTam = true;
@@ -196,6 +197,13 @@ namespace WepApp.Controllers
                         eksikBelgeler.Add("İmza Sirküsü");
                     }
 
+                    // YENİ: İmzalı Sözleşme kontrolü
+                    if (!sozlesme.ImzaliSozlesmeVar)
+                    {
+                        belgelerTam = false;
+                        eksikBelgeler.Add("İmzalı Sözleşme");
+                    }
+
                     if (!belgelerTam)
                     {
                         string eksikler = string.Join(", ", eksikBelgeler);
@@ -208,7 +216,6 @@ namespace WepApp.Controllers
                         });
                     }
                 }
-
                 // Durum kontrolü
                 SozlesmeDurumu yeniDurum = _durumRepo.Getir(x => x.Id == durumId && x.Durumu == 1);
                 if (yeniDurum == null)
@@ -357,6 +364,13 @@ namespace WepApp.Controllers
                 {
                     belgelerTam = false;
                     eksikBelgeler.Add("İmza Sirküsü");
+                }
+
+                // YENİ: İmzalı Sözleşme kontrolü
+                if (!sozlesme.ImzaliSozlesmeVar)
+                {
+                    belgelerTam = false;
+                    eksikBelgeler.Add("İmzalı Sözleşme");
                 }
 
                 return Json(new
@@ -609,11 +623,15 @@ namespace WepApp.Controllers
                     ticariSicilGazetesiVar = sozlesme.TicariSicilGazetesiVar,
                     kimlikOnYuzuVar = sozlesme.KimlikOnYuzuVar,
                     imzaSirkusuVar = sozlesme.ImzaSirkusuVar,
+                    // YENİ: İmzalı Sözleşme checkbox
+                    imzaliSozlesmeVar = sozlesme.ImzaliSozlesmeVar,
                     // Doküman dosya adları
                     vergiKimlikLevhasıDosyaAdi = sozlesme.VergiKimlikLevhasıDosyaAdi,
                     ticariSicilGazetesiDosyaAdi = sozlesme.TicariSicilGazetesiDosyaAdi,
                     kimlikOnYuzuDosyaAdi = sozlesme.KimlikOnYuzuDosyaAdi,
-                    imzaSirkusuDosyaAdi = sozlesme.ImzaSirkusuDosyaAdi
+                    imzaSirkusuDosyaAdi = sozlesme.ImzaSirkusuDosyaAdi,
+                    // YENİ: İmzalı Sözleşme dosya adı
+                    imzaliSozlesmeDosyaAdi = sozlesme.ImzaliSozlesmeDosyaAdi
                 };
 
                 return Json(new
@@ -677,6 +695,7 @@ namespace WepApp.Controllers
                 }
 
                 // Sözleşmedeki ilgili alanları güncelle
+                // Sözleşmedeki ilgili alanları güncelle
                 switch (dokumanTipi)
                 {
                     case "VergiKimlikLevhası":
@@ -694,6 +713,11 @@ namespace WepApp.Controllers
                     case "ImzaSirkusu":
                         sozlesme.ImzaSirkusuVar = true;
                         sozlesme.ImzaSirkusuDosyaAdi = guvenliDosyaAdi;
+                        break;
+                    // YENİ: İmzalı Sözleşme
+                    case "ImzaliSozlesme":
+                        sozlesme.ImzaliSozlesmeVar = true;
+                        sozlesme.ImzaliSozlesmeDosyaAdi = guvenliDosyaAdi;
                         break;
                 }
 
@@ -736,6 +760,7 @@ namespace WepApp.Controllers
                 string? dosyaAdi = null;
 
                 // Hangi dosya tipi silinecek
+                // Hangi dosya tipi silinecek
                 switch (dokumanTipi)
                 {
                     case "VergiKimlikLevhası":
@@ -757,6 +782,12 @@ namespace WepApp.Controllers
                         dosyaAdi = sozlesme.ImzaSirkusuDosyaAdi;
                         sozlesme.ImzaSirkusuVar = false;
                         sozlesme.ImzaSirkusuDosyaAdi = null;
+                        break;
+                    // YENİ: İmzalı Sözleşme
+                    case "ImzaliSozlesme":
+                        dosyaAdi = sozlesme.ImzaliSozlesmeDosyaAdi;
+                        sozlesme.ImzaliSozlesmeVar = false;
+                        sozlesme.ImzaliSozlesmeDosyaAdi = null;
                         break;
                     default:
                         return Json(new { success = false, message = "Geçersiz doküman tipi." });
@@ -821,6 +852,11 @@ namespace WepApp.Controllers
                         dosyaAdi = sozlesme.ImzaSirkusuDosyaAdi;
                         orjinalAd = $"ImzaSirkusu_{sozlesme.DokumanNo}";
                         break;
+                    // YENİ: İmzalı Sözleşme
+                    case "ImzaliSozlesme":
+                        dosyaAdi = sozlesme.ImzaliSozlesmeDosyaAdi;
+                        orjinalAd = $"ImzaliSozlesme_{sozlesme.DokumanNo}";
+                        break;
                     default:
                         return NotFound("Doküman tipi bulunamadı.");
                 }
@@ -857,6 +893,7 @@ namespace WepApp.Controllers
                 string? dosyaAdi = null;
 
                 // Hangi dosya tipi görüntülenecek
+                // Hangi dosya tipi görüntülenecek
                 switch (dokumanTipi)
                 {
                     case "VergiKimlikLevhası":
@@ -870,6 +907,10 @@ namespace WepApp.Controllers
                         break;
                     case "ImzaSirkusu":
                         dosyaAdi = sozlesme.ImzaSirkusuDosyaAdi;
+                        break;
+                    // YENİ: İmzalı Sözleşme
+                    case "ImzaliSozlesme":
+                        dosyaAdi = sozlesme.ImzaliSozlesmeDosyaAdi;
                         break;
                     default:
                         return NotFound("Doküman tipi bulunamadı.");
@@ -1016,6 +1057,12 @@ namespace WepApp.Controllers
                         sozlesme.ImzaSirkusuVar = durum;
                         if (!durum)
                             sozlesme.ImzaSirkusuDosyaAdi = null;
+                        break;
+                    // YENİ: İmzalı Sözleşme
+                    case "ImzaliSozlesme":
+                        sozlesme.ImzaliSozlesmeVar = durum;
+                        if (!durum)
+                            sozlesme.ImzaliSozlesmeDosyaAdi = null;
                         break;
                     default:
                         return Json(new { success = false, message = "Geçersiz doküman tipi." });

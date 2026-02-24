@@ -9,6 +9,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Formats.Png;
+using System.Text;
 
 namespace WepApp.Controllers
 {
@@ -87,7 +88,62 @@ namespace WepApp.Controllers
 
             return View();
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SifreSifirla(int id)
+        {
+            LoadCommonData();
 
+            try
+            {
+                var bayi = _bayiRepository.Getir(id);
+                if (bayi == null)
+                {
+                    return Json(new { success = false, message = "Bayi bulunamadı." });
+                }
+
+                Bayi currentBayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
+                if (currentBayi != null && !IsBayiAltinda(currentBayi.Id, id))
+                {
+                    return Json(new { success = false, message = "Bu işlem için yetkiniz yok." });
+                }
+
+                // Yeni şifre oluştur (8 karakterli rastgele şifre)
+                string yeniSifre = GenerateRandomPassword(8);
+
+                // Şifreyi güncelle
+                bayi.Sifre = yeniSifre;
+                bayi.GuncellenmeTarihi = DateTime.Now;
+
+                _bayiRepository.Guncelle(bayi);
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Şifre başarıyla sıfırlandı.",
+                    yeniSifre = yeniSifre
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Şifre sıfırlanırken hata oluştu: " + ex.Message });
+            }
+        }
+
+        // Rastgele şifre oluşturma metodu
+        private string GenerateRandomPassword(int length)
+        {
+            const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%";
+            StringBuilder result = new StringBuilder();
+            Random random = new Random();
+
+            for (int i = 0; i < length; i++)
+            {
+                result.Append(validChars[random.Next(validChars.Length)]);
+            }
+
+            return result.ToString();
+        }
         [HttpGet]
         public IActionResult DetayGetir(int id)
         {

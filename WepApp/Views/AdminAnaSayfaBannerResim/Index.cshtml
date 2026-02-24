@@ -47,10 +47,10 @@
                                                     <small class="text-muted">Eklenme Tarihi: @ViewBag.Banner.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</small>
                                                 </div>
                                                 <div class="col-md-6 text-end">
-                                                    <button type="button" class="btn btn-warning" onclick="duzenleGetir(@ViewBag.Banner.Id)">
+                                                    <button type="button" class="btn btn-warning" data-button-permission="duzenle" onclick="duzenleGetir(@ViewBag.Banner.Id)">
                                                         <i class="fas fa-edit"></i> Düzenle
                                                     </button>
-                                                    <button type="button" class="btn btn-danger" onclick="silOnay(@ViewBag.Banner.Id, '@ViewBag.Banner.Baslik')">
+                                                    <button type="button" class="btn btn-danger" data-button-permission="sil" onclick="silOnay(@ViewBag.Banner.Id, '@ViewBag.Banner.Baslik')">
                                                         <i class="fas fa-trash"></i> Sil
                                                     </button>
                                                 </div>
@@ -66,7 +66,7 @@
                     <div class="alert alert-warning">
                         <i class="fas fa-info-circle"></i>
                         Zaten bir aktif banner bulunmaktadır. Yeni bir banner eklemek isterseniz, mevcut banner otomatik olarak pasif edilecektir.
-                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <button type="button" class="btn btn-primary float-end" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
                             <i class="fas fa-plus"></i> Yeni Banner Ekle
                         </button>
                         <div class="clearfix"></div>
@@ -80,7 +80,7 @@
                     </div>
 
                     <div class="text-center">
-                        <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <button type="button" class="btn btn-primary btn-lg" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
                             <i class="fas fa-plus"></i> Yeni Banner Ekle
                         </button>
                     </div>

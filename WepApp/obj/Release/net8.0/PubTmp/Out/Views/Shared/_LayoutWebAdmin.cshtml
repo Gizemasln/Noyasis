@@ -1,4 +1,9 @@
 ﻿@using WepApp.Models
+@{
+    var currentUserType = ViewBag.CurrentUserType ?? "YOK";
+    var currentUserId = ViewBag.CurrentUserId?.ToString() ?? "";
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -351,8 +356,16 @@
     <script src="/WebAdminTheme/assets/js/kaiadmin.min.js"></script>
 
     <script src="/WebAdminTheme/assets/js/setting-demo.js"></script>
-    <script src="/WebAdminTheme/assets/js/button-permission.js"></script>
+@*     <script>
+        // BU KISIM ÖNCE ÇALIŞMALI!
+        window.__CURRENT_USER_TYPE = '@currentUserType';
+        window.__CURRENT_USER_ID = '@currentUserId';
+        window.userType = window.__CURRENT_USER_TYPE;
+        console.log('Layout - Kullanıcı tipi set edildi:', window.__CURRENT_USER_TYPE);
+    </script>
 
+    <!-- SONRA button-permission.js yüklenmeli -->
+    <script src="/WebAdminTheme/assets/js/button-permission.js"></script> *@
     <script>
         $(document).ready(function () {
             const sidebarKey = "sidebar_open_menus";

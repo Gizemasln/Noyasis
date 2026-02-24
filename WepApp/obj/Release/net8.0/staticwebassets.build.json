@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "33cV1LuRjL0ZLxWuZNBDmWdOqC1T/4NPT61pGNYRsmQ=",
+  "Hash": "rj8xueAw5jYsSE8uJIHp7C7xkwZNYO76GQVulJjgYtc=",
   "Source": "WepApp",
   "BasePath": "_content/WepApp",
   "Mode": "Default",
@@ -7864,8 +7864,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "hx87trd9lw",
-      "Integrity": "Cz4L7Eyad7GYxhD/rHUbDPf6uMM171x7Qvuye/r2tmQ=",
+      "Fingerprint": "9095p1qbe0",
+      "Integrity": "2Xmh8z+sJEEaa4scXXW+mai8pFyNZpkSiTLvVf7oo4Y=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\WebAdminTheme\\assets\\js\\button-permission.js"
@@ -14358,6 +14358,111 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\WebAdminTheme\\maps\\jsvectormap.html"
+    },
+    {
+      "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_ImzaliSozlesme_20260224170426_51a6586543cc47a7baa7e7fe5a841103.pdf",
+      "SourceId": "WepApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\",
+      "BasePath": "_content/WepApp",
+      "RelativePath": "WebAdminTheme/MusteriSozlesme/1_ImzaliSozlesme_20260224170426_51a6586543cc47a7baa7e7fe5a841103#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "bfhspiov8h",
+      "Integrity": "yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_ImzaliSozlesme_20260224170426_51a6586543cc47a7baa7e7fe5a841103.pdf"
+    },
+    {
+      "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_ImzaSirkusu_20260224223439_10a1c0657f3143cc89ee67662ea2c5d6.pdf",
+      "SourceId": "WepApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\",
+      "BasePath": "_content/WepApp",
+      "RelativePath": "WebAdminTheme/MusteriSozlesme/1_ImzaSirkusu_20260224223439_10a1c0657f3143cc89ee67662ea2c5d6#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "bfhspiov8h",
+      "Integrity": "yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_ImzaSirkusu_20260224223439_10a1c0657f3143cc89ee67662ea2c5d6.pdf"
+    },
+    {
+      "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_KimlikOnYuzu_20260224223434_bacdb348dbae4d9b95a8870cec6fb6ae.pdf",
+      "SourceId": "WepApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\",
+      "BasePath": "_content/WepApp",
+      "RelativePath": "WebAdminTheme/MusteriSozlesme/1_KimlikOnYuzu_20260224223434_bacdb348dbae4d9b95a8870cec6fb6ae#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "bfhspiov8h",
+      "Integrity": "yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_KimlikOnYuzu_20260224223434_bacdb348dbae4d9b95a8870cec6fb6ae.pdf"
+    },
+    {
+      "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_TicariSicilGazetesi_20260224223429_000383226d9641a6b2435a144d5641b4.pdf",
+      "SourceId": "WepApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\",
+      "BasePath": "_content/WepApp",
+      "RelativePath": "WebAdminTheme/MusteriSozlesme/1_TicariSicilGazetesi_20260224223429_000383226d9641a6b2435a144d5641b4#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "bfhspiov8h",
+      "Integrity": "yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_TicariSicilGazetesi_20260224223429_000383226d9641a6b2435a144d5641b4.pdf"
+    },
+    {
+      "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_VergiKimlikLevhası_20260224223423_56352f08cecf410fa26f3857da8ddc10.pdf",
+      "SourceId": "WepApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\",
+      "BasePath": "_content/WepApp",
+      "RelativePath": "WebAdminTheme/MusteriSozlesme/1_VergiKimlikLevhası_20260224223423_56352f08cecf410fa26f3857da8ddc10#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "bfhspiov8h",
+      "Integrity": "yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_VergiKimlikLevhası_20260224223423_56352f08cecf410fa26f3857da8ddc10.pdf"
     },
     {
       "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\MusteriSozlesme\\1020_ImzaSirkusu_20260108105303_907bc48f20644d40bf6bcd30431f7634.png",
@@ -51563,7 +51668,7 @@
       ]
     },
     {
-      "Route": "WebAdminTheme/assets/js/button-permission.hx87trd9lw.js",
+      "Route": "WebAdminTheme/assets/js/button-permission.9095p1qbe0.js",
       "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\assets\\js\\button-permission.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -51573,7 +51678,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "11744"
+          "Value": "2189"
         },
         {
           "Name": "Content-Type",
@@ -51581,11 +51686,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"Cz4L7Eyad7GYxhD/rHUbDPf6uMM171x7Qvuye/r2tmQ=\""
+          "Value": "\"2Xmh8z+sJEEaa4scXXW+mai8pFyNZpkSiTLvVf7oo4Y=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 21 Feb 2026 09:43:55 GMT"
+          "Value": "Tue, 24 Feb 2026 13:58:21 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -51595,7 +51700,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "hx87trd9lw"
+          "Value": "9095p1qbe0"
         },
         {
           "Name": "label",
@@ -51603,7 +51708,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-Cz4L7Eyad7GYxhD/rHUbDPf6uMM171x7Qvuye/r2tmQ="
+          "Value": "sha256-2Xmh8z+sJEEaa4scXXW+mai8pFyNZpkSiTLvVf7oo4Y="
         }
       ]
     },
@@ -51618,7 +51723,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "11744"
+          "Value": "2189"
         },
         {
           "Name": "Content-Type",
@@ -51626,11 +51731,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"Cz4L7Eyad7GYxhD/rHUbDPf6uMM171x7Qvuye/r2tmQ=\""
+          "Value": "\"2Xmh8z+sJEEaa4scXXW+mai8pFyNZpkSiTLvVf7oo4Y=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Sat, 21 Feb 2026 09:43:55 GMT"
+          "Value": "Tue, 24 Feb 2026 13:58:21 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -51640,7 +51745,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-Cz4L7Eyad7GYxhD/rHUbDPf6uMM171x7Qvuye/r2tmQ="
+          "Value": "sha256-2Xmh8z+sJEEaa4scXXW+mai8pFyNZpkSiTLvVf7oo4Y="
         }
       ]
     },
@@ -76979,6 +77084,416 @@
         {
           "Name": "integrity",
           "Value": "sha256-mtjGg5ckCuCfNJenSrY5qOz0BHRZZc6g8MnRWxOqmJk="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/MusteriSozlesme/1_ImzaliSozlesme_20260224170426_51a6586543cc47a7baa7e7fe5a841103.bfhspiov8h.pdf",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_ImzaliSozlesme_20260224170426_51a6586543cc47a7baa7e7fe5a841103.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "518253"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 24 Feb 2026 14:04:26 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "bfhspiov8h"
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/MusteriSozlesme/1_ImzaliSozlesme_20260224170426_51a6586543cc47a7baa7e7fe5a841103.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/MusteriSozlesme/1_ImzaliSozlesme_20260224170426_51a6586543cc47a7baa7e7fe5a841103.pdf",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_ImzaliSozlesme_20260224170426_51a6586543cc47a7baa7e7fe5a841103.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "518253"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 24 Feb 2026 14:04:26 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/MusteriSozlesme/1_ImzaSirkusu_20260224223439_10a1c0657f3143cc89ee67662ea2c5d6.bfhspiov8h.pdf",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_ImzaSirkusu_20260224223439_10a1c0657f3143cc89ee67662ea2c5d6.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "518253"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 24 Feb 2026 19:34:39 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "bfhspiov8h"
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/MusteriSozlesme/1_ImzaSirkusu_20260224223439_10a1c0657f3143cc89ee67662ea2c5d6.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/MusteriSozlesme/1_ImzaSirkusu_20260224223439_10a1c0657f3143cc89ee67662ea2c5d6.pdf",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_ImzaSirkusu_20260224223439_10a1c0657f3143cc89ee67662ea2c5d6.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "518253"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 24 Feb 2026 19:34:39 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/MusteriSozlesme/1_KimlikOnYuzu_20260224223434_bacdb348dbae4d9b95a8870cec6fb6ae.bfhspiov8h.pdf",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_KimlikOnYuzu_20260224223434_bacdb348dbae4d9b95a8870cec6fb6ae.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "518253"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 24 Feb 2026 19:34:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "bfhspiov8h"
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/MusteriSozlesme/1_KimlikOnYuzu_20260224223434_bacdb348dbae4d9b95a8870cec6fb6ae.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/MusteriSozlesme/1_KimlikOnYuzu_20260224223434_bacdb348dbae4d9b95a8870cec6fb6ae.pdf",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_KimlikOnYuzu_20260224223434_bacdb348dbae4d9b95a8870cec6fb6ae.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "518253"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 24 Feb 2026 19:34:34 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/MusteriSozlesme/1_TicariSicilGazetesi_20260224223429_000383226d9641a6b2435a144d5641b4.bfhspiov8h.pdf",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_TicariSicilGazetesi_20260224223429_000383226d9641a6b2435a144d5641b4.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "518253"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 24 Feb 2026 19:34:29 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "bfhspiov8h"
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/MusteriSozlesme/1_TicariSicilGazetesi_20260224223429_000383226d9641a6b2435a144d5641b4.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/MusteriSozlesme/1_TicariSicilGazetesi_20260224223429_000383226d9641a6b2435a144d5641b4.pdf",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_TicariSicilGazetesi_20260224223429_000383226d9641a6b2435a144d5641b4.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "518253"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 24 Feb 2026 19:34:29 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/MusteriSozlesme/1_VergiKimlikLevhası_20260224223423_56352f08cecf410fa26f3857da8ddc10.bfhspiov8h.pdf",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_VergiKimlikLevhası_20260224223423_56352f08cecf410fa26f3857da8ddc10.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "518253"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 24 Feb 2026 19:34:23 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "bfhspiov8h"
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/MusteriSozlesme/1_VergiKimlikLevhası_20260224223423_56352f08cecf410fa26f3857da8ddc10.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/MusteriSozlesme/1_VergiKimlikLevhası_20260224223423_56352f08cecf410fa26f3857da8ddc10.pdf",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\MusteriSozlesme\\1_VergiKimlikLevhası_20260224223423_56352f08cecf410fa26f3857da8ddc10.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "518253"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 24 Feb 2026 19:34:23 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E="
         }
       ]
     },

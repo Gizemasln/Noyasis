@@ -4476,17 +4476,17 @@
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"yf5m37m0mz"},{"Name":"integrity","Value":"sha256-8nt7k3phH8PqLqxM52BbUI9LuXBxZ4uMyDGwxglXNRY="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/assets/img/visa.svg"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"2336"},{"Name":"Content-Type","Value":"image/svg\u002Bxml"},{"Name":"ETag","Value":"\u00228nt7k3phH8PqLqxM52BbUI9LuXBxZ4uMyDGwxglXNRY=\u0022"},{"Name":"Last-Modified","Value":"Thu, 30 Oct 2025 11:37:16 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/assets/js/button-permission.hx87trd9lw.js">
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/assets/js/button-permission.9095p1qbe0.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\assets\js\button-permission.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"hx87trd9lw"},{"Name":"integrity","Value":"sha256-Cz4L7Eyad7GYxhD/rHUbDPf6uMM171x7Qvuye/r2tmQ="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/assets/js/button-permission.js"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"11744"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022Cz4L7Eyad7GYxhD/rHUbDPf6uMM171x7Qvuye/r2tmQ=\u0022"},{"Name":"Last-Modified","Value":"Sat, 21 Feb 2026 09:43:55 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"9095p1qbe0"},{"Name":"integrity","Value":"sha256-2Xmh8z\u002BsJEEaa4scXXW\u002Bmai8pFyNZpkSiTLvVf7oo4Y="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/assets/js/button-permission.js"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"2189"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u00222Xmh8z\u002BsJEEaa4scXXW\u002Bmai8pFyNZpkSiTLvVf7oo4Y=\u0022"},{"Name":"Last-Modified","Value":"Tue, 24 Feb 2026 13:58:21 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/assets/js/button-permission.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\assets\js\button-permission.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-Cz4L7Eyad7GYxhD/rHUbDPf6uMM171x7Qvuye/r2tmQ="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"11744"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022Cz4L7Eyad7GYxhD/rHUbDPf6uMM171x7Qvuye/r2tmQ=\u0022"},{"Name":"Last-Modified","Value":"Sat, 21 Feb 2026 09:43:55 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-2Xmh8z\u002BsJEEaa4scXXW\u002Bmai8pFyNZpkSiTLvVf7oo4Y="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"2189"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u00222Xmh8z\u002BsJEEaa4scXXW\u002Bmai8pFyNZpkSiTLvVf7oo4Y=\u0022"},{"Name":"Last-Modified","Value":"Tue, 24 Feb 2026 13:58:21 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/assets/js/ckeditor/build-config.5coiil74zn.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\assets\js\ckeditor\build-config.js'))</AssetFile>
@@ -8231,6 +8231,66 @@
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-9v7/1a7KkM1bBaLeLpQB/N5vCkNSIJkNZxyZ6FQEfmc="}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=3600, must-revalidate"},{"Name":"Content-Length","Value":"42318"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u00229v7/1a7KkM1bBaLeLpQB/N5vCkNSIJkNZxyZ6FQEfmc=\u0022"},{"Name":"Last-Modified","Value":"Thu, 08 Jan 2026 07:52:51 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/MusteriSozlesme/1_ImzaliSozlesme_20260224170426_51a6586543cc47a7baa7e7fe5a841103.bfhspiov8h.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\MusteriSozlesme\1_ImzaliSozlesme_20260224170426_51a6586543cc47a7baa7e7fe5a841103.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"bfhspiov8h"},{"Name":"integrity","Value":"sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/MusteriSozlesme/1_ImzaliSozlesme_20260224170426_51a6586543cc47a7baa7e7fe5a841103.pdf"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"518253"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE=\u0022"},{"Name":"Last-Modified","Value":"Tue, 24 Feb 2026 14:04:26 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/MusteriSozlesme/1_ImzaliSozlesme_20260224170426_51a6586543cc47a7baa7e7fe5a841103.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\MusteriSozlesme\1_ImzaliSozlesme_20260224170426_51a6586543cc47a7baa7e7fe5a841103.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"518253"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE=\u0022"},{"Name":"Last-Modified","Value":"Tue, 24 Feb 2026 14:04:26 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/MusteriSozlesme/1_ImzaSirkusu_20260224223439_10a1c0657f3143cc89ee67662ea2c5d6.bfhspiov8h.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\MusteriSozlesme\1_ImzaSirkusu_20260224223439_10a1c0657f3143cc89ee67662ea2c5d6.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"bfhspiov8h"},{"Name":"integrity","Value":"sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/MusteriSozlesme/1_ImzaSirkusu_20260224223439_10a1c0657f3143cc89ee67662ea2c5d6.pdf"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"518253"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE=\u0022"},{"Name":"Last-Modified","Value":"Tue, 24 Feb 2026 19:34:39 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/MusteriSozlesme/1_ImzaSirkusu_20260224223439_10a1c0657f3143cc89ee67662ea2c5d6.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\MusteriSozlesme\1_ImzaSirkusu_20260224223439_10a1c0657f3143cc89ee67662ea2c5d6.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"518253"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE=\u0022"},{"Name":"Last-Modified","Value":"Tue, 24 Feb 2026 19:34:39 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/MusteriSozlesme/1_KimlikOnYuzu_20260224223434_bacdb348dbae4d9b95a8870cec6fb6ae.bfhspiov8h.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\MusteriSozlesme\1_KimlikOnYuzu_20260224223434_bacdb348dbae4d9b95a8870cec6fb6ae.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"bfhspiov8h"},{"Name":"integrity","Value":"sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/MusteriSozlesme/1_KimlikOnYuzu_20260224223434_bacdb348dbae4d9b95a8870cec6fb6ae.pdf"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"518253"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE=\u0022"},{"Name":"Last-Modified","Value":"Tue, 24 Feb 2026 19:34:34 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/MusteriSozlesme/1_KimlikOnYuzu_20260224223434_bacdb348dbae4d9b95a8870cec6fb6ae.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\MusteriSozlesme\1_KimlikOnYuzu_20260224223434_bacdb348dbae4d9b95a8870cec6fb6ae.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"518253"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE=\u0022"},{"Name":"Last-Modified","Value":"Tue, 24 Feb 2026 19:34:34 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/MusteriSozlesme/1_TicariSicilGazetesi_20260224223429_000383226d9641a6b2435a144d5641b4.bfhspiov8h.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\MusteriSozlesme\1_TicariSicilGazetesi_20260224223429_000383226d9641a6b2435a144d5641b4.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"bfhspiov8h"},{"Name":"integrity","Value":"sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/MusteriSozlesme/1_TicariSicilGazetesi_20260224223429_000383226d9641a6b2435a144d5641b4.pdf"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"518253"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE=\u0022"},{"Name":"Last-Modified","Value":"Tue, 24 Feb 2026 19:34:29 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/MusteriSozlesme/1_TicariSicilGazetesi_20260224223429_000383226d9641a6b2435a144d5641b4.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\MusteriSozlesme\1_TicariSicilGazetesi_20260224223429_000383226d9641a6b2435a144d5641b4.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"518253"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE=\u0022"},{"Name":"Last-Modified","Value":"Tue, 24 Feb 2026 19:34:29 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/MusteriSozlesme/1_VergiKimlikLevhası_20260224223423_56352f08cecf410fa26f3857da8ddc10.bfhspiov8h.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\MusteriSozlesme\1_VergiKimlikLevhası_20260224223423_56352f08cecf410fa26f3857da8ddc10.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"bfhspiov8h"},{"Name":"integrity","Value":"sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/MusteriSozlesme/1_VergiKimlikLevhas\u0131_20260224223423_56352f08cecf410fa26f3857da8ddc10.pdf"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"518253"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE=\u0022"},{"Name":"Last-Modified","Value":"Tue, 24 Feb 2026 19:34:23 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/MusteriSozlesme/1_VergiKimlikLevhası_20260224223423_56352f08cecf410fa26f3857da8ddc10.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\MusteriSozlesme\1_VergiKimlikLevhası_20260224223423_56352f08cecf410fa26f3857da8ddc10.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"518253"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE=\u0022"},{"Name":"Last-Modified","Value":"Tue, 24 Feb 2026 19:34:23 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/MusteriSozlesme/5743d990c9db4a3dab8e1f18b4efea5c.mdef141n4v.png">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\MusteriSozlesme\5743d990c9db4a3dab8e1f18b4efea5c.png'))</AssetFile>

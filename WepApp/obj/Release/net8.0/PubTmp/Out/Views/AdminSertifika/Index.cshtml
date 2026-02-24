@@ -40,7 +40,7 @@
                 @if (ViewBag.Kullanici != null)
                 {
 
-                    <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                    <button class="btn btn-secondary" data-button-permission="ekle"  data-bs-toggle="modal" data-bs-target="#ekleModal">
                         <i class="fas fa-plus"></i> Yeni Sertifika Ekle
                     </button>
                 }
@@ -91,10 +91,10 @@
                                         @if (ViewBag.Kullanici != null)
                                         {
                                             <td>
-                                                <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@s.Id)">
+                                                <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@s.Id)">
                                                     <i class="fas fa-edit"></i> 
                                                 </button>
-                                                <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@s.Id, '@s.SertifikaAdi')">
+                                                <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@s.Id, '@s.SertifikaAdi')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </td>

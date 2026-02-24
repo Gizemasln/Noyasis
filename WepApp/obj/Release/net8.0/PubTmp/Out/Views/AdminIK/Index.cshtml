@@ -23,7 +23,7 @@
 
         <!-- EKLE BUTONU HER ZAMAN GÖRÜNÜR OLMASI İÇİN BAĞIMSIZ YERLEŞTİRİLDİ -->
         <div class="mb-3">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+            <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
                 <i class="fas fa-plus"></i> Yeni IK Formu Ekle
             </button>
         </div>
@@ -65,7 +65,7 @@
                                         <td>
                                             @if (!string.IsNullOrEmpty(item.DosyaYolu))
                                             {
-                                                <a href="@item.DosyaYolu" target="_blank" class="btn btn-info btn-sm">
+                                                <a href="@item.DosyaYolu" target="_blank" class="btn btn-info btn-sm" data-button-permission="detay-goster">
                                                     <i class="fas fa-eye"></i> Dosyayı Görüntüle
                                                 </a>
                                             }
@@ -77,10 +77,10 @@
                                         <td>@(item.Mesaj != null && item.Mesaj.Length > 50 ? item.Mesaj.Substring(0, 50) + "..." : item.Mesaj)</td>
                                         <td>@item.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>
-                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id)">
+                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id)">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.AdiSoyadi')">
+                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.AdiSoyadi')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </td>

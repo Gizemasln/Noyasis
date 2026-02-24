@@ -23,7 +23,7 @@
 
         <!-- EKLE BUTONU HER ZAMAN GÖRÜNÜR OLMASI İÇİN BAĞIMSIZ YERLEŞTİRİLDİ -->
         <div class="mb-3">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+            <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
                 <i class="fas fa-plus"></i> Yeni Resim Ekle
             </button>
         </div>
@@ -58,7 +58,7 @@
                                         </td>
                                         <td>@item.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id)">
+                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id)">
                                                 <i class="fas fa-trash"></i> 
                                             </button>
                                         </td>

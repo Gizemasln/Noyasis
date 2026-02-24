@@ -25,16 +25,17 @@ namespace WepApp.Controllers
             return null; // yönlendirme yapılmadıysa null dönebilir
         }
 
-        // Kullanıcı tipini döndüren yardımcı metod
+        // Kullanıcı tipini döndüren yardımcı metod - DÜZELTİLDİ!
         protected (string tip, int? id) GetCurrentUserInfo()
         {
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Musteri musteri = SessionHelper.GetObjectFromJson<Musteri>(HttpContext.Session, "Musteri");
             Bayi bayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
 
-            if (kullanici != null) return ("Kurumsal", kullanici.Id);
-            if (musteri != null) return ("Musteri", musteri.Id);
-            if (bayi != null) return ("Bayi", bayi.Id);
+            // Buton izinlerinde kullanılan tipler: Admin, Musteri, Bayi, Distributor
+            if (kullanici != null) return ("Admin", kullanici.Id);      // "Kurumsal" yerine "Admin"
+            if (musteri != null) return ("Musteri", musteri.Id);        // "Musteri" (zaten doğru)
+            if (bayi != null) return ("Bayi", bayi.Id);                 // "Bayi" (zaten doğru)
 
             return (null, null);
         }

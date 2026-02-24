@@ -8,6 +8,33 @@
                               || ViewContext.RouteData.Values["action"]?.ToString() == "TumHiyerarsi";
 }
 <style>
+    /* Şifre yenile butonu için özel stil */
+    #sifreYenileBtn {
+        transition: all 0.3s ease;
+    }
+
+        #sifreYenileBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+        }
+
+        #sifreYenileBtn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+    /* Şifre input alanı için */
+    #editSifre {
+        transition: all 0.3s ease;
+    }
+
+        #editSifre[type="text"] {
+            background-color: #f8f9fa;
+            font-weight: 500;
+            letter-spacing: 2px;
+        }
     .hover-lift {
         transition: all 0.3s ease;
     }
@@ -729,7 +756,7 @@
                             <a href="@Url.Action("TumHiyerarsi", "AdminBayi")" class="btn btn-info me-2">
                                 <i class="fas fa-sitemap"></i> Tüm Hiyerarşi
                             </a>
-                            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                            <button type="button" class="btn btn-secondary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
                                 <i class="fas fa-plus"></i> Yeni Bayi Ekle
                             </button>
                         </div>
@@ -822,13 +849,13 @@
                                                 </a>
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-info btn-sm" onclick="detayGetir(@item.Id)" title="Detay">
+                                                <button type="button" class="btn btn-info btn-sm" data-button-permission="sozlesme-detay" onclick="detayGetir(@item.Id)" title="Detay">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id)" title="Düzenle">
+                                                <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id)" title="Düzenle">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.Unvan')" title="Sil">
+                                                <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.Unvan')" title="Sil">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                                 <button type="button" class="btn btn-success btn-sm" onclick="bayiTeklifleriGetir(@item.Id)" title="Teklifler">
@@ -1223,7 +1250,7 @@
                             <div class="tab-pane fade" id="yetkililer" role="tabpanel">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h6 class="mb-0">Bayi Yetkilileri</h6>
-                                    <button type="button" class="btn btn-sm btn-primary" onclick="yeniYetkiliEkleModal()">
+                                    <button type="button" class="btn btn-sm btn-primary" data-button-permission="ekle" onclick="yeniYetkiliEkleModal()">
                                         <i class="fas fa-plus"></i> Yeni Yetkili Ekle
                                     </button>
                                 </div>
@@ -1308,10 +1335,17 @@
                                                 <label for="editKullaniciAdi">Kullanıcı Adı *</label>
                                             </div>
                                         </div>
+                                        <!-- TEMEL BİLGİLER - Şifre Alanı -->
                                         <div class="col-md-6 mb-3">
                                             <div class="form-floating">
                                                 <input type="password" class="form-control" id="editSifre" name="Sifre" placeholder="Şifre (boş bırakın değiştirmemek için)">
                                                 <label for="editSifre">Şifre</label>
+                                            </div>
+                                            <div class="mt-2">
+                                                <button type="button" class="btn btn-sm btn-warning" onclick="sifreYenilePencere()" id="sifreYenileBtn">
+                                                    <i class="fas fa-key"></i> Şifre Yenile
+                                                </button>
+                                                <small class="text-muted ms-2">Yeni şifre oluşturmak için tıklayın</small>
                                             </div>
                                         </div>
                                         <div class="col-md-6 mb-3">
@@ -1475,7 +1509,7 @@
                                                                  onclick="buyukGoster('logo')"
                                                                  alt="Mevcut Logo">
                                                             <div class="mt-2">
-                                                                <button type="button" class="btn btn-sm btn-danger" onclick="silLogoOnay()">
+                                                                <button type="button" class="btn btn-sm btn-danger" data-button-permission="sil" onclick="silLogoOnay()">
                                                                     <i class="fas fa-trash"></i> Logoyu Sil
                                                                 </button>
                                                                 <button type="button" class="btn btn-sm btn-info" onclick="indirLogo()">
@@ -1539,7 +1573,7 @@
                                                                  onclick="buyukGoster('imza')"
                                                                  alt="Mevcut İmza">
                                                             <div class="mt-2">
-                                                                <button type="button" class="btn btn-sm btn-danger" onclick="silImzaOnay()">
+                                                                <button type="button" class="btn btn-sm btn-danger" data-button-permission="sil" onclick="silImzaOnay()">
                                                                     <i class="fas fa-trash"></i> İmzayı Sil
                                                                 </button>
                                                                 <button type="button" class="btn btn-sm btn-info" onclick="indirImza()">
@@ -1648,7 +1682,7 @@
                                 <div class="tab-pane fade" id="editYetkililer" role="tabpanel">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h6 class="mb-0">Bayi Yetkilileri</h6>
-                                        <button type="button" class="btn btn-sm btn-primary" onclick="yeniYetkiliEkleModalDuzenleToplu()">
+                                        <button type="button" class="btn btn-sm btn-primary" data-button-permission="ekle" onclick="yeniYetkiliEkleModalDuzenleToplu()">
                                             <i class="fas fa-plus"></i> Yeni Yetkili Ekle
                                         </button>
                                     </div>
@@ -1965,6 +1999,8 @@ else
 </div>
 
 @section Script {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script type="text/javascript">
         // ============= GLOBAL DEĞİŞKENLER =============
         let currentBayiId = 0;
@@ -2027,7 +2063,145 @@ else
                     console.error('Dosya bilgileri yüklenemedi:', err);
                 });
         }
+                // ============= ŞİFRE YENİLEME FONKSİYONLARI =============
 
+        // Şifre yenileme penceresi
+        function sifreYenilePencere() {
+            if (!currentBayiId) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Uyarı',
+                    text: 'Önce bir bayi seçin!'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Şifre Yenile',
+                html: `
+                    <div class="text-center mb-4">
+                        <i class="fas fa-key fa-3x text-warning mb-3"></i>
+                        <p class="mb-3">Bayi için yeni bir şifre oluşturulacak.</p>
+                        <div class="alert alert-info p-2 small">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Oluşturulacak şifre 8 karakterli ve rastgele olacaktır.
+                        </div>
+                    </div>
+                `,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Evet, Şifre Oluştur',
+                cancelButtonText: 'İptal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    sifreYenile();
+                }
+            });
+        }
+
+        // Şifre yenileme işlemi
+        function sifreYenile() {
+            // Butonu disable et
+            const btn = document.getElementById('sifreYenileBtn');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Oluşturuluyor...';
+            }
+
+            // CSRF token'ı al
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            fetch('/AdminBayi/SifreSifirla', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': token
+                },
+                body: 'id=' + currentBayiId
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Şifre alanını güncelle
+                    const sifreInput = document.getElementById('editSifre');
+                    if (sifreInput) {
+                        sifreInput.value = data.yeniSifre;
+                        sifreInput.type = 'text'; // Şifreyi göster
+                    }
+
+                    // Başarılı mesajı göster
+                    Swal.fire({
+                        title: 'Şifre Oluşturuldu!',
+                        html: `
+                            <div class="text-center">
+                                <i class="fas fa-check-circle text-success fa-4x mb-3"></i>
+                                <p class="mb-2">Yeni şifre oluşturuldu:</p>
+                                <div class="input-group mb-3 mx-auto" style="max-width: 300px;">
+                                    <input type="text" class="form-control text-center fw-bold form-control-lg"
+                                           id="yeniSifreInput" value="${data.yeniSifre}" readonly
+                                           style="font-size: 1.5rem; letter-spacing: 2px; background-color: #f8f9fa;">
+                                    <button class="btn btn-outline-primary" type="button"
+                                            onclick="kopyalaSifre('${data.yeniSifre}')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                                <div class="alert alert-warning mt-3 p-2 small">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                    <strong>Önemli:</strong> Bayi kaydedildiğinde şifre güncellenecektir.
+                                </div>
+                            </div>
+                        `,
+                        icon: 'success',
+                        confirmButtonText: 'Tamam',
+                        width: 500
+                    }).then(() => {
+                        // Şifre input'unu tekrar password tipine çevir (10 saniye sonra)
+                        setTimeout(() => {
+                            if (sifreInput) {
+                                sifreInput.type = 'password';
+                            }
+                        }, 10000);
+                    });
+                } else {
+                    Swal.fire('Hata!', data.message || 'Şifre oluşturulurken bir hata oluştu.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Hata!', 'Sunucuyla iletişim kurulamadı.', 'error');
+            })
+            .finally(() => {
+                // Butonu eski haline getir
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-key"></i> Şifre Yenile';
+                }
+            });
+        }
+
+        // Şifreyi panoya kopyala
+        function kopyalaSifre(sifre) {
+            navigator.clipboard.writeText(sifre).then(() => {
+                Swal.fire({
+                    title: 'Kopyalandı!',
+                    text: 'Şifre panoya kopyalandı.',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            }).catch(err => {
+                console.error('Kopyalama hatası:', err);
+                const input = document.getElementById('yeniSifreInput');
+                if (input) {
+                    input.select();
+                    document.execCommand('copy');
+                    Swal.fire('Kopyalandı!', 'Şifre panoya kopyalandı.', 'success');
+                }
+            });
+        }
         // Dosya istatistiklerini güncelle
         function guncelleDosyaIstatistikleri(data) {
             const toplamBoyut = (data.toplamBoyut || 0);
@@ -2743,7 +2917,7 @@ else
 
                                         <div class="d-flex flex-wrap gap-2">
                                             ${dokuman.vergiKimlikLevhasiVar ?
-                                                `<a href="/AdminBayi/SozlesmeDosyaGoster?sozlesmeId=${dokuman.id}&tip=vergi" target="_blank" class="btn btn-sm btn-outline-primary" title="Vergi Kimlik Levhası Görüntüle">
+                                                `<a href="/AdminBayi/SozlesmeDosyaGoster?sozlesmeId=${dokuman.id}&tip=vergi" target="_blank" class="btn btn-sm btn-outline-primary" data-button-permission="detay-goster" title="Vergi Kimlik Levhası Görüntüle">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 <a href="/AdminBayi/SozlesmeDosyaIndir?sozlesmeId=${dokuman.id}&tip=vergi" class="btn btn-sm btn-outline-success" title="Vergi Kimlik Levhası İndir">
@@ -2894,7 +3068,7 @@ else
                                                                 <div class="card-body">
                                                                     <p class="mb-2"><strong>Dosya:</strong> ${escapeHtml(dokuman.vergiKimlikLevhasıDosyaAdi)}</p>
                                                                     <div class="d-flex gap-2">
-                                                                        <button class="btn btn-sm btn-outline-primary" onclick="goruntuleSozlesmeDokumanDosya('${dokuman.dokumanNo}', 'vergiKimlik')">
+                                                                        <button class="btn btn-sm btn-outline-primary" data-button-permission="sozlesme-detay" onclick="goruntuleSozlesmeDokumanDosya('${dokuman.dokumanNo}', 'vergiKimlik')">
                                                                             <i class="fas fa-eye"></i> Görüntüle
                                                                         </button>
                                                                         <button class="btn btn-sm btn-outline-success" onclick="indirSozlesmeDokumanDosya('${dokuman.dokumanNo}', 'vergiKimlik')">
@@ -2914,7 +3088,7 @@ else
                                                                 <div class="card-body">
                                                                     <p class="mb-2"><strong>Dosya:</strong> ${escapeHtml(dokuman.ticariSicilGazetesiDosyaAdi)}</p>
                                                                     <div class="d-flex gap-2">
-                                                                        <button class="btn btn-sm btn-outline-primary" onclick="goruntuleSozlesmeDokumanDosya('${dokuman.dokumanNo}', 'ticariSicil')">
+                                                                        <button class="btn btn-sm btn-outline-primary"  data-button-permission="sozlesme-detay"onclick="goruntuleSozlesmeDokumanDosya('${dokuman.dokumanNo}', 'ticariSicil')">
                                                                             <i class="fas fa-eye"></i> Görüntüle
                                                                         </button>
                                                                         <button class="btn btn-sm btn-outline-success" onclick="indirSozlesmeDokumanDosya('${dokuman.dokumanNo}', 'ticariSicil')">
@@ -2934,7 +3108,7 @@ else
                                                                 <div class="card-body">
                                                                     <p class="mb-2"><strong>Dosya:</strong> ${escapeHtml(dokuman.kimlikOnYuzuDosyaAdi)}</p>
                                                                     <div class="d-flex gap-2">
-                                                                        <button class="btn btn-sm btn-outline-primary" onclick="goruntuleSozlesmeDokumanDosya('${dokuman.dokumanNo}', 'kimlik')">
+                                                                        <button class="btn btn-sm btn-outline-primary" data-button-permission="sozlesme-detay" onclick="goruntuleSozlesmeDokumanDosya('${dokuman.dokumanNo}', 'kimlik')">
                                                                             <i class="fas fa-eye"></i> Görüntüle
                                                                         </button>
                                                                         <button class="btn btn-sm btn-outline-success" onclick="indirSozlesmeDokumanDosya('${dokuman.dokumanNo}', 'kimlik')">
@@ -2954,7 +3128,7 @@ else
                                                                 <div class="card-body">
                                                                     <p class="mb-2"><strong>Dosya:</strong> ${escapeHtml(dokuman.imzaSirkusuDosyaAdi)}</p>
                                                                     <div class="d-flex gap-2">
-                                                                        <button class="btn btn-sm btn-outline-primary" onclick="goruntuleSozlesmeDokumanDosya('${dokuman.dokumanNo}', 'imza')">
+                                                                        <button class="btn btn-sm btn-outline-primary" data-button-permission="sozlesme-detay" onclick="goruntuleSozlesmeDokumanDosya('${dokuman.dokumanNo}', 'imza')">
                                                                             <i class="fas fa-eye"></i> Görüntüle
                                                                         </button>
                                                                         <button class="btn btn-sm btn-outline-success" onclick="indirSozlesmeDokumanDosya('${dokuman.dokumanNo}', 'imza')">
@@ -2974,7 +3148,7 @@ else
                                                                 <div class="card-body">
                                                                     <p class="mb-2"><strong>Dosya:</strong> ${escapeHtml(dokuman.dosyaAdi)}</p>
                                                                     <div class="d-flex gap-2">
-                                                                        <button class="btn btn-sm btn-outline-primary" onclick="goruntuleSozlesmeDokumanDosya('${dokuman.dokumanNo}', 'pdf')">
+                                                                        <button class="btn btn-sm btn-outline-primary" data-button-permission="sozlesme-detay" onclick="goruntuleSozlesmeDokumanDosya('${dokuman.dokumanNo}', 'pdf')">
                                                                             <i class="fas fa-eye"></i> Görüntüle
                                                                         </button>
                                                                         <button class="btn btn-sm btn-outline-success" onclick="indirSozlesmeDokumanDosya('${dokuman.dokumanNo}', 'pdf')">
@@ -3169,7 +3343,15 @@ else
                 document.getElementById('editAlpemixFirmaAdi').value = escapeHtml(data.alpemixFirmaAdi);
                 document.getElementById('editAlpemixGrupAdi').value = escapeHtml(data.alpemixGrupAdi);
                 document.getElementById('editAlpemixSifre').value = escapeHtml(data.alpemixSifre);
+                   // Şifre alanını temizle (güvenlik için)
+        document.getElementById('editSifre').value = '';
 
+        // Butonu aktif et
+        const btn = document.getElementById('sifreYenileBtn');
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-key"></i> Şifre Yenile';
+        }
                 // Dosya bilgilerini yükle
                 yukleDosyaBilgileri(id);
 
@@ -3225,10 +3407,10 @@ else
                                     </span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-sm btn-outline-warning" onclick="duzenleYetkili(${y.id})" title="Düzenle">
+                                    <button class="btn btn-sm btn-outline-warning" data-button-permission="duzenle" onclick="duzenleYetkili(${y.id})" title="Düzenle">
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="silYetkiliOnay(${y.id})" title="Sil">
+                                    <button class="btn btn-sm btn-outline-danger" data-button-permission="sil" onclick="silYetkiliOnay(${y.id})" title="Sil">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
@@ -3347,7 +3529,7 @@ else
                     <td>${escapeHtml(y.cep || '-')}</td>
                     <td><span class="aktif-badge aktif-${y.aktif}">${y.aktif === 1 ? 'Aktif' : 'Pasif'}</span></td>
                     <td>
-                        <button class="btn btn-sm btn-outline-danger" onclick="silEkleYetkili(${y.tempId})" title="Sil">
+                        <button class="btn btn-sm btn-outline-danger" data-button-permission="sil"  onclick="silEkleYetkili(${y.tempId})" title="Sil">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
@@ -3908,6 +4090,25 @@ else
             if (typeof bayiSemasiData !== 'undefined') {
                 renderTree(bayiSemasiData);
             }
+                    // Modal kapandığında temizlik
+        const duzenleModal = document.getElementById('duzenleModal');
+        if (duzenleModal) {
+            duzenleModal.addEventListener('hidden.bs.modal', function() {
+                // Şifre alanını temizle
+                const sifreInput = document.getElementById('editSifre');
+                if (sifreInput) {
+                    sifreInput.value = '';
+                    sifreInput.type = 'password';
+                }
+
+                // Butonu eski haline getir
+                const btn = document.getElementById('sifreYenileBtn');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-key"></i> Şifre Yenile';
+                }
+            });
+        }
         });
 
         // Hiyerarşi ağacı render

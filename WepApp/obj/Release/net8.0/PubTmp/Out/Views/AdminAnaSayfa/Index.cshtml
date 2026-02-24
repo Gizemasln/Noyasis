@@ -8,490 +8,490 @@
 <style>
     /* ===== GENEL STILLER ===== */
     .duyuru-gorsel-mini {
-        width: 40px;
-        height: 40px;
-        object-fit: cover;
-        border-radius: 8px;
-        border: 2px solid #fff;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        cursor: pointer;
-        transition: all 0.2s ease;
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: all 0.2s ease;
     }
 
-        .duyuru-gorsel-mini:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
+    .duyuru-gorsel-mini:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
 
     .gorsel-yok {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #6c757d;
-        font-size: 18px;
-        border: 1px dashed #ced4da;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 18px;
+    border: 1px dashed #ced4da;
     }
 
     .badge-yeni {
-        background: linear-gradient(135deg, #0dcaf0, #0d6efd);
-        color: white;
-        font-size: 0.7rem;
-        padding: 0.25rem 0.5rem;
-        border-radius: 20px;
-        margin-left: 8px;
-        font-weight: 500;
-        box-shadow: 0 2px 4px rgba(13, 202, 240, 0.2);
+    background: linear-gradient(135deg, #0dcaf0, #0d6efd);
+    color: white;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    margin-left: 8px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(13, 202, 240, 0.2);
     }
 
     .badge-oncelik {
-        font-size: 0.7rem;
-        padding: 0.25rem 0.5rem;
-        border-radius: 20px;
-        font-weight: 500;
-        margin-left: 4px;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    font-weight: 500;
+    margin-left: 4px;
     }
 
     .icerik-metin {
-        max-width: 180px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        color: #4b5563;
-        font-size: 0.9rem;
+    max-width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #4b5563;
+    font-size: 0.9rem;
     }
 
     /* ===== KART STILLERI ===== */
     .card {
-        border: none;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-        margin-bottom: 30px;
-        border-radius: 16px;
-        overflow: hidden;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        background: white;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
+    border: none;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: white;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     }
 
-        .card:hover {
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
+    .card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
 
     .card-header {
-        background: white;
-        border-bottom: 2px solid #f1f5f9;
-        padding: 1.2rem 1.5rem;
+    background: white;
+    border-bottom: 2px solid #f1f5f9;
+    padding: 1.2rem 1.5rem;
     }
 
-        .card-header h4 {
-            font-weight: 700;
-            color: #1e293b;
-            margin: 0;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-        }
+    .card-header h4 {
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    }
 
-            .card-header h4 i {
-                font-size: 1.3rem;
-                margin-right: 10px;
-            }
+    .card-header h4 i {
+    font-size: 1.3rem;
+    margin-right: 10px;
+    }
 
     .card-body {
-        padding: 0;
-        flex: 1;
+    padding: 0;
+    flex: 1;
     }
 
     /* ===== TABLO STILLERI ===== */
     .table {
-        margin: 0;
-        width: 100%;
+    margin: 0;
+    width: 100%;
     }
 
-        .table thead th {
-            background: #f8fafc;
-            color: #475569;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 1rem 1rem;
-            border-bottom: 2px solid #e2e8f0;
-            white-space: nowrap;
-        }
+    .table thead th {
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem 1rem;
+    border-bottom: 2px solid #e2e8f0;
+    white-space: nowrap;
+    }
 
-        .table tbody tr {
-            transition: background-color 0.2s ease;
-            border-bottom: 1px solid #f1f5f9;
-        }
+    .table tbody tr {
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f1f5f9;
+    }
 
-            .table tbody tr:hover {
-                background-color: #f8fafc;
-            }
+    .table tbody tr:hover {
+    background-color: #f8fafc;
+    }
 
-        .table tbody td {
-            padding: 1rem 0.8rem;
-            vertical-align: middle;
-            color: #334155;
-            font-size: 0.9rem;
-        }
+    .table tbody td {
+    padding: 1rem 0.8rem;
+    vertical-align: middle;
+    color: #334155;
+    font-size: 0.9rem;
+    }
 
     /* ===== DETAY BUTONU ===== */
     .detay-btn {
-        width: 32px;
-        height: 32px;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #3b82f6, #2563eb);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        transition: all 0.2s ease;
-        cursor: pointer;
-        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
     }
 
-        .detay-btn:hover {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
-        }
+    .detay-btn:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
 
-        .detay-btn i {
-            font-size: 1rem;
-        }
+    .detay-btn i {
+    font-size: 1rem;
+    }
 
     /* ===== MODAL STILLERI ===== */
     .modal-detay-baslik {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 1rem;
-        border-bottom: 3px solid #3b82f6;
-        padding-bottom: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1rem;
+    border-bottom: 3px solid #3b82f6;
+    padding-bottom: 0.5rem;
     }
 
     .modal-detay-metin {
-        font-size: 1rem;
-        line-height: 1.8;
-        color: #334155;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        max-height: 300px;
-        overflow-y: auto;
-        padding: 1.2rem;
-        background: #f8fafc;
-        border-radius: 12px;
-        border: 1px solid #e2e8f0;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #334155;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 1.2rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
     }
 
     .modal-detay-bilgi {
-        background: #ffffff;
-        padding: 1.2rem;
-        border-radius: 12px;
-        border: 1px solid #e2e8f0;
+    background: #ffffff;
+    padding: 1.2rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
     }
 
     .bilgi-etiketi {
-        font-weight: 600;
-        color: #475569;
-        min-width: 100px;
-        display: inline-block;
-        font-size: 0.9rem;
+    font-weight: 600;
+    color: #475569;
+    min-width: 100px;
+    display: inline-block;
+    font-size: 0.9rem;
     }
 
     .modal-gorsel-buyuk-detay {
-        width: 100%;
-        max-height: 300px;
-        object-fit: cover;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
     /* ===== SLIDER STILLERI ===== */
     .hero-slider {
-        width: 100%;
-        height: 600px;
-        position: relative;
-        overflow: hidden;
-        margin-bottom: 40px;
-        border-radius: 0 0 20px 20px;
+    width: 100%;
+    height: 600px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 40px;
+    border-radius: 0 0 20px 20px;
     }
 
     .slider-container {
-        width: 100%;
-        height: 100%;
-        position: relative;
+    width: 100%;
+    height: 100%;
+    position: relative;
     }
 
     .slider-slide {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
-        z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+    z-index: 1;
     }
 
-        .slider-slide.active {
-            opacity: 1;
-            visibility: visible;
-            z-index: 2;
-        }
+    .slider-slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
+    }
 
     .slide-background {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     }
 
-        .slide-background::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
-        }
+    .slide-background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
+    }
 
     .slide-content {
-        position: absolute;
-        top: 50%;
-        left: 10%;
-        transform: translateY(-50%);
-        color: white;
-        max-width: 600px;
-        z-index: 3;
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    transform: translateY(-50%);
+    color: white;
+    max-width: 600px;
+    z-index: 3;
     }
 
     .slide-title {
-        font-size: 3.5rem;
-        font-weight: 800;
-        margin-bottom: 1.5rem;
-        line-height: 1.2;
-        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        animation: fadeInUp 1s ease;
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    animation: fadeInUp 1s ease;
     }
 
     .slide-description {
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-        line-height: 1.6;
-        opacity: 0.95;
-        text-shadow: 0 1px 5px rgba(0,0,0,0.3);
-        animation: fadeInUp 1s ease 0.2s both;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    opacity: 0.95;
+    text-shadow: 0 1px 5px rgba(0,0,0,0.3);
+    animation: fadeInUp 1s ease 0.2s both;
     }
 
     .slide-button {
-        display: inline-block;
-        padding: 1rem 2.5rem;
-        background: linear-gradient(135deg, #3b82f6, #2563eb);
-        color: white;
-        text-decoration: none;
-        border-radius: 50px;
-        font-weight: 600;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-        animation: fadeInUp 1s ease 0.4s both;
-        border: 2px solid transparent;
-        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    animation: fadeInUp 1s ease 0.4s both;
+    border: 2px solid transparent;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
     }
 
-        .slide-button:hover {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
-            color: white;
-            text-decoration: none;
-        }
+    .slide-button:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
+    color: white;
+    text-decoration: none;
+    }
 
     .slider-controls {
-        position: absolute;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        gap: 12px;
-        z-index: 10;
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 10;
     }
 
     .slider-dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.5);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
     }
 
-        .slider-dot.active {
-            background: #3b82f6;
-            transform: scale(1.3);
-            border-color: white;
-        }
+    .slider-dot.active {
+    background: #3b82f6;
+    transform: scale(1.3);
+    border-color: white;
+    }
 
-        .slider-dot:hover {
-            background: rgba(255,255,255,0.9);
-        }
+    .slider-dot:hover {
+    background: rgba(255,255,255,0.9);
+    }
 
     .slider-arrow {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 50px;
-        height: 50px;
-        background: rgba(255,255,255,0.15);
-        border: 2px solid rgba(255,255,255,0.3);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.2rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        z-index: 10;
-        backdrop-filter: blur(5px);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    backdrop-filter: blur(5px);
     }
 
-        .slider-arrow:hover {
-            background: rgba(255,255,255,0.3);
-            border-color: rgba(255,255,255,0.6);
-        }
+    .slider-arrow:hover {
+    background: rgba(255,255,255,0.3);
+    border-color: rgba(255,255,255,0.6);
+    }
 
-        .slider-arrow.prev {
-            left: 20px;
-        }
+    .slider-arrow.prev {
+    left: 20px;
+    }
 
-        .slider-arrow.next {
-            right: 20px;
-        }
+    .slider-arrow.next {
+    right: 20px;
+    }
 
     .slider-video-container {
-        width: 100%;
-        height: 100%;
-        position: relative;
-        background: #000;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: #000;
     }
 
     .slider-video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     }
 
     .video-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
-        pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 100%);
+    pointer-events: none;
     }
 
 
     /* ===== ANIMASYONLAR ===== */
     @@keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
+    from {
+    opacity: 0;
+    transform: translateY(30px);
+    }
 
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    to {
+    opacity: 1;
+    transform: translateY(0);
+    }
     }
 
     /* ===== RESPONSIVE ===== */
     @@media (max-width: 1200px) {
-        .table thead th {
-            font-size: 0.75rem;
-            padding: 0.8rem 0.5rem;
-        }
+    .table thead th {
+    font-size: 0.75rem;
+    padding: 0.8rem 0.5rem;
+    }
 
-        .table tbody td {
-            padding: 0.8rem 0.5rem;
-            font-size: 0.85rem;
-        }
+    .table tbody td {
+    padding: 0.8rem 0.5rem;
+    font-size: 0.85rem;
+    }
 
-        .icerik-metin {
-            max-width: 120px;
-        }
+    .icerik-metin {
+    max-width: 120px;
+    }
     }
 
     @@media (max-width: 768px) {
-        .hero-slider {
-            height: 400px;
-        }
+    .hero-slider {
+    height: 400px;
+    }
 
-        .slide-title {
-            font-size: 2rem;
-        }
+    .slide-title {
+    font-size: 2rem;
+    }
 
-        .slide-description {
-            font-size: 1rem;
-        }
+    .slide-description {
+    font-size: 1rem;
+    }
 
-        .slide-button {
-            padding: 0.8rem 2rem;
-            font-size: 1rem;
-        }
+    .slide-button {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    }
 
-        .slider-arrow {
-            width: 40px;
-            height: 40px;
-            font-size: 1rem;
-        }
+    .slider-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    }
 
-        .card-header h4 {
-            font-size: 1rem;
-        }
+    .card-header h4 {
+    font-size: 1rem;
+    }
 
-        .table thead th {
-            font-size: 0.7rem;
-        }
+    .table thead th {
+    font-size: 0.7rem;
+    }
 
-        .icerik-metin {
-            max-width: 80px;
-        }
+    .icerik-metin {
+    max-width: 80px;
+    }
 
-        .detay-btn {
-            width: 28px;
-            height: 28px;
-        }
+    .detay-btn {
+    width: 28px;
+    height: 28px;
+    }
     }
 
     @@media (max-width: 576px) {
-        .table {
-            min-width: 600px;
-        }
+    .table {
+    min-width: 600px;
+    }
 
-        .table-responsive {
-            overflow-x: auto;
-        }
+    .table-responsive {
+    overflow-x: auto;
+    }
 
-        .modal-dialog {
-            margin: 0.5rem;
-        }
+    .modal-dialog {
+    margin: 0.5rem;
+    }
     }
 </style>
 
@@ -636,9 +636,9 @@
 </div>
 
 
-    <div class="page-inner">
-        <div class="row">
-            <!-- Bayi Duyuruları -->
+<div class="page-inner">
+    <div class="row">
+        @if (ViewBag.Musteri == null){
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-header">
@@ -657,7 +657,7 @@
                                         <th>Başlık</th>
                                         <th>İçerik</th>
                                         <th>Tarih</th>
-                                      
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -667,7 +667,7 @@
                                         {
                                             <tr>
                                                 <td>
-                                                    <button class="detay-btn" onclick='detayGoster(
+                                                    <button class="detay-btn" data-button-permission="sozlesme-detay" onclick='detayGoster(
                                             "bayi",
                                             "@duyuru.Id",
                                             "@duyuru.Baslik",
@@ -716,7 +716,7 @@
                                                 <td>
                                                     <small class="text-secondary">@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")</small>
                                                 </td>
-                                       
+
                                             </tr>
                                         }
                                     }
@@ -734,6 +734,9 @@
                     </div>
                 </div>
             </div>
+        }
+        <!-- Bayi Duyuruları -->
+      
 
             <!-- Web Duyuruları -->
             <div class="col-md-4">
@@ -764,7 +767,7 @@
                                         {
                                             <tr>
                                                 <td>
-                                                    <button class="detay-btn" onclick="detayGoster('web', '@duyuru.Id', '@duyuru.Baslik', '@Html.Raw(duyuru.Metin?.Replace("'", "\\'"))', '@duyuru.GorselYolu', '@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")', '@(duyuru.Oncelik == 1 ? "Yüksek Öncelikli" : "Normal")', '', '@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")')">
+                                                <button class="detay-btn" data-button-permission="sozlesme-detay" onclick="detayGoster('web', '@duyuru.Id', '@duyuru.Baslik', '@Html.Raw(duyuru.Metin?.Replace("'", "\\'"))', '@duyuru.GorselYolu', '@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")', '@(duyuru.Oncelik == 1 ? "Yüksek Öncelikli" : "Normal")', '', '@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")')">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
                                                 </td>
@@ -851,7 +854,7 @@
                                         {
                                             <tr>
                                                 <td>
-                                                    <button class="detay-btn" onclick="detayGoster('kampanya', '@kampanya.Id', '@kampanya.Baslik', '@Html.Raw(kampanya.Metin?.Replace("'", "\\'"))', '@kampanya.GorselYolu', '@kampanya.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")', '@(kampanya.BitisTarihi < DateTime.Now ? "Süresi Doldu" : "Aktif")', '@kampanya.IndirimYuzdesi', '@kampanya.BitisTarihi.ToString("dd.MM.yyyy")')">
+                                                <button class="detay-btn" data-button-permission="sozlesme-detay" onclick="detayGoster('kampanya', '@kampanya.Id', '@kampanya.Baslik', '@Html.Raw(kampanya.Metin?.Replace("'", "\\'"))', '@kampanya.GorselYolu', '@kampanya.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")', '@(kampanya.BitisTarihi < DateTime.Now ? "Süresi Doldu" : "Aktif")', '@kampanya.IndirimYuzdesi', '@kampanya.BitisTarihi.ToString("dd.MM.yyyy")')">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
                                                 </td>

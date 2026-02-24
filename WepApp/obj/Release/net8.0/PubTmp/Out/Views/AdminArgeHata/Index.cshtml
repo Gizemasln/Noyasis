@@ -415,12 +415,12 @@
                                 </div>
 
                                 <div class="col-md-1">
-                                    <label class="form-label fw-bold small">Başlangıç Tarihi</label>
+                                    <label class="form-label fw-bold small">Baş. T.</label>
                                     <input type="date" class="form-control form-control-sm" id="baslangicTarih">
                                 </div>
 
                                 <div class="col-md-1">
-                                    <label class="form-label fw-bold small">Bitiş Tarihi</label>
+                                    <label class="form-label fw-bold small">Bit. T.</label>
                                     <input type="date" class="form-control form-control-sm" id="bitisTarih">
                                 </div>
 
@@ -520,6 +520,7 @@
                                         <th width="150">Müşteri</th>
                                         <th width="120">Bayi</th>
                                         <th width="120">Lisans Tipi</th>
+                                        <th width="120">Lisans No</th>
                                         <th width="200">İçerik</th>
                                         <th width="80">Dosya</th>
                                         <th width="220">Cevap</th>
@@ -637,7 +638,9 @@
                                                 <td>
                                                     <span class="small">@(bildirim.LisansTip?.Adi ?? "-")</span>
                                                 </td>
-
+                                                <td>
+                                                    <span class="small">@(bildirim.LisansNo ?? "-")</span>
+                                                </td>
                                                 <td>
                                                     <div class="metin-kisaltma" title="@bildirim.Metni">
                                                         @if (!string.IsNullOrEmpty(bildirim.Metni))
@@ -762,7 +765,7 @@
                                                 <td class="text-center">
                                                     <div class="btn-group btn-group-sm">
                                                         <button type="button"
-                                                                class="btn btn-outline-primary btn-sm aksiyon-btn detay-goster"
+                                                                class="btn btn-outline-primary btn-sm aksiyon-btn detay-goster" data-button-permission="sozlesme-detay"
                                                                 data-bildirim-id="@bildirim.Id"
                                                                 title="Detayları Gör">
                                                             <i class="fas fa-eye"></i>
@@ -770,7 +773,7 @@
                                                         @if (silebilir)
                                                         {
                                                             <button type="button"
-                                                                    class="btn btn-outline-danger btn-sm aksiyon-btn sil-bildirim"
+                                                                    class="btn btn-outline-danger btn-sm aksiyon-btn sil-bildirim" data-button-permission="sil"
                                                                     data-bildirim-id="@bildirim.Id"
                                                                     data-adsoyad="@bildirim.Adi @bildirim.Soyadi"
                                                                     title="Sil">

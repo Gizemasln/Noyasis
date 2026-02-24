@@ -6,10 +6,11 @@ using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using System.Text.RegularExpressions;
 using System.IO;
+using WepApp.Controllers;
 
 namespace WebApp.Controllers
 {
-    public class AdminButtonController : Controller
+    public class AdminButtonController : AdminBaseController
     {
         private readonly ButtonPermissionRepository _repo;
         private readonly IWebHostEnvironment _env;
@@ -22,10 +23,12 @@ namespace WebApp.Controllers
 
         public IActionResult Index(string kullaniciTipi = "Admin")
         {
-            // 1. View'leri tara ve gerçek butonları bul
+            // Kullanıcı kontrolü yap
+            var redirect = LoadCommonData();
+            if (redirect != null) return redirect;
+
             var detectedButtons = ScanViewsForButtons();
 
-            // 2. Benzersiz controller+action kombinasyonlarını al
             var uniqueButtons = detectedButtons
                 .GroupBy(b => new { b.Controller, b.Action })
                 .Select(g => g.First())
@@ -33,7 +36,6 @@ namespace WebApp.Controllers
                 .ThenBy(b => b.Action)
                 .ToList();
 
-            // 3. ViewModel'i hazırla
             var model = new AdminButtonViewModel
             {
                 DetectedButtons = uniqueButtons,
@@ -43,13 +45,9 @@ namespace WebApp.Controllers
                     .ToDictionary(g => g.Key, g => g.ToList())
             };
 
-            // 4. Mevcut izinleri yükle
             var mevcutIzinler = _repo.KullaniciTipineGoreGetir(kullaniciTipi);
 
-            // 5. Her buton için izin durumunu belirle
             model.ButtonPermissions = new Dictionary<string, bool>();
-
-            // Tüm izinleri dictionary'e çevir (hızlı erişim için)
             var izinDict = mevcutIzinler.ToDictionary(
                 i => $"{i.SayfaAdi}|{i.ButonAksiyonu}",
                 i => i.IzınVar
@@ -61,13 +59,20 @@ namespace WebApp.Controllers
                 model.ButtonPermissions[key] = izinDict.ContainsKey(key) ? izinDict[key] : false;
             }
 
+            // Kullanıcı bilgilerini ViewBag'e ekle - DÜZELTİLDİ!
+            var userInfo = GetCurrentUserInfo();
+            ViewBag.CurrentUserType = userInfo.tip; // Artık "Admin", "Musteri" veya "Bayi" dönecek
+            ViewBag.CurrentUserId = userInfo.id;
+
             return View(model);
         }
 
         [HttpPost]
         public IActionResult Kaydet(string kullaniciTipi, List<string> seciliIzinler)
         {
-            // Tüm butonları tara
+            var redirect = LoadCommonData();
+            if (redirect != null) return redirect;
+
             var detectedButtons = ScanViewsForButtons();
             var uniqueButtons = detectedButtons
                 .GroupBy(b => new { b.Controller, b.Action })
@@ -75,12 +80,10 @@ namespace WebApp.Controllers
                 .ToList();
 
             var yeniIzinler = new List<ButtonPermission>();
-
             foreach (var button in uniqueButtons)
             {
                 string key = $"{button.Controller}|{button.Action}";
                 bool izinVar = seciliIzinler?.Contains(key) ?? false;
-
                 yeniIzinler.Add(new ButtonPermission
                 {
                     KullaniciTipi = kullaniciTipi,
@@ -92,7 +95,6 @@ namespace WebApp.Controllers
             }
 
             _repo.TemizleVeEkle(kullaniciTipi, yeniIzinler);
-
             TempData["Success"] = $"{kullaniciTipi} buton yetkileri kaydedildi. Toplam {yeniIzinler.Count} buton tespit edildi.";
             return RedirectToAction("Index", new { kullaniciTipi });
         }
@@ -100,6 +102,9 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult TopluYetkilendir(string kullaniciTipi, string aksiyonTipi, bool durum)
         {
+            var redirect = LoadCommonData();
+            if (redirect != null) return redirect;
+
             var detectedButtons = ScanViewsForButtons();
             var uniqueButtons = detectedButtons
                 .GroupBy(b => new { b.Controller, b.Action })
@@ -115,7 +120,6 @@ namespace WebApp.Controllers
                 string key = $"{button.Controller}|{button.Action}";
                 bool izinVar = mevcutDict.ContainsKey(key) ? mevcutDict[key] : false;
 
-                // Eğer belirtilen aksiyon tipi ise veya tümü seçildiyse
                 if (aksiyonTipi == "Tumu" || button.Action.ToLower() == aksiyonTipi.ToLower())
                 {
                     izinVar = durum;
@@ -132,11 +136,9 @@ namespace WebApp.Controllers
             }
 
             _repo.TemizleVeEkle(kullaniciTipi, yeniIzinler);
-
             var aksiyonAdi = aksiyonTipi == "Tumu" ? "Tüm butonlar" : GetButtonAdi(aksiyonTipi) + " butonları";
             var durumText = durum ? "yetkilendirildi" : "yetkisi kaldırıldı";
             TempData["Success"] = $"{kullaniciTipi} için {aksiyonAdi} {durumText}. Toplam {yeniIzinler.Count} buton güncellendi.";
-
             return RedirectToAction("Index", new { kullaniciTipi });
         }
 
@@ -151,22 +153,16 @@ namespace WebApp.Controllers
         {
             var buttons = new List<DetectedButton>();
 
-            // ÖNCE WEBROOTPATH'İ DENE (wwwroot içinde olabilir)
             var viewsPath = Path.Combine(_env.WebRootPath, "Views");
-
             if (!Directory.Exists(viewsPath))
             {
-                // ContentRootPath'i dene
                 viewsPath = Path.Combine(_env.ContentRootPath, "Views");
             }
-
             if (!Directory.Exists(viewsPath))
             {
-                // BaseDirectory'i dene
                 viewsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Views");
             }
 
-            // Hala yoksa, tüm alt dizinlerde Views ara
             if (!Directory.Exists(viewsPath))
             {
                 var allViews = Directory.GetDirectories(_env.ContentRootPath, "Views", SearchOption.AllDirectories);
@@ -176,40 +172,24 @@ namespace WebApp.Controllers
                 }
             }
 
-            // Log yaz
             string logPath = Path.Combine(_env.ContentRootPath, "buton_yolu_log.txt");
             System.IO.File.WriteAllText(logPath, $"Kullanılan views yolu: {viewsPath} - Var mı: {Directory.Exists(viewsPath)}");
 
-            // TÜM OLASI YOLLARI DENE
-            var possiblePaths = new List<string>();
+            var possiblePaths = new List<string>
+            {
+                Path.Combine(_env.ContentRootPath, "Views"),
+                !string.IsNullOrEmpty(_env.WebRootPath) ? Path.Combine(_env.WebRootPath, "Views") : null,
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Views"),
+                Path.Combine(Directory.GetCurrentDirectory(), "Views"),
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "Views"),
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "Views")
+            };
 
-            // 1. ContentRootPath
-            possiblePaths.Add(Path.Combine(_env.ContentRootPath, "Views"));
-
-            // 2. WebRootPath
-            if (!string.IsNullOrEmpty(_env.WebRootPath))
-                possiblePaths.Add(Path.Combine(_env.WebRootPath, "Views"));
-
-            // 3. BaseDirectory
-            possiblePaths.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Views"));
-
-            // 4. CurrentDirectory
-            possiblePaths.Add(Path.Combine(Directory.GetCurrentDirectory(), "Views"));
-
-            // 5. Bir üst dizin
-            possiblePaths.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "Views"));
-
-            // 6. İki üst dizin
-            possiblePaths.Add(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "Views"));
-
-            // 7. Publish klasöründeki tüm alt dizinlerde "Views" ara
             var allDirs = Directory.GetDirectories(AppDomain.CurrentDomain.BaseDirectory, "*", SearchOption.AllDirectories);
             foreach (var dir in allDirs.Where(d => d.EndsWith("Views")))
             {
                 possiblePaths.Add(dir);
             }
-
-
 
             using (StreamWriter log = new StreamWriter(logPath, false))
             {
@@ -221,29 +201,24 @@ namespace WebApp.Controllers
                 log.WriteLine("");
                 log.WriteLine("ARANAN YOLLAR:");
 
-                // Tüm olası yolları dene
-                foreach (var path in possiblePaths.Distinct())
+                foreach (var path in possiblePaths.Distinct().Where(p => p != null))
                 {
                     string fullPath = Path.GetFullPath(path);
                     log.WriteLine($"- {fullPath} : {(Directory.Exists(fullPath) ? "VAR" : "YOK")}");
-
                     if (Directory.Exists(fullPath))
                     {
                         viewsPath = fullPath;
-                        log.WriteLine($"  >>> BULUNDU! Bu yol kullanılacak: {fullPath}");
+                        log.WriteLine($" >>> BULUNDU! Bu yol kullanılacak: {fullPath}");
                         break;
                     }
                 }
 
-                // Eğer hala bulunamadıysa, tüm sürücüde ara (çok yavaş olabilir, son çare)
                 if (viewsPath == null)
                 {
                     log.WriteLine("");
                     log.WriteLine("Hiçbir views klasörü bulunamadı! Tüm dizinler taranıyor...");
-
                     try
                     {
-                        // Sadece uygulama dizini ve altındakileri tara
                         var allFolders = Directory.GetDirectories(AppDomain.CurrentDomain.BaseDirectory, "Views", SearchOption.AllDirectories);
                         if (allFolders.Any())
                         {
@@ -257,24 +232,19 @@ namespace WebApp.Controllers
                     }
                 }
 
-                // Views klasörü bulunduysa dosyaları listele
                 if (viewsPath != null && Directory.Exists(viewsPath))
                 {
                     log.WriteLine("");
                     log.WriteLine($"VIEWS KLASÖRÜ BULUNDU: {viewsPath}");
-
                     var viewFiles = Directory.GetFiles(viewsPath, "*.cshtml", SearchOption.AllDirectories);
                     log.WriteLine($"Toplam {viewFiles.Length} .cshtml dosyası bulundu:");
-
-                    foreach (var file in viewFiles.Take(20)) // İlk 20 dosyayı göster
+                    foreach (var file in viewFiles.Take(20))
                     {
                         log.WriteLine($"- {file}");
                     }
-
                     if (viewFiles.Length > 20)
                         log.WriteLine($"... ve {viewFiles.Length - 20} dosya daha");
 
-                    // Butonları bul
                     foreach (var viewFile in viewFiles)
                     {
                         try
@@ -282,11 +252,8 @@ namespace WebApp.Controllers
                             var content = System.IO.File.ReadAllText(viewFile);
                             var fileName = Path.GetFileNameWithoutExtension(viewFile);
                             var folderName = Path.GetFileName(Path.GetDirectoryName(viewFile));
-
-                            // Controller adını belirle
                             var controllerName = folderName;
 
-                            // Gerçek butonları bul
                             FindButtonsInContent(content, controllerName, fileName, buttons);
                         }
                         catch (Exception ex)
@@ -306,8 +273,6 @@ namespace WebApp.Controllers
                 {
                     log.WriteLine("");
                     log.WriteLine("HATA: Views klasörü bulunamadı!");
-
-                    // Base directory içindeki tüm klasörleri listele
                     log.WriteLine("");
                     log.WriteLine($"BaseDirectory içindeki klasörler ({AppDomain.CurrentDomain.BaseDirectory}):");
                     try
@@ -330,31 +295,21 @@ namespace WebApp.Controllers
 
         private void FindButtonsInContent(string content, string controllerName, string viewName, List<DetectedButton> buttons)
         {
-            // SADECE EKLE BUTONLARI VE TABLO İŞLEM BUTONLARINI BUL
             var patterns = new[]
             {
-                // 1. Ana ekle butonları (fa-plus icon ile)
-                @"<button[^>]*class=[""'][^""']*\bbtn-primary\b[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-plus[^""']*[""']>.*?</i>.*?</button>",
-                @"<a[^>]*class=[""'][^""']*\bbtn-primary\b[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-plus[^""']*[""']>.*?</i>.*?</a>",
-                
-                // 2. Tablo içindeki işlem butonları (düzenle ve sil)
-                @"<td[^>]*>\s*<button[^>]*class=[""'][^""']*btn-warning[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-edit[^""']*[""']>.*?</i>.*?</button>\s*<button[^>]*class=[""'][^""']*btn-danger[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-trash[^""']*[""']>.*?</i>.*?</button>\s*</td>",
-                
-                // 3. Düzenle butonları (fa-edit icon)
-                @"<button[^>]*class=[""'][^""']*\bbtn-warning\b[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-edit[^""']*[""']>.*?</i>.*?</button>",
-                @"<a[^>]*class=[""'][^""']*\bbtn-warning\b[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-edit[^""']*[""']>.*?</i>.*?</a>",
-                
-                // 4. Sil butonları (fa-trash icon)
-                @"<button[^>]*class=[""'][^""']*\bbtn-danger\b[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-trash[^""']*[""']>.*?</i>.*?</button>",
-                @"<a[^>]*class=[""'][^""']*\bbtn-danger\b[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-trash[^""']*[""']>.*?</i>.*?</a>",
-                
-                // 5. Detay butonları (fa-eye icon) - eğer varsa
-                @"<button[^>]*class=[""'][^""']*\bbtn-info\b[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-eye[^""']*[""']>.*?</i>.*?</button>",
-                @"<a[^>]*class=[""'][^""']*\bbtn-info\b[^""']*[""'][^>]*>.*?<i[^>]*class=[""'][^""']*fa-eye[^""']*[""']>.*?</i>.*?</a>",
-                
-                // 6. Genel buton desenleri (metin bazlı)
-                @"<button[^>]*>(.*?)(?:Ekle|ekle|Yeni|yeni|Düzenle|düzenle|Sil|sil|Detay|detay|Görüntüle|görüntüle).*?</button>",
-                @"<a[^>]*>(.*?)(?:Ekle|ekle|Yeni|yeni|Düzenle|düzenle|Sil|sil|Detay|detay|Görüntüle|görüntüle).*?</a>"
+                // Ekle
+                @"<(button|a)[^>]*class=[""'][^""']*\bbtn-primary\b[^""']*[""'][^>]*>[\s\S]*?<i[^>]*fa-plus[\s\S]*?</\1>",
+                // Düzenle + Sil kombinasyonu
+                @"<td[^>]*>[\s\S]*?<button[^>]*btn-warning[^>]*>[\s\S]*?fa-edit[\s\S]*?</button>[\s\S]*?<button[^>]*btn-danger[^>]*>[\s\S]*?fa-trash[\s\S]*?</button>[\s\S]*?</td>",
+                // Düzenle
+                @"<(button|a)[^>]*btn-warning[^>]*>[\s\S]*?fa-edit[\s\S]*?</\1>",
+                // Sil
+                @"<(button|a)[^>]*btn-danger[^>]*>[\s\S]*?fa-trash[\s\S]*?</\1>",
+                // Detay / Göz (hem button hem a)
+                @"<(button|a)[^>]*>[\s\S]*?fa-eye[\s\S]*?</\1>",
+                @"<(button|a)[^>]*class=[""'][^""']*(btn-info|detay|goruntule|detay-goster)[^""']*[""'][^>]*>[\s\S]*?fa-eye[\s\S]*?</\1>",
+                // Genel metin
+                @"<(button|a)[^>]*>(.*?)(Ekle|ekle|Yeni|yeni|Düzenle|düzenle|Sil|sil|Detay|detay|Görüntüle|görüntüle).*?</\1>"
             };
 
             foreach (var pattern in patterns)
@@ -364,9 +319,9 @@ namespace WebApp.Controllers
                 {
                     var buttonHtml = match.Value;
                     var action = DetectActionFromButton(buttonHtml);
+
                     if (!string.IsNullOrEmpty(action) && IsValidAction(action))
                     {
-                        // Aynı controller+action kombinasyonu varsa ekleme
                         var existingButton = buttons.FirstOrDefault(b =>
                             b.Controller == controllerName &&
                             b.Action == action);
@@ -386,101 +341,80 @@ namespace WebApp.Controllers
 
         private bool IsValidAction(string action)
         {
-            // SADECE EKLE, DÜZENLE, SİL, DETAY butonları geçerli
-            var validActions = new[] { "create", "edit", "delete", "view" };
-            return validActions.Contains(action.ToLower());
+            var validActions = new[]
+            {
+                "create", "edit", "delete", "view",
+                "ekle", "yeni", "add",
+                "duzenle", "guncelle", "update",
+                "sil", "delete", "remove",
+                "detay", "detay-goster", "goruntule", "sozlesme-detay",
+                "lisansla", "muhasebelendi-yap", "lisans-iptal", "muhasebe-geri-al"
+            };
+
+            return validActions.Contains(action.ToLowerInvariant());
         }
 
         private string DetectActionFromButton(string buttonHtml)
         {
-            buttonHtml = buttonHtml.ToLower();
+            buttonHtml = buttonHtml.ToLowerInvariant();
 
-            // İPTAL BUTONLARINI ELE - hiçbir şekilde listelenmesin
-            if (buttonHtml.Contains("iptal") ||
-                buttonHtml.Contains("cancel") ||
-                buttonHtml.Contains("data-bs-dismiss=\"modal\"") ||
-                buttonHtml.Contains("btn-secondary") ||
-                buttonHtml.Contains("btn-close"))
-            {
-                return null;
-            }
-
-            // YAZDIR, EXCEL, PDF BUTONLARINI ELE
-            if (buttonHtml.Contains("yazdır") ||
-                buttonHtml.Contains("yazdir") ||
-                buttonHtml.Contains("excel") ||
-                buttonHtml.Contains("pdf") ||
-                buttonHtml.Contains("print") ||
-                buttonHtml.Contains("export") ||
-                buttonHtml.Contains("rocket") ||
-                buttonHtml.Contains("dışa aktar") ||
-                buttonHtml.Contains("disa aktar"))
-            {
-                return null;
-            }
-
-            // 1. Data-permission attribute'u
-            var permissionMatch = Regex.Match(buttonHtml, @"data-button-permission=[""']([^""']+)[""']", RegexOptions.IgnoreCase);
+            // 1. Öncelik: data-button-permission (en güvenilir yöntem)
+            var permissionMatch = Regex.Match(buttonHtml, @"data-button-permission\s*=\s*[""']([^""']+)[""']", RegexOptions.IgnoreCase);
             if (permissionMatch.Success)
             {
-                var action = MapToStandardAction(permissionMatch.Groups[1].Value);
-                if (IsValidAction(action)) return action;
+                var action = permissionMatch.Groups[1].Value.Trim().ToLowerInvariant();
+                if (!string.IsNullOrWhiteSpace(action))
+                {
+                    return action;
+                }
             }
 
-            // 2. Data-action attribute'u
+            // Diğer tespitler (geriye uyumluluk)
+            if (buttonHtml.Contains("iptal") || buttonHtml.Contains("cancel") ||
+                buttonHtml.Contains("data-bs-dismiss=\"modal\"") || buttonHtml.Contains("btn-close"))
+                return null;
+
+            if (buttonHtml.Contains("yazdır") || buttonHtml.Contains("excel") || buttonHtml.Contains("pdf") ||
+                buttonHtml.Contains("print") || buttonHtml.Contains("export"))
+                return null;
+
             var actionMatch = Regex.Match(buttonHtml, @"data-action=[""']([^""']+)[""']", RegexOptions.IgnoreCase);
             if (actionMatch.Success)
-            {
-                var action = MapToStandardAction(actionMatch.Groups[1].Value);
-                if (IsValidAction(action)) return action;
-            }
+                return MapToStandardAction(actionMatch.Groups[1].Value);
 
-            // 3. Asp-action attribute'u
             var aspActionMatch = Regex.Match(buttonHtml, @"asp-action=[""']([^""']+)[""']", RegexOptions.IgnoreCase);
             if (aspActionMatch.Success)
-            {
-                var action = MapToStandardAction(aspActionMatch.Groups[1].Value);
-                if (IsValidAction(action)) return action;
-            }
+                return MapToStandardAction(aspActionMatch.Groups[1].Value);
 
-            // 4. onclick fonksiyonlarına göre kontrol
-            if (buttonHtml.Contains("duzenlegetir") || buttonHtml.Contains("edit") || buttonHtml.Contains("düzenle")) return "edit";
-            if (buttonHtml.Contains("silOnay") || buttonHtml.Contains("delete") || buttonHtml.Contains("sil")) return "delete";
-            if (buttonHtml.Contains("detaygetir") || buttonHtml.Contains("view") || buttonHtml.Contains("görüntüle")) return "view";
+            if (buttonHtml.Contains("duzenlegetir") || buttonHtml.Contains("düzenle")) return "duzenle";
+            if (buttonHtml.Contains("silonay") || buttonHtml.Contains("sil")) return "sil";
+            if (buttonHtml.Contains("detaygetir") || buttonHtml.Contains("görüntüle")) return "detay";
 
-            // 5. Icon sınıflarına göre kontrol
-            if (buttonHtml.Contains("fa-plus") || buttonHtml.Contains("fa-add") || buttonHtml.Contains("fa-hammer")) return "create";
-            if (buttonHtml.Contains("fa-edit") || buttonHtml.Contains("fa-pencil") || buttonHtml.Contains("fa-wrench")) return "edit";
-            if (buttonHtml.Contains("fa-trash") || buttonHtml.Contains("fa-times") || buttonHtml.Contains("fa-eraser")) return "delete";
-            if (buttonHtml.Contains("fa-eye") || buttonHtml.Contains("fa-search") || buttonHtml.Contains("fa-binoculars")) return "view";
+            if (buttonHtml.Contains("fa-plus")) return "ekle";
+            if (buttonHtml.Contains("fa-edit")) return "duzenle";
+            if (buttonHtml.Contains("fa-trash")) return "sil";
+            if (buttonHtml.Contains("fa-eye")) return "detay";
 
-            // 6. Class sınıflarına göre kontrol
-            if (buttonHtml.Contains("btn-primary") && (buttonHtml.Contains("ekle") || buttonHtml.Contains("plus") || buttonHtml.Contains("add"))) return "create";
-            if (buttonHtml.Contains("btn-warning") || buttonHtml.Contains("btn-edit")) return "edit";
-            if (buttonHtml.Contains("btn-danger") || buttonHtml.Contains("btn-delete")) return "delete";
-            if (buttonHtml.Contains("btn-info") || buttonHtml.Contains("btn-view") || buttonHtml.Contains("btn-detail")) return "view";
+            if (buttonHtml.Contains("btn-primary") && (buttonHtml.Contains("ekle") || buttonHtml.Contains("plus"))) return "ekle";
+            if (buttonHtml.Contains("btn-warning")) return "duzenle";
+            if (buttonHtml.Contains("btn-danger")) return "sil";
+            if (buttonHtml.Contains("btn-info") && buttonHtml.Contains("fa-eye")) return "detay";
 
-            // 7. Buton metnini çıkar
-            var text = ExtractButtonText(buttonHtml).ToLower();
+            var text = ExtractButtonText(buttonHtml).ToLowerInvariant();
+            if (text.Contains("ekle") || text.Contains("yeni")) return "ekle";
+            if (text.Contains("düzenle") || text.Contains("güncelle")) return "duzenle";
+            if (text.Contains("sil")) return "sil";
+            if (text.Contains("detay") || text.Contains("görüntüle")) return "detay";
 
-            // 8. Metin bazlı kontrol
-            if (text.Contains("ekle") || text.Contains("yeni") || text == "add" || text == "create" || text.Contains("plus")) return "create";
-            if (text.Contains("düzenle") || text.Contains("duzenle") || text == "edit" || text == "update" || text.Contains("güncelle") || text.Contains("guncelle")) return "edit";
-            if (text.Contains("sil") || text == "delete" || text == "remove" || text.Contains("kaldır") || text.Contains("kaldir")) return "delete";
-            if (text.Contains("detay") || text.Contains("görüntüle") || text.Contains("goruntule") || text == "view" || text == "details" || text.Contains("incele")) return "view";
-
-            return null; // Tespit edilemedi
+            return null;
         }
 
         private string ExtractButtonText(string buttonHtml)
         {
-            // Button etiketi içindeki metni çıkar
             var textMatch = Regex.Match(buttonHtml, @">(.*?)</", RegexOptions.Singleline);
             if (textMatch.Success)
             {
-                // HTML tag'lerini temizle
                 var text = Regex.Replace(textMatch.Groups[1].Value, @"<[^>]+>", "");
-                // Icon ve boşlukları temizle
                 text = Regex.Replace(text, @"<i[^>]*>.*?</i>", "");
                 text = Regex.Replace(text, @"&nbsp;", " ");
                 return text.Trim();
@@ -490,15 +424,14 @@ namespace WebApp.Controllers
 
         private string MapToStandardAction(string action)
         {
-            action = action.ToLower();
-            if (action == "create" || action == "ekle" || action == "add" || action == "new") return "create";
-            if (action == "edit" || action == "duzenle" || action == "düzenle" || action == "update" || action == "guncelle" || action == "güncelle") return "edit";
-            if (action == "delete" || action == "sil" || action == "remove") return "delete";
-            if (action == "view" || action == "detay" || action == "details" || action == "goruntule" || action == "görüntüle") return "view";
+            action = action.ToLowerInvariant();
+            if (action == "create" || action == "ekle" || action == "add" || action == "new") return "ekle";
+            if (action == "edit" || action == "duzenle" || action == "düzenle" || action == "update" || action == "guncelle") return "duzenle";
+            if (action == "delete" || action == "sil" || action == "remove") return "sil";
+            if (action == "view" || action == "detay" || action == "goruntule") return "detay";
             return action;
         }
 
-        // Sayfa adlarını Türkçeleştir
         private string GetSayfaAdi(string controller)
         {
             return controller switch
@@ -516,52 +449,37 @@ namespace WebApp.Controllers
                 "AdminIstekOneri" => "İstek/Öneri",
                 "AdminArge" => "ARGE/Hata",
                 "AdminMenuIzin" => "Menü Yetkilendirme",
-                "AdminButtonController" => "Buton Yetkilendirme",
-                "AdminAnaSayfaBannerResim" => "Ana Sayfa Banner",
+                "AdminButton" => "Buton Yetkilendirme",
+                "AdminGenelAydinlatma" => "Genel Aydınlatma Metni",
                 "AdminHakkimizdaBilgileri" => "Hakkımızda",
                 "AdminHakkimizdaFotograf" => "Hakkımızda Görsel",
-                "AdminIletisimBilgileri" => "İletişim",
-                "AdminSSS" => "SSS",
-                "AdminUrunGaleri" => "Ürün Görselleri",
-                "AdminKVKK" => "KVKK",
-                "AdminGenelAydinlatma" => "Aydınlatma Metni",
-                "AdminBirim" => "Birimler",
-                "AdminTeklifler" => "Ürün Teklifleri",
-                "AdminIK" => "İK Başvuruları",
-                "AdminLokasyon" => "Lokasyonlar",
-                "AdminBayiDuyuru" => "Bayi Duyurular",
-                "AdminArgeHata" => "ARGE Hata",
-                "AdminUYB" => "Genel Ayarlar",
-                "AdminLisansTip" => "Lisans Tipleri",
-                "AdminSozlesmeDurumu" => "Sözleşme Durumu",
-                "AdminBayiSozlesmeKriteri" => "Bayi Sözleşme Kriterleri",
+                "AdminIK" => "Başvuru Formları",
+                "AdminIletisimBilgileri" => "İletişim Bilgileri",
+                "AdminKVKK" => "KVKK Metni",
                 "AdminLisansDurumu" => "Lisans Durumu",
-                "AdminTeklifDurum" => "Teklif Durumları",
-                "AdminPaketGrup" => "Paket Grupları",
-                "AdminMusteriTipi" => "Müşteri Tipleri",
-                "AdminDepartman" => "Departmanlar",
-                "AdminKDV" => "KDV Oranları",
-                "AdminEntegrator" => "Entegratörler",
-                "AdminNedenler" => "Teklif Kaybedilme Nedenleri",
-                "AdminNeredenDuydu" => "Nereden Duydu",
-                "AdminARGEDurum" => "ARGE Durum",
-                "AdminIstekOneriDurum" => "İstek/Öneri Durum",
+                "AdminLisansTip" => "Lisans Tipleri",
+                "AdminLokasyon" => "Lokasyonlar",
                 "AdminMusteriSozlesme" => "Müşteri Sözleşmesi",
-                "AdminBayiSozlesme" => "Bayi Sözleşmesi",
-                "AdminTeklifVer" => "Teklif Oluştur",
+                "AdminMusteriTipi" => "Müşteri Tipleri",
+                "AdminPaketBaglama" => "Paket Bağlama",
+                "AdminPaketGrup" => "Paket Grupları",
+                "AdminSSS" => "Sıkça Sorulan Sorular",
+                "AdminTeklifDurum" => "Teklif Durumları",
+                "AdminUrunGaleri" => "Ürün Görselleri",
+                "AdminUYB" => "Genel Ayarlar",
+                "AdminYetki" => "Yetkilendirme",
                 _ => controller
             };
         }
 
-        // Buton aksiyonlarını Türkçeleştir
         private string GetButtonAdi(string action)
         {
-            return action.ToLower() switch
+            return action.ToLowerInvariant() switch
             {
-                "create" => "Ekle",
-                "edit" => "Düzenle",
-                "delete" => "Sil",
-                "view" => "Detay",
+                "create" or "ekle" or "add" or "yeni" => "Ekle",
+                "edit" or "duzenle" or "guncelle" => "Düzenle",
+                "delete" or "sil" or "remove" => "Sil",
+                "view" or "detay" or "goruntule" or "detay-goster" => "Detay",
                 _ => action
             };
         }

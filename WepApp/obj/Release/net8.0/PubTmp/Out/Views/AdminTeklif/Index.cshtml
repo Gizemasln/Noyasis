@@ -768,7 +768,7 @@
                                                         @if (durumId == 5)
                                                         {
                                                             <!-- Kaybedildi durumunda: PDF, Detay ve Sil butonları -->
-                                                            <button class="btn btn-info btn-sm aksiyon-btn detay-goster"
+                                                            <button class="btn btn-info btn-sm aksiyon-btn detay-goster" data-button-permission="sozlesme-detay"
                                                                     data-teklif-id="@teklif.Id"
                                                                     title="Detayları Gör">
                                                                 <i class="fas fa-eye"></i>
@@ -779,7 +779,7 @@
                                                                title="PDF İndir">
                                                                 <i class="fas fa-file-pdf"></i>
                                                             </a>
-                                                            <button class="btn btn-danger btn-sm aksiyon-btn sil-teklif"
+                                                            <button class="btn btn-danger btn-sm aksiyon-btn sil-teklif" data-button-permission="sil"
                                                                     data-teklif-id="@teklif.Id"
                                                                     data-teklif-no="@teklif.TeklifNo"
                                                                     title="Sil">
@@ -789,7 +789,7 @@
                                                         else
                                                         {
                                                             <!-- Diğer kilitli durumlarda (8, 9, 10, 12): Sadece PDF ve Detay -->
-                                                            <button class="btn btn-info btn-sm aksiyon-btn detay-goster"
+                                                            <button class="btn btn-info btn-sm aksiyon-btn detay-goster" data-button-permission="sozlesme-detay"
                                                                     data-teklif-id="@teklif.Id"
                                                                     title="Detayları Gör">
                                                                 <i class="fas fa-eye"></i>
@@ -807,7 +807,7 @@
                                                         var aktifSozlesmeVarMi = ViewBag.TeklifIdAktifSozlesmeVar != null &&
                                                         ((HashSet<int>)ViewBag.TeklifIdAktifSozlesmeVar).Contains(teklif.Id);
 
-                                                        <button class="btn btn-info btn-sm aksiyon-btn detay-goster"
+                                                        <button class="btn btn-info btn-sm aksiyon-btn detay-goster" data-button-permission="sozlesme-detay"
                                                                 data-teklif-id="@teklif.Id"
                                                                 title="Detayları Gör">
                                                             <i class="fas fa-eye"></i>
@@ -844,7 +844,7 @@
                                                             <i class="fas fa-pen-alt"></i>
                                                         </a>
 
-                                                        <button class="btn btn-danger btn-sm aksiyon-btn sil-teklif"
+                                                        <button class="btn btn-danger btn-sm aksiyon-btn sil-teklif" data-button-permission="sil"
                                                                 data-teklif-id="@teklif.Id"
                                                                 data-teklif-no="@teklif.TeklifNo"
                                                                 title="Sil">
@@ -854,7 +854,7 @@
                                                     else
                                                     {
                                                         <!-- NORMAL DURUMLARDA TÜM BUTONLAR (SÖZLEŞME BUTONU GİZLİ) -->
-                                                        <button class="btn btn-info btn-sm aksiyon-btn detay-goster"
+                                                        <button class="btn btn-info btn-sm aksiyon-btn detay-goster" data-button-permission="sozlesme-detay"
                                                                 data-teklif-id="@teklif.Id"
                                                                 title="Detayları Gör">
                                                             <i class="fas fa-eye"></i>
@@ -872,7 +872,7 @@
                                                            data-permission="revise">
                                                             <i class="fas fa-pen-alt"></i>
                                                         </a>
-                                                        <button class="btn btn-danger btn-sm aksiyon-btn sil-teklif"
+                                                        <button class="btn btn-danger btn-sm aksiyon-btn sil-teklif" data-button-permission="sil"
                                                                 data-teklif-id="@teklif.Id"
                                                                 data-teklif-no="@teklif.TeklifNo"
                                                                 title="Sil">
@@ -1420,7 +1420,7 @@
                if (durumId === 5) {
                    buttonsHtml = `
                        <!-- Kaybedildi durumunda: PDF, Detay ve Sil butonları -->
-                       <button class="btn btn-info btn-sm aksiyon-btn detay-goster"
+                       <button class="btn btn-info btn-sm aksiyon-btn detay-goster" data-button-permission="sozlesme-detay"
                                data-teklif-id="${teklifId}"
                                title="Detayları Gör">
                            <i class="fas fa-eye"></i>
@@ -1431,7 +1431,7 @@
                           title="PDF İndir">
                            <i class="fas fa-file-pdf"></i>
                        </a>
-                       <button class="btn btn-danger btn-sm aksiyon-btn sil-teklif"
+                       <button class="btn btn-danger btn-sm aksiyon-btn sil-teklif" data-button-permission="sil"
                                data-teklif-id="${teklifId}"
                                data-teklif-no="${teklifNo}"
                                title="Sil">
@@ -1441,7 +1441,7 @@
                    // Diğer kilitli durumlarda (8, 9, 10, 12): Sadece PDF ve Detay
                    buttonsHtml = `
                        <!-- Sadece PDF ve detay butonları -->
-                       <button class="btn btn-info btn-sm aksiyon-btn detay-goster"
+                       <button class="btn btn-info btn-sm aksiyon-btn detay-goster" data-button-permission="sozlesme-detay"
                                data-teklif-id="${teklifId}"
                                title="Detayları Gör">
                            <i class="fas fa-eye"></i>
@@ -1455,7 +1455,7 @@
                }
            } else if (durumId === 6) { // Müşteri Onaylandı
                 buttonsHtml = `
-                    <button class="btn btn-info btn-sm aksiyon-btn detay-goster"
+                    <button class="btn btn-info btn-sm aksiyon-btn detay-goster" data-button-permission="sozlesme-detay"
                             data-teklif-id="${teklifId}"
                             title="Detayları Gör">
                         <i class="fas fa-eye"></i>
@@ -1477,7 +1477,7 @@
                         title="Revize">
                         <i class="fas fa-pen-alt"></i>
                     </a>
-                    <button class="btn btn-danger btn-sm aksiyon-btn sil-teklif"
+                    <button class="btn btn-danger btn-sm aksiyon-btn sil-teklif" data-button-permission="sil"
                             data-teklif-id="${teklifId}"
                             data-teklif-no="${teklifNo}"
                             title="Sil">
@@ -1485,7 +1485,7 @@
                     </button>`;
             } else { // Diğer durumlar
                 buttonsHtml = `
-                    <button class="btn btn-info btn-sm aksiyon-btn detay-goster"
+                    <button class="btn btn-info btn-sm aksiyon-btn detay-goster" data-button-permission="sozlesme-detay"
                             data-teklif-id="${teklifId}"
                             title="Detayları Gör">
                         <i class="fas fa-eye"></i>
@@ -1502,7 +1502,7 @@
                         title="Revize">
                         <i class="fas fa-pen-alt"></i>
                     </a>
-                    <button class="btn btn-danger btn-sm aksiyon-btn sil-teklif"
+                    <button class="btn btn-danger btn-sm aksiyon-btn sil-teklif" data-button-permission="sil"
                             data-teklif-id="${teklifId}"
                             data-teklif-no="${teklifNo}"
                             title="Sil">
@@ -2354,8 +2354,9 @@
                         window.open(`/AdminTeklif/SozlesmePdf?sozlesmeId=${response.sozlesmeId}`, '_blank');
                     }
                     bootstrap.Modal.getInstance('#sozlesmeModal').hide();
-                    setTimeout(() => location.reload(), 1500);
-                } else {
+        setTimeout(() => {
+             location.reload();
+         }, 1500);                } else {
                     toastr.error(response.message || 'Sözleşme kaydedilemedi.');
                 }
 
@@ -2443,6 +2444,15 @@
             if (musteriId && parseInt(musteriId) > 0) {
                 duzenleGetir(parseInt(musteriId));
             }
+                    // Çarpı butonuna tıklandığında sayfayı yenile
+        $(document).on('click', '#sozlesmeModal .btn-close, #sozlesmeModal [data-bs-dismiss="modal"]', function() {
+            location.reload();
+        });
+
+        // İptal butonuna tıklandığında sayfayı yenile
+        $(document).on('click', '#sozlesmeModal .btn-secondary', function() {
+            location.reload();
+        });
         });
 
         // Datepicker initialization ve otomatik hesaplama fonksiyonu

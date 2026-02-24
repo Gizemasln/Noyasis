@@ -99,7 +99,6 @@ namespace WepApp.Controllers
                     .Include(x => x.ARGEDurum)
                     .Where(x => x.BayiId == kullaniciId.Value && x.Durumu == 1)
                     .OrderByDescending(x => x.EklenmeTarihi)
-                   
                     .ToList();
 
                 musteriListe = _repository.GetirQueryable()
@@ -109,46 +108,78 @@ namespace WepApp.Controllers
                     .Include(x => x.ARGEDurum)
                     .Where(x => x.Musteri != null && x.Musteri.BayiId == kullaniciId.Value && x.Durumu == 1)
                     .OrderByDescending(x => x.EklenmeTarihi)
-                  
                     .ToList();
             }
 
+            // LİSANS TİPLERİ VE LİSANS NUMARALARI - SADECE LİSANS NUMARASI OLAN SÖZLEŞMELER
             List<LisansTip> lisansTipleri = new List<LisansTip>();
+            Dictionary<int, List<string>> lisansNumaralari = new Dictionary<int, List<string>>();
 
             if (kullaniciTipi == "Musteri" && kullaniciId.HasValue)
             {
                 var musteriSozlesmeler = _sozlesmeRepository.GetirList(
                     x => x.Durumu == 1 &&
                          x.MusteriId == kullaniciId.Value &&
-                         x.SozlesmeDurumuId == 11,
+                         x.SozlesmeDurumuId == 11 &&
+                         !string.IsNullOrEmpty(x.LisansNo), // SADECE LİSANS NUMARASI OLANLAR
                     new List<string> { "Teklif.LisansTip" }
                 );
 
-                lisansTipleri = musteriSozlesmeler
-                    .Select(s => s.Teklif?.LisansTip)
-                    .Where(lt => lt != null && lt.Durumu == 1)
-                    .GroupBy(lt => lt.Id)
-                    .Select(g => g.First())
-                    .ToList();
+                // Lisans tiplerini ve numaralarını grupla
+                foreach (var sozlesme in musteriSozlesmeler.Where(s => s.Teklif?.LisansTip != null && s.Teklif.LisansTip.Durumu == 1))
+                {
+                    var lisansTip = sozlesme.Teklif.LisansTip;
+                    if (!lisansTipleri.Any(lt => lt.Id == lisansTip.Id))
+                    {
+                        lisansTipleri.Add(lisansTip);
+                    }
+
+                    if (!lisansNumaralari.ContainsKey(lisansTip.Id))
+                    {
+                        lisansNumaralari[lisansTip.Id] = new List<string>();
+                    }
+
+                    if (!lisansNumaralari[lisansTip.Id].Contains(sozlesme.LisansNo))
+                    {
+                        lisansNumaralari[lisansTip.Id].Add(sozlesme.LisansNo);
+                    }
+                }
             }
             else if (kullaniciTipi == "Bayi" && kullaniciId.HasValue)
             {
                 var bayiMusteriSozlesmeler = _sozlesmeRepository.GetirQueryable()
                     .Where(x => x.Durumu == 1 &&
                                 x.SozlesmeDurumuId == 11 &&
+                                !string.IsNullOrEmpty(x.LisansNo) && // SADECE LİSANS NUMARASI OLANLAR
                                 x.Musteri != null &&
                                 x.Musteri.BayiId == kullaniciId.Value)
                     .Include(s => s.Teklif)
                     .ThenInclude(t => t.LisansTip)
-                    .Select(s => s.Teklif.LisansTip)
-                    .Where(lt => lt != null && lt.Durumu == 1)
-                    .Distinct()
                     .ToList();
 
-                lisansTipleri = bayiMusteriSozlesmeler;
+                // Lisans tiplerini ve numaralarını grupla
+                foreach (var sozlesme in bayiMusteriSozlesmeler.Where(s => s.Teklif?.LisansTip != null && s.Teklif.LisansTip.Durumu == 1))
+                {
+                    var lisansTip = sozlesme.Teklif.LisansTip;
+                    if (!lisansTipleri.Any(lt => lt.Id == lisansTip.Id))
+                    {
+                        lisansTipleri.Add(lisansTip);
+                    }
+
+                    if (!lisansNumaralari.ContainsKey(lisansTip.Id))
+                    {
+                        lisansNumaralari[lisansTip.Id] = new List<string>();
+                    }
+
+                    if (!lisansNumaralari[lisansTip.Id].Contains(sozlesme.LisansNo))
+                    {
+                        lisansNumaralari[lisansTip.Id].Add(sozlesme.LisansNo);
+                    }
+                }
             }
 
             ViewBag.LisansTipleri = lisansTipleri;
+            ViewBag.LisansNumaralari = lisansNumaralari;
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = (int)Math.Ceiling((double)toplam / PageSize);
             ViewBag.TotalCount = toplam;
@@ -164,7 +195,7 @@ namespace WepApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetLisansTipleriByMusteri(int musteriId)
+        public IActionResult GetLisansTipleriVeNumaralariByMusteri(int musteriId)
         {
             if (musteriId <= 0)
             {
@@ -174,25 +205,65 @@ namespace WepApp.Controllers
             var sozlesmeler = _sozlesmeRepository.GetirList(
                 x => x.Durumu == 1 &&
                      x.MusteriId == musteriId &&
-                     x.SozlesmeDurumuId == 11,
+                     x.SozlesmeDurumuId == 11 &&
+                     !string.IsNullOrEmpty(x.LisansNo), // SADECE LİSANS NUMARASI OLANLAR
                 new List<string> { "Teklif.LisansTip" }
             );
 
-            var lisansTipleri = sozlesmeler
-                .Select(s => s.Teklif?.LisansTip)
-                .Where(lt => lt != null && lt.Durumu == 1)
-                .GroupBy(lt => lt.Id)
-                .Select(g => new { id = g.Key, adi = g.First().Adi })
+            var lisansBilgileri = sozlesmeler
+                .Where(s => s.Teklif?.LisansTip != null && s.Teklif.LisansTip.Durumu == 1)
+                .Select(s => new {
+                    lisansTipId = s.Teklif.LisansTip.Id,
+                    lisansTipAdi = s.Teklif.LisansTip.Adi,
+                    lisansNo = s.LisansNo,
+                    sozlesmeId = s.Id
+                })
+                .GroupBy(x => new { x.lisansTipId, x.lisansTipAdi })
+                .Select(g => new {
+                    id = g.Key.lisansTipId,
+                    adi = g.Key.lisansTipAdi,
+                    lisansNumaralari = g.Select(x => new {
+                        lisansNo = x.lisansNo,
+                        sozlesmeId = x.sozlesmeId
+                    }).ToList()
+                })
                 .ToList();
 
-            return Json(lisansTipleri);
+            return Json(lisansBilgileri);
+        }
+
+        [HttpGet]
+        public IActionResult GetLisansNumaralariByMusteriVeTip(int musteriId, int lisansTipId)
+        {
+            if (musteriId <= 0 || lisansTipId <= 0)
+            {
+                return Json(new List<object>());
+            }
+
+            var sozlesmeler = _sozlesmeRepository.GetirList(
+                x => x.Durumu == 1 &&
+                     x.MusteriId == musteriId &&
+                     x.SozlesmeDurumuId == 11 &&
+                     !string.IsNullOrEmpty(x.LisansNo) &&
+                     x.Teklif.LisansTipId == lisansTipId,
+                new List<string> { "Teklif.LisansTip" }
+            );
+
+            var lisansNumaralari = sozlesmeler
+                .Select(s => new {
+                    lisansNo = s.LisansNo,
+                    sozlesmeId = s.Id
+                })
+                .ToList();
+
+            return Json(lisansNumaralari);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Ekle(string Tipi, string Adi, string Soyadi, int? LisansTipId,
+        public IActionResult Ekle(string Tipi, string Adi, string Soyadi, int? LisansTipId, string LisansNo,
                                  string Metni, IFormFile Dosya = null, string bildirimSahibi = "bayi",
-                                 int? SecilenMusteriId = null)
+                                 int? SecilenMusteriId = null, int? SecilenSozlesmeId = null)
         {
             var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
             if (string.IsNullOrEmpty(kullaniciTipi) || !kullaniciId.HasValue)
@@ -206,6 +277,53 @@ namespace WepApp.Controllers
             if (string.IsNullOrWhiteSpace(Tipi) || string.IsNullOrWhiteSpace(Adi) ||
                 string.IsNullOrWhiteSpace(Soyadi) || string.IsNullOrWhiteSpace(Metni))
                 return Json(new { success = false, message = "Zorunlu alanları doldurunuz." });
+
+            // Lisans numarası kontrolü
+            if (!LisansTipId.HasValue || string.IsNullOrWhiteSpace(LisansNo))
+            {
+                return Json(new { success = false, message = "Lütfen lisans tipi ve lisans numarası seçiniz." });
+            }
+
+            // Lisans numarasının geçerli olduğunu kontrol et
+            bool lisansGecerli = false;
+            if (kullaniciTipi == "Musteri" && kullaniciId.HasValue)
+            {
+                lisansGecerli = _sozlesmeRepository.GetirQueryable()
+                    .Any(x => x.Durumu == 1 &&
+                              x.MusteriId == kullaniciId.Value &&
+                              x.SozlesmeDurumuId == 11 &&
+                              !string.IsNullOrEmpty(x.LisansNo) &&
+                              x.Teklif.LisansTipId == LisansTipId &&
+                              x.LisansNo == LisansNo);
+            }
+            else if (kullaniciTipi == "Bayi" && kullaniciId.HasValue)
+            {
+                int musteriId = bildirimSahibi == "musteri" && SecilenMusteriId.HasValue
+                    ? SecilenMusteriId.Value
+                    : (bildirimSahibi == "bayi" ? 0 : 0);
+
+                if (bildirimSahibi == "musteri" && SecilenMusteriId.HasValue)
+                {
+                    lisansGecerli = _sozlesmeRepository.GetirQueryable()
+                        .Any(x => x.Durumu == 1 &&
+                                  x.MusteriId == SecilenMusteriId.Value &&
+                                  x.SozlesmeDurumuId == 11 &&
+                                  !string.IsNullOrEmpty(x.LisansNo) &&
+                                  x.Teklif.LisansTipId == LisansTipId &&
+                                  x.LisansNo == LisansNo);
+                }
+                else if (bildirimSahibi == "bayi")
+                {
+                    // Bayi adına kayıt yapılıyorsa, bayiye ait lisans numarası kontrolü
+                    // (Bayilerin kendi lisansları varsa buraya eklenebilir)
+                    lisansGecerli = true; // Şimdilik true, gerekiyorsa düzenlenebilir
+                }
+            }
+
+            if (!lisansGecerli)
+            {
+                return Json(new { success = false, message = "Geçersiz lisans numarası veya bu lisansa sahip aktif sözleşme bulunamadı." });
+            }
 
             try
             {
@@ -245,11 +363,15 @@ namespace WepApp.Controllers
                     GuncelleyenKullaniciId = kullaniciId.Value,
                     EklenmeTarihi = DateTime.Now,
                     GuncellenmeTarihi = DateTime.Now,
-                    ARGEDurumId = 1
+                    ARGEDurumId = 1,
+                    LisansNo = LisansNo // Lisans numarasını kaydet
                 };
 
                 if (LisansTipId.HasValue)
                     yeni.LisansTipId = LisansTipId.Value;
+
+                if (SecilenSozlesmeId.HasValue)
+                    yeni.MusteriSozlesmeId = SecilenSozlesmeId.Value;
 
                 if (kullaniciTipi == "Musteri")
                 {
@@ -294,7 +416,70 @@ namespace WepApp.Controllers
             if (kayit == null)
                 return Json(new { success = false, message = "Kayıt bulunamadı." });
 
-            List<LisansTip> lisansTipleri = _lisansTipRepository.GetirList(x => x.Durumu == 1);
+            // Sadece lisans numarası olan sözleşmeleri getir
+            List<LisansTip> lisansTipleri = new List<LisansTip>();
+            Dictionary<int, List<string>> lisansNumaralari = new Dictionary<int, List<string>>();
+
+            var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
+
+            if (kullaniciTipi == "Musteri" && kullaniciId.HasValue)
+            {
+                var sozlesmeler = _sozlesmeRepository.GetirList(
+                    x => x.Durumu == 1 &&
+                         x.MusteriId == kullaniciId.Value &&
+                         x.SozlesmeDurumuId == 11 &&
+                         !string.IsNullOrEmpty(x.LisansNo),
+                    new List<string> { "Teklif.LisansTip" }
+                );
+
+                foreach (var sozlesme in sozlesmeler.Where(s => s.Teklif?.LisansTip != null && s.Teklif.LisansTip.Durumu == 1))
+                {
+                    var lisansTip = sozlesme.Teklif.LisansTip;
+                    if (!lisansTipleri.Any(lt => lt.Id == lisansTip.Id))
+                    {
+                        lisansTipleri.Add(lisansTip);
+                    }
+
+                    if (!lisansNumaralari.ContainsKey(lisansTip.Id))
+                    {
+                        lisansNumaralari[lisansTip.Id] = new List<string>();
+                    }
+
+                    if (!lisansNumaralari[lisansTip.Id].Contains(sozlesme.LisansNo))
+                    {
+                        lisansNumaralari[lisansTip.Id].Add(sozlesme.LisansNo);
+                    }
+                }
+            }
+            else if (kullaniciTipi == "Bayi" && kullaniciId.HasValue && kayit.MusteriId.HasValue)
+            {
+                var sozlesmeler = _sozlesmeRepository.GetirList(
+                    x => x.Durumu == 1 &&
+                         x.MusteriId == kayit.MusteriId.Value &&
+                         x.SozlesmeDurumuId == 11 &&
+                         !string.IsNullOrEmpty(x.LisansNo),
+                    new List<string> { "Teklif.LisansTip" }
+                );
+
+                foreach (var sozlesme in sozlesmeler.Where(s => s.Teklif?.LisansTip != null && s.Teklif.LisansTip.Durumu == 1))
+                {
+                    var lisansTip = sozlesme.Teklif.LisansTip;
+                    if (!lisansTipleri.Any(lt => lt.Id == lisansTip.Id))
+                    {
+                        lisansTipleri.Add(lisansTip);
+                    }
+
+                    if (!lisansNumaralari.ContainsKey(lisansTip.Id))
+                    {
+                        lisansNumaralari[lisansTip.Id] = new List<string>();
+                    }
+
+                    if (!lisansNumaralari[lisansTip.Id].Contains(sozlesme.LisansNo))
+                    {
+                        lisansNumaralari[lisansTip.Id].Add(sozlesme.LisansNo);
+                    }
+                }
+            }
 
             var data = new
             {
@@ -303,6 +488,7 @@ namespace WepApp.Controllers
                 kayit.Adi,
                 kayit.Soyadi,
                 kayit.LisansTipId,
+                kayit.LisansNo,
                 kayit.Metni,
                 kayit.DosyaYolu,
                 kayit.MusteriId,
@@ -314,7 +500,8 @@ namespace WepApp.Controllers
                 ArgeDurumAdi = kayit.ARGEDurum?.Adi ?? "Beklemede",
                 MusteriAdi = kayit.Musteri != null ? kayit.Musteri.Ad + " " + kayit.Musteri.Soyad : null,
                 BayiAdi = kayit.Bayi != null ? kayit.Bayi.Unvan : null,
-                LisansTipleri = lisansTipleri.Select(g => new { g.Id, g.Adi })
+                LisansTipleri = lisansTipleri.Select(g => new { g.Id, g.Adi }),
+                LisansNumaralari = lisansNumaralari
             };
             return Json(data);
         }
@@ -322,8 +509,9 @@ namespace WepApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Duzenle(int Id, string Tipi, string Adi, string Soyadi,
-                                         int? LisansTipId, string Metni, IFormFile Dosya = null,
-                                         string duzenleBildirimSahibi = "bayi", int? SecilenMusteriId = null)
+                                         int? LisansTipId, string LisansNo, string Metni, IFormFile Dosya = null,
+                                         string duzenleBildirimSahibi = "bayi", int? SecilenMusteriId = null,
+                                         int? SecilenSozlesmeId = null)
         {
             var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
             if (string.IsNullOrEmpty(kullaniciTipi) || !kullaniciId.HasValue)
@@ -355,6 +543,12 @@ namespace WepApp.Controllers
             if (string.IsNullOrWhiteSpace(Tipi) || string.IsNullOrWhiteSpace(Adi) ||
                 string.IsNullOrWhiteSpace(Soyadi) || string.IsNullOrWhiteSpace(Metni))
                 return Json(new { success = false, message = "Zorunlu alanları doldurunuz." });
+
+            // Lisans numarası kontrolü
+            if (!LisansTipId.HasValue || string.IsNullOrWhiteSpace(LisansNo))
+            {
+                return Json(new { success = false, message = "Lütfen lisans tipi ve lisans numarası seçiniz." });
+            }
 
             try
             {
@@ -397,8 +591,12 @@ namespace WepApp.Controllers
                 mevcut.Metni = Metni.Trim();
                 mevcut.DosyaYolu = dosyaYolu;
                 mevcut.LisansTipId = LisansTipId;
+                mevcut.LisansNo = LisansNo;
                 mevcut.GuncelleyenKullaniciId = kullaniciId.Value;
                 mevcut.GuncellenmeTarihi = DateTime.Now;
+
+                if (SecilenSozlesmeId.HasValue)
+                    mevcut.MusteriSozlesmeId = SecilenSozlesmeId.Value;
 
                 if (kullaniciTipi == "Bayi")
                 {

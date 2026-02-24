@@ -6,6 +6,11 @@
         public int? MusteriId { get; set; }
         public int? BayiId { get; set; }
         public int? LisansTipId { get; set; }
+
+        // YENİ: Lisans numarası ve sözleşme ilişkisi
+        public string? LisansNo { get; set; }
+        public int? MusteriSozlesmeId { get; set; }
+
         public string Tipi { get; set; } // ARGE veya Hata
         public string Adi { get; set; } // Formu dolduran adı 
         public string Soyadi { get; set; } // Formu dolduran soyadı
@@ -34,5 +39,8 @@
         public ARGEDurum ARGEDurum { get; set; }
         public Bayi Bayi { get; set; }
         public LisansTip LisansTip { get; set; }
+
+        // YENİ: Sözleşme ilişkisi
+        public MusteriSozlesme MusteriSozlesme { get; set; }
     }
 }

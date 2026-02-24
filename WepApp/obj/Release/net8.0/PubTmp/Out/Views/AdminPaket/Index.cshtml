@@ -94,7 +94,7 @@
             <div class="card-header">
                 <div class="card-title d-flex justify-content-between align-items-center">
                     <span>Modül</span>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                    <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
                         <i class="fas fa-plus"></i> Yeni Modül Ekle
                     </button>
                 </div>
@@ -218,11 +218,11 @@
                                                 </button>
                                             }
 
-                                            <button type="button" class="btn btn-warning btn-sm"
+                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle"
                                                     onclick="duzenleGetir(@item.Id)">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <button type="button" class="btn btn-danger btn-sm"
+                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil"
                                                     onclick="silOnay(@item.Id, '@item.Adi')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
@@ -939,7 +939,7 @@
                             <td>${aralik}</td>
                             <td>%${oran.oranYuzde} (${tip})</td>
                             <td class="text-center">
-                                <button type="button" class="btn btn-danger btn-sm" onclick="fiyatOraniSil(${oran.id})">
+                                <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="fiyatOraniSil(${oran.id})">
                                     <i class="fas fa-trash"></i> Sil
                                 </button>
                             </td>

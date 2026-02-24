@@ -65,7 +65,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Bayi Sözleşmeleri</h5>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sozlesmeModal">
+                <button class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#sozlesmeModal">
                     <i class="fas fa-plus"></i> Yeni Sözleşme Ekle
                 </button>
             </div>
@@ -125,7 +125,7 @@
                                             }
                                         </td>
                                         <td class="text-center">
-                                            <button class="btn btn-warning btn-sm" onclick="duzenle(@s.Id)">
+                                            <button class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenle(@s.Id)">
                                                 <i class="fas fa-edit">Düzenle</i>
                                             </button>
                                             <button class="btn btn-danger btn-sm" onclick="silOnay(@s.Id, '@s.DokumanNo')">

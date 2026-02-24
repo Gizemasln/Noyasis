@@ -27,12 +27,16 @@ namespace WepApp.Models
         public bool TicariSicilGazetesiVar { get; set; }
         public bool KimlikOnYuzuVar { get; set; }
         public bool ImzaSirkusuVar { get; set; }
+        public bool ImzaliSozlesmeVar { get; set; }
+
 
         // YENİ: Dosya adları
         public string? VergiKimlikLevhasıDosyaAdi { get; set; }
         public string? TicariSicilGazetesiDosyaAdi { get; set; }
         public string? KimlikOnYuzuDosyaAdi { get; set; }
         public string? ImzaSirkusuDosyaAdi { get; set; }
+        public string? ImzaliSozlesmeDosyaAdi { get; set; }
+
 
         // Müşteri bilgileri
         public string TicariUnvan { get; set; } = string.Empty;

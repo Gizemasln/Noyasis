@@ -195,7 +195,7 @@
                 <div class="card-title d-flex justify-content-between align-items-center">
                     <span><i class="fas fa-sliders-h me-2"></i>Slider Yönetimi</span>
                     <div>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
                             <i class="fas fa-plus"></i> Yeni Slider Ekle
                         </button>
                     </div>
@@ -296,10 +296,10 @@
                                             }
                                         </td>
                                         <td class="text-center">
-                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id)" title="Düzenle">
+                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id)" title="Düzenle">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.SlaytBaslik')" title="Sil">
+                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.SlaytBaslik')" title="Sil">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </td>
@@ -312,7 +312,7 @@
                                     <td colspan="7" class="text-center py-4">
                                         <i class="fas fa-sliders-h fa-3x text-muted mb-3"></i>
                                         <p class="text-muted">Henüz slider eklenmemiş.</p>
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                                        <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
                                             <i class="fas fa-plus"></i> İlk Slider'ı Ekle
                                         </button>
                                     </td>

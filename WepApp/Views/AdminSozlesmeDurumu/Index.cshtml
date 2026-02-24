@@ -43,7 +43,7 @@
             <div class="card-header">
                 <div class="card-title d-flex justify-content-between align-items-center">
                     <span>Sözleşme Durumları</span>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                    <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
                         <i class="fas fa-plus"></i> Yeni Durum Ekle
                     </button>
                 </div>
@@ -74,10 +74,10 @@
                                         <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>@item.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td class="table-actions text-center">
-                                            <button type="button" class="btn btn-warning btn-sm" onclick="duzenleGetir(@item.Id, '@item.Adi', '@(item.Aciklama ?? "")')">
+                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id, '@item.Adi', '@(item.Aciklama ?? "")')">
                                                 <i class="fas fa-edit"></i> 
                                             </button>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.Adi')">
+                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.Adi')">
                                                 <i class="fas fa-trash"></i> 
                                             </button>
                                         </td>

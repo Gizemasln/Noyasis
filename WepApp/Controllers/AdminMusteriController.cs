@@ -9,6 +9,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Formats.Png;
+using System.Text;
 
 namespace WepApp.Controllers
 {
@@ -167,32 +168,22 @@ namespace WepApp.Controllers
                     return NotFound($"Sözleşme bulunamadı (ID: {sozlesmeId})");
                 }
 
-                // Debug için log ekleyin
-                Console.WriteLine($"Sözleşme ID: {sozlesmeId}");
-                Console.WriteLine($"Dosya tipi: {tip}");
-                Console.WriteLine($"Vergi Kimlik Levhası Dosya: {sozlesme.VergiKimlikLevhasıDosyaAdi}");
-                Console.WriteLine($"Ticari Sicil Gazetesi Dosya: {sozlesme.TicariSicilGazetesiDosyaAdi}");
-                Console.WriteLine($"Kimlik Ön Yüzü Dosya: {sozlesme.KimlikOnYuzuDosyaAdi}");
-                Console.WriteLine($"İmza Sirküsü Dosya: {sozlesme.ImzaSirkusuDosyaAdi}");
-
                 string dosyaAdi = tip switch
                 {
                     "vergi" => sozlesme.VergiKimlikLevhasıDosyaAdi,
                     "sicil" => sozlesme.TicariSicilGazetesiDosyaAdi,
                     "kimlik" => sozlesme.KimlikOnYuzuDosyaAdi,
                     "imza" => sozlesme.ImzaSirkusuDosyaAdi,
+                    "sozlesme" => sozlesme.ImzaliSozlesmeDosyaAdi,
                     _ => null
                 };
 
-                Console.WriteLine($"Seçilen dosya adı: {dosyaAdi}");
-
                 if (string.IsNullOrEmpty(dosyaAdi))
                 {
-                    return NotFound($"{tip} tipinde dosya adı boş veya null");
+                    return NotFound($"{tip} tipinde dosya bulunamadı");
                 }
 
                 string dosyaYolu = Path.Combine(_environment.WebRootPath, "WebAdminTheme", "MusteriSozlesme", dosyaAdi);
-                Console.WriteLine($"Dosya yolu: {dosyaYolu}");
 
                 if (!System.IO.File.Exists(dosyaYolu))
                 {
@@ -201,14 +192,32 @@ namespace WepApp.Controllers
 
                 var bytes = System.IO.File.ReadAllBytes(dosyaYolu);
                 string contentType = GetContentType(dosyaAdi);
+                string extension = Path.GetExtension(dosyaAdi).ToLowerInvariant();
 
-                Console.WriteLine($"Dosya başarıyla bulundu, boyut: {bytes.Length} bytes");
-
-                return File(bytes, contentType);
+                // PDF ve diğer dosya tipleri için inline olarak göster
+                // PDF'ler tarayıcıda görüntülenir, diğer dosyalar indirilir
+                if (extension == ".pdf")
+                {
+                    // PDF'leri tarayıcıda göster
+                    Response.Headers.Add("Content-Disposition", $"inline; filename=\"{dosyaAdi}\"");
+                    return File(bytes, contentType);
+                }
+                else if (extension == ".jpg" || extension == ".jpeg" || extension == ".png" ||
+                         extension == ".gif" || extension == ".bmp" || extension == ".webp")
+                {
+                    // Resimleri tarayıcıda göster
+                    Response.Headers.Add("Content-Disposition", $"inline; filename=\"{dosyaAdi}\"");
+                    return File(bytes, contentType);
+                }
+                else
+                {
+                    // Diğer dosya tiplerini (Word, Excel, txt vb.) indir
+                    Response.Headers.Add("Content-Disposition", $"attachment; filename=\"{dosyaAdi}\"");
+                    return File(bytes, contentType);
+                }
             }
             catch (Exception ex)
             {
-                // Hata mesajını detaylı loglayın
                 Console.WriteLine($"Hata: {ex.Message}");
                 Console.WriteLine($"StackTrace: {ex.StackTrace}");
                 return StatusCode(500, $"Dosya gösterilirken hata: {ex.Message}");
@@ -230,6 +239,7 @@ namespace WepApp.Controllers
                 "sicil" => sozlesme.TicariSicilGazetesiDosyaAdi,
                 "kimlik" => sozlesme.KimlikOnYuzuDosyaAdi,
                 "imza" => sozlesme.ImzaSirkusuDosyaAdi,
+                "sozlesme" => sozlesme.ImzaliSozlesmeDosyaAdi,
                 _ => null
             };
 
@@ -1117,8 +1127,57 @@ namespace WepApp.Controllers
                 System.Diagnostics.Debug.WriteLine($"Dosya silinirken hata: {ex.Message}");
             }
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SifreSifirla(int id)
+        {
+            LoadCommonData();
 
-        // ============= DOSYA TİPİ BELİRLEME =============
+            try
+            {
+                var musteri = _musteriRepository.Getir(id);
+                if (musteri == null)
+                {
+                    return Json(new { success = false, message = "Müşteri bulunamadı." });
+                }
+
+                // Yeni şifre oluştur (8 karakterli rastgele şifre)
+                string yeniSifre = GenerateRandomPassword(8);
+
+                // Şifreyi güncelle
+                musteri.Sifre = yeniSifre;
+                musteri.GuncellenmeTarihi = DateTime.Now;
+                musteri.GuncelleyenKullaniciId = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici")?.Id ?? 0;
+
+                _musteriRepository.Guncelle(musteri);
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Şifre başarıyla sıfırlandı.",
+                    yeniSifre = yeniSifre
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Şifre sıfırlanırken hata oluştu: " + ex.Message });
+            }
+        }
+
+        // Rastgele şifre oluşturma metodu
+        private string GenerateRandomPassword(int length)
+        {
+            const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%";
+            StringBuilder result = new StringBuilder();
+            Random random = new Random();
+
+            for (int i = 0; i < length; i++)
+            {
+                result.Append(validChars[random.Next(validChars.Length)]);
+            }
+
+            return result.ToString();
+        }
         private string GetContentType(string fileName)
         {
             string extension = Path.GetExtension(fileName).ToLowerInvariant();
@@ -1129,6 +1188,14 @@ namespace WepApp.Controllers
                 ".gif" => "image/gif",
                 ".bmp" => "image/bmp",
                 ".webp" => "image/webp",
+                ".pdf" => "application/pdf",
+                ".doc" => "application/msword",
+                ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                ".xls" => "application/vnd.ms-excel",
+                ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                ".txt" => "text/plain",
+                ".zip" => "application/zip",
+                ".rar" => "application/x-rar-compressed",
                 _ => "application/octet-stream"
             };
         }

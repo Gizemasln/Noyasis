@@ -567,12 +567,12 @@
                                 </div>
 
                                 <div class="col-md-2">
-                                    <label class="form-label fw-bold small">Başlangıç Tarihi</label>
+                                    <label class="form-label fw-bold small">Baş. T.</label>
                                     <input type="date" class="form-control form-control-sm" id="baslangicTarih">
                                 </div>
 
                                 <div class="col-md-2">
-                                    <label class="form-label fw-bold small">Bitiş Tarihi</label>
+                                    <label class="form-label fw-bold small">Bit. T.</label>
                                     <input type="date" class="form-control form-control-sm" id="bitisTarih">
                                 </div>
 
@@ -760,10 +760,10 @@
                                                 </td>
                                                 <td>
                                                     <div class="islem-btns">
-                                                        <button class="btn btn-info btn-sm aksiyon-btn btn-icon detay-goster"
+                                                        <button class="btn btn-info btn-sm aksiyon-btn btn-icon detay-goster" data-button-permission="sozlesme-detay"
                                                                 data-sozlesme-id="@sozlesme.Id"
-                                                                title="Detayları Gör">
-                                                            <i class="fas fa-edit"></i>
+                                                                title="Detay">
+                                                            <i class="fas fa-eye"></i>
                                                         </button>
                                                         <a href="/AdminTeklif/SozlesmePdf?sozlesmeId=@sozlesme.Id"
                                                            target="_blank"
@@ -771,7 +771,7 @@
                                                            title="PDF İndir">
                                                             <i class="fas fa-file-pdf"></i>
                                                         </a>
-                                                        <button class="btn btn-danger btn-sm aksiyon-btn btn-icon sil-sozlesme"
+                                                        <button class="btn btn-danger btn-sm aksiyon-btn btn-icon sil-sozlesme" data-button-permission="sil"
                                                                 data-sozlesme-id="@sozlesme.Id"
                                                                 data-dokuman-no="@sozlesme.DokumanNo"
                                                                 title="Sil">
@@ -1546,12 +1546,14 @@
             const container = $('#dokumanListesiContainer');
             if (!container.length || !currentSozlesmeDetay) return;
 
-            const dokumanTipleri = [
-                { key: 'VergiKimlikLevhası', label: 'Vergi Kimlik Levhası', icon: 'fa-file-contract' },
-                { key: 'TicariSicilGazetesi', label: 'Ticari Sicil Gazetesi', icon: 'fa-newspaper' },
-                { key: 'KimlikOnYuzu', label: 'Kimlik Ön Yüzü', icon: 'fa-id-card' },
-                { key: 'ImzaSirkusu', label: 'İmza Sirküsü veya İmza Beyanı', icon: 'fa-signature' }
-            ];
+                const dokumanTipleri = [
+            { key: 'VergiKimlikLevhası', label: 'Vergi Kimlik Levhası', icon: 'fa-file-contract' },
+            { key: 'TicariSicilGazetesi', label: 'Ticari Sicil Gazetesi', icon: 'fa-newspaper' },
+            { key: 'KimlikOnYuzu', label: 'Kimlik Ön Yüzü', icon: 'fa-id-card' },
+            { key: 'ImzaSirkusu', label: 'İmza Sirküsü veya İmza Beyanı', icon: 'fa-signature' },
+            // YENİ: İmzalı Sözleşme
+            { key: 'ImzaliSozlesme', label: 'İmzalı Sözleşme', icon: 'fa-file-signature' }
+        ];
 
             let html = '';
 
@@ -1585,7 +1587,7 @@
                                     <span>${dosyaAdi}</span>
                                 </div>
                                 <div class="dokuman-aksiyonlar">
-                                    <button class="btn btn-sm btn-outline-primary dokuman-aksiyon-btn dokuman-goruntule-btn"
+                                    <button class="btn btn-sm btn-outline-primary dokuman-aksiyon-btn dokuman-goruntule-btn" data-button-permission="sozlesme-detay"
                                             data-dokuman-tipi="${tip.key}"
                                             title="Görüntüle">
                                         <i class="fas fa-eye"></i>
@@ -1595,7 +1597,7 @@
                                        title="İndir">
                                         <i class="fas fa-download"></i>
                                     </a>
-                                    <button class="btn btn-sm btn-outline-danger dokuman-aksiyon-btn dokuman-sil-btn"
+                                    <button class="btn btn-sm btn-outline-danger dokuman-aksiyon-btn dokuman-sil-btn" data-button-permission="sil"
                                             data-dokuman-tipi="${tip.key}"
                                             title="Sil">
                                         <i class="fas fa-trash"></i>
@@ -1698,33 +1700,37 @@
             // Her 30 saniyede bir kontrol et
             setInterval(checkAndMarkIncompleteDocuments, 30000);
         });
-        // Doküman tipine göre key belirle
-        function getDokumanVarKey(dokumanTipi) {
+              function getDokumanVarKey(dokumanTipi) {
             switch(dokumanTipi) {
                 case 'VergiKimlikLevhası': return 'vergiKimlikLevhasıVar';
                 case 'TicariSicilGazetesi': return 'ticariSicilGazetesiVar';
                 case 'KimlikOnYuzu': return 'kimlikOnYuzuVar';
                 case 'ImzaSirkusu': return 'imzaSirkusuVar';
+                // YENİ: İmzalı Sözleşme
+                case 'ImzaliSozlesme': return 'imzaliSozlesmeVar';
                 default: return dokumanTipi.toLowerCase() + 'Var';
             }
         }
-
         function getDokumanDosyaKey(dokumanTipi) {
             switch(dokumanTipi) {
                 case 'VergiKimlikLevhası': return 'vergiKimlikLevhasıDosyaAdi';
                 case 'TicariSicilGazetesi': return 'ticariSicilGazetesiDosyaAdi';
                 case 'KimlikOnYuzu': return 'kimlikOnYuzuDosyaAdi';
                 case 'ImzaSirkusu': return 'imzaSirkusuDosyaAdi';
+                // YENİ: İmzalı Sözleşme
+                case 'ImzaliSozlesme': return 'imzaliSozlesmeDosyaAdi';
                 default: return dokumanTipi.toLowerCase() + 'DosyaAdi';
             }
         }
 
-        function getDokumanLabel(dokumanTipi) {
+           function getDokumanLabel(dokumanTipi) {
             switch(dokumanTipi) {
                 case 'VergiKimlikLevhası': return 'Vergi Kimlik Levhası';
                 case 'TicariSicilGazetesi': return 'Ticari Sicil Gazetesi';
                 case 'KimlikOnYuzu': return 'Kimlik Ön Yüzü';
                 case 'ImzaSirkusu': return 'İmza Sirküsü veya İmza Beyanı';
+                // YENİ: İmzalı Sözleşme
+                case 'ImzaliSozlesme': return 'İmzalı Sözleşme';
                 default: return dokumanTipi;
             }
         }
@@ -2056,6 +2062,13 @@
                                                         <span>İmza Sirküsü</span>
                                                     </div>
                                                 </div>
+                                                   <!-- YENİ: İmzalı Sözleşme -->
+        <div class="col-md-2 mb-2">
+            <div class="d-flex align-items-center">
+                <i class="${s.imzaliSozlesmeVar ? 'fas fa-check-circle dokuman-var-icon' : 'fas fa-times-circle dokuman-yok-icon'} me-2"></i>
+                <span>İmzalı Sözleşme</span>
+            </div>
+        </div>
                                             </div>
                                         </div>
 

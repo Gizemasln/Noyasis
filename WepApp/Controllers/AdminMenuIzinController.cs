@@ -90,6 +90,7 @@ namespace WebApp.Controllers
                 // 1. Seviye - Ana Menüler
                 ("#contentManagement", "Web Yönetimi", null, "fas fa-file-alt", 1, 1),
                 ("#offerManagement", "Bayi Kanalı Yönetimi", null, "fas fa-file-contract", 2, 1),
+                ("#yetki", "Yetkilendirme Yönetimi", null, "fas fa-file-contract", 3, 1),
                 ("/AdminMusteri", "Müşteriler", null, "fas fa-users", 30, 1),
                 ("/AdminBayi", "Bayiler", null, "fas fa-store", 31, 1),
                 ("/IstekOneri", "İstek/Öneri", null, "fas fa-lightbulb", 40, 1),
@@ -121,6 +122,9 @@ namespace WebApp.Controllers
                 ("/AdminBayiDuyuru", "Bayi Duyurular", "#offerManagement", null, 2, 2),
                 ("/AdminArgeHata", "ARGE/Hata Listesi", "#offerManagement", null, 3, 2),
                 ("/AdminIstekOneri", "Istek Öneri Listesi", "#offerManagement", null, 4, 2),
+                                ("/AdminButton", "Buton Yetki", "#yetki", null, 44, 2),
+                                ("/AdminMenuIzin", "Menü Yetki", "#yetki", null, 42, 2),
+
                 
                 // 2. Seviye - Destek Tablosu (iç içe başlık)
                 ("#destekSubmenu", "Destek Tablosu", "#offerManagement", null, 5, 2),
@@ -160,7 +164,6 @@ namespace WebApp.Controllers
                 ("/AdminTeklif", "Teklif Listesi", "#teklifSubmenu", null, 2, 3),
                 
                 // Diğer menüler
-                ("/AdminButton", "Buton Yetki", null, null, 44, 1),
                 ("/AdminAnaSayfaSlider", "Slider Ayarları", "#destekSubmenu", null,16 , 3)
             };
         }

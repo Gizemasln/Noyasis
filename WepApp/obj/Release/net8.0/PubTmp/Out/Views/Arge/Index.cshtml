@@ -10,6 +10,7 @@
     var bayiBilgi = ViewBag.BayiBilgi as WepApp.Models.Bayi;
     var bayiListe = ViewBag.BayiListe as List<WepApp.Models.ArgeHata> ?? new List<WepApp.Models.ArgeHata>();
     var musteriListe = ViewBag.MusteriListe as List<WepApp.Models.ArgeHata> ?? new List<WepApp.Models.ArgeHata>();
+    var lisansNumaralari = ViewBag.LisansNumaralari as Dictionary<int, List<string>> ?? new Dictionary<int, List<string>>();
 }
 
 <style>
@@ -209,7 +210,7 @@
                 <hr class="my-4" />
                 <!-- Form Alanları -->
                 <div class="row mb-3">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label class="form-label">Bildirim Tipi <span class="text-danger">*</span></label>
                         <select name="Tipi" class="form-select" required>
                             <option value="">-- Seçiniz --</option>
@@ -217,25 +218,30 @@
                             <option value="Hata">Hata Bildirimi</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label class="form-label">Ad <span class="text-danger">*</span></label>
                         <input type="text" name="Adi" class="form-control" required maxlength="50" />
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label class="form-label">Soyad <span class="text-danger">*</span></label>
                         <input type="text" name="Soyadi" class="form-control" required maxlength="50" />
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Lisans Tipi</label>
-                        <select name="LisansTipId" id="lisansTipSelect" class="form-select">
-                            <option value="">-- Seçiniz --</option>
-                            @foreach (var tip in ViewBag.LisansTipleri as List<WepApp.Models.LisansTip>)
-                            {
-                                <option value="@tip.Id">@tip.Adi</option>
-                            }
+                    <div class="col-md-2">
+                        <label class="form-label">Lisans Tipi <span class="text-danger">*</span></label>
+                        <select name="LisansTipId" id="lisansTipSelect" class="form-select" required>
+                            <option value="">-- Önce müşteri seçin --</option>
                         </select>
                     </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Lisans Numarası <span class="text-danger">*</span></label>
+                        <select name="LisansNo" id="lisansNoSelect" class="form-select" required>
+                            <option value="">-- Önce lisans tipi seçin --</option>
+                        </select>
+                        <input type="hidden" name="SecilenSozlesmeId" id="secilenSozlesmeId" />
+                    </div>
                 </div>
+
+
                 <div class="row mb-4">
                     <div class="col-md-12">
                         <label class="form-label">Açıklama / Detay <span class="text-danger">*</span></label>
@@ -298,6 +304,7 @@
                                     <th>Tip</th>
                                     <th>Ad Soyad</th>
                                     <th>Lisans Tipi</th>
+                                    <th>Lisans No</th>
                                     <th>Açıklama</th>
                                     <th>Dosya</th>
                                     <th>Cevap Durumu</th>
@@ -308,6 +315,7 @@
                                 @foreach (var item in bayiListe)
                                 {
                                     var lisansAdi = item.LisansTip?.Adi ?? "-";
+                                    var lisansNo = item.LisansNo ?? "-";
                                     var cevapTarihi = "";
                                     var kisaCevap = "";
                                     var durumBilgi = "";
@@ -335,6 +343,7 @@
                                         </td>
                                         <td>@item.Adi @item.Soyadi</td>
                                         <td>@lisansAdi</td>
+                                        <td>@lisansNo</td>
                                         <td>
                                             <div class="text-truncate" style="max-width: 200px;"
                                                  title="@item.Metni">
@@ -373,11 +382,11 @@
                                         <td>
                                             @if (item.ARGEDurumId == 1 && !item.DistributorCevapVerdiMi)
                                             {
-                                                <button class="btn btn-sm btn-warning text-white btn-duzenle"
+                                                <button class="btn btn-sm btn-warning text-white btn-duzenle" data-button-permission="duzenle"
                                                         data-id="@item.Id" title="Düzenle">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                <button class="btn btn-sm btn-danger btn-sil"
+                                                <button class="btn btn-sm btn-danger btn-sil" data-button-permission="sil"
                                                         data-id="@item.Id" title="Sil">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
@@ -405,7 +414,7 @@
         <!-- Müşteri Adına Kayıtlar -->
         <div class="card shadow mb-4">
             <div class="card-header bg-success text-white">
-                <h5 class="mb-0"><i class="fas fa-users me-2"></i> Bağlı Müşterilerim Adına Bildirimler (Son 10 Kayıt)</h5>
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i> Bağlı Müşterilerim Adına Bildirimler</h5>
             </div>
             <div class="card-body">
                 @if (musteriListe.Any())
@@ -419,6 +428,7 @@
                                     <th>Ad Soyad</th>
                                     <th>Müşteri</th>
                                     <th>Lisans Tipi</th>
+                                    <th>Lisans No</th>
                                     <th>Açıklama</th>
                                     <th>Dosya</th>
                                     <th>Cevap Durumu</th>
@@ -429,6 +439,7 @@
                                 @foreach (var item in musteriListe)
                                 {
                                     var lisansAdi = item.LisansTip?.Adi ?? "-";
+                                    var lisansNo = item.LisansNo ?? "-";
                                     var cevapTarihi = "";
                                     var kisaCevap = "";
                                     var durumBilgi = "";
@@ -462,6 +473,7 @@
                                             </span>
                                         </td>
                                         <td>@lisansAdi</td>
+                                        <td>@lisansNo</td>
                                         <td>
                                             <div class="text-truncate" style="max-width: 200px;"
                                                  title="@item.Metni">
@@ -500,11 +512,11 @@
                                         <td>
                                             @if (item.ARGEDurumId == 1 && !item.DistributorCevapVerdiMi)
                                             {
-                                                <button class="btn btn-sm btn-warning text-white btn-duzenle"
+                                                <button class="btn btn-sm btn-warning text-white btn-duzenle" data-button-permission="duzenle"
                                                         data-id="@item.Id" title="Düzenle">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                <button class="btn btn-sm btn-danger btn-sil"
+                                                <button class="btn btn-sm btn-danger btn-sil" data-button-permission="sil"
                                                         data-id="@item.Id" title="Sil">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
@@ -553,6 +565,7 @@
                                     <th>Ad Soyad</th>
                                     <th>Kayıt Sahibi</th>
                                     <th>Lisans Tipi</th>
+                                    <th>Lisans No</th>
                                     <th>Açıklama</th>
                                     <th>Dosya</th>
                                     <th>Cevap Durumu</th>
@@ -563,6 +576,7 @@
                                 @foreach (var item in Model)
                                 {
                                     var lisansAdi = item.LisansTip?.Adi ?? "-";
+                                    var lisansNo = item.LisansNo ?? "-";
                                     var kayitSahibi = "";
                                     var cevapTarihi = "";
                                     var kisaCevap = "";
@@ -603,6 +617,7 @@
                                             <small class="text-muted">@kayitSahibi</small>
                                         </td>
                                         <td>@lisansAdi</td>
+                                        <td>@lisansNo</td>
                                         <td>
                                             <div class="text-truncate" style="max-width: 250px;"
                                                  title="@item.Metni">
@@ -644,11 +659,11 @@
                                             {
                                                 @if (item.ARGEDurumId == 1 && !item.DistributorCevapVerdiMi)
                                                 {
-                                                    <button class="btn btn-sm btn-warning text-white btn-duzenle"
+                                                    <button class="btn btn-sm btn-warning text-white btn-duzenle" data-button-permission="duzenle"
                                                             data-id="@item.Id" title="Düzenle">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
-                                                    <button class="btn btn-sm btn-danger btn-sil"
+                                                    <button class="btn btn-sm btn-danger btn-sil" data-button-permission="sil"
                                                             data-id="@item.Id" title="Sil">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
@@ -760,10 +775,8 @@
                 <div class="modal-body">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="Id" id="duzenleId" />
-                    <div class="alert alert-info mb-3" id="kayitSahibiBilgi">
-                        <i class="fas fa-info-circle me-2"></i>
-                        <span id="kayitSahibiText"></span>
-                    </div>
+                    <input type="hidden" name="SecilenSozlesmeId" id="duzenleSecilenSozlesmeId" />
+
                     @if (kullaniciTipi == "Bayi")
                     {
                         <div class="row mb-3" id="duzenleMusteriSecimDiv">
@@ -796,6 +809,12 @@
                             </div>
                         </div>
                     }
+
+                    <div class="alert alert-info mb-3" id="kayitSahibiBilgi">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <span id="kayitSahibiText"></span>
+                    </div>
+
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label">Bildirim Tipi <span class="text-danger">*</span></label>
@@ -806,30 +825,42 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Lisans Tipi</label>
-                            <select name="LisansTipId" id="duzenleLisansTipId" class="form-select">
+                            <label class="form-label">Ad <span class="text-danger">*</span></label>
+                            <input type="text" name="Adi" id="duzenleAdi" class="form-control" required maxlength="50" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Soyad <span class="text-danger">*</span></label>
+                            <input type="text" name="Soyadi" id="duzenleSoyadi" class="form-control" required maxlength="50" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Lisans Tipi <span class="text-danger">*</span></label>
+                            <select name="LisansTipId" id="duzenleLisansTipId" class="form-select" required>
                                 <option value="">-- Seçiniz --</option>
-                                @foreach (var tip in ViewBag.LisansTipleri as List<WepApp.Models.LisansTip>)
+                                @foreach (var tip in ViewBag.LisansTipleri as List<WepApp.Models.LisansTip> ?? new List<WepApp.Models.LisansTip>())
                                 {
                                     <option value="@tip.Id">@tip.Adi</option>
                                 }
                             </select>
                         </div>
                     </div>
+
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">Ad <span class="text-danger">*</span></label>
-                            <input type="text" name="Adi" id="duzenleAdi" class="form-control" required maxlength="50" />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Soyad <span class="text-danger">*</span></label>
-                            <input type="text" name="Soyadi" id="duzenleSoyadi" class="form-control" required maxlength="50" />
+                            <label class="form-label">Lisans Numarası <span class="text-danger">*</span></label>
+                            <select name="LisansNo" id="duzenleLisansNo" class="form-select" required>
+                                <option value="">-- Önce lisans tipi seçin --</option>
+                            </select>
                         </div>
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label">Açıklama / Detay <span class="text-danger">*</span></label>
                         <textarea name="Metni" id="duzenleMetni" class="form-control" rows="6" required></textarea>
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label">Dosya Eki (Mevcut: <span id="mevcutDosya">Yok</span>)</label>
                         <input type="file" name="Dosya" class="form-control"
@@ -940,128 +971,138 @@
             });
         }
 
-        $(document).on('click', '.cevap-icerik', function() {
-            const bildirimId = $(this).data('id');
-            const tamCevap = $(this).data('cevap');
-            if (tamCevap) {
-                $('#modalCevapMetni').text(tamCevap);
-                $('#modalCevapTarihi').text($(this).closest('td').find('.cevap-tarihi').text());
-                $('#modalDurumAdi').text($(this).closest('td').find('.durum-bilgi').text().replace('Durum: ', ''));
-                $('#cevapModal').modal('show');
+        // Lisans tiplerini ve numaralarını yükle
+        function yukleLisansBilgileri(musteriId, callback) {
+            if (!musteriId) {
+                $('#lisansTipSelect').empty().append('<option value="">-- Önce müşteri seçin --</option>');
+                $('#lisansNoSelect').empty().append('<option value="">-- Önce lisans tipi seçin --</option>');
                 return;
             }
-            $('#modalCevapMetni').html(
-                '<div class="text-center py-5">' +
-                '<div class="spinner-border text-success" role="status"></div>' +
-                '<p class="mt-3">Cevap bilgileri yükleniyor...</p>' +
-                '</div>'
-            );
-            $.ajax({
-                url: '@Url.Action("CevapDetayGetir")',
-                type: 'GET',
-                data: { id: bildirimId },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        $('#modalCevapMetni').text(response.distributorCevap || 'Cevap bulunamadı.');
-                        $('#modalCevapTarihi').text(response.distributorCevapTarihi || 'Belirtilmemiş');
-                        $('#modalDurumAdi').text(response.argeDurumAdi || 'Bilinmiyor');
-                        $('#cevapModal').modal('show');
-                    } else {
-                        showMessage('warning', response.message || 'Cevap bilgileri alınamadı.');
-                    }
-                },
-                error: function() {
-                    $('#modalCevapMetni').html(
-                        '<div class="alert alert-danger">' +
-                        '<i class="fas fa-exclamation-triangle me-2"></i>' +
-                        'Cevap bilgileri alınırken bir hata oluştu.' +
-                        '</div>'
-                    );
+
+            $.get('@Url.Action("GetLisansTipleriVeNumaralariByMusteri")', { musteriId: musteriId }, function(data) {
+                var lisansTipSelect = $('#lisansTipSelect');
+                lisansTipSelect.empty();
+                lisansTipSelect.append('<option value="">-- Lisans Tipi Seçin --</option>');
+
+                if (data && data.length > 0) {
+                    $.each(data, function(i, tip) {
+                        lisansTipSelect.append('<option value="' + tip.id + '" data-lisanslar=\'' + JSON.stringify(tip.lisansNumaralari) + '\'>' + tip.adi + '</option>');
+                    });
+                } else {
+                    lisansTipSelect.append('<option value="" disabled>Lisans tipi bulunamadı</option>');
                 }
+
+                if (callback) callback();
+            }).fail(function() {
+                showMessage('danger', 'Lisans bilgileri yüklenemedi.');
             });
-        });
+        }
 
-        function yukleLisansTipleri(musteriId = null) {
-            var select = $('#lisansTipSelect');
-            select.empty();
-            select.append('<option value="">-- Seçiniz --</option>');
+        // Lisans numaralarını seçilen lisansa göre yükle
+        function yukleLisansNumaralari(lisansTipId, musteriId) {
+            var lisansNoSelect = $('#lisansNoSelect');
+            lisansNoSelect.empty();
+            lisansNoSelect.append('<option value="">-- Lisans Numarası Seçin --</option>');
 
-            if (musteriId) {
-                $.get('@Url.Action("GetLisansTipleriByMusteri")', { musteriId: musteriId }, function(data) {
-                    if (data && data.length > 0) {
-                        $.each(data, function(i, tip) {
-                            select.append('<option value="' + tip.id + '">' + tip.adi + '</option>');
-                        });
-                    } else {
-                        select.append('<option value="" disabled>Lisans tipi bulunamadı</option>');
-                    }
-                }).fail(function() {
-                    showMessage('danger', 'Lisans tipleri yüklenemedi.');
-                });
-            } else {
-                select.append('<option value="" disabled>Lütfen müşteri seçin</option>');
-            }
+            if (!lisansTipId || !musteriId) return;
+
+            $.get('@Url.Action("GetLisansNumaralariByMusteriVeTip")', {
+                musteriId: musteriId,
+                lisansTipId: lisansTipId
+            }, function(data) {
+                if (data && data.length > 0) {
+                    $.each(data, function(i, item) {
+                        lisansNoSelect.append('<option value="' + item.lisansNo + '" data-sozlesme-id="' + item.sozlesmeId + '">' + item.lisansNo + '</option>');
+                    });
+                } else {
+                    lisansNoSelect.append('<option value="" disabled>Lisans numarası bulunamadı</option>');
+                }
+            }).fail(function() {
+                showMessage('danger', 'Lisans numaraları yüklenemedi.');
+            });
         }
 
         $(document).ready(function() {
         @if (kullaniciTipi == "Bayi")
         {
             <text>
-                            $('input[name="bildirimSahibi"]').change(function() {
-                                var secili = $(this).val();
-                                if (secili === 'musteri') {
-                                    $('#musteriSecimDiv').show();
-                                    var musteriId = $('#secilenMusteriId').val();
-                                    if (musteriId) {
-                                        yukleLisansTipleri(musteriId);
-                                    } else {
-                                        yukleLisansTipleri();
-                                    }
-                                } else {
-                                    $('#musteriSecimDiv').hide();
-                                    $('#lisansTipSelect').empty();
-                                    $('#lisansTipSelect').append('<option value="">-- Seçiniz --</option>');
-                @foreach (var tip in ViewBag.LisansTipleri as List<WepApp.Models.LisansTip>)
-                {
-                    <text>
-                                                    $('#lisansTipSelect').append('<option value="@tip.Id">@tip.Adi</option>');
-                    </text>
-                }
-                                }
-                            });
-
-                            $('#secilenMusteriId').change(function() {
-                                var musteriId = $(this).val();
-                                if ($('input[name="bildirimSahibi"]:checked').val() === 'musteri') {
-                                    yukleLisansTipleri(musteriId);
-                                }
-                            });
-
-                            // Sayfa yüklendiğinde başlangıç kontrolü
-                            if ($('input[name="bildirimSahibi"]:checked').val() === 'musteri') {
-                                var musteriId = $('#secilenMusteriId').val();
-                                yukleLisansTipleri(musteriId);
+                    // Bayi için bildirim sahibi değişikliğinde lisans bilgilerini güncelle
+                    $('input[name="bildirimSahibi"]').change(function() {
+                        var secili = $(this).val();
+                        if (secili === 'musteri') {
+                            $('#musteriSecimDiv').show();
+                            var musteriId = $('#secilenMusteriId').val();
+                            if (musteriId) {
+                                yukleLisansBilgileri(musteriId);
+                            } else {
+                                $('#lisansTipSelect').empty().append('<option value="">-- Önce müşteri seçin --</option>');
+                                $('#lisansNoSelect').empty().append('<option value="">-- Önce lisans tipi seçin --</option>');
                             }
+                        } else {
+                            $('#musteriSecimDiv').hide();
+                            $('#lisansTipSelect').empty().append('<option value="">-- Müşteri seçilmedi --</option>');
+                            $('#lisansNoSelect').empty().append('<option value="">-- Önce lisans tipi seçin --</option>');
+                @* Bayi için lisans tipleri varsa buraya eklenebilir *@
+                        }
+                    });
+
+                    $('#secilenMusteriId').change(function() {
+                        var musteriId = $(this).val();
+                        if ($('input[name="bildirimSahibi"]:checked').val() === 'musteri' && musteriId) {
+                            yukleLisansBilgileri(musteriId);
+                        }
+                    });
             </text>
         }
+        @if (kullaniciTipi == "Musteri")
+        {
+            <text>
+                    // Müşteri için doğrudan lisans bilgilerini yükle
+                    yukleLisansBilgileri(@ViewBag.KullaniciId);
+            </text>
+        }
+
+            // Lisans tipi seçildiğinde lisans numaralarını yükle
+            $('#lisansTipSelect').change(function() {
+                var lisansTipId = $(this).val();
+        @if (kullaniciTipi == "Musteri")
+        {
+            <text>
+                        var musteriId = @ViewBag.KullaniciId;
+            </text>
+        }
+        else if (kullaniciTipi == "Bayi")
+        {
+            <text>
+                        var musteriId = $('#secilenMusteriId').val();
+            </text>
+        }
+        else
+        {
+            <text>
+                        var musteriId = null;
+            </text>
+        }
+
+                if (lisansTipId && musteriId) {
+                    yukleLisansNumaralari(lisansTipId, musteriId);
+                }
+            });
+
+            // Lisans numarası seçildiğinde sözleşme ID'sini gizli alana ata
+            $('#lisansNoSelect').change(function() {
+                var selected = $(this).find('option:selected');
+                var sozlesmeId = selected.data('sozlesme-id');
+                $('#secilenSozlesmeId').val(sozlesmeId || '');
+            });
 
             $('#formTemizle').click(function() {
                 $('input[name="bildirimSahibi"][value="bayi"]').prop('checked', true);
                 $('#musteriSecimDiv').hide();
                 $('#secilenMusteriId').val('');
-        @if (kullaniciTipi == "Bayi")
-        {
-            <text>
-                                $('#lisansTipSelect').empty().append('<option value="">-- Seçiniz --</option>');
-                @foreach (var tip in ViewBag.LisansTipleri as List<WepApp.Models.LisansTip>)
-                {
-                    <text>
-                                                $('#lisansTipSelect').append('<option value="@tip.Id">@tip.Adi</option>');
-                    </text>
-                }
-            </text>
-        }
+                $('#lisansTipSelect').empty().append('<option value="">-- Önce müşteri seçin --</option>');
+                $('#lisansNoSelect').empty().append('<option value="">-- Önce lisans tipi seçin --</option>');
+                $('#secilenSozlesmeId').val('');
             });
 
             $('#ekleForm').submit(function(e) {
@@ -1069,36 +1110,51 @@
         @if (kullaniciTipi == "Bayi")
         {
             <text>
-                                var bildirimSahibi = $('input[name="bildirimSahibi"]:checked').val();
-                                if (bildirimSahibi === 'musteri' && !$('#secilenMusteriId').val()) {
-                                    showMessage('danger', 'Lütfen bir müşteri seçiniz.');
-                                    return false;
-                                }
+                        var bildirimSahibi = $('input[name="bildirimSahibi"]:checked').val();
+                        if (bildirimSahibi === 'musteri' && !$('#secilenMusteriId').val()) {
+                            showMessage('danger', 'Lütfen bir müşteri seçiniz.');
+                            return false;
+                        }
             </text>
         }
+
+                // Lisans numarası kontrolü
+                if (!$('#lisansNoSelect').val()) {
+                    showMessage('danger', 'Lütfen bir lisans numarası seçiniz.');
+                    return false;
+                }
+
                 const formData = new FormData(this);
                 submitForm('@Url.Action("Ekle")', formData, function(res) {
                     showMessage('success', res.message);
                     $('#ekleForm')[0].reset();
+
         @if (kullaniciTipi == "Bayi")
         {
             <text>
-                                    $('input[name="bildirimSahibi"][value="bayi"]').prop('checked', true);
-                                    $('#musteriSecimDiv').hide();
-                                    $('#secilenMusteriId').val('');
-                                    $('#lisansTipSelect').empty().append('<option value="">-- Seçiniz --</option>');
-                @foreach (var tip in ViewBag.LisansTipleri as List<WepApp.Models.LisansTip>)
-                {
-                    <text>
-                                                    $('#lisansTipSelect').append('<option value="@tip.Id">@tip.Adi</option>');
-                    </text>
-                }
+                            $('input[name="bildirimSahibi"][value="bayi"]').prop('checked', true);
+                            $('#musteriSecimDiv').hide();
+                            $('#secilenMusteriId').val('');
+                            $('#lisansTipSelect').empty().append('<option value="">-- Önce müşteri seçin --</option>');
+                            $('#lisansNoSelect').empty().append('<option value="">-- Önce lisans tipi seçin --</option>');
+                            $('#secilenSozlesmeId').val('');
             </text>
         }
+        @if (kullaniciTipi == "Musteri")
+        {
+            <text>
+                            $('#lisansTipSelect').empty().append('<option value="">-- Önce müşteri seçin --</option>');
+                            $('#lisansNoSelect').empty().append('<option value="">-- Önce lisans tipi seçin --</option>');
+                            $('#secilenSozlesmeId').val('');
+                            yukleLisansBilgileri(@ViewBag.KullaniciId);
+            </text>
+        }
+
                     setTimeout(() => location.reload(), 1500);
                 });
             });
 
+            // Düzenleme işlemleri
             $(document).on('click', '.btn-duzenle', function() {
                 const id = $(this).data('id');
                 $.get('@Url.Action("GetirDuzenle")', { id: id }, function(data) {
@@ -1108,7 +1164,23 @@
                         $('#duzenleAdi').val(data.adi);
                         $('#duzenleSoyadi').val(data.soyadi);
                         $('#duzenleMetni').val(data.metni);
+
+                        // Lisans bilgilerini doldur
                         $('#duzenleLisansTipId').val(data.lisansTipId || '');
+
+                        // Lisans numaralarını doldur
+                        var lisansNoSelect = $('#duzenleLisansNo');
+                        lisansNoSelect.empty();
+                        lisansNoSelect.append('<option value="">-- Lisans Numarası Seçin --</option>');
+
+                        if (data.lisansNumaralari && data.lisansTipId && data.lisansNumaralari[data.lisansTipId]) {
+                            $.each(data.lisansNumaralari[data.lisansTipId], function(i, lisansNo) {
+                                lisansNoSelect.append('<option value="' + lisansNo + '">' + lisansNo + '</option>');
+                            });
+                            $('#duzenleLisansNo').val(data.lisansNo);
+                        }
+
+                        // Kayıt sahibi bilgisi
                         var sahipText = '';
                         if (data.musteriId) {
                             sahipText = 'Müşteri: ' + (data.musteriAdi || 'Bilinmiyor');
@@ -1116,31 +1188,34 @@
                             sahipText = 'Bayi: ' + (data.bayiAdi || 'Bilinmiyor');
                         }
                         $('#kayitSahibiText').text('Bu kayıt ' + sahipText + ' adına oluşturulmuştur.');
+
         @if (kullaniciTipi == "Bayi")
         {
             <text>
-                                        $('#duzenleMusteriSecimDiv').show();
-                                        if (data.musteriId) {
-                                            $('input[name="duzenleBildirimSahibi"][value="musteri"]').prop('checked', true);
-                                            $('#duzenleMusteriSelectDiv').show();
-                                            $('#duzenleSecilenMusteriId').val(data.musteriId);
-                                        } else {
-                                            $('input[name="duzenleBildirimSahibi"][value="bayi"]').prop('checked', true);
-                                            $('#duzenleMusteriSelectDiv').hide();
-                                            $('#duzenleSecilenMusteriId').val('');
-                                        }
+                                $('#duzenleMusteriSecimDiv').show();
+                                if (data.musteriId) {
+                                    $('input[name="duzenleBildirimSahibi"][value="musteri"]').prop('checked', true);
+                                    $('#duzenleMusteriSelectDiv').show();
+                                    $('#duzenleSecilenMusteriId').val(data.musteriId);
+                                } else {
+                                    $('input[name="duzenleBildirimSahibi"][value="bayi"]').prop('checked', true);
+                                    $('#duzenleMusteriSelectDiv').hide();
+                                    $('#duzenleSecilenMusteriId').val('');
+                                }
             </text>
         }
         else
         {
             <text>
-                                        $('#duzenleMusteriSecimDiv').hide();
+                                $('#duzenleMusteriSecimDiv').hide();
             </text>
         }
+
                         $('#mevcutDosya').text(data.dosyaYolu ? 'Var' : 'Yok');
                         if (data.dosyaYolu) {
                             $('#mevcutDosya').html(`<a href="${data.dosyaYolu}" target="_blank">Dosyayı Gör</a>`);
                         }
+
                         $('#duzenleModal').modal('show');
                     }
                 }).fail(function() {
@@ -1148,19 +1223,50 @@
                 });
             });
 
+            // Düzenleme modalında lisans tipi değiştiğinde
+            $('#duzenleLisansTipId').change(function() {
+                var lisansTipId = $(this).val();
+                var musteriId = $('#duzenleSecilenMusteriId').val() || @(kullaniciTipi == "Musteri" ? ViewBag.KullaniciId?.ToString() ?? "null" : "null");
+
+                if (lisansTipId && musteriId) {
+                    $.get('@Url.Action("GetLisansNumaralariByMusteriVeTip")', {
+                        musteriId: musteriId,
+                        lisansTipId: lisansTipId
+                    }, function(data) {
+                        var lisansNoSelect = $('#duzenleLisansNo');
+                        lisansNoSelect.empty();
+                        lisansNoSelect.append('<option value="">-- Lisans Numarası Seçin --</option>');
+
+                        if (data && data.length > 0) {
+                            $.each(data, function(i, item) {
+                                lisansNoSelect.append('<option value="' + item.lisansNo + '" data-sozlesme-id="' + item.sozlesmeId + '">' + item.lisansNo + '</option>');
+                            });
+                        }
+                    });
+                }
+            });
+
             $('#duzenleForm').submit(function(e) {
                 e.preventDefault();
+
         @if (kullaniciTipi == "Bayi")
         {
             <text>
-                                if ($('input[name="duzenleBildirimSahibi"]:checked').val() === 'musteri') {
-                                    if (!$('#duzenleSecilenMusteriId').val()) {
-                                        showMessage('danger', 'Lütfen bir müşteri seçiniz.');
-                                        return false;
-                                    }
-                                }
+                        if ($('input[name="duzenleBildirimSahibi"]:checked').val() === 'musteri') {
+                            if (!$('#duzenleSecilenMusteriId').val()) {
+                                showMessage('danger', 'Lütfen bir müşteri seçiniz.');
+                                return false;
+                            }
+                        }
             </text>
         }
+
+                // Lisans numarası kontrolü
+                if (!$('#duzenleLisansNo').val()) {
+                    showMessage('danger', 'Lütfen bir lisans numarası seçiniz.');
+                    return false;
+                }
+
                 const formData = new FormData(this);
                 submitForm('@Url.Action("Duzenle")', formData, function(res) {
                     showMessage('success', res.message);
@@ -1169,6 +1275,7 @@
                 });
             });
 
+            // Silme işlemi
             $(document).on('click', '.btn-sil', function() {
                 const id = $(this).data('id');
                 Swal.fire({
@@ -1197,6 +1304,49 @@
                         .fail(function() {
                             showMessage('danger', 'Sunucuyla iletişim kurulamadı.');
                         });
+                    }
+                });
+            });
+
+            // Cevap görüntüleme
+            $(document).on('click', '.cevap-icerik', function() {
+                const bildirimId = $(this).data('id');
+                const tamCevap = $(this).data('cevap');
+                if (tamCevap) {
+                    $('#modalCevapMetni').text(tamCevap);
+                    $('#modalCevapTarihi').text($(this).closest('td').find('.cevap-tarihi').text());
+                    $('#modalDurumAdi').text($(this).closest('td').find('.durum-bilgi').text().replace('Durum: ', ''));
+                    $('#cevapModal').modal('show');
+                    return;
+                }
+                $('#modalCevapMetni').html(
+                    '<div class="text-center py-5">' +
+                    '<div class="spinner-border text-success" role="status"></div>' +
+                    '<p class="mt-3">Cevap bilgileri yükleniyor...</p>' +
+                    '</div>'
+                );
+                $.ajax({
+                    url: '@Url.Action("CevapDetayGetir")',
+                    type: 'GET',
+                    data: { id: bildirimId },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            $('#modalCevapMetni').text(response.distributorCevap || 'Cevap bulunamadı.');
+                            $('#modalCevapTarihi').text(response.distributorCevapTarihi || 'Belirtilmemiş');
+                            $('#modalDurumAdi').text(response.argeDurumAdi || 'Bilinmiyor');
+                            $('#cevapModal').modal('show');
+                        } else {
+                            showMessage('warning', response.message || 'Cevap bilgileri alınamadı.');
+                        }
+                    },
+                    error: function() {
+                        $('#modalCevapMetni').html(
+                            '<div class="alert alert-danger">' +
+                            '<i class="fas fa-exclamation-triangle me-2"></i>' +
+                            'Cevap bilgileri alınırken bir hata oluştu.' +
+                            '</div>'
+                        );
                     }
                 });
             });
