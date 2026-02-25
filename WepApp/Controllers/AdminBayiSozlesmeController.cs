@@ -15,27 +15,84 @@ namespace WepApp.Controllers
         private readonly BayiRepository _bayiRepo = new();
         private readonly SozlesmeDurumuRepository _durumRepo = new();
         private readonly BayiSozlesmeKriteriRepository _kriterTanimRepo = new();
+        private readonly MusteriRepository _musteriRepo = new();
         private readonly IWebHostEnvironment _env;
 
         public AdminBayiSozlesmeController(IWebHostEnvironment env)
         {
             _env = env;
         }
-
         public IActionResult Index()
         {
             LoadCommonData();
-            List<BayiSozlesme> sozlesmeler = _sozlesmeRepo.GetirQueryable()
-                .Where(x => x.Durumu == 1)
-                .Include(s => s.Bayi)
-                .Include(s => s.SozlesmeDurumu)
-                .Include(s => s.BayiSozlesmeBayiKriter)
-                    .ThenInclude(k => k.BayiSozlesmeKriteri)
-                .OrderByDescending(s => s.EklenmeTarihi)
-                .ToList();
 
-            ViewBag.Sozlesmeler = sozlesmeler;
-            return View();
+            try
+            {
+                // Session'dan kullanıcı bilgilerini al
+                Bayi currentBayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
+                Musteri currentMusteri = SessionHelper.GetObjectFromJson<Musteri>(HttpContext.Session, "Musteri");
+                Kullanicilar currentKullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
+
+                List<BayiSozlesme> sozlesmeler = new List<BayiSozlesme>();
+                var query = _sozlesmeRepo.GetirQueryable()
+                    .Where(x => x.Durumu == 1)
+                    .Include(s => s.Bayi)
+                    .Include(s => s.SozlesmeDurumu)
+                    .Include(s => s.BayiSozlesmeBayiKriter)
+                        .ThenInclude(k => k.BayiSozlesmeKriteri);
+
+                // Kullanıcı tipine göre sözleşmeleri filtrele
+                if (currentBayi != null)
+                {
+                    // Bayi girişi: Kendi sözleşmeleri + alt bayilerin sözleşmeleri
+                    var altBayiIds = _bayiRepo.GetBayiVeAltBayiler(currentBayi.Id)
+                        .Select(b => b.Id)
+                        .ToList();
+
+                    sozlesmeler = query
+                        .Where(s => altBayiIds.Contains(s.BayiId))
+                        .OrderByDescending(s => s.EklenmeTarihi)
+                        .ToList();
+                }
+                else if (currentMusteri != null)
+                {
+                    // Müşteri girişi: Bağlı olduğu bayinin sözleşmeleri
+                    // Müşterinin bağlı olduğu bayiyi bul
+                    var musteri = _musteriRepo.Getir(currentMusteri.Id);
+
+                    if (musteri?.BayiId != null)
+                    {
+                        sozlesmeler = query
+                            .Where(s => s.BayiId == musteri.BayiId)
+                            .OrderByDescending(s => s.EklenmeTarihi)
+                            .ToList();
+                    }
+                }
+                else if (currentKullanici != null)
+                {
+                    // Admin/Çalışan girişi: Tüm sözleşmeler
+                    sozlesmeler = query
+                        .OrderByDescending(s => s.EklenmeTarihi)
+                        .ToList();
+                }
+
+                // ViewBag'e kullanıcı bilgilerini de ekle
+                ViewBag.Sozlesmeler = sozlesmeler;
+                ViewBag.CurrentBayi = currentBayi;
+                ViewBag.CurrentMusteri = currentMusteri;
+                ViewBag.CurrentKullanici = currentKullanici;
+
+                // Ek bilgiler (opsiyonel)
+                ViewBag.ToplamSozlesme = sozlesmeler.Count;
+                ViewBag.AktifSozlesme = sozlesmeler.Count(s => s.SozlesmeDurumu?.Durumu == 1);
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Bayi sözleşmeleri yüklenirken hata: " + ex.Message;
+                return View();
+            }
         }
 
         [HttpGet]
@@ -128,14 +185,41 @@ namespace WepApp.Controllers
                 SozlesmeDurumuId, GecerlilikSuresi, BitisTarihi, KriterIds ?? new List<int>(), Dosya, "güncellendi");
         }
         private async Task<IActionResult> KaydetAsync(int? Id, int BayiId, string DokumanNo, DateTime YayinTarihi,
-             DateTime? RevizeTarihi, string RevizyonNo, int SozlesmeDurumuId, decimal GecerlilikSuresi,
-             DateTime BitisTarihi, List<int> KriterIds, IFormFile? Dosya, string islem)
+                     DateTime? RevizeTarihi, string RevizyonNo, int SozlesmeDurumuId, decimal GecerlilikSuresi,
+                     DateTime BitisTarihi, List<int> KriterIds, IFormFile? Dosya, string islem)
         {
             LoadCommonData();
 
+            // Session'dan tüm kullanıcı tiplerini al
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
-            if (kullanici == null)
-                return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
+            Bayi bayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
+            Musteri musteri = SessionHelper.GetObjectFromJson<Musteri>(HttpContext.Session, "Musteri");
+
+            // Kullanıcı kontrolü - hiçbiri yoksa yetkisiz
+            if (kullanici == null && bayi == null && musteri == null)
+            {
+                return Json(new { success = false, message = "Bu işlem için oturum açmanız gerekiyor." });
+            }
+
+            // Yetki kontrolü - bayi girişi yapmışsa, sadece kendi bayisine veya alt bayilerine ekleme yapabilir
+            if (bayi != null)
+            {
+                // Bayinin kendisi veya alt bayilerinden biri mi kontrol et
+                var yetkiliBayiIds = _bayiRepo.GetBayiVeAltBayiler(bayi.Id)
+                    .Select(b => b.Id)
+                    .ToList();
+
+                if (!yetkiliBayiIds.Contains(BayiId))
+                {
+                    return Json(new { success = false, message = "Bu bayi için işlem yapma yetkiniz bulunmamaktadır." });
+                }
+            }
+            // Müşteri girişi yapmışsa, sözleşme ekleyemez (sadece görüntüleyebilir)
+            else if (musteri != null)
+            {
+                return Json(new { success = false, message = "Müşteriler sözleşme ekleyemez." });
+            }
+            // Admin girişi - herhangi bir kısıtlama yok
 
             if (string.IsNullOrWhiteSpace(DokumanNo))
                 return Json(new { success = false, message = "Döküman No zorunludur." });
@@ -149,21 +233,69 @@ namespace WepApp.Controllers
                 BayiSozlesme sozlesme;
                 string? yeniDosyaYolu = null;
 
+                // Hangi kullanıcı tipinin ID'sini kullanacağımızı belirle
+                int? ekleyenKullaniciId = null;
+                int? ekleyenBayiId = null;
+                int? ekleyenMusteriId = null;
+
+                if (kullanici != null)
+                {
+                    ekleyenKullaniciId = kullanici.Id;
+                }
+                else if (bayi != null)
+                {
+                    ekleyenBayiId = bayi.Id;
+                }
+                else if (musteri != null)
+                {
+                    ekleyenMusteriId = musteri.Id;
+                }
+
                 if (Id.HasValue && Id > 0)
                 {
+                    // GÜNCELLEME
                     sozlesme = _sozlesmeRepo.Getir(Id.Value);
                     if (sozlesme == null || sozlesme.Durumu == 0)
                         return Json(new { success = false, message = "Sözleşme bulunamadı." });
+
+                    // Güncelleme yetkisi kontrolü
+                    if (bayi != null)
+                    {
+                        // Bayi sadece kendi eklediği veya kendi bayisine ait sözleşmeleri güncelleyebilir
+                        var yetkiliBayiIds = _bayiRepo.GetBayiVeAltBayiler(bayi.Id)
+                            .Select(b => b.Id)
+                            .ToList();
+
+                        if (!yetkiliBayiIds.Contains(sozlesme.BayiId))
+                        {
+                            return Json(new { success = false, message = "Bu sözleşmeyi güncelleme yetkiniz bulunmamaktadır." });
+                        }
+                    }
+
                     yeniDosyaYolu = sozlesme.DosyaYolu;
                 }
                 else
                 {
+                    // YENİ KAYIT
                     sozlesme = new BayiSozlesme
                     {
-                        EkleyenKullaniciId = kullanici.Id,
                         EklenmeTarihi = DateTime.Now,
                         Durumu = 1
                     };
+
+                    // Ekleyen bilgilerini set et
+                    if (ekleyenKullaniciId.HasValue)
+                    {
+                        sozlesme.EkleyenKullaniciId = ekleyenKullaniciId.Value;
+                    }
+                    else if (ekleyenBayiId.HasValue)
+                    {
+                        sozlesme.EkleyenBayiId = ekleyenBayiId.Value;
+                    }
+                    else if (ekleyenMusteriId.HasValue)
+                    {
+                        sozlesme.EkleyenMusteriId = ekleyenMusteriId.Value;
+                    }
                 }
 
                 // Dosya yükleme
@@ -204,23 +336,112 @@ namespace WepApp.Controllers
                 sozlesme.GecerlilikSuresi = GecerlilikSuresi;
                 sozlesme.BitisTarihi = BitisTarihi;
                 sozlesme.DosyaYolu = yeniDosyaYolu;
-                sozlesme.GuncelleyenKullaniciId = kullanici.Id;
                 sozlesme.GuncellenmeTarihi = DateTime.Now;
 
+                // Güncelleyen bilgilerini set et
+                if (ekleyenKullaniciId.HasValue)
+                {
+                    sozlesme.GuncelleyenKullaniciId = ekleyenKullaniciId.Value;
+                }
+                else if (ekleyenBayiId.HasValue)
+                {
+                    sozlesme.GuncelleyenBayiId = ekleyenBayiId.Value;
+                }
+                else if (ekleyenMusteriId.HasValue)
+                {
+                    sozlesme.GuncelleyenMusteriId = ekleyenMusteriId.Value;
+                }
+
                 if (Id.HasValue && Id > 0)
+                {
                     _sozlesmeRepo.Guncelle(sozlesme);
+                }
                 else
+                {
                     _sozlesmeRepo.Ekle(sozlesme);
+                }
 
-                // KRİTERLERİ KAYDET (Artık KriterIds garanti geliyor)
-                await KriterleriGuncelleAsync(sozlesme.Id, KriterIds, kullanici.Id);
+                // KRİTERLERİ KAYDET
+                // Kriterleri güncellerken de hangi kullanıcının yaptığını belirt
+                int kriterGuncelleyenId = ekleyenKullaniciId ?? ekleyenBayiId ?? ekleyenMusteriId ?? 0;
+                await KriterleriGuncelleAsync(sozlesme.Id, KriterIds, kriterGuncelleyenId,
+                    ekleyenKullaniciId.HasValue ? "kullanici" :
+                    (ekleyenBayiId.HasValue ? "bayi" : "musteri"));
 
-                return Json(new { success = true, message = $"Bayi sözleşmesi başarıyla {islem}." });
+                string kullaniciTipi = kullanici != null ? "admin" : (bayi != null ? "bayi" : "müşteri");
+                return Json(new { success = true, message = $"Bayi sözleşmesi başarıyla {islem}. (İşlem yapan: {kullaniciTipi})" });
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, message = $"İşlem sırasında hata: {ex.Message}" });
             }
+        }
+
+        // Kriterleri güncelleme metodunu da güncelle
+        private async Task KriterleriGuncelleAsync(int sozlesmeId, List<int> kriterIds, int guncelleyenId, string kullaniciTipi = "kullanici")
+        {
+            LoadCommonData();
+
+            // Eski kriterleri pasif yap
+            List<BayiSozlesmeBayiKriter> eskiKriterler = _kriterRepo.GetirList(x => x.BayiSozlesmeId == sozlesmeId && x.Durumu == 1).ToList();
+            foreach (BayiSozlesmeBayiKriter eski in eskiKriterler)
+            {
+                eski.Durumu = 0;
+                eski.GuncellenmeTarihi = DateTime.Now;
+
+                // Kullanıcı tipine göre güncelleyen ID'sini set et
+                if (kullaniciTipi == "kullanici")
+                {
+                    eski.GuncelleyenKullaniciId = guncelleyenId;
+                }
+                else if (kullaniciTipi == "bayi")
+                {
+                    eski.GuncelleyenBayiId = guncelleyenId;
+                }
+                else if (kullaniciTipi == "musteri")
+                {
+                    eski.GuncelleyenMusteriId = guncelleyenId;
+                }
+
+                _kriterRepo.Guncelle(eski);
+            }
+
+            // Yeni kriterleri ekle
+            if (kriterIds != null && kriterIds.Any())
+            {
+                foreach (int kriterId in kriterIds.Distinct())
+                {
+                    BayiSozlesmeBayiKriter yeni = new BayiSozlesmeBayiKriter
+                    {
+                        BayiSozlesmeId = sozlesmeId,
+                        BayiSozlesmeKriteriId = kriterId,
+                        Durumu = 1,
+                        EklenmeTarihi = DateTime.Now,
+                        GuncellenmeTarihi = DateTime.Now
+                    };
+
+                    // Ekleyen ve güncelleyen bilgilerini kullanıcı tipine göre set et
+                    if (kullaniciTipi == "kullanici")
+                    {
+                        yeni.EkleyenKullaniciId = guncelleyenId;
+                        yeni.GuncelleyenKullaniciId = guncelleyenId;
+                    }
+                    else if (kullaniciTipi == "bayi")
+                    {
+                        yeni.EkleyenBayiId = guncelleyenId;
+                        yeni.GuncelleyenBayiId = guncelleyenId;
+                    }
+                    else if (kullaniciTipi == "musteri")
+                    {
+                        yeni.EkleyenMusteriId = guncelleyenId;
+                        yeni.GuncelleyenMusteriId = guncelleyenId;
+                    }
+
+                    _kriterRepo.Ekle(yeni);
+                }
+            }
+
+            await Task.CompletedTask;
         }
 
         private async Task<bool> BenzersizKontrolAsync(string dokumanNo, string revizyonNo, int? excludeId = null)
@@ -353,13 +574,52 @@ namespace WepApp.Controllers
         {
             LoadCommonData();
 
-            var bayiler = _bayiRepo.GetirList(x => x.Durumu == 1)
-                .Select(b => new { value = b.Id, text = $"{b.Kodu} - {b.Unvan}" })
-                .OrderBy(x => x.text)
-                .ToList();
-            return Json(bayiler);
-        }
+            // Session'dan kullanıcı bilgilerini al
+            Bayi currentBayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
+            Musteri currentMusteri = SessionHelper.GetObjectFromJson<Musteri>(HttpContext.Session, "Musteri");
+            Kullanicilar currentKullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
 
+            List<Bayi> bayiler = new List<Bayi>();
+
+            // Kullanıcı tipine göre bayi listesini filtrele
+            if (currentBayi != null)
+            {
+                // Bayi girişi: SADECE alt bayileri (kendisi hariç)
+                var tumBayiler = _bayiRepo.GetBayiVeAltBayiler(currentBayi.Id) ?? new List<Bayi>();
+                // Kendisi hariç sadece alt bayileri al
+                bayiler = tumBayiler.Where(b => b.Id != currentBayi.Id).ToList();
+            }
+            else if (currentMusteri != null)
+            {
+                // Müşteri girişi: Sadece bağlı olduğu bayi
+                var musteri = _musteriRepo.Getir(currentMusteri.Id);
+                if (musteri?.BayiId != null)
+                {
+                    var bayi = _bayiRepo.Getir(musteri.BayiId.Value);
+                    if (bayi != null)
+                        bayiler.Add(bayi);
+                }
+            }
+            else if (currentKullanici != null)
+            {
+                // Admin girişi: Tüm bayiler
+                bayiler = _bayiRepo.GetirList(x => x.Durumu == 1).ToList();
+            }
+
+            // Bayi listesini formatla - bayiTipi olmadan
+            var bayiListesi = bayiler
+                .Where(b => b.Durumu == 1)
+                .OrderBy(b => b.Unvan)
+                .Select(b => new
+                {
+                    value = b.Id,
+                    text = $"{b.Kodu} - {b.Unvan}"
+                    // bayiTipi kaldırıldı
+                })
+                .ToList();
+
+            return Json(bayiListesi);
+        }
         [HttpGet]
         public IActionResult GetSozlesmeDurumlari()
         {

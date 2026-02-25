@@ -14,9 +14,11 @@ namespace WepApp.Controllers
     public class AdminMusteriSozlesmeController : AdminBaseController
     {
         private readonly MusteriSozlesmeRepository _sozlesmeRepo = new MusteriSozlesmeRepository();
+        private readonly MusteriTipiRepository _musteriTipiRepository = new MusteriTipiRepository();
         private readonly MusteriRepository _musteriRepo = new MusteriRepository();
         private readonly SozlesmeDurumuRepository _durumRepo = new SozlesmeDurumuRepository();
         private readonly TeklifRepository _teklifRepo = new TeklifRepository();
+        private readonly BayiRepository _bayiRepository = new BayiRepository();
         private readonly IWebHostEnvironment _environment;
 
         public AdminMusteriSozlesmeController(IWebHostEnvironment environment)
@@ -27,40 +29,127 @@ namespace WepApp.Controllers
         public IActionResult Index()
         {
             LoadCommonData();
-            List<string> join = new List<string>();
-            join.Add("Teklif");
-            join.Add("Teklif.LisansTip");
-            join.Add("Teklif.Detaylar");
-            // Tüm aktif sözleşmeleri getir
-            List<MusteriSozlesme> sozlesmeler = _sozlesmeRepo.GetirList(x => x.Durumu == 1, join)
-                .OrderByDescending(s => s.EklenmeTarihi)
-                .ToList();
 
-            // Navigation property'leri manuel doldur
-            foreach (MusteriSozlesme s in sozlesmeler)
+            try
             {
-                s.Musteri = _musteriRepo.Getir(s.MusteriId);
-                s.SozlesmeDurumu = _durumRepo.Getir(s.SozlesmeDurumuId);
+                // Session'dan kullanıcı bilgilerini al
+                Bayi currentBayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
+                Musteri currentMusteri = SessionHelper.GetObjectFromJson<Musteri>(HttpContext.Session, "Musteri");
+                Kullanicilar currentKullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
 
-                s.Teklif = _teklifRepo.Getir(
-                    x => x.Id == s.TeklifId,
-                    new List<string> { "LisansTip", "Detaylar" }
-                );
+                List<string> join = new List<string>();
+                join.Add("Teklif");
+                join.Add("Teklif.LisansTip");
+                join.Add("Teklif.Detaylar");
 
-                // Detaylar listesinden SADECE "grup" olanları tut
-                if (s.Teklif?.Detaylar != null)
+                List<MusteriSozlesme> sozlesmeler = new List<MusteriSozlesme>();
+
+                // Kullanıcı tipine göre sözleşmeleri filtrele
+                if (currentBayi != null)
                 {
-                    s.Teklif.Detaylar = s.Teklif.Detaylar
-                        .Where(d => d.Tip == "grup")
+                    // BAYI GİRİŞİ: Bayi ve alt bayilerine ait müşterilerin sözleşmeleri
+
+                    // 1. Adım: Bu bayi ve alt bayilerinin listesini al
+                    var bayiVeAltBayiler = _bayiRepository.GetBayiVeAltBayiler(currentBayi.Id) ?? new List<Bayi>();
+                    var bayiVeAltBayiIds = bayiVeAltBayiler.Select(b => b.Id).ToList();
+
+                    // 2. Adım: Bu bayilere ait müşteri ID'lerini bul
+                    var musteriIds = _musteriRepo.GetirList(
+                        x => x.Durum == 1 && bayiVeAltBayiIds.Contains(x.BayiId ?? 0)
+                    )
+                    .Select(m => m.Id)
+                    .ToList();
+
+                    // 3. Adım: Bu müşterilere ait sözleşmeleri getir
+                    sozlesmeler = _sozlesmeRepo.GetirList(
+                        x => x.Durumu == 1 && musteriIds.Contains(x.MusteriId),
+                        join
+                    )
+                    .OrderByDescending(s => s.EklenmeTarihi)
+                    .ToList();
+                }
+                else if (currentMusteri != null)
+                {
+                    // Müşteri girişi: Sadece kendi sözleşmeleri
+                    sozlesmeler = _sozlesmeRepo.GetirList(
+                        x => x.Durumu == 1 && x.MusteriId == currentMusteri.Id,
+                        join
+                    )
+                    .OrderByDescending(s => s.EklenmeTarihi)
+                    .ToList();
+                }
+                else if (currentKullanici != null)
+                {
+                    // Admin/Çalışan girişi: Tüm sözleşmeler
+                    sozlesmeler = _sozlesmeRepo.GetirList(x => x.Durumu == 1, join)
+                        .OrderByDescending(s => s.EklenmeTarihi)
                         .ToList();
                 }
-            }
-            ViewBag.Sozlesmeler = sozlesmeler;
-            ViewBag.Durumlar = _durumRepo.GetirList(x => x.Durumu == 1)
-                .OrderBy(x => x.Id)
-                .ToList();
 
-            return View();
+                // Navigation property'leri manuel doldur
+                foreach (MusteriSozlesme s in sozlesmeler)
+                {
+                    s.Musteri = _musteriRepo.Getir(s.MusteriId);
+                    s.SozlesmeDurumu = _durumRepo.Getir(s.SozlesmeDurumuId);
+
+                    // Teklif zaten join ile gelmiş olabilir, kontrol et
+                    if (s.Teklif == null && s.TeklifId > 0)
+                    {
+                        s.Teklif = _teklifRepo.Getir(
+                            x => x.Id == s.TeklifId,
+                            new List<string> { "LisansTip", "Detaylar" }
+                        );
+                    }
+
+                    // Detaylar listesinden SADECE "grup" olanları tut
+                    if (s.Teklif?.Detaylar != null)
+                    {
+                        s.Teklif.Detaylar = s.Teklif.Detaylar
+                            .Where(d => d.Tip == "grup")
+                            .ToList();
+                    }
+
+                    // Müşteri bilgilerini ve bağlı olduğu bayi bilgisini getir
+                    if (s.Musteri != null)
+                    {
+                        if (s.Musteri.BayiId > 0)
+                        {
+                            s.Musteri.Bayi = _bayiRepository.Getir(s.Musteri.BayiId ?? 0);
+                        }
+
+                        // Müşteri tipini de getir (eğer gelmediyse)
+                        if (s.Musteri.MusteriTipiId > 0 && s.Musteri.MusteriTipi == null)
+                        {
+                            s.Musteri.MusteriTipi = _musteriTipiRepository.Getir(s.Musteri.MusteriTipiId ??0);
+                        }
+                    }
+                }
+
+                // Bayi bazlı istatistikler (opsiyonel)
+                if (currentBayi != null)
+                {
+                    ViewBag.BayiAdi = currentBayi.Unvan;
+                    ViewBag.AltBayiSayisi = _bayiRepository.GetBayiVeAltBayiler(currentBayi.Id).Count - 1; // Kendisi hariç
+                    ViewBag.MusteriSayisi = sozlesmeler.Select(s => s.MusteriId).Distinct().Count();
+                }
+
+                ViewBag.Sozlesmeler = sozlesmeler;
+                ViewBag.Durumlar = _durumRepo.GetirList(x => x.Durumu == 1)
+                    .OrderBy(x => x.Id)
+                    .ToList();
+
+                // ViewBag'e kullanıcı bilgilerini de ekle (view'da göstermek için)
+                ViewBag.CurrentBayi = currentBayi;
+                ViewBag.CurrentMusteri = currentMusteri;
+                ViewBag.CurrentKullanici = currentKullanici;
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Sözleşmeler yüklenirken hata: " + ex.Message;
+                return View();
+            }
         }
 
         [HttpPost]

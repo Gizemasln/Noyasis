@@ -21,6 +21,7 @@ namespace WepApp.Controllers
         private readonly IWebHostEnvironment _webHostEnviroment;
 
         private readonly TeklifRepository _teklifRepo = new TeklifRepository();
+        private readonly BayiRepository _bayiRepository = new BayiRepository();
         private readonly TeklifDurumRepository _teklifDurumRepo = new TeklifDurumRepository();
         private readonly MusteriRepository _musteriRepo = new MusteriRepository();
         private readonly LisansTipRepository _lisansTipRepo = new LisansTipRepository();
@@ -50,13 +51,57 @@ namespace WepApp.Controllers
 
             try
             {
-                List<Teklif> teklifler = _teklifRepo.GetirList(
-                    x => x.Aktif == true,
-                    new List<string> { "Musteri", "LisansTip", "Musteri.Bayi", "TeklifDurum", "Nedenler" })
-                    .OrderByDescending(x => x.EklenmeTarihi)
+                // Session'dan kullanıcı bilgilerini al
+                Bayi currentBayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
+                Musteri currentMusteri = SessionHelper.GetObjectFromJson<Musteri>(HttpContext.Session, "Musteri");
+                Kullanicilar currentKullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
+
+                List<Teklif> teklifler = new List<Teklif>();
+
+                // Kullanıcı tipine göre teklifleri filtrele
+                if (currentBayi != null)
+                {
+                    // BAYI GİRİŞİ: Bayi ve alt bayilerine ait müşterilerin teklifleri
+
+                    var bayiVeAltBayiler = _bayiRepository.GetBayiVeAltBayiler(currentBayi.Id) ?? new List<Bayi>();
+                    var bayiVeAltBayiIds = bayiVeAltBayiler.Select(b => b.Id).ToList();
+
+                    // 2. Adım: Bu bayilere ait müşteri ID'lerini bul
+                    var musteriIds = _musteriRepo.GetirList(
+                        x => x.Durum == 1 && bayiVeAltBayiIds.Contains(x.BayiId ?? 0)
+                    )
+                    .Select(m => m.Id)
                     .ToList();
 
-                // Sözleşmeleri de getir
+                    // 3. Adım: Bu müşterilere ait teklifleri getir
+                    teklifler = _teklifRepo.GetirList(x => x.Aktif == true && musteriIds.Contains(x.MusteriId),
+                        new List<string> { "Musteri", "LisansTip", "Musteri.Bayi", "TeklifDurum", "Nedenler" }
+                    )
+                    .OrderByDescending(x => x.EklenmeTarihi)
+                    .ToList();
+                }
+                else if (currentMusteri != null)
+                {
+                    // MÜŞTERİ GİRİŞİ: Sadece kendi teklifleri
+                    teklifler = _teklifRepo.GetirList(
+                        x => x.Aktif == true && x.MusteriId == currentMusteri.Id,
+                        new List<string> { "Musteri", "LisansTip", "Musteri.Bayi", "TeklifDurum", "Nedenler" }
+                    )
+                    .OrderByDescending(x => x.EklenmeTarihi)
+                    .ToList();
+                }
+                else if (currentKullanici != null)
+                {
+                    // ADMIN GİRİŞİ: Tüm teklifler
+                    teklifler = _teklifRepo.GetirList(
+                        x => x.Aktif == true,
+                        new List<string> { "Musteri", "LisansTip", "Musteri.Bayi", "TeklifDurum", "Nedenler" }
+                    )
+                    .OrderByDescending(x => x.EklenmeTarihi)
+                    .ToList();
+                }
+
+                // Sözleşmeleri de getir (tüm sözleşmeler - filtreleme yok)
                 List<MusteriSozlesme> sozlesmeler = _sozlesmeRepo.GetirList(x => x.Durumu == 1)
                     .ToList();
 
@@ -65,6 +110,31 @@ namespace WepApp.Controllers
                     .Select(s => s.TeklifId)
                     .Distinct()
                     .ToHashSet();
+
+                // Eksik navigation property'leri manuel doldur (gerekirse)
+                foreach (var teklif in teklifler)
+                {
+                    // Müşteri bilgisi gelmemişse getir
+                    if (teklif.Musteri == null && teklif.MusteriId > 0)
+                    {
+                        teklif.Musteri = _musteriRepo.Getir(teklif.MusteriId);
+                    }
+
+                    // Müşterinin bayi bilgisini getir
+                    if (teklif.Musteri != null && teklif.Musteri.Bayi == null && teklif.Musteri.BayiId > 0)
+                    {
+                        teklif.Musteri.Bayi = _bayiRepository.Getir(teklif.Musteri.BayiId ?? 0);
+                    }
+                }
+
+                // Bayi bazlı istatistikler (opsiyonel)
+                if (currentBayi != null)
+                {
+                    ViewBag.BayiAdi = currentBayi.Unvan;
+                    ViewBag.AltBayiSayisi = _bayiRepository.GetBayiVeAltBayiler(currentBayi.Id).Count - 1; // Kendisi hariç
+                    ViewBag.MusteriSayisi = teklifler.Select(t => t.MusteriId).Distinct().Count();
+                    ViewBag.TeklifSayisi = teklifler.Count;
+                }
 
                 ViewBag.Teklifler = teklifler;
                 ViewBag.TeklifIdAktifSozlesmeVar = teklifIdAktifSozlesmeVar;
@@ -82,6 +152,11 @@ namespace WepApp.Controllers
                     .ToList();
 
                 ViewBag.Nedenler = _nedenlerRepo.GetirList(x => x.Durumu == 1).ToList();
+
+                // Kullanıcı bilgilerini ViewBag'e ekle (view'da göstermek için)
+                ViewBag.CurrentBayi = currentBayi;
+                ViewBag.CurrentMusteri = currentMusteri;
+                ViewBag.CurrentKullanici = currentKullanici;
 
                 LoadCommonData();
                 return View();
@@ -709,13 +784,50 @@ namespace WepApp.Controllers
 
             try
             {
-                Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
-                if (kullanici == null)
+                // Session'dan kullanıcı bilgilerini al - TÜM KULLANICI TİPLERİNİ KONTROL ET
+                Bayi currentBayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
+                Musteri currentMusteri = SessionHelper.GetObjectFromJson<Musteri>(HttpContext.Session, "Musteri");
+                Kullanicilar currentKullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
+
+                // Hiçbir kullanıcı oturum açmamışsa
+                if (currentBayi == null && currentMusteri == null && currentKullanici == null)
+                {
                     return Json(new { success = false, message = "Oturum süresi doldu. Lütfen tekrar giriş yapın." });
+                }
 
                 Teklif teklif = _teklifRepo.Getir(x => x.Id == id && x.Aktif == true);
                 if (teklif == null)
                     return Json(new { success = false, message = "Teklif bulunamadı." });
+
+                // Eğer bayi girişi yapmışsa, bu teklifin kendi yetki alanında olduğunu kontrol et
+                if (currentBayi != null)
+                {
+                    // Bayi ve alt bayilerine ait müşterilerin tekliflerini getir
+                    var bayiVeAltBayiler = _bayiRepository.GetBayiVeAltBayiler(currentBayi.Id) ?? new List<Bayi>();
+                    var bayiVeAltBayiIds = bayiVeAltBayiler.Select(b => b.Id).ToList();
+
+                    // Bu bayilere ait müşteri ID'lerini bul
+                    var musteriIds = _musteriRepo.GetirList(
+                        x => x.Durum == 1 && bayiVeAltBayiIds.Contains(x.BayiId ?? 0)
+                    )
+                    .Select(m => m.Id)
+                    .ToList();
+
+                    // Teklif bu müşterilere ait mi kontrol et
+                    if (!musteriIds.Contains(teklif.MusteriId))
+                    {
+                        return Json(new { success = false, message = "Bu teklif üzerinde işlem yapma yetkiniz bulunmamaktadır." });
+                    }
+                }
+                // Müşteri girişi yapmışsa, sadece kendi tekliflerini değiştirebilir
+                else if (currentMusteri != null)
+                {
+                    if (teklif.MusteriId != currentMusteri.Id)
+                    {
+                        return Json(new { success = false, message = "Bu teklif üzerinde işlem yapma yetkiniz bulunmamaktadır." });
+                    }
+                }
+                // Admin girişi - herhangi bir kısıtlama yok
 
                 // Eski durumu kaydet
                 int eskiDurumId = teklif.TeklifDurumId ?? 0;
@@ -792,16 +904,15 @@ namespace WepApp.Controllers
                 teklif.TeklifDurumId = durumId;
 
                 // Onay durumları için onay tarihi güncelle
-                if ( durumId == 6) // Onaylandı durumları
+                if (durumId == 6) // Onaylandı durumları
                 {
                     MusteriSozlesme sozles = _sozlesmeRepo.Getir(x => x.TeklifId == id);
-                    if(sozles != null)
+                    if (sozles != null)
                     {
                         sozles.SozlesmeDurumuId = 7;
                         _sozlesmeRepo.Guncelle(sozles);
-
                     }
-              
+
                     teklif.OnaylandiMi = true;
                     teklif.OnayTarihi = DateTime.Now;
                 }
@@ -812,6 +923,8 @@ namespace WepApp.Controllers
                 }
 
                 teklif.GuncellenmeTarihi = DateTime.Now;
+
+ 
 
                 // Güncelle
                 _teklifRepo.Guncelle(teklif);

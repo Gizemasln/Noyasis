@@ -9,12 +9,66 @@
     .menu-hiyerarsi .card {
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 10px;
     }
 
     .menu-hiyerarsi .card-header {
         background-color: #f8f9fa;
         border-bottom: 1px solid #dee2e6;
+        padding: 0;
     }
+
+    .menu-header-link {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        width: 100%;
+    }
+
+        .menu-header-link:hover {
+            background-color: #e9ecef;
+        }
+
+        .menu-header-link .chevron-icon {
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .menu-header-link.collapsed .chevron-icon {
+            transform: rotate(-90deg);
+        }
+
+    .seviye2-header-link {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        width: 100%;
+        border-bottom: 1px solid #e9ecef;
+        margin-bottom: 10px;
+    }
+
+        .seviye2-header-link:hover {
+            color: #0d6efd;
+        }
+
+        .seviye2-header-link .chevron-icon {
+            margin-right: 8px;
+            transition: transform 0.3s ease;
+            font-size: 11px;
+            color: #6c757d;
+        }
+
+        .seviye2-header-link.collapsed .chevron-icon {
+            transform: rotate(-90deg);
+        }
 
     .border-start {
         border-left-width: 3px !important;
@@ -23,6 +77,7 @@
 
     .form-check {
         margin-bottom: 0.5rem;
+        padding-left: 1.8rem;
     }
 
     .ms-4 {
@@ -34,15 +89,33 @@
     .btn-outline-secondary {
         margin-right: 0.5rem;
     }
-    /* Bağımsız checkbox stilleri */
+
     .form-check-input {
         cursor: pointer;
+        margin-right: 8px;
     }
 
         .form-check-input:checked {
             background-color: #0d6efd;
             border-color: #0d6efd;
         }
+
+    .menu-icerik {
+        padding: 15px;
+    }
+
+    .collapse {
+        transition: all 0.3s ease;
+    }
+
+    .seviye2-container {
+        margin-bottom: 15px;
+    }
+
+    .seviye2-icerik {
+        padding-left: 25px;
+        margin-top: 5px;
+    }
 </style>
 
 <div class="container-fluid mt-4">
@@ -104,88 +177,98 @@
                             {
                                 <div class="card mb-3">
                                     <div class="card-header bg-light">
-                                        <div class="form-check">
-                                            @{
-                                                string checkboxId1 = Model.CheckboxIdMap.ContainsKey($"{tip.Ad}|{seviye1.Url}")
-                                                ? Model.CheckboxIdMap[$"{tip.Ad}|{seviye1.Url}"]
-                                                : $"check_{tip.Id}_{seviye1.Url.Replace("/", "_").Replace("#", "hash_")}";
-                                            }
-                                            <input class="form-check-input seviye1-checkbox"
-                                                   type="checkbox"
-                                                   name="seciliUrlLer"
-                                                   value="@seviye1.Url"
-                                                   id="@checkboxId1"
-                                            @(tip.Izinler.Contains(seviye1.Url) ? "checked" : "") />
-                                            <label class="form-check-label fw-bold" for="@checkboxId1">
-                                                @if (!string.IsNullOrEmpty(seviye1.Icon))
-                                                {
-                                                    <i class="@seviye1.Icon me-2"></i>
+                                        <div class="menu-header-link" data-bs-toggle="collapse" data-bs-target="#collapse-seviye1-@tip.Id-@seviye1.Url.Replace("/", "_").Replace("#", "hash_")" aria-expanded="true">
+                                            <i class="fas fa-chevron-down chevron-icon"></i>
+                                            <div class="form-check mb-0" style="padding-left: 0;">
+                                                @{
+                                                    string checkboxId1 = Model.CheckboxIdMap.ContainsKey($"{tip.Ad}|{seviye1.Url}")
+                                                    ? Model.CheckboxIdMap[$"{tip.Ad}|{seviye1.Url}"]
+                                                    : $"check_{tip.Id}_{seviye1.Url.Replace("/", "_").Replace("#", "hash_")}";
                                                 }
-                                                @seviye1.Baslik
-                                            </label>
+                                                <input class="form-check-input seviye1-checkbox"
+                                                       type="checkbox"
+                                                       name="seciliUrlLer"
+                                                       value="@seviye1.Url"
+                                                       id="@checkboxId1"
+                                                       onclick="event.stopPropagation();"
+                                                @(tip.Izinler.Contains(seviye1.Url) ? "checked" : "") />
+                                                <label class="form-check-label fw-bold" for="@checkboxId1" onclick="event.stopPropagation();">
+                                                    @if (!string.IsNullOrEmpty(seviye1.Icon))
+                                                    {
+                                                        <i class="@seviye1.Icon me-2"></i>
+                                                    }
+                                                    @seviye1.Baslik
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
 
                                     @if (seviye1.AltMenuler.Any())
                                     {
-                                        <div class="card-body">
-                                            <div class="row">
-                                                @foreach (var seviye2 in seviye1.AltMenuler.OrderBy(m => m.Siralama))
-                                                {
-                                                    <div class="col-md-6 mb-3">
-                                                        <div class="border-start border-3 ps-3">
-                                                            <div class="form-check">
-                                                                @{
-                                                                    string checkboxId2 = Model.CheckboxIdMap.ContainsKey($"{tip.Ad}|{seviye2.Url}")
-                                                                    ? Model.CheckboxIdMap[$"{tip.Ad}|{seviye2.Url}"]
-                                                                    : $"check_{tip.Id}_{seviye2.Url.Replace("/", "_").Replace("#", "hash_")}";
-                                                                }
-                                                                <input class="form-check-input seviye2-checkbox"
-                                                                       type="checkbox"
-                                                                       name="seciliUrlLer"
-                                                                       value="@seviye2.Url"
-                                                                       id="@checkboxId2"
-                                                                @(tip.Izinler.Contains(seviye2.Url) ? "checked" : "") />
-                                                                <label class="form-check-label" for="@checkboxId2">
-                                                                    @if (!string.IsNullOrEmpty(seviye2.Icon))
-                                                                    {
-                                                                        <i class="@seviye2.Icon me-2"></i>
-                                                                    }
-                                                                    @seviye2.Baslik
-                                                                </label>
-                                                            </div>
-
-                                                            @if (seviye2.AltMenuler.Any())
-                                                            {
-                                                                <div class="ms-4 mt-2">
-                                                                    @foreach (var seviye3 in seviye2.AltMenuler.OrderBy(m => m.Siralama))
-                                                                    {
-                                                                        <div class="form-check">
-                                                                            @{
-                                                                                string checkboxId3 = Model.CheckboxIdMap.ContainsKey($"{tip.Ad}|{seviye3.Url}")
-                                                                                ? Model.CheckboxIdMap[$"{tip.Ad}|{seviye3.Url}"]
-                                                                                : $"check_{tip.Id}_{seviye3.Url.Replace("/", "_").Replace("#", "hash_")}";
+                                        <div class="collapse show" id="collapse-seviye1-@tip.Id-@seviye1.Url.Replace("/", "_").Replace("#", "hash_")">
+                                            <div class="menu-icerik">
+                                                <div class="row">
+                                                    @foreach (var seviye2 in seviye1.AltMenuler.OrderBy(m => m.Siralama))
+                                                    {
+                                                        <div class="col-md-6 mb-3">
+                                                            <div class="border-start border-3 ps-3 seviye2-container">
+                                                                <div class="seviye2-header-link" data-bs-toggle="collapse" data-bs-target="#collapse-seviye2-@tip.Id-@seviye2.Url.Replace("/", "_").Replace("#", "hash_")" aria-expanded="true">
+                                                                    <i class="fas fa-chevron-down chevron-icon"></i>
+                                                                    <div class="form-check mb-0" style="padding-left: 0;">
+                                                                        @{
+                                                                            string checkboxId2 = Model.CheckboxIdMap.ContainsKey($"{tip.Ad}|{seviye2.Url}")
+                                                                            ? Model.CheckboxIdMap[$"{tip.Ad}|{seviye2.Url}"]
+                                                                            : $"check_{tip.Id}_{seviye2.Url.Replace("/", "_").Replace("#", "hash_")}";
+                                                                        }
+                                                                        <input class="form-check-input seviye2-checkbox"
+                                                                               type="checkbox"
+                                                                               name="seciliUrlLer"
+                                                                               value="@seviye2.Url"
+                                                                               id="@checkboxId2"
+                                                                               onclick="event.stopPropagation();"
+                                                                        @(tip.Izinler.Contains(seviye2.Url) ? "checked" : "") />
+                                                                        <label class="form-check-label fw-bold" for="@checkboxId2" onclick="event.stopPropagation();">
+                                                                            @if (!string.IsNullOrEmpty(seviye2.Icon))
+                                                                            {
+                                                                                <i class="@seviye2.Icon me-2"></i>
                                                                             }
-                                                                            <input class="form-check-input seviye3-checkbox"
-                                                                                   type="checkbox"
-                                                                                   name="seciliUrlLer"
-                                                                                   value="@seviye3.Url"
-                                                                                   id="@checkboxId3"
-                                                                            @(tip.Izinler.Contains(seviye3.Url) ? "checked" : "") />
-                                                                            <label class="form-check-label" for="@checkboxId3">
-                                                                                @if (!string.IsNullOrEmpty(seviye3.Icon))
-                                                                                {
-                                                                                    <i class="@seviye3.Icon me-2"></i>
-                                                                                }
-                                                                                @seviye3.Baslik
-                                                                            </label>
-                                                                        </div>
-                                                                    }
+                                                                            @seviye2.Baslik
+                                                                        </label>
+                                                                    </div>
                                                                 </div>
-                                                            }
+
+                                                                @if (seviye2.AltMenuler.Any())
+                                                                {
+                                                                    <div class="collapse show seviye2-icerik" id="collapse-seviye2-@tip.Id-@seviye2.Url.Replace("/", "_").Replace("#", "hash_")">
+                                                                        @foreach (var seviye3 in seviye2.AltMenuler.OrderBy(m => m.Siralama))
+                                                                        {
+                                                                            <div class="form-check">
+                                                                                @{
+                                                                                    string checkboxId3 = Model.CheckboxIdMap.ContainsKey($"{tip.Ad}|{seviye3.Url}")
+                                                                                    ? Model.CheckboxIdMap[$"{tip.Ad}|{seviye3.Url}"]
+                                                                                    : $"check_{tip.Id}_{seviye3.Url.Replace("/", "_").Replace("#", "hash_")}";
+                                                                                }
+                                                                                <input class="form-check-input seviye3-checkbox"
+                                                                                       type="checkbox"
+                                                                                       name="seciliUrlLer"
+                                                                                       value="@seviye3.Url"
+                                                                                       id="@checkboxId3"
+                                                                                @(tip.Izinler.Contains(seviye3.Url) ? "checked" : "") />
+                                                                                <label class="form-check-label" for="@checkboxId3">
+                                                                                    @if (!string.IsNullOrEmpty(seviye3.Icon))
+                                                                                    {
+                                                                                        <i class="@seviye3.Icon me-2"></i>
+                                                                                    }
+                                                                                    @seviye3.Baslik
+                                                                                </label>
+                                                                            </div>
+                                                                        }
+                                                                    </div>
+                                                                }
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                }
+                                                    }
+                                                </div>
                                             </div>
                                         </div>
                                     }
@@ -212,7 +295,6 @@
 
             // Sadece görsel geri bildirim için bir fonksiyon (isteğe bağlı)
             $('.seviye1-checkbox, .seviye2-checkbox, .seviye3-checkbox').change(function() {
-                // Burada sadece konsola yazdırabiliriz, başka bir işlem yapmıyoruz
                 console.log('Checkbox değişti:', $(this).val(), $(this).is(':checked'));
             });
 
@@ -239,6 +321,65 @@
                 console.log('Seçili menü sayısı:', checkedCount);
                 console.log('Seçili menüler:', checkedValues);
             });
+
+            // Chevron ikonlarının dönüşünü yönet (Seviye 1)
+            $('.menu-header-link').on('click', function() {
+                var $icon = $(this).find('.chevron-icon:first');
+                var target = $(this).data('bs-target');
+                var $collapse = $(target);
+
+                $collapse.on('shown.bs.collapse', function() {
+                    $icon.removeClass('fa-chevron-right').addClass('fa-chevron-down');
+                });
+
+                $collapse.on('hidden.bs.collapse', function() {
+                    $icon.removeClass('fa-chevron-down').addClass('fa-chevron-right');
+                });
+            });
+
+            // Chevron ikonlarının dönüşünü yönet (Seviye 2)
+            $('.seviye2-header-link').on('click', function() {
+                var $icon = $(this).find('.chevron-icon:first');
+                var target = $(this).data('bs-target');
+                var $collapse = $(target);
+
+                $collapse.on('shown.bs.collapse', function() {
+                    $icon.removeClass('fa-chevron-right').addClass('fa-chevron-down');
+                });
+
+                $collapse.on('hidden.bs.collapse', function() {
+                    $icon.removeClass('fa-chevron-down').addClass('fa-chevron-right');
+                });
+            });
+
+            // Sayfa yüklendiğinde tüm collapse'ların durumunu kontrol et (Seviye 1)
+            $('.menu-header-link').each(function() {
+                var target = $(this).data('bs-target');
+                var $collapse = $(target);
+                var $icon = $(this).find('.chevron-icon:first');
+
+                if ($collapse.hasClass('show')) {
+                    $icon.removeClass('fa-chevron-right').addClass('fa-chevron-down');
+                } else {
+                    $icon.removeClass('fa-chevron-down').addClass('fa-chevron-right');
+                }
+            });
+
+            // Sayfa yüklendiğinde tüm collapse'ların durumunu kontrol et (Seviye 2)
+            $('.seviye2-header-link').each(function() {
+                var target = $(this).data('bs-target');
+                var $collapse = $(target);
+                var $icon = $(this).find('.chevron-icon:first');
+
+                if ($collapse.hasClass('show')) {
+                    $icon.removeClass('fa-chevron-right').addClass('fa-chevron-down');
+                } else {
+                    $icon.removeClass('fa-chevron-down').addClass('fa-chevron-right');
+                }
+            });
+
+            // Tüm seviye2 collapse'larının başlangıçta açık olmasını sağla
+            $('.seviye2-icerik').addClass('show');
         });
     </script>
 }

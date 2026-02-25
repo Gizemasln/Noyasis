@@ -14,10 +14,18 @@ namespace WepApp.Models
         public DateTime YayinTarihi { get; set; }
         public DateTime RevizeTarihi { get; set; }
         public string RevizyonNo { get; set; }
-        public string DosyaYolu { get; set; }
+        public string? DosyaYolu { get; set; }
         public int SozlesmeDurumuId { get; set; }
         public decimal GecerlilikSuresi { get; set; }
         public DateTime BitisTarihi { get; set; }
+
+        // BayiSozlesme modeline ekleyin
+        public int? EkleyenBayiId { get; set; }
+        public int? EkleyenMusteriId { get; set; }
+        public int? GuncelleyenBayiId { get; set; }
+        public int? GuncelleyenMusteriId { get; set; }
+
+     
         public Bayi Bayi { get; set; }
         public SozlesmeDurumu SozlesmeDurumu { get; set; }
         public List<BayiSozlesmeBayiKriter> BayiSozlesmeBayiKriter { get;  set; }

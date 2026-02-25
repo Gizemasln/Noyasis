@@ -126,10 +126,10 @@
                                         </td>
                                         <td class="text-center">
                                             <button class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenle(@s.Id)">
-                                                <i class="fas fa-edit">Düzenle</i>
+                                                <i class="fas fa-edit"></i>
                                             </button>
                                             <button class="btn btn-danger btn-sm" onclick="silOnay(@s.Id, '@s.DokumanNo')">
-                                                <i class="fas fa-trash">Sil</i>
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
@@ -243,10 +243,36 @@
             formEventleriAyarla();
         });
 
-        function yukleVeriler() {
-            $.getJSON('/AdminBayiSozlesme/GetBayiler').done(data => $('#bayiId').empty().append('<option value="">Bayi Seçiniz</option>').append(data.map(i => `<option value="${i.value}">${i.text}</option>`)));
-            $.getJSON('/AdminBayiSozlesme/GetSozlesmeDurumlari').done(data => $('#durumId').empty().append('<option value="">Durum Seçiniz</option>').append(data.map(i => `<option value="${i.value}">${i.text}</option>`)));
-            $.getJSON('/AdminBayiSozlesme/GetKriterTanimlari').done(data => { kriterList = data; kriterListesiYukle(); });
+             function yukleVeriler() {
+            // Bayileri yükle
+            $.getJSON('/AdminBayiSozlesme/GetBayiler').done(function(data) {
+                var bayiSelect = $('#bayiId').empty().append('<option value="">Bayi Seçiniz</option>');
+
+                // Tüm bayileri direkt ekle (gruplandırma yok)
+                data.forEach(function(b) {
+                    var option = $('<option>', {
+                        value: b.value,
+                        text: b.text
+                    });
+                    bayiSelect.append(option);
+                });
+
+                // İlk veriyi seçili yap (eğer data varsa)
+                if (data.length > 0) {
+                    bayiSelect.val(data[0].value);
+                }
+            });
+
+            // Diğer verileri yükle
+            $.getJSON('/AdminBayiSozlesme/GetSozlesmeDurumlari').done(data => {
+                $('#durumId').empty().append('<option value="">Durum Seçiniz</option>')
+                    .append(data.map(i => `<option value="${i.value}">${i.text}</option>`));
+            });
+
+            $.getJSON('/AdminBayiSozlesme/GetKriterTanimlari').done(data => {
+                kriterList = data;
+                kriterListesiYukle();
+            });
         }
 
         function formEventleriAyarla() {
@@ -319,12 +345,12 @@
                 $('#kriterListesi').html('<p class="text-danger">Kriterler yüklenirken hata oluştu.</p>');
             });
         }
-
-        function duzenle(id) {
+        // Düzenleme yaparken de bayi seçili kalsın
+            function duzenle(id) {
             currentEditId = id;
             $.get('/AdminBayiSozlesme/Getir?id=' + id, function(data) {
                 $('#sozlesmeId').val(data.id);
-                $('#bayiId').val(data.bayiId);
+                $('#bayiId').val(data.bayiId);  // Bu zaten seçili olacak
                 $('#dokumanNo').val(data.dokumanNo);
                 $('#yayinTarihi').val(data.yayinTarihi);
                 $('#bitisTarihi').val(data.bitisTarihi);
@@ -342,7 +368,6 @@
                 benzersizKontrol();
             });
         }
-
         function formKaydet() {
             if ($('#benzersizUyari').children().length > 0) {
                 Swal.fire('Uyarı!', 'Bu döküman no zaten kayıtlı!', 'warning');
@@ -394,7 +419,6 @@
                     });
             });
         }
-
         function formTemizle() {
             $('#sozlesmeForm')[0].reset();
             $('#sozlesmeId').val('0');
@@ -403,6 +427,21 @@
             currentEditId = null;
             $('#modalTitle').text('Yeni Sözleşme Ekle');
             kriterListesiYukle();
+
+            // Bayi listesini tekrar yükle ve ilk veriyi seç
+            $.getJSON('/AdminBayiSozlesme/GetBayiler').done(function(data) {
+                var bayiSelect = $('#bayiId').empty().append('<option value="">Bayi Seçiniz</option>');
+                data.forEach(function(b) {
+                    var option = $('<option>', {
+                        value: b.value,
+                        text: b.text
+                    });
+                    bayiSelect.append(option);
+                });
+                if (data.length > 0) {
+                    bayiSelect.val(data[0].value);
+                }
+            });
         }
 
         $('#sozlesmeModal').on('show.bs.modal', function () {

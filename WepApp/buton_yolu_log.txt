@@ -1,4 +1,4 @@
-=== BUTON TARAMA LOGU - 24.02.2026 17:15:07 ===
+=== BUTON TARAMA LOGU - 25.02.2026 14:15:37 ===
 ContentRootPath: D:\PROJELER\Noyasis\WepApp
 WebRootPath: D:\PROJELER\Noyasis\WepApp\wwwroot
 BaseDirectory: D:\PROJELER\Noyasis\WepApp\bin\Debug\net8.0\
@@ -10,33 +10,11 @@ ARANAN YOLLAR:
 
 VIEWS KLASÖRÜ BULUNDU: D:\PROJELER\Noyasis\WepApp\Views
 Toplam 67 .cshtml dosyası bulundu:
-- D:\PROJELER\Noyasis\WepApp\Views\AdminAnaSayfa\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminAnaSayfaBannerResim\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminAnaSayfaSlider\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminARGEDurum\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminArgeHata\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminBayi\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminBayiDuyuru\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminBayiSozlesme\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminBayiSozlesmeKriteri\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminBirim\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminButton\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminDepartman\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminDuyuru\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminEntegrator\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminGenelAydinlatma\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminHakkimizdaBilgileri\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminHakkimizdaFotograf\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminIK\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminIletisimBilgileri\Index.cshtml
-- D:\PROJELER\Noyasis\WepApp\Views\AdminIstekOneri\Index.cshtml
-... ve 47 dosya daha
 
-Toplam 151 buton bulundu:
-- AdminAnaSayfa / sozlesme-detay
-- AdminAnaSayfaBannerResim / ekle
+Toplam 150 buton bulundu:
 - AdminAnaSayfaBannerResim / duzenle
 - AdminAnaSayfaBannerResim / sil
+- AdminAnaSayfaBannerResim / ekle
 - AdminAnaSayfaSlider / ekle
 - AdminAnaSayfaSlider / duzenle
 - AdminAnaSayfaSlider / sil
@@ -44,13 +22,13 @@ Toplam 151 buton bulundu:
 - AdminARGEDurum / duzenle
 - AdminARGEDurum / sil
 - AdminArgeHata / sozlesme-detay
-- AdminArgeHata / duzenle
 - AdminArgeHata / sil
+- AdminArgeHata / duzenle
 - AdminArgeHata / detay
 - AdminBayi / ekle
-- AdminBayi / sil
 - AdminBayi / sozlesme-detay
 - AdminBayi / duzenle
+- AdminBayi / sil
 - AdminBayi / detay-goster
 - AdminBayi / detay
 - AdminBayiDuyuru / ekle
@@ -79,9 +57,9 @@ Toplam 151 buton bulundu:
 - AdminGenelAydinlatma / ekle
 - AdminGenelAydinlatma / duzenle
 - AdminGenelAydinlatma / sil
-- AdminHakkimizdaBilgileri / ekle
 - AdminHakkimizdaBilgileri / duzenle
 - AdminHakkimizdaBilgileri / sil
+- AdminHakkimizdaBilgileri / ekle
 - AdminHakkimizdaFotograf / ekle
 - AdminHakkimizdaFotograf / sil
 - AdminIK / ekle
@@ -92,8 +70,8 @@ Toplam 151 buton bulundu:
 - AdminIletisimBilgileri / duzenle
 - AdminIletisimBilgileri / sil
 - AdminIstekOneri / sozlesme-detay
-- AdminIstekOneri / duzenle
 - AdminIstekOneri / sil
+- AdminIstekOneri / duzenle
 - AdminIstekOneri / detay
 - AdminIstekOneriDurum / ekle
 - AdminIstekOneriDurum / duzenle
@@ -109,9 +87,9 @@ Toplam 151 buton bulundu:
 - AdminKDV / sil
 - AdminKullanici / ekle
 - AdminKullanici / sil
+- AdminKullanicilar / ekle
 - AdminKullanicilar / duzenle
 - AdminKullanicilar / sil
-- AdminKullanicilar / ekle
 - AdminKVKK / ekle
 - AdminKVKK / duzenle
 - AdminKVKK / sil
@@ -121,17 +99,17 @@ Toplam 151 buton bulundu:
 - AdminLisansTip / ekle
 - AdminLisansTip / duzenle
 - AdminLisansTip / sil
+- AdminLokasyon / ekle
 - AdminLokasyon / duzenle
 - AdminLokasyon / sil
-- AdminLokasyon / ekle
 - AdminMakale / ekle
 - AdminMakale / detay-goster
 - AdminMakale / duzenle
 - AdminMakale / sil
 - AdminMusteri / ekle
-- AdminMusteri / sil
 - AdminMusteri / sozlesme-detay
 - AdminMusteri / duzenle
+- AdminMusteri / sil
 - AdminMusteriSozlesme / sozlesme-detay
 - AdminMusteriSozlesme / sil
 - AdminMusteriTipi / ekle
@@ -152,17 +130,17 @@ Toplam 151 buton bulundu:
 - AdminPaketGrup / duzenle
 - AdminPaketGrup / sil
 - AdminPaketGrupDetay / duzenle
+- AdminSertifika / ekle
 - AdminSertifika / duzenle
 - AdminSertifika / sil
-- AdminSertifika / ekle
 - AdminSozlesmeDurumu / ekle
 - AdminSozlesmeDurumu / duzenle
 - AdminSozlesmeDurumu / sil
 - AdminSSS / ekle
 - AdminSSS / duzenle
 - AdminSSS / sil
-- AdminTeklif / sil
 - AdminTeklif / sozlesme-detay
+- AdminTeklif / sil
 - AdminTeklif / ekle
 - AdminTeklifDurum / ekle
 - AdminTeklifDurum / duzenle
@@ -170,11 +148,11 @@ Toplam 151 buton bulundu:
 - AdminTeklifler / ekle
 - AdminTeklifler / duzenle
 - AdminTeklifler / sil
+- AdminUrun / ekle
 - AdminUrun / duzenle
 - AdminUrun / sil
-- AdminUrun / ekle
-- AdminUrunGaleri / sil
 - AdminUrunGaleri / ekle
+- AdminUrunGaleri / sil
 - AdminUYB / ekle
 - AdminUYB / duzenle
 - AdminYetki / duzenle

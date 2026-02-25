@@ -47,7 +47,9 @@ namespace WepApp.Controllers
 
                 Bayi currentBayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
                 Musteri musteris = SessionHelper.GetObjectFromJson<Musteri>(HttpContext.Session, "Musteri");
+                Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
 
+                // Bayi listesini hazırla (üst kısım için)
                 List<Bayi> bayiList;
                 if (currentBayi != null)
                     bayiList = _bayiRepository.GetBayiVeAltBayiler(currentBayi.Id) ?? new List<Bayi>();
@@ -59,27 +61,55 @@ namespace WepApp.Controllers
                     b.Seviye = b.Seviye ?? 0;
 
                 ViewBag.TumBayiler = bayiList;
+
+                // Müşteri listesini hazırla
                 if (musteriId != 0)
                 {
-                    List<Musteri> musteri = _musteriRepository.GetirList(x => x.Id == musteriId && x.Durum == 1, new List<string> { "MusteriTipi", "Bayi" });
+                    // Spesifik bir müşteri ID'si gelmişse
+                    List<Musteri> musteri = _musteriRepository.GetirList(
+                        x => x.Id == musteriId && x.Durum == 1,
+                        new List<string> { "MusteriTipi", "Bayi" }
+                    );
                     ViewBag.MusteriList = musteri;
-
                 }
-               if(musteris!=null)
+                else if (musteris != null)
                 {
-                    List<Musteri> musteriler = _musteriRepository.GetirList(x => x.Durum == 1 && x.Id==musteris.Id, new List<string> { "MusteriTipi", "Bayi" })
-                       ?.OrderBy(x => x.Ad).ThenBy(x => x.Soyad).ToList() ?? new List<Musteri>();
-                    ViewBag.MusteriList = musteriler;
-
-                }
-                else
-                {
-                    List<Musteri> musteriler = _musteriRepository.GetirList(x => x.Durum == 1 , new List<string> { "MusteriTipi", "Bayi" })
-                     ?.OrderBy(x => x.Ad).ThenBy(x => x.Soyad).ToList() ?? new List<Musteri>();
+                    // Müşteri girişi yapmışsa - SADECE KENDİ BİLGİLERİ
+                    List<Musteri> musteriler = _musteriRepository.GetirList(
+                        x => x.Durum == 1 && x.Id == musteris.Id,
+                        new List<string> { "MusteriTipi", "Bayi" }
+                    )?.OrderBy(x => x.Ad).ThenBy(x => x.Soyad).ToList() ?? new List<Musteri>();
                     ViewBag.MusteriList = musteriler;
                 }
+                else if (currentBayi != null)
+                {
+                    // BAYI GİRİŞİ - Kendisi ve alt bayilerinin müşterileri
+                    // Önce bu bayi ve alt bayilerinin ID'lerini al
+                    var bayiVeAltBayiIds = bayiList.Select(b => b.Id).ToList();
 
-                    return View();
+                    List<Musteri> musteriler = _musteriRepository.GetirList(
+                        x => x.Durum == 1 && bayiVeAltBayiIds.Contains(x.BayiId ?? 0),
+                        new List<string> { "MusteriTipi", "Bayi" }
+                    )?.OrderBy(x => x.Ad).ThenBy(x => x.Soyad).ToList() ?? new List<Musteri>();
+
+                    ViewBag.MusteriList = musteriler;
+                }
+                else if (kullanici != null)
+                {
+                    // ADMIN GİRİŞİ - Tüm müşteriler
+                    List<Musteri> musteriler = _musteriRepository.GetirList(
+                        x => x.Durum == 1,
+                        new List<string> { "MusteriTipi", "Bayi" }
+                    )?.OrderBy(x => x.Ad).ThenBy(x => x.Soyad).ToList() ?? new List<Musteri>();
+                    ViewBag.MusteriList = musteriler;
+                }
+
+                // Kullanıcı bilgilerini ViewBag'e ekle (view'da kullanmak için)
+                ViewBag.CurrentBayi = currentBayi;
+                ViewBag.CurrentMusteri = musteris;
+                ViewBag.CurrentKullanici = kullanici;
+
+                return View();
             }
             catch (Exception ex)
             {

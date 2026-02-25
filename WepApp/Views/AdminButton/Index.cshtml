@@ -53,26 +53,62 @@
                 ["AdminTeklifVer"] = "Teklif Oluştur",
                 ["AdminUrunGaleri"] = "Ürün Görselleri",
                 ["AdminUYB"] = "Genel Ayarlar",
-                ["AdminYetki"] = "Yetkilendirme"
+                ["AdminYetki"] = "Yetkilendirme",
+                ["AdminAnaSayfa"] = "Ana Sayfa",
             };
 
     // BUTON AKSİYONU ÇEVİRİ SÖZLÜĞÜ
+    // BUTON AKSİYONU ÇEVİRİ SÖZLÜĞÜ
     var butonAdlari = new Dictionary<string, dynamic>
             {
+        // Temel işlemler
                 ["create"] = new { Ad = "Ekle", Icon = "fa-plus", Renk = "success" },
                 ["ekle"] = new { Ad = "Ekle", Icon = "fa-plus", Renk = "success" },
+                ["add"] = new { Ad = "Ekle", Icon = "fa-plus", Renk = "success" },
+                ["yeni"] = new { Ad = "Ekle", Icon = "fa-plus", Renk = "success" },
+
                 ["edit"] = new { Ad = "Düzenle", Icon = "fa-edit", Renk = "warning" },
                 ["duzenle"] = new { Ad = "Düzenle", Icon = "fa-edit", Renk = "warning" },
                 ["guncelle"] = new { Ad = "Düzenle", Icon = "fa-edit", Renk = "warning" },
+                ["update"] = new { Ad = "Düzenle", Icon = "fa-edit", Renk = "warning" },
+
                 ["delete"] = new { Ad = "Sil", Icon = "fa-trash", Renk = "danger" },
                 ["sil"] = new { Ad = "Sil", Icon = "fa-trash", Renk = "danger" },
+                ["remove"] = new { Ad = "Sil", Icon = "fa-trash", Renk = "danger" },
+
                 ["view"] = new { Ad = "Detay", Icon = "fa-eye", Renk = "info" },
                 ["detay"] = new { Ad = "Detay", Icon = "fa-eye", Renk = "info" },
-                ["detay-goster"] = new { Ad = "Detay", Icon = "fa-eye", Renk = "info" },
+                ["detail"] = new { Ad = "Detay", Icon = "fa-eye", Renk = "info" },
                 ["goruntule"] = new { Ad = "Görüntüle", Icon = "fa-eye", Renk = "info" },
-                ["sozlesme-detay"] = new { Ad = "Sözleşme Detay", Icon = "fa-eye", Renk = "info" },
-                ["lisansla"] = new { Ad = "Lisansla", Icon = "fa-key", Renk = "success" },
-                ["muhasebelendi-yap"] = new { Ad = "Muhasebelendi Yap", Icon = "fa-calculator", Renk = "info" }
+
+        // Özel detay butonları
+                ["bayi-duyuru-detay"] = new { Ad = "Bayi Duyuru Detay", Icon = "fa-store", Renk = "info" },
+                ["web-duyuru-detay"] = new { Ad = "Web Duyuru Detay", Icon = "fa-globe", Renk = "info" },
+                ["kampanya-detay"] = new { Ad = "Kampanya Detay", Icon = "fa-tags", Renk = "info" },
+
+        // Diğer özel butonlar
+                ["aktif-pasif"] = new { Ad = "Aktif/Pasif", Icon = "fa-toggle-on", Renk = "secondary" },
+                ["sira-guncelle"] = new { Ad = "Sıra Güncelle", Icon = "fa-arrows-alt", Renk = "secondary" },
+                ["yayinla"] = new { Ad = "Yayınla", Icon = "fa-check-circle", Renk = "success" },
+                ["yayindan-kaldir"] = new { Ad = "Yayından Kaldır", Icon = "fa-ban", Renk = "warning" },
+                ["onayla"] = new { Ad = "Onayla", Icon = "fa-thumbs-up", Renk = "success" },
+                ["reddet"] = new { Ad = "Reddet", Icon = "fa-thumbs-down", Renk = "danger" },
+                ["pdf-indir"] = new { Ad = "PDF İndir", Icon = "fa-file-pdf", Renk = "danger" },
+                ["excel-aktar"] = new { Ad = "Excel Aktar", Icon = "fa-file-excel", Renk = "success" },
+                ["kopyala"] = new { Ad = "Kopyala", Icon = "fa-copy", Renk = "secondary" },
+                ["stok-guncelle"] = new { Ad = "Stok Güncelle", Icon = "fa-boxes", Renk = "info" },
+                ["fiyat-guncelle"] = new { Ad = "Fiyat Güncelle", Icon = "fa-lira-sign", Renk = "success" },
+                ["cevapla"] = new { Ad = "Cevapla", Icon = "fa-reply", Renk = "info" },
+                ["arsivle"] = new { Ad = "Arşivle", Icon = "fa-archive", Renk = "secondary" },
+                ["cozum-ekle"] = new { Ad = "Çözüm Ekle", Icon = "fa-lightbulb", Renk = "warning" },
+                ["yetkilendir"] = new { Ad = "Yetkilendir", Icon = "fa-key", Renk = "primary" },
+                ["lisansla"] = new { Ad = "Lisansla", Icon = "fa-certificate", Renk = "success" },
+                ["yetki-ver"] = new { Ad = "Yetki Ver", Icon = "fa-check-circle", Renk = "success" },
+                ["yetki-kaldir"] = new { Ad = "Yetki Kaldır", Icon = "fa-times-circle", Renk = "danger" },
+                ["toplu-yetkilendir"] = new { Ad = "Toplu Yetkilendir", Icon = "fa-bolt", Renk = "primary" },
+                ["kaydet"] = new { Ad = "Kaydet", Icon = "fa-save", Renk = "success" },
+                ["anasayfa-yonet"] = new { Ad = "Ana Sayfa Yönet", Icon = "fa-home", Renk = "primary" },
+                ["slider-yonet"] = new { Ad = "Slider Yönet", Icon = "fa-images", Renk = "info" }
             };
 
     var gizlenecekler = new HashSet<string>(StringComparer.OrdinalIgnoreCase)

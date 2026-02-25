@@ -11,7 +11,11 @@
 
         public int BayiSozlesmeId { get; set; }
         public int BayiSozlesmeKriteriId { get; set; }
-
+        // BayiSozlesmeBayiKriter modeline ekleyin
+        public int? EkleyenBayiId { get; set; }
+        public int? EkleyenMusteriId { get; set; }
+        public int? GuncelleyenBayiId { get; set; }
+        public int? GuncelleyenMusteriId { get; set; }
         public BayiSozlesme BayiSozlesme { get; set; }
         public BayiSozlesmeKriteri BayiSozlesmeKriteri { get; set; }
     }

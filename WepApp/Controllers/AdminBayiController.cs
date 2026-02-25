@@ -44,41 +44,41 @@ namespace WepApp.Controllers
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Musteri musteri = SessionHelper.GetObjectFromJson<Musteri>(HttpContext.Session, "Musteri");
 
-            List<Bayi> bayiList;
+            List<Bayi> bayiList = new List<Bayi>();
 
             if (bayi != null)
             {
-                // Bayi girişi: Sadece kendisi ve alt bayileri
                 bayiList = GetBayiVeAltBayiler(bayi.Id);
             }
-            if (musteri != null)
+            else if (musteri != null)
             {
                 bayiList = GetBayi(musteri.BayiId ?? 0);
             }
-            else
+            else if (kullanici != null)
             {
-                // Kurumsal giriş: Tüm aktif bayiler
                 bayiList = _bayiRepository.GetirList(x => x.Durumu == 1).ToList();
             }
 
-            List<BayiViewModel> bayiViewModelList = bayiList.Select(b => new BayiViewModel
-            {
-                Id = b.Id,
-                Unvan = b.Unvan,
-                KullaniciAdi = b.KullaniciAdi,
-                Email = b.Email,
-                Distributor = b.Distributor,
-                Kodu = b.Kodu,
-                Telefon = b.Telefon,
-                Adres = b.Adres,
-                UstBayiId = b.UstBayiId,
-                Seviye = b.Seviye ?? 0,
-                UstBayiAd = b.UstBayi != null ? b.UstBayi.Unvan : "Ana Bayi",
-                AltBayiSayisi = _bayiRepository.GetirList(x => x.UstBayiId == b.Id && x.Durumu == 1).Count,
-                MusteriSayisi = _musteriRepository.GetirList(x => x.BayiId == b.Id && x.Durum == 1).Count
-            })
-            .OrderBy(x => x.Seviye).ThenBy(x => x.Unvan)
-            .ToList();
+            List<BayiViewModel> bayiViewModelList = bayiList
+                .Select(b => new BayiViewModel
+                {
+                    Id = b.Id,
+                    Unvan = b.Unvan,
+                    KullaniciAdi = b.KullaniciAdi,
+                    Email = b.Email,
+                    Distributor = b.Distributor,
+                    Kodu = b.Kodu,
+                    Telefon = b.Telefon,
+                    Adres = b.Adres,
+                    UstBayiId = b.UstBayiId,
+                    Seviye = b.Seviye ?? 0,
+                    UstBayiAd = b.UstBayi != null ? b.UstBayi.Unvan : "Ana Bayi",
+                    AltBayiSayisi = _bayiRepository.GetirList(x => x.UstBayiId == b.Id && x.Durumu == 1).Count,
+                    MusteriSayisi = _musteriRepository.GetirList(x => x.BayiId == b.Id && x.Durum == 1).Count
+                })
+                .OrderBy(x => x.Seviye)
+                .ThenBy(x => x.Unvan)
+                .ToList();
 
             ViewBag.BayiList = bayiViewModelList;
             ViewBag.TumBayiler = bayiList;
