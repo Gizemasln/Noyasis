@@ -10,7 +10,7 @@
                 ["AdminAnaSayfaBannerResim"] = "Ana Sayfa Banner",
                 ["AdminBayi"] = "Bayiler",
                 ["AdminARGEDurum"] = "Arge Durum",
-                ["AdminArgeHata"] = "ARGE/Hata",
+                ["Arge"] = "ARGE/Hata",
                 ["AdminBayiDuyuru"] = "Bayi Duyurular",
                 ["AdminBayiSozlesme"] = "Bayi Sözleşmesi",
                 ["AdminBayiSozlesmeKriteri"] = "Bayi Sözleşme Kriteri",
@@ -25,9 +25,8 @@
                 ["AdminMakale"] = "Makaleler",
                 ["AdminSertifika"] = "Sertifikalar",
                 ["AdminPaket"] = "Modüller",
-                ["AdminIstekOneri"] = "İstek/Öneri",
-                ["AdminArge"] = "ARGE/Hata",
-                ["AdminMenuIzin"] = "Menü Yetkilendirme",
+                ["AdminIstekOneri"] = "Admin İstek/Öneri",
+                ["IstekOneri"] = "İstek/Öneri",
                 ["AdminButtonController"] = "Buton Yetkilendirme",
                 ["AdminGenelAydinlatma"] = "Genel Aydınlatma Metni",
                 ["AdminHakkimizdaBilgileri"] = "Hakkımızda",
@@ -45,7 +44,6 @@
                 ["AdminMusteriTipi"] = "Müşteri Tipleri",
                 ["AdminNedenler"] = "Teklif Kaybedilme Nedenleri",
                 ["AdminNeredenDuydu"] = "Nereden Duydu",
-                ["AdminPaketBaglama"] = "Paket Bağlama",
                 ["AdminPaketGrup"] = "Paket Grupları",
                 ["AdminSSS"] = "Sıkça Sorulan Sorular",
                 ["AdminTeklifDurum"] = "Teklif Durumları",
@@ -53,8 +51,10 @@
                 ["AdminTeklifVer"] = "Teklif Oluştur",
                 ["AdminUrunGaleri"] = "Ürün Görselleri",
                 ["AdminUYB"] = "Genel Ayarlar",
-                ["AdminYetki"] = "Yetkilendirme",
                 ["AdminAnaSayfa"] = "Ana Sayfa",
+                ["AdminAnaSayfaSlider"] = "Slider",
+                ["AdminSozlesmeDurumu"] = "Sözleşme Durumu",
+                ["AdminArgeHata"] = "Admin ARGE/Hata",
             };
 
     // BUTON AKSİYONU ÇEVİRİ SÖZLÜĞÜ
@@ -80,11 +80,22 @@
                 ["detay"] = new { Ad = "Detay", Icon = "fa-eye", Renk = "info" },
                 ["detail"] = new { Ad = "Detay", Icon = "fa-eye", Renk = "info" },
                 ["goruntule"] = new { Ad = "Görüntüle", Icon = "fa-eye", Renk = "info" },
+                ["teklifler"] = new { Ad = "Teklif Görüntüle", Icon = "fa-eye", Renk = "info" },
+                ["sozlesmeler"] = new { Ad = "Sözleşme Görüntüle", Icon = "fa-eye", Renk = "info" },
+                ["paketgoster"] = new { Ad = "Paketleri Göster", Icon = "fa-eye", Renk = "info" },
+                ["grupgoster"] = new { Ad = "Grupları Göster", Icon = "fa-eye", Renk = "info" },
+                ["pdfgor"] = new { Ad = "PDF Gör", Icon = "fa-eye", Renk = "info" },
+                ["pdf"] = new { Ad = "PDF Gör", Icon = "fa-eye", Renk = "info" },
+                ["oranlarigor"] = new { Ad = "Oran Gör", Icon = "fa-list", Renk = "info" },
+                ["sabitcarpim"] = new { Ad = "Sabit Çarpım Gör", Icon = "fa-exclamation-triangle", Renk = "info" },
+                ["oranekle"] = new { Ad = "Oran Ekle", Icon = "fa-percentage", Renk = "info" },
 
         // Özel detay butonları
                 ["bayi-duyuru-detay"] = new { Ad = "Bayi Duyuru Detay", Icon = "fa-store", Renk = "info" },
                 ["web-duyuru-detay"] = new { Ad = "Web Duyuru Detay", Icon = "fa-globe", Renk = "info" },
                 ["kampanya-detay"] = new { Ad = "Kampanya Detay", Icon = "fa-tags", Renk = "info" },
+                ["cevapduzenle"] = new { Ad = "Cevap Düzenle", Icon = "fa-edit", Renk = "warning" },
+                ["cevapyaz"] = new { Ad = "Cevap Yaz", Icon = "fa-plus", Renk = "info" },
 
         // Diğer özel butonlar
                 ["aktif-pasif"] = new { Ad = "Aktif/Pasif", Icon = "fa-toggle-on", Renk = "secondary" },
@@ -108,7 +119,11 @@
                 ["toplu-yetkilendir"] = new { Ad = "Toplu Yetkilendir", Icon = "fa-bolt", Renk = "primary" },
                 ["kaydet"] = new { Ad = "Kaydet", Icon = "fa-save", Renk = "success" },
                 ["anasayfa-yonet"] = new { Ad = "Ana Sayfa Yönet", Icon = "fa-home", Renk = "primary" },
-                ["slider-yonet"] = new { Ad = "Slider Yönet", Icon = "fa-images", Renk = "info" }
+                ["slider-yonet"] = new { Ad = "Slider Yönet", Icon = "fa-images", Renk = "info" },
+                ["onayla"] = new { Ad = "Onayla", Icon = "fa-check", Renk = "success" },
+                ["sozlesmeolustur"] = new { Ad = "Sözleşme Oluştur", Icon = "fa-plus", Renk = "success" },
+                ["revize"] = new { Ad = "Revize Oluştur", Icon = "fa-pen", Renk = "primary" },
+                ["onaykaldir"] = new { Ad = "Onay Kaldır", Icon = "fa-times", Renk = "danger" }
             };
 
     var gizlenecekler = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -122,7 +137,11 @@
         "InsanKaynaklari",
         "UrunDetay",
         "Shared",
-        "Login"
+        "Login",
+        "AdminMenuIzin",
+        "AdminPaketBaglama",
+        "AdminTeklifVer",
+        "AdminYetki"
     };
 }
 

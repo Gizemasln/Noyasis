@@ -609,7 +609,7 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-info btn-sm" data-button-permission="sozlesme-detay" onclick="detayGetir(@item.Id)" title="Detay">
+                                            <button type="button" class="btn btn-info btn-sm" data-button-permission="detay" onclick="detayGetir(@item.Id)" title="Detay">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                             <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id)" title="Düzenle">
@@ -618,10 +618,10 @@
                                             <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@(item.Ad + " " + item.Soyad)')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
-                                            <button type="button" class="btn btn-success btn-sm" onclick="musteriTeklifleriGetir(@item.Id)" title="Teklifler">
+                                            <button type="button" class="btn btn-success btn-sm" data-button-permission="teklifler" onclick="musteriTeklifleriGetir(@item.Id)" title="Teklifler">
                                                 <i class="fas fa-file-alt"></i>
                                             </button>
-                                            <button type="button" class="btn btn-primary btn-sm" onclick="musteriSozlesmeleriGetir(@item.Id)" title="Sözleşmeler">
+                                            <button type="button" class="btn btn-primary btn-sm" data-button-permission="sozlesmeler" onclick="musteriSozlesmeleriGetir(@item.Id)" title="Sözleşmeler">
                                                 <i class="fas fa-file-contract"></i>
                                             </button>
                                         </td>
@@ -634,7 +634,7 @@
                                 <tr>
                                     <td colspan="9" class="text-center">
                                         Henüz müşteri eklenmemiş.
-                                        <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Müşteri Ekle</a>
+                                        <a href="#" data-bs-toggle="modal" data-button-permission="ekle" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Müşteri Ekle</a>
                                     </td>
                                 </tr>
                             }

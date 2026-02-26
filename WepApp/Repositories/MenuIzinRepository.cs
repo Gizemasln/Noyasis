@@ -36,7 +36,13 @@ namespace WepApp.Repositories
             }
             return list;
         }
+        public List<MenuIzin> KullaniciTipineGoreGetir(string kullaniciTipi)
+        {
+            // Tüm listeyi al ve filtrele (bellek içi filtreleme)
+            // Not: Çok fazla kayıt varsa SQL tarafında filtreleme yapmak daha performanslı olur
+            return Listele().Where(m => m.KullaniciTipi == kullaniciTipi).ToList();
 
+        }
         public void TemizleVeEkle(string kullaniciTipi, List<MenuIzin> yeniIzinler)
         {
             using (var con = new SqlConnection(_connectionString))

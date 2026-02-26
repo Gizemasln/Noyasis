@@ -23,15 +23,59 @@ namespace WepApp.Repositories
             _context = context;
         }
 
+        // Generic GetirQueryable metodu - T tipinde çalışır
+        public IQueryable<T> GetirQueryable<T>(Expression<Func<T, bool>> filter = null, List<string> includePaths = null) where T : class
+        {
+            IQueryable<T> query = _context.Set<T>();
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (includePaths != null)
+            {
+                foreach (var path in includePaths)
+                {
+                    query = query.Include(path);
+                }
+            }
+
+            return query;
+        }
+
+        // Musteri için özel GetirQueryable metodu
+        public IQueryable<Musteri> GetirQueryable(Expression<Func<Musteri, bool>>? filter = null, List<string> includePaths = null)
+        {
+            try
+            {
+                IQueryable<Musteri> query = _context.Musteri.AsQueryable();
+
+                if (filter != null)
+                    query = query.Where(filter);
+
+                if (includePaths != null)
+                {
+                    foreach (var path in includePaths)
+                    {
+                        query = query.Include(path);
+                    }
+                }
+
+                return query;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Queryable sorgu oluşturulurken hata: {ex.Message}", ex);
+            }
+        }
+
         // Tüm müşterileri getir
         public List<Musteri> GetirList(Expression<Func<Musteri, bool>>? filter = null)
         {
             try
             {
-                IQueryable<Musteri> query = _context.Musteri
-                 
-                     // Bayileri de dahil et
-                    .AsQueryable();
+                IQueryable<Musteri> query = _context.Musteri.AsQueryable();
 
                 if (filter != null)
                 {
@@ -52,9 +96,6 @@ namespace WepApp.Repositories
             try
             {
                 return _context.Musteri
-                
-                
-                      // Alt bayileri de dahil et
                     .FirstOrDefault(m => m.Id == id);
             }
             catch (Exception ex)
@@ -132,7 +173,7 @@ namespace WepApp.Repositories
 
                 // Bayi kontrolü
                 int bayiSayisi = _context.Bayi
-                    .Count(b =>  b.Durumu == 1);
+                    .Count(b => b.Durumu == 1);
 
                 if (bayiSayisi > 0)
                 {
@@ -159,7 +200,6 @@ namespace WepApp.Repositories
                 {
                     // Sadece ana bayiler
                     return _context.Bayi
-                     
                         .Where(b => b.UstBayiId == null && b.Durumu == 1)
                         .OrderBy(b => b.Unvan)
                         .ToList();
@@ -200,7 +240,7 @@ namespace WepApp.Repositories
                 }
 
                 int anaBayiler = _context.Bayi
-                    .Count(b =>b.UstBayiId == null && b.Durumu == 1);
+                    .Count(b => b.UstBayiId == null && b.Durumu == 1);
 
                 BayiRepository bayiRepo = new BayiRepository(_context);
                 List<Bayi> tumBayiler = GetMusteriBayileri(musteriId, false);
@@ -227,8 +267,6 @@ namespace WepApp.Repositories
             try
             {
                 return _context.Musteri
-                
-                
                     .FirstOrDefault(m => m.KullaniciAdi == kullaniciAdi && m.Durum == 1);
             }
             catch (Exception ex)
@@ -243,7 +281,6 @@ namespace WepApp.Repositories
             try
             {
                 return _context.Musteri
-             
                     .FirstOrDefault(m => m.KullaniciAdi == kullaniciAdi
                                       && m.Sifre == sifre
                                       && m.Durum == 1);
@@ -253,26 +290,13 @@ namespace WepApp.Repositories
                 throw new Exception($"Login işlemi sırasında hata oluştu: {ex.Message}", ex);
             }
         }
-
-        // MusteriRepository içine ekle
-        public IQueryable<Musteri> GetirQueryable(Expression<Func<Musteri, bool>>? filter = null)
+        // MusteriRepository sınıfına ekleyin:
+        public List<int> GetMusteriIdleriByBayiIdleri(List<int> bayiIdleri)
         {
-            try
-            {
-                IQueryable<Musteri> query = _context.Musteri
-           
-                    
-                    .AsQueryable();
-
-                if (filter != null)
-                    query = query.Where(filter);
-
-                return query;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Queryable sorgu oluşturulurken hata: {ex.Message}", ex);
-            }
+            return _context.Musteri
+                .Where(m => m.Durum == 1 && m.BayiId.HasValue && bayiIdleri.Contains(m.BayiId.Value))
+                .Select(m => m.Id)
+                .ToList();
         }
         // Tüm müşteri istatistikleri
         public Dictionary<string, int> GetTumMusteriIstatistikleri()
@@ -286,7 +310,7 @@ namespace WepApp.Repositories
                     ["BayiliMusteri"] = _context.Musteri
                         .Count(m => m.Durum == 1),
                     ["BayisizMusteri"] = _context.Musteri
-                        .Count(m => m.Durum == 1 )
+                        .Count(m => m.Durum == 1)
                 };
             }
             catch (Exception ex)

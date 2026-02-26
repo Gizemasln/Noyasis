@@ -12,6 +12,7 @@
         public int? MusteriSozlesmeId { get; set; }
 
         public string Tipi { get; set; } // ARGE veya Hata
+        public string? AdminCevap { get; set; } // ARGE veya Hata
         public string Adi { get; set; } // Formu dolduran adı 
         public string Soyadi { get; set; } // Formu dolduran soyadı
         public string? DosyaYolu { get; set; } // wwwroot/WebAdminTheme/ARGE klasörüne

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
+using WebApp.Models;
 using WebApp.Repositories;
 using WepApp.Controllers;
 using WepApp.Models;
@@ -10,6 +12,17 @@ namespace WepApp.Repositories
 {
     public class ArgeHataRepository : GenericRepository<ArgeHata>
     {
+        private readonly Context _context;
+
+        public ArgeHataRepository()
+        {
+            _context = new Context();
+        }
+
+        public ArgeHataRepository(Context context)
+        {
+            _context = context;
+        }
         // Kullanıcı tipine göre filtreleme ile listeleme (include yok)
         public List<ArgeHata> GetirListe(string kullaniciTipi, int? kullaniciId, int page = 1, int pageSize = 10)
         {
@@ -44,7 +57,26 @@ namespace WepApp.Repositories
                 throw new Exception($"Listeleme hatası: {ex.Message}", ex);
             }
         }
+        // ArgeHataRepository sınıfınıza ekleyin
+        public IQueryable<ArgeHata> GetirQueryable(Expression<Func<ArgeHata, bool>> filter = null, List<string> includePaths = null)
+        {
+            IQueryable<ArgeHata> query = _context.ArgeHata.AsQueryable();
 
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (includePaths != null)
+            {
+                foreach (var path in includePaths)
+                {
+                    query = query.Include(path);
+                }
+            }
+
+            return query;
+        }
         public int GetirToplamSayi(string kullaniciTipi, int? kullaniciId)
         {
             try

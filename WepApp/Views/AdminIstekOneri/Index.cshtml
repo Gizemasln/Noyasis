@@ -11,8 +11,10 @@
     var isAuthenticated = !string.IsNullOrEmpty(kullaniciTipi);
     var isAdmin = kullaniciTipi == "Kurumsal";
     var isBayi = kullaniciTipi == "Bayi";
+
 }
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
 
 <style>
     /* Ana Container */
@@ -532,6 +534,7 @@
                                 <tbody id="bildirimTablosu">
                                     @if (bildirimler != null && bildirimler.Count > 0)
                                     {
+                                        int gosterilenSatir = 0;
                                         foreach (var bildirim in bildirimler)
                                         {
                                             var durumId = bildirim.IstekOneriDurumId;
@@ -542,37 +545,33 @@
                                             // Satır CSS sınıfını belirle
                                             switch (durumId)
                                             {
-                                                case 1: // Yeni
+                                                case 1:
                                                     satirCss = "satir-yeni";
                                                     durumCss = "durum-yeni";
                                                     break;
-                                                case 2: // Değerlendirmede
+                                                case 2:
                                                     satirCss = "satir-degerlendirmede";
                                                     durumCss = "durum-degerlendirmede";
                                                     break;
-                                                case 3: // Onaylandı
+                                                case 3:
                                                     satirCss = "satir-onaylandi";
                                                     durumCss = "durum-onaylandi";
                                                     break;
-                                                case 4: // Uygulandı
+                                                case 4:
                                                     satirCss = "satir-uygulandi";
                                                     durumCss = "durum-uygulandi";
                                                     break;
-                                                case 5: // Reddedildi
+                                                case 5:
                                                     satirCss = "satir-reddedildi";
                                                     durumCss = "durum-reddedildi";
                                                     break;
-                                                case 6: // Ertelendi
+                                                case 6:
                                                     satirCss = "satir-ertelendi";
                                                     durumCss = "durum-ertelendi";
                                                     break;
-                                                case 7: // Tamamlandı
+                                                case 7:
                                                     satirCss = "satir-tamamlandi";
                                                     durumCss = "durum-tamamlandi";
-                                                    break;
-                                                default:
-                                                    satirCss = "";
-                                                    durumCss = "";
                                                     break;
                                             }
 
@@ -581,10 +580,6 @@
                                             {
                                                 satirCss += " cevap-verildi";
                                             }
-
-                                            // Bayi sadece kendi müşterilerini görebilsin
-                                            var bayiGorebilir = !isBayi || (isBayi && bildirim.BayiId == kullaniciId);
-                                            if (!bayiGorebilir) continue;
 
                                             // Gönderen bilgisini belirle
                                             string gonderen = "";
@@ -625,7 +620,8 @@
                                             var durumDuzenleyebilir = isAdmin || (isBayi && bildirim.BayiId == kullaniciId);
                                             var silebilir = isAdmin;
 
-                                            <tr data-bildirim-id="@bildirim.Id" class="@satirCss">
+                                            gosterilenSatir++;
+                                            <tr data-bildirim-id="@bildirim.Id" data-durum-id="@durumId" class="@satirCss">
                                                 <td><small class="text-muted">#@bildirim.Id</small></td>
 
                                                 <td>
@@ -674,24 +670,23 @@
                                                                 }
                                                             }
                                                         </div>
-                                                   
-                                                        @if (cevapDuzenleyebilir)
-                                                        {
+                                                    
+                                                      
                                                             <div class="mt-1">
-                                                                <button type="button"
+                                                            <button type="button" data-button-permission="cevapduzenle"
                                                                         class="btn btn-sm btn-outline-warning cevap-duzenle"
                                                                         data-bildirim-id="@bildirim.Id">
                                                                     <i class="fas fa-edit me-1"></i>Düzenle
                                                                 </button>
                                                             </div>
-                                                        }
+                                                        
                                                     }
                                                     else
                                                     {
                                                         @if (cevapYazabilir)
                                                         {
                                                             <button type="button"
-                                                                    class="btn btn-sm btn-outline-success cevap-yaz"
+                                                                    class="btn btn-sm btn-outline-success cevap-yaz" data-button-permission="cevapyaz"
                                                                     data-bildirim-id="@bildirim.Id">
                                                                 <i class="fas fa-reply me-1"></i>Cevap Yaz
                                                             </button>
@@ -705,9 +700,7 @@
 
                                                 <!-- Durum sütunu -->
                                                 <td class="durum-hucresi">
-                                                    @if (durumDuzenleyebilir && !cevapVerdiMi)
-                                                    {
-                                                        <select class="form-select form-select-sm durum-select @durumCss"
+                                                    <select class="form-select form-select-sm durum-select @durumCss"
                                                                 data-bildirim-id="@bildirim.Id"
                                                                 data-current-durum="@durumId"
                                                                 data-current-durum-adi="@durumAdi"
@@ -721,27 +714,7 @@
                                                                 </option>
                                                             }
                                                         </select>
-                                                    }
-                                                    else if (cevapVerdiMi)
-                                                    {
-                                                        <div>
-                                                            <span class="badge @(cevapVerenTip == "Admin" ? "badge-admin" : "badge-bayi")">
-                                                                <i class="fas fa-check-circle me-1"></i>Cevap Verildi
-                                                            </span>
-                                                            <div class="mt-1">
-                                                                <button type="button"
-                                                                        class="btn btn-sm btn-outline-info cevap-goruntule"
-                                                                        data-bildirim-id="@bildirim.Id"
-                                                                        style="font-size: 0.7rem; padding: 2px 6px;">
-                                                                    <i class="fas fa-eye me-1"></i>Görüntüle
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="badge @durumCss">@durumAdi</span>
-                                                    }
+                                                   
                                                 </td>
 
                                                 <td>
@@ -751,13 +724,12 @@
                                                 <td class="text-center">
                                                     <div class="btn-group btn-group-sm">
                                                         <button type="button"
-                                                                class="btn btn-outline-primary btn-sm aksiyon-btn detay-goster" data-button-permission="sozlesme-detay"
+                                                                class="btn btn-outline-primary btn-sm aksiyon-btn detay-goster" data-button-permission="detay"
                                                                 data-bildirim-id="@bildirim.Id"
                                                                 title="Detayları Gör">
                                                             <i class="fas fa-eye"></i>
                                                         </button>
-                                                        @if (silebilir)
-                                                        {
+                                                     
                                                             <button type="button"
                                                                     class="btn btn-outline-danger btn-sm aksiyon-btn sil-bildirim" data-button-permission="sil"
                                                                     data-bildirim-id="@bildirim.Id"
@@ -765,11 +737,15 @@
                                                                     title="Sil">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
-                                                        }
+                                                        
                                                     </div>
                                                 </td>
                                             </tr>
                                         }
+                                        <!-- Debug: Kaç satır gösterildiğini kontrol et -->
+                                        <tr style="display: none;">
+                                            <td colspan="9">Toplam gösterilen satır: @gosterilenSatir</td>
+                                        </tr>
                                     }
                                     else
                                     {
@@ -777,13 +753,31 @@
                                             <td colspan="9" class="empty-state">
                                                 <i class="fas fa-inbox fa-2x mb-2"></i>
                                                 <h5>Henüz bildirim bulunmuyor</h5>
-                                                <p>Henüz istek veya öneri bildirimi eklenmemiş.</p>
+                                                <p>
+                                                    @if (bildirimler == null)
+                                                    {
+                                                        <text>ViewBag.IstekOneriListesi null</text>
+                                                    }
+                                                    else if (bildirimler.Count == 0)
+                                                    {
+                                                        <text>Liste boş</text>
+                                                    }
+                                                    else
+                                                    {
+                                                        <text>Bilinmeyen hata</text>
+                                                    }
+                                                </p>
                                             </td>
                                         </tr>
                                     }
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
                     </div>
                 </div>
             </div>
@@ -897,18 +891,18 @@
             let secilenDurumId = null;
             let secilenDurumAdi = null;
 
-            // Arama fonksiyonu
-            $('#bildirimArama').on('input', function () {
-                const term = $(this).val().toLowerCase().trim();
-                $('#bildirimTablosu tr').each(function () {
-                    const $row = $(this);
-                    if ($row.find('.empty-state').length > 0) return;
+               // Arama fonksiyonu - Bu satırı geçici olarak devre dışı bırakın veya düzeltin
+        $('#bildirimArama').on('input', function () {
+            // Bu fonksiyon tüm satırları gizliyor olabilir
+            const term = $(this).val().toLowerCase().trim();
+            $('#bildirimTablosu tr').each(function () {
+                const $row = $(this);
+                if ($row.find('.empty-state').length > 0) return;
 
-                    const text = $row.text().toLowerCase();
-                    $row.toggle(text.includes(term));
-                });
+                const text = $row.text().toLowerCase();
+                $row.toggle(text.includes(term));
             });
-
+        });
             // Durum değiştirme
             $(document).on('change', '.durum-select', async function () {
                 const $select = $(this);
@@ -998,43 +992,53 @@
                     $('#cevapMetni').focus();
                 }, 500);
             });
+        $(document).on('click', '.cevap-duzenle', async function() {
+            const bildirimId = $(this).data('bildirim-id');
 
-            // Cevap düzenle butonu
-            $(document).on('click', '.cevap-duzenle', async function() {
-                const bildirimId = $(this).data('bildirim-id');
+            // Butona loading efekti ekle
+            const $btn = $(this);
+            const originalText = $btn.html();
+            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Yükleniyor...');
 
-                // Önce cevap bilgilerini getir
-                try {
-                    const response = await $.ajax({
-                        url: '/AdminIstekOneri/GetirCevap',
-                        type: 'GET',
-                        data: { id: bildirimId },
-                        dataType: 'json'
-                    });
+            try {
+                const response = await $.ajax({
+                    url: '/AdminIstekOneri/GetirCevap',
+                    type: 'GET',
+                    data: { id: bildirimId },
+                    dataType: 'json'
+                });
 
-                    if (response.success) {
-                        if (response.duzenleyebilir) {
-                            $('#cevapModalBaslik').text('Cevap Düzenle');
-                            $('#cevapMetni').val(response.distributorCevap || '');
-                            $('#cevapKaydetBtn').data('islem', 'guncelle').data('bildirim-id', bildirimId);
+                if (response.success) {
+                    // Modal başlığını ve metnini ayarla
+                    $('#cevapModalBaslik').text('Cevap Düzenle');
+                    $('#cevapMetni').val(response.distributorCevap || '');
 
-                            const cevapModal = new bootstrap.Modal(document.getElementById('cevapYazModal'));
-                            cevapModal.show();
+                    // Kaydet butonuna işlem tipini ve bildirim ID'sini ekle
+                    $('#cevapKaydetBtn')
+                        .data('islem', 'guncelle')
+                        .data('bildirim-id', bildirimId)
+                        .text('Güncelle')
+                        .prepend('<i class="fas fa-save me-2"></i>');
 
-                            setTimeout(() => {
-                                $('#cevapMetni').focus();
-                            }, 500);
-                        } else {
-                            toastr.warning('Bu cevabı düzenleme yetkiniz bulunmuyor.');
-                        }
-                    } else {
-                        toastr.error(response.message || 'Cevap bilgileri alınamadı.');
-                    }
-                } catch (err) {
-                    console.error('Hata:', err);
-                    toastr.error('Sunucu ile bağlantı kurulamadı.');
+                    // Modal'ı göster
+                    const cevapModal = new bootstrap.Modal(document.getElementById('cevapYazModal'));
+                    cevapModal.show();
+
+                    // Textarea'ya odaklan
+                    setTimeout(() => {
+                        $('#cevapMetni').focus();
+                    }, 500);
+                } else {
+                    toastr.error(response.message || 'Cevap bilgileri alınamadı.');
                 }
-            });
+            } catch (err) {
+                console.error('Hata:', err);
+                toastr.error('Sunucu ile bağlantı kurulamadı.');
+            } finally {
+                // Butonu eski haline getir
+                $btn.prop('disabled', false).html(originalText);
+            }
+        });
 
             // Cevap görüntüle butonu
             $(document).on('click', '.cevap-goruntule', async function() {
@@ -1113,122 +1117,80 @@
                 }
             });
 
-            // Cevap kaydet butonu
-            $('#cevapKaydetBtn').click(async function() {
-                const $btn = $(this);
-                const islem = $btn.data('islem');
-                const bildirimId = $btn.data('bildirim-id');
-                const cevap = $('#cevapMetni').val().trim();
+              // Cevap kaydet butonu - DÜZELTİLMİŞ VERSİYON
+        $('#cevapKaydetBtn').click(async function() {
+            const $btn = $(this);
+            const islem = $btn.data('islem');
+            const bildirimId = $btn.data('bildirim-id');
+            const cevap = $('#cevapMetni').val().trim();
 
-                // Validasyon
-                if (!cevap) {
-                    toastr.warning('Lütfen cevap metnini giriniz.');
-                    $('#cevapMetni').focus();
-                    return;
+            // Validasyon
+            if (!cevap) {
+                toastr.warning('Lütfen cevap metnini giriniz.');
+                $('#cevapMetni').focus();
+                return;
+            }
+
+            if (cevap.length < 10) {
+                toastr.warning('Cevap metni en az 10 karakter olmalıdır.');
+                $('#cevapMetni').focus();
+                return;
+            }
+
+            // Butonu devre dışı bırak
+            const originalText = $btn.html();
+            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Kaydediliyor...');
+
+            try {
+                let url = '';
+                if (islem === 'yeni') {
+                    url = '/AdminIstekOneri/CevapVer';
+                } else {
+                    url = '/AdminIstekOneri/CevapGuncelle';
                 }
 
-                if (cevap.length < 10) {
-                    toastr.warning('Cevap metni en az 10 karakter olmalıdır.');
-                    $('#cevapMetni').focus();
-                    return;
+                const response = await $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        id: bildirimId,
+                        aciklama: cevap
+                    },
+                    dataType: 'json'
+                });
+
+                if (response.success) {
+                    // Modal'ı kapat
+                    const cevapModal = bootstrap.Modal.getInstance(document.getElementById('cevapYazModal'));
+                    cevapModal.hide();
+
+                    // Sayfayı yenile (veya AJAX ile satırı güncelle)
+                    location.reload(); // Basit çözüm: sayfayı yenile
+
+                    toastr.success(response.message || 'Cevabınız başarıyla kaydedildi.');
+                } else {
+                    toastr.error(response.message || 'Kayıt sırasında bir hata oluştu.');
                 }
-
-                // Butonu devre dışı bırak
-                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Kaydediliyor...');
-
-                try {
-                    let url = '';
-                    if (islem === 'yeni') {
-                        url = '/AdminIstekOneri/CevapVer';
-                    } else {
-                        url = '/AdminIstekOneri/CevapGuncelle';
-                    }
-
-                    const response = await $.ajax({
-                        url: url,
-                        type: 'POST',
-                        data: {
-                            id: bildirimId,
-                            aciklama: cevap
-                        },
-                        dataType: 'json'
-                    });
-
-                    if (response.success) {
-                        // Modal'ı kapat
-                        const cevapModal = bootstrap.Modal.getInstance(document.getElementById('cevapYazModal'));
-                        cevapModal.hide();
-
-                        // Satırı güncelle
-                        const $row = $(`tr[data-bildirim-id="${bildirimId}"]`);
-                        const kisaCevap = cevap.length > 50 ? cevap.substring(0, 50) + '...' : cevap;
-
-                        // Cevap veren tipine göre badge belirle
-                        const cevapVerenBadge = response.cevapVerenTip === 'Admin' ? 'badge-admin' : 'badge-bayi';
-
-                        const cevapHtml = `
-                            <div class="cevap-icerik" title="${cevap}">
-                                ${kisaCevap}
-                            </div>
-                            <div class="cevap-veren">
-                                <span class="badge ${cevapVerenBadge}">
-                                    <i class="fas fa-user me-1"></i>${response.cevapVerenTip}
-                                </span>
-                                <small class="text-muted ms-2">
-                                    <i class="fas fa-clock me-1"></i>
-                                    ${response.cevapTarihi}
-                                </small>
-                            </div>
-                            <div class="mt-1">
-                                <button type="button"
-                                        class="btn btn-sm btn-outline-warning cevap-duzenle"
-                                        data-bildirim-id="${bildirimId}">
-                                    <i class="fas fa-edit me-1"></i>Düzenle
-                                </button>
-                            </div>
-                        `;
-
-                        $row.find('.cevap-sutunu').html(cevapHtml);
-
-                        // Durum hücresini güncelle
-                        const durumHtml = `
-                            <div>
-                                <span class="badge ${cevapVerenBadge}">
-                                    <i class="fas fa-check-circle me-1"></i>Cevap Verildi
-                                </span>
-                                <div class="mt-1">
-                                    <button type="button"
-                                            class="btn btn-sm btn-outline-info cevap-goruntule"
-                                            data-bildirim-id="${bildirimId}"
-                                            style="font-size: 0.7rem; padding: 2px 6px;">
-                                        <i class="fas fa-eye me-1"></i>Görüntüle
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-
-                        $row.find('.durum-hucresi').html(durumHtml);
-
-                        // Cevap verildi sınıfını ekle
-                        $row.addClass('cevap-verildi');
-
-                        toastr.success(response.message || 'Cevabınız başarıyla kaydedildi.');
-
-                    } else {
-                        toastr.error(response.message || 'Kayıt sırasında bir hata oluştu.');
-                    }
-                } catch (err) {
-                    console.error('Hata:', err);
-                    if (err.status === 401 || err.status === 403) {
-                        toastr.error('Bu işlem için giriş yapmanız gerekmektedir.');
-                    } else {
-                        toastr.error('Sunucu ile bağlantı kurulamadı. Lütfen internet bağlantınızı kontrol edin.');
-                    }
-                } finally {
-                    $btn.prop('disabled', false).html('<i class="fas fa-paper-plane me-2"></i>Gönder');
+            } catch (err) {
+                console.error('Hata:', err);
+                if (err.status === 401 || err.status === 403) {
+                    toastr.error('Bu işlem için giriş yapmanız gerekmektedir.');
+                } else {
+                    toastr.error('Sunucu ile bağlantı kurulamadı. Lütfen internet bağlantınızı kontrol edin.');
                 }
-            });
+            } finally {
+                $btn.prop('disabled', false).html(originalText);
+            }
+        });
 
+        // Cevap modalı kapatıldığında butonu sıfırla
+        $('#cevapYazModal').on('hidden.bs.modal', function () {
+            $('#cevapMetni').val('');
+            $('#cevapKaydetBtn')
+                .removeData('islem')
+                .removeData('bildirim-id')
+                .html('<i class="fas fa-paper-plane me-2"></i>Gönder');
+        });
             // Cevap içeriğine tıklayınca tamamını göster
             $(document).on('click', '.cevap-icerik', async function() {
                 const $cevapDiv = $(this);
@@ -1275,9 +1237,7 @@
                                             </span>
                                         </div>
                                         <div class="card-body">
-                                            <div class="mb-2">
-                                                <strong>Cevap Veren:</strong> ${response.cevapVerenAdi || '-'}
-                                            </div>
+                                        
                                             <div class="mb-2">
                                                 <strong>Cevap Tarihi:</strong> ${response.distributorCevapTarihi || '-'}
                                             </div>
@@ -1291,9 +1251,7 @@
                         }
 
                         let islemButonlari = '';
-                        if (response.cevapDuzenleyebilir) {
-                            islemButonlari += `<button type="button" class="btn btn-warning btn-sm cevap-duzenle-modal" data-bildirim-id="${response.id}"><i class="fas fa-edit me-1"></i>Cevap Düzenle</button>`;
-                        }
+                      
                         if (response.durumDuzenleyebilir && !response.distributorCevap) {
                             islemButonlari += `<button type="button" class="btn btn-info btn-sm ms-2 durum-guncelle-modal" data-bildirim-id="${response.id}"><i class="fas fa-sync me-1"></i>Durum Güncelle</button>`;
                         }
@@ -1357,7 +1315,7 @@
 
                                 <div class="col-12">
                                     <div class="card">
-                                        <div class="card-header bg-warning text-dark">
+                                        <div class="card-header bg-warning">
                                             <i class="fas fa-file-alt me-2"></i>
                                             İçerik
                                         </div>
@@ -1392,7 +1350,6 @@
                                     </div>
                                 </div>
                             </div>
-                            ${islemButonlari ? `<div class="mt-3 text-center">${islemButonlari}</div>` : ''}
                         `);
 
                         // Modal içindeki butonlara event listener ekle
@@ -1429,13 +1386,6 @@
                             'Bir hata oluştu: ' + (error.message || 'Sunucu ile bağlantı kurulamadı.') +
                         '</div>'
                     );
-                }
-            });
-
-            // Satıra tıklayınca detay göster
-            $(document).on('click', '#bildirimTablosu tr:not(:has(.empty-state))', function(e) {
-                if ($(e.target).closest('button, a, select, .aksiyon-btn, .durum-select').length === 0) {
-                    $(this).find('.detay-goster').first().click();
                 }
             });
 

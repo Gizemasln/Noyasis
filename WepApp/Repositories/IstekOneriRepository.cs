@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
 using WebApp.Repositories;
+using System.Linq.Expressions;
 
 namespace WepApp.Repositories
 {
@@ -17,7 +18,26 @@ namespace WepApp.Repositories
         {
             _context = new Context();
         }
+        // IstekOneriRepository sınıfınıza ekleyin
+        public IQueryable<IstekOneriler> GetirQueryable(Expression<Func<IstekOneriler, bool>> filter = null, List<string> includePaths = null)
+        {
+            IQueryable<IstekOneriler> query = _context.IstekOneriler.AsQueryable();
 
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (includePaths != null)
+            {
+                foreach (var path in includePaths)
+                {
+                    query = query.Include(path);
+                }
+            }
+
+            return query;
+        }
         public IstekOneriler Getir(int id)
         {
             return _context.IstekOneriler

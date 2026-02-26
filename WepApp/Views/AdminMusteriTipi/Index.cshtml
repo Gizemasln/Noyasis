@@ -75,10 +75,10 @@
                                         <td>@item.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td class="table-actions text-center">
                                             <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id, '@item.Adi')">
-                                                <i class="fas fa-edit">Düzenle</i>
+                                                <i class="fas fa-edit"></i>
                                             </button>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@item.Adi')">
-                                                <i class="fas fa-trash">Sil</i>
+                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.Adi')">
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
@@ -92,7 +92,7 @@
                                         <div class="py-4">
                                             <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                             <p class="text-muted">Henüz müşteri tipi eklenmemiş.</p>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                                            <button data-button-permission="ekle" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">
                                                 İlk Müşteri Tipini Ekle
                                             </button>
                                         </div>

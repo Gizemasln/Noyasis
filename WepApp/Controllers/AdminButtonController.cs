@@ -27,8 +27,23 @@ namespace WebApp.Controllers
             var redirect = LoadCommonData();
             if (redirect != null) return redirect;
 
+            // 1. ADIM: Seçili kullanıcı tipinin menü izinlerini getir
+            var menuIzinRepo = new MenuIzinRepository();
+            var kullaniciMenuIzinleri = menuIzinRepo.KullaniciTipineGoreGetir(kullaniciTipi);
+
+            // Menü izni olan sayfaların URL'lerinden controller adlarını çıkar
+            var izinliControllerlar = kullaniciMenuIzinleri
+                .Select(m => MenuUrlToController(m.MenuUrl))
+                .Where(c => !string.IsNullOrEmpty(c))
+                .Distinct()
+                .ToHashSet();
+
+            // 2. ADIM: Tüm butonları tara
             var detectedButtons = ScanAllButtons();
-            var uniqueButtons = detectedButtons
+
+            // 3. ADIM: Sadece izinli controller'lara ait butonları filtrele
+            var filtrelenmisButonlar = detectedButtons
+                .Where(b => izinliControllerlar.Contains(b.Controller))
                 .GroupBy(b => new { b.Controller, b.Action })
                 .Select(g => g.First())
                 .OrderBy(b => b.Controller)
@@ -37,13 +52,15 @@ namespace WebApp.Controllers
 
             var model = new AdminButtonViewModel
             {
-                DetectedButtons = uniqueButtons,
+                DetectedButtons = filtrelenmisButonlar, // SADECE İZİNLİ CONTROLLER'LARIN BUTONLARI
                 SeciliKullaniciTipi = kullaniciTipi,
-                GruplanmisButonlar = uniqueButtons
+                GruplanmisButonlar = filtrelenmisButonlar
                     .GroupBy(b => b.Controller)
-                    .ToDictionary(g => g.Key, g => g.ToList())
+                    .ToDictionary(g => g.Key, g => g.ToList()), // SADECE İZİNLİ CONTROLLER'LAR
+                IzinliControllerlar = izinliControllerlar.ToList() // View'e gönder (isteğe bağlı)
             };
 
+            // Mevcut buton izinlerini getir (değişiklik yok)
             var mevcutIzinler = _repo.KullaniciTipineGoreGetir(kullaniciTipi);
             var izinDict = mevcutIzinler.ToDictionary(
                 i => $"{i.SayfaAdi}|{i.ButonAksiyonu}",
@@ -51,7 +68,7 @@ namespace WebApp.Controllers
             );
 
             model.ButtonPermissions = new Dictionary<string, bool>();
-            foreach (var button in uniqueButtons)
+            foreach (var button in filtrelenmisButonlar)
             {
                 var key = $"{button.Controller}|{button.Action}";
                 model.ButtonPermissions[key] = izinDict.TryGetValue(key, out var izin) ? izin : false;
@@ -61,7 +78,35 @@ namespace WebApp.Controllers
             ViewBag.CurrentUserType = userInfo.tip;
             ViewBag.CurrentUserId = userInfo.id;
 
+            // İstatistik için ViewBag'e ekleyelim
+            ViewBag.ToplamIzinliSayfa = izinliControllerlar.Count;
+            ViewBag.ToplamButon = filtrelenmisButonlar.Count;
+
             return View(model);
+        }
+
+        // YARDIMCI METOD: MenuUrl'den Controller adını çıkar
+        private string MenuUrlToController(string menuUrl)
+        {
+            if (string.IsNullOrEmpty(menuUrl)) return null;
+
+            // # ile başlayanlar (grup başlıkları) controller değildir
+            if (menuUrl.StartsWith("#")) return null;
+
+            // /AdminMusteri gibi URL'lerden controller adını al
+            // "/" işaretini kaldır ve varsa parametreleri temizle
+            var controller = menuUrl.TrimStart('/');
+
+            // Eğer slash varsa (örn: /Admin/Musteri) ilk parçayı al
+            if (controller.Contains('/'))
+            {
+                controller = controller.Split('/')[0];
+            }
+
+            // Sadece harf ve rakam içeren kısmı al
+            controller = Regex.Replace(controller, @"[^a-zA-Z0-9]", "");
+
+            return controller;
         }
 
         [HttpPost]
@@ -70,13 +115,26 @@ namespace WebApp.Controllers
             var redirect = LoadCommonData();
             if (redirect != null) return redirect;
 
+            // 1. ADIM: Seçili kullanıcı tipinin menü izinlerini getir
+            var menuIzinRepo = new MenuIzinRepository();
+            var kullaniciMenuIzinleri = menuIzinRepo.KullaniciTipineGoreGetir(kullaniciTipi);
+
+            var izinliControllerlar = kullaniciMenuIzinleri
+                .Select(m => MenuUrlToController(m.MenuUrl))
+                .Where(c => !string.IsNullOrEmpty(c))
+                .Distinct()
+                .ToHashSet();
+
+            // 2. ADIM: Tüm butonları tara ve filtrele
             var detectedButtons = ScanAllButtons();
-            var uniqueButtons = detectedButtons
+            var filtrelenmisButonlar = detectedButtons
+                .Where(b => izinliControllerlar.Contains(b.Controller))
                 .GroupBy(b => new { b.Controller, b.Action })
                 .Select(g => g.First())
                 .ToList();
 
-            var yeniIzinler = uniqueButtons.Select(button => new ButtonPermission
+            // 3. ADIM: Seçili izinleri kontrol et (sadece izinli controller'lar için)
+            var yeniIzinler = filtrelenmisButonlar.Select(button => new ButtonPermission
             {
                 KullaniciTipi = kullaniciTipi,
                 SayfaAdi = button.Controller,
@@ -87,7 +145,7 @@ namespace WebApp.Controllers
 
             _repo.TemizleVeEkle(kullaniciTipi, yeniIzinler);
 
-            TempData["Success"] = $"{kullaniciTipi} buton yetkileri kaydedildi. Toplam {yeniIzinler.Count} buton tespit edildi.";
+            TempData["Success"] = $"{kullaniciTipi} buton yetkileri kaydedildi. " ;
             return RedirectToAction("Index", new { kullaniciTipi });
         }
 
@@ -97,8 +155,20 @@ namespace WebApp.Controllers
             var redirect = LoadCommonData();
             if (redirect != null) return redirect;
 
+            // 1. ADIM: Seçili kullanıcı tipinin menü izinlerini getir
+            var menuIzinRepo = new MenuIzinRepository();
+            var kullaniciMenuIzinleri = menuIzinRepo.KullaniciTipineGoreGetir(kullaniciTipi);
+
+            var izinliControllerlar = kullaniciMenuIzinleri
+                .Select(m => MenuUrlToController(m.MenuUrl))
+                .Where(c => !string.IsNullOrEmpty(c))
+                .Distinct()
+                .ToHashSet();
+
+            // 2. ADIM: Tüm butonları tara ve filtrele
             var detectedButtons = ScanAllButtons();
-            var uniqueButtons = detectedButtons
+            var filtrelenmisButonlar = detectedButtons
+                .Where(b => izinliControllerlar.Contains(b.Controller))
                 .GroupBy(b => new { b.Controller, b.Action })
                 .Select(g => g.First())
                 .ToList();
@@ -109,7 +179,7 @@ namespace WebApp.Controllers
                 i => i.IzınVar
             );
 
-            var yeniIzinler = uniqueButtons.Select(button =>
+            var yeniIzinler = filtrelenmisButonlar.Select(button =>
             {
                 var key = $"{button.Controller}|{button.Action}";
                 bool izinVar = mevcutDict.TryGetValue(key, out var val) ? val : false;
@@ -133,7 +203,8 @@ namespace WebApp.Controllers
 
             var aksiyonAdi = aksiyonTipi == "Tumu" ? "Tüm butonlar" : GetButtonAdi(aksiyonTipi) + " butonları";
             var durumText = durum ? "yetkilendirildi" : "yetkisi kaldırıldı";
-            TempData["Success"] = $"{kullaniciTipi} için {aksiyonAdi} {durumText}. Toplam {yeniIzinler.Count} buton güncellendi.";
+            TempData["Success"] = $"{kullaniciTipi} için {aksiyonAdi} {durumText}. " +
+                                 $"Menü izni olan {yeniIzinler.Count} buton güncellendi.";
 
             return RedirectToAction("Index", new { kullaniciTipi });
         }
@@ -167,7 +238,19 @@ namespace WebApp.Controllers
             "ekle",
             "duzenle",
             "sil"
-         
+
+        },
+                ["AdminAnaSayfaSlider"] = new List<string> {
+            "ekle",
+            "duzenle",
+            "sil"
+
+        },
+                ["AdminARGEDurum"] = new List<string> {
+            "ekle",
+            "duzenle",
+            "sil"
+
         },
                 ["AdminBayi"] = new List<string> {
             "ekle",                    // Yeni bayi ekle butonu
@@ -176,98 +259,95 @@ namespace WebApp.Controllers
             "teklifler",                     // Detay butonu
             "sozlesmeler"
         },
+                ["AdminMusteri"] = new List<string> {
+                    "ekle",
+                    "duzenle",
+                    "sil",
+                    "teklifler",
+                     "sozlesmeler"
+
+                },
                 ["AdminBayiDuyuru"] = new List<string> {
                     "ekle",
                     "duzenle",
                     "sil",
-                    "detay",
-                    "yayinla",
-                    "yayindan-kaldir"
+
                 },
-                ["AdminDuyuru"] = new List<string> {
+                ["AdminSozlesmeDurumu"] = new List<string> {
                     "ekle",
                     "duzenle",
                     "sil",
-                    "detay",
-                    "yayinla",
-                    "yayindan-kaldir"
+
+                },
+                
+                ["AdminDuyuru"] = new List<string> {
+                    "ekle",
+                    "duzenle",
+                    "sil"
+
+
                 },
                 ["AdminKampanya"] = new List<string> {
                     "ekle",
                     "duzenle",
                     "sil",
-                    "detay",
-                    "aktiflestir",
-                    "durdur"
+                    "paketgoster",
+                    "grupgoster"
                 },
                 ["AdminUrun"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay",
-                    "kopyala",
-                    "stok-guncelle",
-                    "fiyat-guncelle"
+                    "sil"
                 },
                 ["AdminKategori"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay",
-                    "sira-guncelle"
+                    "sil"
+                 
                 },
                 ["AdminTeklif"] = new List<string> {
                     "ekle",
                     "duzenle",
                     "sil",
                     "detay",
-                    "onayla",
-                    "reddet",
-                    "pdf-indir",
-                    "excel-aktar"
+                    "pdf",
+                    "sozlesmeolustur",
+                    "revize"
                 },
                 ["AdminPaket"] = new List<string> {
                     "ekle",
                     "duzenle",
                     "sil",
-                    "detay",
-                    "fiyat-guncelle",
-                    "aktif-pasif"
+                    "oranlarigor",
+                    "sabitcarpim",
+                    "oranekle"
                 },
                 ["AdminSertifika"] = new List<string> {
                     "ekle",
                     "duzenle",
                     "sil",
-                    "detay"
+                    "goruntule"
                 },
                 ["AdminMakale"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay",
-                    "yayinla"
+                    "sil"
                 },
                 ["AdminIstekOneri"] = new List<string> {
+                  "sil",
                     "detay",
-                    "cevapla",
-                    "arsivle",
-                    "durum-guncelle"
+                     "cevapduzenle",
+                     "cevapyaz"
+
                 },
-                ["AdminArge"] = new List<string> {
-                    "ekle",
+            
+                ["Arge"] = new List<string> {
+                   
                     "duzenle",
-                    "sil",
-                    "detay",
-                    "cozum-ekle",
-                    "durum-guncelle"
+                    "sil"
+                  
                 },
-                ["AdminMenuIzin"] = new List<string> {
-                    "ekle",
-                    "duzenle",
-                    "sil",
-                    "detay",
-                    "yetkilendir"
-                },
+             
                 ["AdminButton"] = new List<string> {
                     "yetki-ver",
                     "yetki-kaldir",
@@ -277,111 +357,85 @@ namespace WebApp.Controllers
                 ["AdminGenelAydinlatma"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay",
-                    "yayinla"
+                    "sil"
                 },
                 ["AdminHakkimizdaBilgileri"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay"
+                    "sil"
                 },
                 ["AdminHakkimizdaFotograf"] = new List<string> {
                     "ekle",
-                    "duzenle",
-                    "sil",
-                    "detay",
-                    "sira-guncelle"
+
+                    "sil"
                 },
                 ["AdminIK"] = new List<string> {
-                    "detay",
-                    "indir",
-                    "arsivle",
-                    "durum-guncelle"
+                      "ekle",
+                    "duzenle",
+                    "sil"
                 },
                 ["AdminIletisimBilgileri"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay"
+                    "sil"
                 },
                 ["AdminKVKK"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay",
-                    "yayinla"
+                    "sil"
                 },
                 ["AdminLisansDurumu"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay"
+                    "sil"
                 },
                 ["AdminLisansTip"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay"
+                    "sil"
                 },
                 ["AdminLokasyon"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay"
+                    "sil"
                 },
                 ["AdminMusteriSozlesme"] = new List<string> {
-                    "ekle",
-                    "duzenle",
-                    "sil",
                     "detay",
-                    "onayla",
-                    "reddet"
+                    "sil",
+                    "pdfgor"
                 },
                 ["AdminMusteriTipi"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay"
+                    "sil"
                 },
                 ["AdminPaketBaglama"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay"
+                    "sil"
                 },
                 ["AdminPaketGrup"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay"
+                    "sil"
                 },
                 ["AdminSSS"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay",
-                    "sira-guncelle"
+                    "sil"
                 },
                 ["AdminTeklifDurum"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay",
-                    "sira-guncelle"
+                    "sil"
                 },
                 ["AdminUrunGaleri"] = new List<string> {
                     "ekle",
-                    "duzenle",
-                    "sil",
-                    "detay",
-                    "sira-guncelle"
+                 
+                    "sil"
                 },
                 ["AdminUYB"] = new List<string> {
-                    "duzenle",
-                    "detay",
-                    "kaydet"
+                    "duzenle"
                 },
                 ["AdminYetki"] = new List<string> {
                     "ekle",
@@ -390,79 +444,69 @@ namespace WebApp.Controllers
                     "detay",
                     "yetkilendir"
                 },
-                ["AdminARGEDurum"] = new List<string> {
-                    "ekle",
-                    "duzenle",
+                ["AdminArgeHata"] = new List<string> {
+
                     "sil",
                     "detay"
-                },
-                ["AdminArgeHata"] = new List<string> {
-                    "ekle",
-                    "duzenle",
-                    "sil",
-                    "detay",
-                    "cozum-ekle"
+
                 },
                 ["AdminBayiSozlesme"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay",
-                    "onayla"
+                    "sil"
+
                 },
                 ["AdminBayiSozlesmeKriteri"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay"
+                    "sil"
                 },
                 ["AdminBirim"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay"
+                    "sil"
                 },
                 ["AdminEntegrator"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay"
+                    "sil"
                 },
                 ["AdminIstekOneriDurum"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay"
+                    "sil"
                 },
                 ["AdminKDV"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay"
+                    "sil"
                 },
                 ["AdminDepartman"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay"
+                    "sil"
                 },
                 ["AdminNedenler"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay"
+                    "sil"
                 },
                 ["AdminNeredenDuydu"] = new List<string> {
                     "ekle",
                     "duzenle",
-                    "sil",
-                    "detay"
+                    "sil"
                 },
                 ["AdminTeklifler"] = new List<string> {
                     "ekle",
                     "duzenle",
                     "sil",
-                    "detay"
+                    "onayla",
+                    "onaykaldir"
+                },
+                ["IstekOneri"] = new List<string> {
+                   
+                    "duzenle",
+                    "sil"
                 },
                 ["AdminTeklifVer"] = new List<string> {
                     "ekle",
@@ -503,8 +547,7 @@ namespace WebApp.Controllers
                 "AdminMakale" => "Makaleler",
                 "AdminSertifika" => "Sertifikalar",
                 "AdminPaket" => "Modüller",
-                "AdminIstekOneri" => "İstek/Öneri",
-                "AdminArge" => "ARGE/Hata",
+                "AdminIstekOneri" => "Admin İstek/Öneri",
                 "AdminMenuIzin" => "Menü Yetkilendirme",
                 "AdminButton" => "Buton Yetkilendirme",
                 "AdminGenelAydinlatma" => "Genel Aydınlatma Metni",
@@ -527,7 +570,7 @@ namespace WebApp.Controllers
                 "AdminYetki" => "Yetkilendirme",
                 "AdminBayiDuyuru" => "Bayi Duyurular",
                 "AdminARGEDurum" => "Arge Durum",
-                "AdminArgeHata" => "ARGE/Hata",
+                "AdminArgeHata" => "Admin ARGE/Hata",
                 "AdminBayiSozlesme" => "Bayi Sözleşmesi",
                 "AdminBayiSozlesmeKriteri" => "Bayi Sözleşme Kriteri",
                 "AdminBirim" => "Birimler",
@@ -539,6 +582,8 @@ namespace WebApp.Controllers
                 "AdminNeredenDuydu" => "Nereden Duydu",
                 "AdminTeklifler" => "Ürün Teklifleri",
                 "AdminTeklifVer" => "Teklif Oluştur",
+                "Arge" => "ARGE/Hata",
+                "IstekOneri" => "Istek Öneri",
                 _ => controller
             };
         }

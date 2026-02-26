@@ -17,249 +17,194 @@ namespace WepApp.Controllers
         private readonly ARGEDurumRepository _argeDurumRepository = new ARGEDurumRepository();
         private readonly BayiRepository _bayiRepository = new BayiRepository();
         private readonly KullanicilarRepository _kullaniciRepository = new KullanicilarRepository();
-
+        private readonly MusteriRepository _musteriRepository = new MusteriRepository();
         public IActionResult Index()
         {
+            Musteri musteri = SessionHelper.GetObjectFromJson<Musteri>(HttpContext.Session, "Musteri");
+            Bayi bayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
+            Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
+
             var redirectResult = LoadCommonData();
             if (redirectResult != null) return redirectResult;
 
+            // Join listesi
             List<string> join = new List<string>();
             join.Add("LisansTip");
             join.Add("Musteri");
             join.Add("Bayi");
             join.Add("ARGEDurum");
 
-            List<ArgeHata> liste = _argeHataRepository.GetirList(x => x.Durumu == 1, join)
-                .OrderByDescending(x => x.EklenmeTarihi)
-                .ToList();
-
-            List<ARGEDurum> durumListesi = _argeDurumRepository.GetirList(x => x.Durumu == 1 && x.Id!=6)
-                .OrderBy(x => x.Sira)
-                .ToList();
-            ViewBag.DurumListesi = durumListesi;
-            List<ARGEDurum> durumListesis = _argeDurumRepository.GetirList(x => x.Durumu == 1 && x.Id != 6)
-             .OrderBy(x => x.Sira)
-             .ToList();
-            ViewBag.DurumListesi = durumListesi;
+            // Temel sorgu - sadece aktif kayıtlar
+            var query = _argeHataRepository.GetirQueryable(x => x.Durumu == 1, join);
 
             // Kullanıcı bilgilerini al
             var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
-            ViewBag.KullaniciTipi = kullaniciTipi;
-            ViewBag.KullaniciId = kullaniciId;
 
-            // Eğer bayi ise bayi bilgilerini al
-            Bayi bayi = null;
-            if (kullaniciTipi == "Bayi")
+            // Kullanıcı tipine göre filtreleme yap
+            if (kullaniciTipi == "Musteri" && musteri != null)
             {
-                bayi = _bayiRepository.Getir(x => x.Id == kullaniciId && x.Durumu == 1);
+                // Müşteri: Sadece kendi kayıtları
+                query = query.Where(x => x.MusteriId == musteri.Id);
+            }
+            else if (kullaniciTipi == "Bayi" && bayi != null)
+            {
+                // Bayi: Kendi kayıtları + alt bayilerin kayıtları + kendi bayisine bağlı müşteri kayıtları
+
+                // Önce bu bayinin tüm alt bayilerini bul (alt bayiler ve onların alt bayileri)
+                var altBayiIdleri = GetAllSubBayiIds(bayi.Id);
+
+                // Bu bayinin kendi Id'sini de listeye ekle
+                var tumBayiIdleri = new List<int> { bayi.Id };
+                tumBayiIdleri.AddRange(altBayiIdleri);
+
+                // Repository'deki yeni metodu kullanarak müşteri ID'lerini bul
+                var musteriIdleri = _musteriRepository.GetMusteriIdleriByBayiIdleri(tumBayiIdleri);
+
+                // Filtrele:
+                query = query.Where(x =>
+                    (x.BayiId.HasValue && tumBayiIdleri.Contains(x.BayiId.Value)) ||
+                    (x.MusteriId.HasValue && musteriIdleri.Contains(x.MusteriId.Value))
+                );
+
+                // Bayi bilgilerini ViewBag'e ekle
                 ViewBag.BayiInfo = bayi;
             }
 
+            // Listeyi sırala ve çek
+            List<ArgeHata> liste = query
+                .OrderByDescending(x => x.EklenmeTarihi)
+                .ToList();
+
+            // Durum listesini al
+            List<ARGEDurum> durumListesi = _argeDurumRepository.GetirList(x => x.Durumu == 1)
+                .OrderBy(x => x.Sira)
+                .ToList();
+
+            ViewBag.DurumListesi = durumListesi;
+            ViewBag.KullaniciTipi = kullaniciTipi;
+            ViewBag.KullaniciId = kullaniciId;
             ViewBag.ArgeHataListesi = liste;
+
             return View();
         }
 
-        [HttpPost]
-        public IActionResult CevapVer(int id, string aciklama)
+        // Alt bayileri recursive olarak bulan yardımcı metod
+        private List<int> GetAllSubBayiIds(int bayiId)
         {
-            var redirectResult = LoadCommonData();
-            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
+            var altBayiIdleri = new List<int>();
 
-            try
+            // Bu bayinin direkt alt bayilerini bul
+            var altBayiler = _bayiRepository.GetirList(x => x.UstBayiId == bayiId && x.Durumu == 1);
+
+            foreach (var altBayi in altBayiler)
             {
-                var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
-                if (string.IsNullOrEmpty(kullaniciTipi))
-                {
-                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
-                }
-
-                ArgeHata mevcut = _argeHataRepository.Getir(id);
-                if (mevcut == null || mevcut.Durumu == 0)
-                {
-                    return Json(new { success = false, message = "Kayıt bulunamadı." });
-                }
-
-                // Cevap zaten verilmişse güncelleme yapılabilir
-                mevcut.DistributorCevap = aciklama;
-                mevcut.DistributorCevapVerdiMi = true;
-                mevcut.DistributorCevapTarihi = DateTime.Now;
-                mevcut.GuncelleyenKullaniciId = kullaniciId ?? 0;
-                mevcut.GuncellenmeTarihi = DateTime.Now;
-                mevcut.ARGEDurumId = 6;
-
-                // Hangi tip kullanıcı cevap verdiğini kaydet
-                if (kullaniciTipi == "Kurumsal")
-                {
-                    mevcut.AdminCevapVerdiMi = true;
-                    mevcut.AdminCevapTarihi = DateTime.Now;
-                    mevcut.AdminKullaniciId = kullaniciId;
-                }
-                else if (kullaniciTipi == "Bayi")
-                {
-                    mevcut.DistributorCevapVerdiMi = true;
-                    mevcut.DistributorCevapTarihi = DateTime.Now;
-                    mevcut.DistributorBayiId = kullaniciId;
-                }
-
-                _argeHataRepository.Guncelle(mevcut);
-
-                // Cevap veren kullanıcı bilgilerini al
-                string cevapVerenAdi = "";
-                if (kullaniciTipi == "Kurumsal")
-                {
-                    var admin = _kullaniciRepository.Getir(x => x.Id == kullaniciId);
-                    cevapVerenAdi = admin?.Adi;
-                }
-                else if (kullaniciTipi == "Bayi")
-                {
-                    var bayi = _bayiRepository.Getir(x => x.Id == kullaniciId);
-                    cevapVerenAdi = bayi?.Unvan;
-                }
-
-                return Json(new
-                {
-                    success = true,
-                    message = "Cevabınız başarıyla kaydedildi.",
-                    distributorCevap = aciklama,
-                    cevapVerdiMi = true,
-                    cevapTarihi = DateTime.Now.ToString("dd.MM.yyyy HH:mm"),
-                    cevapVerenTip = kullaniciTipi,
-                    cevapVerenAdi = cevapVerenAdi
-                });
+                altBayiIdleri.Add(altBayi.Id);
+                // Recursive olarak alt bayilerin alt bayilerini bul
+                altBayiIdleri.AddRange(GetAllSubBayiIds(altBayi.Id));
             }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = $"İşlem sırasında hata oluştu: {ex.Message}" });
-            }
+
+            return altBayiIdleri;
         }
-
         [HttpPost]
-        public IActionResult CevapGuncelle(int id, string aciklama)
+        public async Task<IActionResult> CevapGuncelle(int id, string aciklama)
         {
-            var redirectResult = LoadCommonData();
-            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
-
             try
             {
+                if (id <= 0 || string.IsNullOrWhiteSpace(aciklama))
+                {
+                    return Json(new { success = false, message = "Geçersiz veri" });
+                }
+
+                var kayit = _argeHataRepository.Getir(id);
+                if (kayit == null || kayit.Durumu == 0)
+                {
+                    return Json(new { success = false, message = "Kayıt bulunamadı" });
+                }
+
                 var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
                 if (string.IsNullOrEmpty(kullaniciTipi))
                 {
-                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
+                    return Json(new { success = false, message = "Oturum bulunamadı" });
                 }
 
-                ArgeHata mevcut = _argeHataRepository.Getir(id);
-                if (mevcut == null || mevcut.Durumu == 0)
+                string cevapVerenTip = "";
+                bool yetkili = false;
+
+                if (kullaniciTipi == "Admin")  // veya "Kurumsal" ise buna göre değiştir
                 {
-                    return Json(new { success = false, message = "Kayıt bulunamadı." });
+                    yetkili = true;
+                    cevapVerenTip = "Admin";
+                    kayit.AdminCevap = aciklama.Trim();
+                    kayit.AdminCevapTarihi = DateTime.Now;
+                    kayit.AdminCevapVerdiMi = true;
+                    kayit.AdminKullaniciId = kullaniciId;
                 }
-
-                // Sadece cevap veren kişi güncelleyebilir
-                if (kullaniciTipi == "Kurumsal" && !mevcut.AdminCevapVerdiMi )
+                else if (kullaniciTipi == "Bayi")
                 {
-                    return Json(new { success = false, message = "Sadece cevap veren admin bu cevabı güncelleyebilir." });
+                    var bayis = _bayiRepository.Getir(x => x.Id == kullaniciId);
+                    if (bayis == null)
+                    {
+                        return Json(new { success = false, message = "Bayi bilgileri alınamadı" });
+                    }
+
+                    if (bayis.Distributor == true)  // Distributor ise yetkili kabul et (senin mantığına göre)
+                    {
+                        if (kayit.DistributorBayiId == kullaniciId && kayit.DistributorCevapVerdiMi)
+                        {
+                            yetkili = true;
+                            cevapVerenTip = "Bayi";
+                            kayit.DistributorCevap = aciklama.Trim();
+                            kayit.DistributorCevapTarihi = DateTime.Now;
+                            kayit.DistributorCevapVerdiMi = true;
+                        }
+                    }
+                    // Distributor olmayan bayi → yetkisiz
                 }
-                if (kullaniciTipi == "Bayi" && mevcut.DistributorBayiId != kullaniciId)
+
+                if (!yetkili)
                 {
-                    return Json(new { success = false, message = "Sadece cevap veren bayi bu cevabı güncelleyebilir." });
+                    return Json(new { success = false, message = "Bu cevabı düzenleme yetkiniz yok" });
                 }
 
-                // Cevap güncelleme
-                mevcut.DistributorCevap = aciklama;
-                mevcut.DistributorCevapTarihi = DateTime.Now;
-                mevcut.GuncelleyenKullaniciId = kullaniciId ?? 0;
-                mevcut.GuncellenmeTarihi = DateTime.Now;
-
-                _argeHataRepository.Guncelle(mevcut);
+                // Güncelleme
+                kayit.GuncellenmeTarihi = DateTime.Now;
+                 _argeHataRepository.Guncelle(kayit);  // ← await ekledim (async metod)
 
                 return Json(new
                 {
                     success = true,
-                    message = "Cevabınız başarıyla güncellendi.",
-                    distributorCevap = aciklama,
+                    message = "Cevap başarıyla güncellendi",
+                    cevapVerenTip = cevapVerenTip,
                     cevapTarihi = DateTime.Now.ToString("dd.MM.yyyy HH:mm")
                 });
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = $"İşlem sırasında hata oluştu: {ex.Message}" });
+                // Gerçek projede logger kullan
+                Console.WriteLine(ex.ToString());
+                return Json(new { success = false, message = "Güncelleme sırasında hata oluştu: " + ex.Message });
             }
         }
-
-        [HttpGet]
-        public IActionResult GetirCevap(int id)
+        [HttpPost]
+        public IActionResult Sil(int Id)
         {
             var redirectResult = LoadCommonData();
-            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
+            if (redirectResult != null) return RedirectToAction("Index");
 
             try
             {
                 var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
                 if (string.IsNullOrEmpty(kullaniciTipi))
                 {
-                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
-                }
-
-                ArgeHata kayit = _argeHataRepository.Getir(id);
-                if (kayit == null || kayit.Durumu == 0)
-                {
-                    return Json(new { success = false, message = "Kayıt bulunamadı." });
-                }
-
-                // Cevap veren bilgilerini al
-                string cevapVerenTip = "";
-                string cevapVerenAdi = "";
-                if (kayit.AdminCevapVerdiMi)
-                {
-                    cevapVerenTip = "Admin";
-                    var admin = _kullaniciRepository.Getir(x => x.Id == kayit.AdminKullaniciId);
-                    cevapVerenAdi = admin?.Adi;
-                }
-                else if (kayit.DistributorCevapVerdiMi)
-                {
-                    cevapVerenTip = "Bayi";
-                    var bayi = _bayiRepository.Getir(x => x.Id == kayit.DistributorBayiId);
-                    cevapVerenAdi = bayi?.Unvan;
-                }
-
-                return Json(new
-                {
-                    success = true,
-                    distributorCevap = kayit.DistributorCevap ?? "",
-                    distributorCevapVerdiMi = kayit.DistributorCevapVerdiMi,
-                    distributorCevapTarihi = kayit.DistributorCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "",
-                    adminCevapVerdiMi = kayit.AdminCevapVerdiMi,
-                    adminCevapTarihi = kayit.AdminCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "",
-                    cevapVerenTip = cevapVerenTip,
-                    cevapVerenAdi = cevapVerenAdi,
-                    // Kullanıcının bu cevabı düzenleyip düzenleyemeyeceğini kontrol et
-                    duzenleyebilir = (kullaniciTipi == "Kurumsal" && kayit.AdminCevapVerdiMi && kayit.AdminKullaniciId == kullaniciId) ||
-                                   (kullaniciTipi == "Bayi" && kayit.DistributorCevapVerdiMi && kayit.DistributorBayiId == kullaniciId)
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = $"Hata: {ex.Message}" });
-            }
-        }
-
-        [HttpPost]
-        public IActionResult Sil(int Id)
-        {
-            var redirectResult = LoadCommonData();
-            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
-
-            try
-            {
-                var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
-                if (string.IsNullOrEmpty(kullaniciTipi) || kullaniciTipi != "Kurumsal")
-                {
-                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
+                    TempData["Error"] = "Bu işlem için yetkiniz bulunmamaktadır.";
+                    return RedirectToAction("Index");
                 }
 
                 ArgeHata mevcut = _argeHataRepository.Getir(Id);
                 if (mevcut == null || mevcut.Durumu == 0)
                 {
-                    return Json(new { success = false, message = "Kayıt bulunamadı." });
+                    TempData["Error"] = "Kayıt bulunamadı.";
+                    return RedirectToAction("Index");
                 }
 
                 // Soft delete
@@ -268,13 +213,13 @@ namespace WepApp.Controllers
                 mevcut.GuncellenmeTarihi = DateTime.Now;
 
                 _argeHataRepository.Guncelle(mevcut);
-
-                return Json(new { success = true, message = "Kayıt başarıyla silindi." });
+                TempData["Success"] = "Kayıt başarıyla silindi.";
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = $"Silme işlemi sırasında hata oluştu: {ex.Message}" });
+                TempData["Error"] = $"Silme işlemi sırasında hata oluştu: {ex.Message}";
             }
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
@@ -286,7 +231,7 @@ namespace WepApp.Controllers
             try
             {
                 var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
-                if (string.IsNullOrEmpty(kullaniciTipi) || (kullaniciTipi != "Kurumsal" && kullaniciTipi != "Bayi"))
+                if (string.IsNullOrEmpty(kullaniciTipi))
                 {
                     return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
                 }
@@ -297,11 +242,18 @@ namespace WepApp.Controllers
                     return Json(new { success = false, message = "Kayıt bulunamadı." });
                 }
 
-                // Bayiler sadece kendi müşterilerinin durumunu güncelleyebilir
-                if (kullaniciTipi == "Bayi" && mevcut.BayiId != kullaniciId)
+                // Bayi kontrolü - sadece kendi kayıtlarını güncelleyebilir
+                if (kullaniciTipi == "Bayi")
                 {
-                    return Json(new { success = false, message = "Sadece kendi müşterilerinizin durumunu güncelleyebilirsiniz." });
+                    if (mevcut.BayiId != kullaniciId)
+                    {
+                        return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
+                    }
+
+                 
                 }
+
+        
 
                 // Durum güncelleme
                 mevcut.ARGEDurumId = durumId;
@@ -324,6 +276,171 @@ namespace WepApp.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = $"Durum güncelleme sırasında hata oluştu: {ex.Message}" });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult CevapVer(int id, string aciklama)
+        {
+            var redirectResult = LoadCommonData();
+            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
+
+            try
+            {
+                var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
+                if (string.IsNullOrEmpty(kullaniciTipi))
+                {
+                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
+                }
+
+                ArgeHata mevcut = _argeHataRepository.Getir(id);
+                if (mevcut == null || mevcut.Durumu == 0)
+                {
+                    return Json(new { success = false, message = "Kayıt bulunamadı." });
+                }
+
+                // Bayi kontrolü - sadece kendi kayıtlarına cevap verebilir
+                if (kullaniciTipi == "Bayi")
+                {
+                    if (mevcut.BayiId != kullaniciId)
+                    {
+                        return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
+                    }
+
+                    // Zaten cevap verilmiş mi kontrol et
+                    if (mevcut.DistributorCevapVerdiMi)
+                    {
+                        return Json(new { success = false, message = "Bu kayıt için zaten cevap verilmiş. Tekrar cevap veremezsiniz." });
+                    }
+
+                    // Bayi cevabını ve durumu güncelle
+                    mevcut.DistributorCevap = aciklama;
+                    mevcut.DistributorCevapTarihi = DateTime.Now;
+                    mevcut.DistributorCevapVerdiMi = true;
+                    mevcut.DistributorBayiId = kullaniciId;
+                }
+
+                // Admin kontrolü
+                if (kullaniciTipi == "Admin")
+                {
+                    // Zaten cevap verilmiş mi kontrol et
+                    if (mevcut.AdminCevapVerdiMi)
+                    {
+                        return Json(new { success = false, message = "Bu kayıt için zaten cevap verilmiş. Tekrar cevap veremezsiniz." });
+                    }
+
+                    // Admin cevabını ve durumu güncelle
+                    mevcut.AdminCevap = aciklama;
+                    mevcut.AdminCevapTarihi = DateTime.Now;
+                    mevcut.AdminCevapVerdiMi = true;
+                    mevcut.AdminKullaniciId = kullaniciId;
+                }
+
+                // Ortak alanlar
+                mevcut.GuncelleyenKullaniciId = kullaniciId ?? 0;
+                mevcut.GuncellenmeTarihi = DateTime.Now;
+
+                _argeHataRepository.Guncelle(mevcut);
+
+                // Cevap veren bilgilerini al
+                string cevapVerenAdi = "";
+                if (kullaniciTipi == "Admin")
+                {
+                    var admin = _kullaniciRepository.Getir(x => x.Id == kullaniciId);
+                    cevapVerenAdi = admin?.Adi;
+                }
+                else if (kullaniciTipi == "Bayi")
+                {
+                    var bayi = _bayiRepository.Getir(x => x.Id == kullaniciId);
+                    cevapVerenAdi = bayi?.Unvan;
+                }
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Cevap ve durum başarıyla kaydedildi.",
+                    cevapTarihi = DateTime.Now.ToString("dd.MM.yyyy HH:mm"),
+                    cevapVerenTip = kullaniciTipi,
+                    cevapVerenAdi = cevapVerenAdi
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"İşlem sırasında hata oluştu: {ex.Message}" });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetirCevap(int id)
+        {
+            var redirectResult = LoadCommonData();
+            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
+            LoadCommonData();
+
+            try
+            {
+                var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
+            
+                if (string.IsNullOrEmpty(kullaniciTipi))
+                {
+                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
+                }
+
+                ArgeHata kayit = _argeHataRepository.Getir(id);
+                if (kayit == null || kayit.Durumu == 0)
+                {
+                    return Json(new { success = false, message = "Kayıt bulunamadı." });
+                }
+            if (kullaniciTipi == "Bayi")
+                {
+                    Bayi bayis = _bayiRepository.Getir(x => x.Id == kullaniciId);
+
+                    // Bayi sadece kendi kayıtlarını görebilir
+                    if (bayis.Distributor == false)
+                {
+                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
+                }
+                   
+                }
+                // Cevap veren bilgilerini al
+                string cevapVerenTip = "";
+                string cevapVerenAdi = "";
+                string cevapMetni = "";
+                string cevapTarihi = "";
+
+                if (kayit.AdminCevapVerdiMi)
+                {
+                    cevapVerenTip = "Admin";
+                    cevapMetni = kayit.AdminCevap ?? "";
+                    cevapTarihi = kayit.AdminCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "";
+                    var admin = _kullaniciRepository.Getir(x => x.Id == kayit.AdminKullaniciId);
+                    cevapVerenAdi = admin?.Adi;
+                }
+                else if (kayit.DistributorCevapVerdiMi)
+                {
+                    cevapVerenTip = "Bayi";
+                    cevapMetni = kayit.DistributorCevap ?? "";
+                    cevapTarihi = kayit.DistributorCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "";
+                    var bayi = _bayiRepository.Getir(x => x.Id == kayit.DistributorBayiId);
+                    cevapVerenAdi = bayi?.Unvan;
+                }
+
+                ARGEDurum durum = _argeDurumRepository.Getir(kayit.ARGEDurumId ?? 0);
+
+                return Json(new
+                {
+                    success = true,
+                    cevapMetni = cevapMetni,
+                    cevapTarihi = cevapTarihi,
+                    cevapVerenTip = cevapVerenTip,
+                    cevapVerenAdi = cevapVerenAdi,
+                    durumAdi = durum?.Adi ?? "Belirtilmemiş",
+                    durumDegisimTarihi = kayit.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Hata: {ex.Message}" });
             }
         }
 
@@ -353,23 +470,36 @@ namespace WepApp.Controllers
                     return Json(new { success = false, message = "Kayıt bulunamadı" });
                 }
 
+                // Bayi sadece kendi kayıtlarını görebilir
+                if (kullaniciTipi == "Bayi" && kayit.BayiId != kullaniciId)
+                {
+                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
+                }
+
                 // Cevap veren bilgilerini al
                 string cevapVerenTip = "";
                 string cevapVerenAdi = "";
+                string cevapMetni = "";
+                string cevapTarihi = "";
+
                 if (kayit.AdminCevapVerdiMi)
                 {
                     cevapVerenTip = "Admin";
+                    cevapMetni = kayit.AdminCevap ?? "";
+                    cevapTarihi = kayit.AdminCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "";
                     var admin = _kullaniciRepository.Getir(x => x.Id == kayit.AdminKullaniciId);
                     cevapVerenAdi = admin?.Adi;
                 }
                 else if (kayit.DistributorCevapVerdiMi)
                 {
                     cevapVerenTip = "Bayi";
+                    cevapMetni = kayit.DistributorCevap ?? "";
+                    cevapTarihi = kayit.DistributorCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "";
                     var bayi = _bayiRepository.Getir(x => x.Id == kayit.DistributorBayiId);
                     cevapVerenAdi = bayi?.Unvan;
                 }
 
-                // Dosya yolunu kontrol et ve tam yolunu oluştur
+                // Dosya yolunu kontrol et
                 string dosyaGorunum = "";
                 if (!string.IsNullOrEmpty(kayit.DosyaYolu))
                 {
@@ -391,18 +521,13 @@ namespace WepApp.Controllers
                     lisansTipAdi = kayit.LisansTip?.Adi ?? "Belirtilmemiş",
                     argeDurumId = kayit.ARGEDurumId,
                     argeDurumAdi = kayit.ARGEDurum?.Adi ?? "Belirtilmemiş",
-                    distributorCevap = kayit.DistributorCevap ?? "",
-                    distributorCevapTarihi = kayit.DistributorCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "",
-                    adminCevapTarihi = kayit.AdminCevapTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "",
+                    cevapMetni = cevapMetni,
+                    cevapTarihi = cevapTarihi,
                     cevapVerenTip = cevapVerenTip,
                     cevapVerenAdi = cevapVerenAdi,
+                    cevapVerdiMi = kayit.AdminCevapVerdiMi || kayit.DistributorCevapVerdiMi,
                     eklenmeTarihi = kayit.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm"),
-                    guncellenmeTarihi = kayit.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm"),
-                    // Kullanıcının bu kaydı düzenleyip düzenleyemeyeceğini kontrol et
-                    cevapDuzenleyebilir = (kullaniciTipi == "Kurumsal") ||
-                                         (kullaniciTipi == "Bayi" && kayit.BayiId == kullaniciId && !kayit.DistributorCevapVerdiMi && !kayit.AdminCevapVerdiMi),
-                    durumDuzenleyebilir = (kullaniciTipi == "Kurumsal") || (kullaniciTipi == "Bayi" && kayit.BayiId == kullaniciId),
-                    silebilir = (kullaniciTipi == "Kurumsal")
+                    guncellenmeTarihi = kayit.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")
                 });
             }
             catch (Exception ex)
@@ -435,6 +560,5 @@ namespace WepApp.Controllers
                 return Json(new { success = false, message = $"Hata: {ex.Message}" });
             }
         }
-
     }
 }

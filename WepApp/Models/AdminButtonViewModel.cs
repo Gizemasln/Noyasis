@@ -8,6 +8,10 @@ namespace WepApp.Models
         public Dictionary<string, List<DetectedButton>> GruplanmisButonlar { get; set; } = new Dictionary<string, List<DetectedButton>>();
         public Dictionary<string, bool> ButtonPermissions { get; set; } = new Dictionary<string, bool>();
         public string SeciliKullaniciTipi { get; set; } = "Admin";
+        // YENİ EKLENEN:
+        public List<string> IzinliControllerlar { get; set; } = new List<string>();
+        public int ToplamIzinliSayfa { get; set; }
+        public int ToplamButon { get; set; }
     }
 
     public class DetectedButton

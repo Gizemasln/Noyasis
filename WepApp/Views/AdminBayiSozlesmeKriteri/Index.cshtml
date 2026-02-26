@@ -73,10 +73,10 @@
                                         <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td class="table-actions text-center">
                                             <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id, '@Html.Raw(item.Adi)', '@Html.Raw(item.Aciklama ?? "")', '@Html.Raw(item.UzunAciklama ?? "")', '@Html.Raw(item.Konu ?? "")', @item.Oran)">
-                                                <i class="fas fa-edit">Düzenle</i>
+                                                <i class="fas fa-edit"></i>
                                             </button>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="silOnay(@item.Id, '@Html.Raw(item.Adi)')">
-                                                <i class="fas fa-trash">Sil</i>
+                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@Html.Raw(item.Adi)')">
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
