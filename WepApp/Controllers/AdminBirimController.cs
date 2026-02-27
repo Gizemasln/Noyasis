@@ -17,7 +17,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
             List<Birim> list = _birimRepository.GetirList(x => x.Durumu == 1);
             ViewBag.Birimler = list;
             return View();
@@ -26,7 +26,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Ekle(string Adi)
         {
-            LoadCommonData();
+        
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (kullanici == null)
             {
@@ -59,7 +59,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(int Id, string Adi)
         {
-            LoadCommonData();
+        
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (kullanici == null)
             {
@@ -93,7 +93,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Birim birim = _birimRepository.Getir(Id);
             if (kullanici == null)
@@ -119,7 +119,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             Birim item = _birimRepository.Getir(id);
             if (item == null || item.Durumu == 0)
@@ -135,7 +135,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult AdiKontrol(string adi, int? birimId = null)
         {
-            LoadCommonData();
+        
 
             if (string.IsNullOrWhiteSpace(adi))
                 return Json(new { success = false, message = "Birim adı boş olamaz." });

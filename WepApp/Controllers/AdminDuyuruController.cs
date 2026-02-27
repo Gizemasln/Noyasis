@@ -21,7 +21,7 @@ namespace WebApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
             List<Duyuru> list = _repository.Listele()
                 .Where(x => x.Durumu == 1)
                 .OrderByDescending(x => x.Oncelik)
@@ -36,7 +36,7 @@ namespace WebApp.Controllers
             DateTime? YayinBaslangicTarihi = null, DateTime? YayinBitisTarihi = null,
             bool YayindaMi = false, IFormFile? Gorsel = null)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (!string.IsNullOrEmpty(Baslik))
@@ -77,7 +77,7 @@ namespace WebApp.Controllers
             DateTime? YayinBaslangicTarihi = null, DateTime? YayinBitisTarihi = null,
             bool YayindaMi = false, IFormFile? Gorsel = null, string? MevcutGorsel = null)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Duyuru existingEntity = _repository.Getir(Id);
@@ -117,7 +117,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Duyuru duyuru = _repository.Getir(Id);
@@ -145,7 +145,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             Duyuru item = _repository.Getir(id);
             if (item == null)

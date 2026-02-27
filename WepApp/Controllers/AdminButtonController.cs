@@ -24,8 +24,7 @@ namespace WebApp.Controllers
 
         public IActionResult Index(string kullaniciTipi = "Admin")
         {
-            var redirect = LoadCommonData();
-            if (redirect != null) return redirect;
+           
 
             // 1. ADIM: Seçili kullanıcı tipinin menü izinlerini getir
             var menuIzinRepo = new MenuIzinRepository();
@@ -112,8 +111,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Kaydet(string kullaniciTipi, List<string> seciliIzinler)
         {
-            var redirect = LoadCommonData();
-            if (redirect != null) return redirect;
+          
 
             // 1. ADIM: Seçili kullanıcı tipinin menü izinlerini getir
             var menuIzinRepo = new MenuIzinRepository();
@@ -152,8 +150,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult TopluYetkilendir(string kullaniciTipi, string aksiyonTipi, bool durum)
         {
-            var redirect = LoadCommonData();
-            if (redirect != null) return redirect;
+
 
             // 1. ADIM: Seçili kullanıcı tipinin menü izinlerini getir
             var menuIzinRepo = new MenuIzinRepository();
@@ -261,6 +258,7 @@ namespace WebApp.Controllers
         },
                 ["AdminMusteri"] = new List<string> {
                     "ekle",
+                    "detay",
                     "duzenle",
                     "sil",
                     "teklifler",

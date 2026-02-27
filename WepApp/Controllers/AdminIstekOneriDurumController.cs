@@ -13,7 +13,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
             List<IstekOneriDurum> list = _istekOneriDurumRepository.GetirList(x => x.Durumu == 1).OrderBy(x => x.Sira).ToList();
             ViewBag.IstekOneriDurumlar = list;
             return View();
@@ -23,7 +23,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Ekle(string Adi, int? Sira)
         {
-            LoadCommonData();
+        
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (kullanici == null)
             {
@@ -66,7 +66,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Guncelle(int Id, string Adi, int Sira)
         {
-            LoadCommonData();
+        
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (kullanici == null)
             {
@@ -102,7 +102,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (kullanici == null)
             {
@@ -136,7 +136,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SiraGuncelle(List<SiraGuncelleModel> siralamalar)
         {
-            LoadCommonData();
+        
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (kullanici == null)
             {
@@ -167,7 +167,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             IstekOneriDurum item = _istekOneriDurumRepository.Getir(id);
             if (item == null || item.Durumu == 0)
@@ -184,7 +184,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult AdiKontrol(string adi, int? istekOneriDurumId = null)
         {
-            LoadCommonData();
+        
 
             if (string.IsNullOrWhiteSpace(adi))
                 return Json(new { success = false, message = "İstek/Öneri durum adı boş olamaz." });
@@ -206,7 +206,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult SiraKontrol(int sira, int? istekOneriDurumId = null)
         {
-            LoadCommonData();
+        
 
             if (sira <= 0)
                 return Json(new { success = false, message = "Sıra numarası 0'dan büyük olmalıdır." });

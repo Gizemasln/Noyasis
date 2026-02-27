@@ -11,7 +11,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
             List<Entegrator> entegratorler = _entegratorRepository.GetirList(x => x.Durumu == 1)
                 .OrderBy(x => x.Adi)
@@ -25,7 +25,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Ekle(string Adi, string Kodu, string Aciklama)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -77,7 +77,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(int Id, string Adi, string Kodu, string Aciklama)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -130,7 +130,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -164,7 +164,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
 
             Entegrator item = _entegratorRepository.Getir(id);

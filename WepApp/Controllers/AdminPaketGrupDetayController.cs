@@ -16,7 +16,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
             var gruplar = _paketGrupRepo.GetirList(x => x.Durumu == 1)
                 .OrderBy(x => x.Sira)
                 .ThenBy(x => x.Adi)
@@ -35,7 +35,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetirDetaylar(int grupId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -70,7 +70,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetirPaketler(int grupId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -104,7 +104,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Kaydet(int grupId, int[] paketIds)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");

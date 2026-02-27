@@ -24,7 +24,7 @@ namespace WepApp.Controllers
         }
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -98,7 +98,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (kullanici == null) return Unauthorized();
@@ -144,7 +144,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult BenzersizKontrol(string dokumanNo, string revizyonNo, int? excludeId = null)
         {
-            LoadCommonData();
+        
 
             IQueryable<BayiSozlesme> query = _sozlesmeRepo.GetirQueryable()
                 .Where(x => x.Durumu == 1 && x.DokumanNo == dokumanNo.Trim());
@@ -167,7 +167,7 @@ namespace WepApp.Controllers
                     decimal GecerlilikSuresi, DateTime BitisTarihi,
                     [FromForm] List<int> KriterIds, IFormFile? Dosya)
         {
-            LoadCommonData();
+        
 
             return await KaydetAsync(null, BayiId, DokumanNo, YayinTarihi, RevizeTarihi, RevizyonNo,
                 SozlesmeDurumuId, GecerlilikSuresi, BitisTarihi, KriterIds ?? new List<int>(), Dosya, "eklendi");
@@ -179,7 +179,7 @@ namespace WepApp.Controllers
                     decimal GecerlilikSuresi, DateTime BitisTarihi,
                     [FromForm] List<int> KriterIds, IFormFile? Dosya)
         {
-            LoadCommonData();
+        
 
             return await KaydetAsync(Id, BayiId, DokumanNo, YayinTarihi, RevizeTarihi, RevizyonNo,
                 SozlesmeDurumuId, GecerlilikSuresi, BitisTarihi, KriterIds ?? new List<int>(), Dosya, "güncellendi");
@@ -188,7 +188,7 @@ namespace WepApp.Controllers
                      DateTime? RevizeTarihi, string RevizyonNo, int SozlesmeDurumuId, decimal GecerlilikSuresi,
                      DateTime BitisTarihi, List<int> KriterIds, IFormFile? Dosya, string islem)
         {
-            LoadCommonData();
+        
 
             // Session'dan tüm kullanıcı tiplerini al
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -380,7 +380,7 @@ namespace WepApp.Controllers
         // Kriterleri güncelleme metodunu da güncelle
         private async Task KriterleriGuncelleAsync(int sozlesmeId, List<int> kriterIds, int guncelleyenId, string kullaniciTipi = "kullanici")
         {
-            LoadCommonData();
+        
 
             // Eski kriterleri pasif yap
             List<BayiSozlesmeBayiKriter> eskiKriterler = _kriterRepo.GetirList(x => x.BayiSozlesmeId == sozlesmeId && x.Durumu == 1).ToList();
@@ -446,7 +446,7 @@ namespace WepApp.Controllers
 
         private async Task<bool> BenzersizKontrolAsync(string dokumanNo, string revizyonNo, int? excludeId = null)
         {
-            LoadCommonData();
+        
 
             IQueryable<BayiSozlesme> query = _sozlesmeRepo.GetirQueryable()
                 .Where(x => x.Durumu == 1 && x.DokumanNo == dokumanNo.Trim());
@@ -464,7 +464,7 @@ namespace WepApp.Controllers
 
         private async Task KriterleriGuncelleAsync(int sozlesmeId, List<int> kriterIds, int kullaniciId)
         {
-            LoadCommonData();
+        
 
             // Eski kriterleri pasif yap
             List<BayiSozlesmeBayiKriter> eskiKriterler = _kriterRepo.GetirList(x => x.BayiSozlesmeId == sozlesmeId && x.Durumu == 1).ToList();
@@ -499,7 +499,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -544,7 +544,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult BenzersizKontrol(string dokumanNo, int? excludeId = null)
         {
-            LoadCommonData();
+        
 
             if (string.IsNullOrWhiteSpace(dokumanNo))
                 return Json(new { varMi = false });
@@ -572,7 +572,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetBayiler()
         {
-            LoadCommonData();
+        
 
             // Session'dan kullanıcı bilgilerini al
             Bayi currentBayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
@@ -623,7 +623,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetSozlesmeDurumlari()
         {
-            LoadCommonData();
+        
 
             var durumlar = _durumRepo.GetirList(x => x.Durumu == 1)
                 .Select(d => new { value = d.Id, text = d.Adi })
@@ -635,7 +635,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetKriterTanimlari()
         {
-            LoadCommonData();
+        
 
             var kriterler = _kriterTanimRepo.GetirList(x => x.Durumu == 1)
                 .Select(k => new { value = k.Id, text = $"{k.Adi} (%{k.Oran.ToString("0.##")})" })

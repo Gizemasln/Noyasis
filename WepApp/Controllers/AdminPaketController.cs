@@ -17,7 +17,7 @@ namespace WebApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
             // Paketleri KDV bilgisiyle birlikte getir
             List<string> join = new List<string> { "LisansTip", "Birim", "KDV" };
@@ -74,7 +74,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Ekle(Paket model)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -132,7 +132,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(Paket model)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -192,7 +192,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult DurumGuncelle(int Id, int aktif)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -223,7 +223,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -258,7 +258,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             Paket paket = _paketRepository.Getir(id);
             if (paket == null || paket.Durumu == 0) return NotFound();
@@ -282,7 +282,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult FiyatOraniEkle(int paketId, int min, int max, int oranYuzde, bool oranUygula = false)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -408,7 +408,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult FiyatOranlariGetir(int paketId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -441,7 +441,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult FiyatOraniSil(int id)
         {
-            LoadCommonData();
+        
 
             try
             {

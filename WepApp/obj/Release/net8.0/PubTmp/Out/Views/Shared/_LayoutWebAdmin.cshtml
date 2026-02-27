@@ -29,6 +29,27 @@
     <link rel="stylesheet" href="/WebAdminTheme/assets/css/kaiadmin.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="/WebAdminTheme/assets/css/demo.css" />
+
+    @* Buton Yetkilendirme - Kullanıcı Tipi Bilgisi *@
+    @if (ViewBag.CurrentUserType != null)
+    {
+        <script>
+            window.__CURRENT_USER_TYPE = '@ViewBag.CurrentUserType';
+            window.__CURRENT_USER_ID = '@(ViewBag.CurrentUserId ?? "")';
+            console.log('Kullanıcı tipi yüklendi:', window.__CURRENT_USER_TYPE);
+        </script>
+    }
+    else
+    {
+        <script>
+            // Fallback - kullanıcı tipi yoksa menüden almaya çalış
+            window.__CURRENT_USER_TYPE = '@(ViewBag.Kullanici != null ? "Admin" :
+                   (ViewBag.Musteri != null ? "Musteri" :
+                    (ViewBag.Bayi != null ? (ViewBag.Bayi.Distributor == true ? "Distributor" : "Bayi") : "Admin")))';
+            window.__CURRENT_USER_ID = '';
+            console.log('Fallback kullanıcı tipi:', window.__CURRENT_USER_TYPE);
+        </script>
+    }
 </head>
 <body>
     <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
@@ -356,16 +377,8 @@
     <script src="/WebAdminTheme/assets/js/kaiadmin.min.js"></script>
 
     <script src="/WebAdminTheme/assets/js/setting-demo.js"></script>
-@*     <script>
-        // BU KISIM ÖNCE ÇALIŞMALI!
-        window.__CURRENT_USER_TYPE = '@currentUserType';
-        window.__CURRENT_USER_ID = '@currentUserId';
-        window.userType = window.__CURRENT_USER_TYPE;
-        console.log('Layout - Kullanıcı tipi set edildi:', window.__CURRENT_USER_TYPE);
-    </script>
 
-    <!-- SONRA button-permission.js yüklenmeli -->
-    <script src="/WebAdminTheme/assets/js/button-permission.js"></script> *@
+     <script src="/WebAdminTheme/assets/js/button-permission.js"></script>  
     <script>
         $(document).ready(function () {
             const sidebarKey = "sidebar_open_menus";

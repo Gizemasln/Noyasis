@@ -36,7 +36,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Kaydet(IKFormu ikFormu, IFormFile? DosyaYolu)
         {
-            LoadCommonData();
+        
 
             IKFormuRepository ikFormuRepository = new IKFormuRepository();
 

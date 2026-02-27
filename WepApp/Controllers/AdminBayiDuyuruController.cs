@@ -20,7 +20,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
             List<BayiDuyuru> list = _repository.Listele()
                 .Where(x => x.Durumu == 1)
                 .OrderByDescending(x => x.Oncelik)
@@ -36,7 +36,7 @@ namespace WepApp.Controllers
             DateTime? YayinBaslangicTarihi = null, DateTime? YayinBitisTarihi = null,
             bool YayindaMi = false, IFormFile? Gorsel = null)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (!string.IsNullOrEmpty(Baslik))
@@ -77,7 +77,7 @@ namespace WepApp.Controllers
             DateTime? YayinBaslangicTarihi = null, DateTime? YayinBitisTarihi = null,
             bool YayindaMi = false, IFormFile? Gorsel = null, string? MevcutGorsel = null)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             BayiDuyuru existingEntity = _repository.Getir(Id);
@@ -117,7 +117,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             BayiDuyuru duyuru = _repository.Getir(Id);

@@ -28,7 +28,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -155,7 +155,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult MuhasebelendiYap(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -198,7 +198,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult MuhasebelendiGeriAl(int id)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -240,7 +240,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult DurumDegistir(int id, int durumId, string? iptalNeden = null)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -478,7 +478,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Lisansla(int id, string lisansNo)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -523,7 +523,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult LisansGeriAl(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -564,7 +564,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult DosyaIndir(int id)
         {
-            LoadCommonData();
+        
 
             MusteriSozlesme sozlesme = _sozlesmeRepo.Getir(id);
             if (sozlesme == null || string.IsNullOrEmpty(sozlesme.DosyaAdi))
@@ -589,7 +589,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult DosyaGoruntule(int id)
         {
-            LoadCommonData();
+        
             MusteriSozlesme sozlesme = _sozlesmeRepo.Getir(id);
             if (sozlesme == null || string.IsNullOrEmpty(sozlesme.DosyaAdi))
             {
@@ -612,7 +612,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Sil(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -663,7 +663,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetirSozlesmeDetay(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -739,7 +739,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public async Task<IActionResult> DokumanYukle(int sozlesmeId, string dokumanTipi, IFormFile dosya)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -834,7 +834,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult DokumanSil(int id, string dokumanTipi)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -911,7 +911,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult DokumanIndir(int id, string dokumanTipi)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -971,7 +971,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult DokumanGoruntule(int id, string dokumanTipi)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1024,7 +1024,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult LisansIptalEt(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1064,7 +1064,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult FiltreliListe(DateTime? baslangicTarih, DateTime? bitisTarih, int? durumId, string? arama)
         {
-            LoadCommonData();
+        
 
             var sorgu = _sozlesmeRepo.GetirList(x => x.Durumu == 1).AsQueryable();
 
@@ -1111,7 +1111,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult DokumanCheckboxGuncelle(int id, string dokumanTipi, bool durum)
         {
-            LoadCommonData();
+        
 
             try
             {

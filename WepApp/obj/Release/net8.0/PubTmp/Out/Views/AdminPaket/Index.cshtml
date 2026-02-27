@@ -169,7 +169,7 @@
 
                                             @if (adet > 0)
                                             {
-                                                <button type="button" class="btn btn-outline-info btn-sm"
+                                                <button type="button" class="btn btn-outline-info btn-sm" data-button-permission="oranlarigor"
                                                         onclick="fiyatOranlariGoster(@item.Id, '@item.Adi')">
                                                     <i class="fas fa-list"></i> Oranları Gör
                                                     @if (sabitCarpimVar)
@@ -204,15 +204,15 @@
 
                                             @if (sabitCarpimVarLocal)
                                             {
-                                                <button type="button" class="btn btn-warning btn-sm"
-                                                        onclick="sabitCarpimSilOnay(@sabitCarpimIdLocal, '@item.Adi')"
+                                                <button type="button" class="btn btn-warning btn-sm" data-button-permission="sabitcarpim"
+                                                        onclick="sabitCarpimSilOnay(@sabitCarpimIdLocal, '@item.Adi')" 
                                                         title="Önce Sabit Çarpım Oranını Silin">
                                                     <i class="fas fa-exclamation-triangle"></i> Sabit Çarpım Var
                                                 </button>
                                             }
                                             else
                                             {
-                                                <button type="button" class="btn btn-info btn-sm"
+                                                <button type="button" class="btn btn-info btn-sm" data-button-permission="oranekle"
                                                         onclick="fiyatOraniEkle(@item.Id)" title="Fiyat Oranı Ekle">
                                                     <i class="fas fa-percentage"></i> Oran Ekle
                                                 </button>
@@ -238,7 +238,7 @@
                                         <div class="py-4">
                                             <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                             <p class="text-muted">Henüz paket eklenmemiş.</p>
-                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-button-permission="ekle"
                                                     data-bs-target="#ekleModal">
                                                 İlk Paketi Ekle
                                             </button>

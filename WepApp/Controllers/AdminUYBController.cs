@@ -11,7 +11,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
             UYB uyb = _uybRepository.Getir(x => x.Durumu == 1);
             ViewBag.UYB = uyb;
             return View();
@@ -20,7 +20,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Ekle(decimal Oran)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -68,7 +68,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(int Id, decimal Oran)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");

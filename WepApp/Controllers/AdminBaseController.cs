@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using WebApp.Models;
 using WepApp.Models;
 
@@ -6,7 +7,7 @@ namespace WepApp.Controllers
 {
     public class AdminBaseController : Controller
     {
-        protected IActionResult LoadCommonData()
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
             Musteri musteri = SessionHelper.GetObjectFromJson<Musteri>(HttpContext.Session, "Musteri");
             Bayi bayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
@@ -16,26 +17,24 @@ namespace WepApp.Controllers
             ViewBag.Bayi = bayi;
             ViewBag.Kullanici = kullanici;
 
-            // Kullanıcı girişi kontrolü - sadece giriş yapmamış kullanıcıları login'e yönlendir
+            // Eğer hiçbir kullanıcı tipi yoksa Login'e yönlendir
             if (kullanici == null && musteri == null && bayi == null)
             {
-                return RedirectToAction("Index", "Login");
+                context.Result = RedirectToAction("Index", "Login");
             }
 
-            return null; // yönlendirme yapılmadıysa null dönebilir
+            base.OnActionExecuting(context);
         }
 
-        // Kullanıcı tipini döndüren yardımcı metod - DÜZELTİLDİ!
         protected (string tip, int? id) GetCurrentUserInfo()
         {
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Musteri musteri = SessionHelper.GetObjectFromJson<Musteri>(HttpContext.Session, "Musteri");
             Bayi bayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
 
-            // Buton izinlerinde kullanılan tipler: Admin, Musteri, Bayi, Distributor
-            if (kullanici != null) return ("Admin", kullanici.Id);      // "Kurumsal" yerine "Admin"
-            if (musteri != null) return ("Musteri", musteri.Id);        // "Musteri" (zaten doğru)
-            if (bayi != null) return ("Bayi", bayi.Id);                 // "Bayi" (zaten doğru)
+            if (kullanici != null) return ("Admin", kullanici.Id);
+            if (musteri != null) return ("Musteri", musteri.Id);
+            if (bayi != null) return ("Bayi", bayi.Id);
 
             return (null, null);
         }

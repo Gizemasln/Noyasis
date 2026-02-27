@@ -20,7 +20,7 @@ namespace WebApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
             // Sadece Kategori join'i kaldı, Kampanyalar tamamen kaldırıldı
             List<string> join = new List<string> { "Kategori" };
@@ -41,7 +41,7 @@ namespace WebApp.Controllers
         public IActionResult Ekle(string Adi, string Aciklama, int KategoriId, int? Stok, string UrunKodu,
             decimal Fiyat, decimal? SureSizIndirimYuzdesi)
         {
-            LoadCommonData();
+        
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
 
             Urun model = new Urun
@@ -68,7 +68,7 @@ namespace WebApp.Controllers
         public IActionResult Guncelle(int Id, string Adi, string Aciklama, int KategoriId, int? Stok,
             string UrunKodu, decimal Fiyat, decimal? SureSizIndirimYuzdesi)
         {
-            LoadCommonData();
+        
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Urun existing = _repository.Getir(Id);
 
@@ -98,7 +98,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
             Urun urun = _repository.Getir(Id);
             if (urun != null)
             {

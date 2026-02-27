@@ -19,11 +19,11 @@ namespace WebApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
             List<string> join = new List<string>();
             join.Add("Yetki");
-            LoadCommonData();
+        
             List<Kullanicilar> list = _kullaniciRepository.GetirList(x => x.Durumu == 1 ,join);
             ViewBag.KullanicilarList = list;
 
@@ -35,7 +35,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Ekle(string Adi, string Sifre, int? YetkiId)
         {
-            LoadCommonData();
+        
 
 
             Kullanicilar model = new Kullanicilar
@@ -56,7 +56,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(int Id, string Adi, string Sifre, int? YetkiId)
         {
-            LoadCommonData();
+        
 
             Kullanicilar existingEntity = _kullaniciRepository.Getir(Id);
             if (existingEntity != null)
@@ -80,7 +80,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanicilar = _kullaniciRepository.Getir(Id);
             if (kullanicilar != null)
@@ -100,7 +100,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar item = _kullaniciRepository.Getir(id);
             if (item == null)

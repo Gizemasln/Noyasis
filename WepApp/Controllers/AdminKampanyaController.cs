@@ -27,7 +27,7 @@ namespace WebApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
             List<Kampanya> kampanyalar = _kampanyaRepo.GetirList(x => x.Durumu == 1);
 
             foreach (Kampanya kampanya in kampanyalar)
@@ -49,7 +49,7 @@ namespace WebApp.Controllers
         public IActionResult Ekle(string Baslik, string Metin, decimal IndirimYuzdesi,
             DateTime BaslangicTarihi, DateTime BitisTarihi, int[] seciliPaketler, int[] seciliPaketGruplari, IFormFile? Gorsel = null)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -148,7 +148,7 @@ namespace WebApp.Controllers
         public IActionResult Guncelle(int Id, string Baslik, string Metin, decimal IndirimYuzdesi,
             DateTime BaslangicTarihi, DateTime BitisTarihi, int[] seciliPaketler, int[] seciliPaketGruplari, IFormFile? Gorsel = null, string? MevcutGorsel = null)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -271,7 +271,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Kampanya k = _kampanyaRepo.Getir(Id);
             if (k != null)
@@ -305,7 +305,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
             Kampanya k = _kampanyaRepo.Getir(id);
             if (k == null) return NotFound();
 
@@ -372,7 +372,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult GetirKampanyaDetay(int id)
         {
-            LoadCommonData();
+        
             try
             {
                 List<KampanyaPaket> kampanyaPaketler = _kampanyaPaketRepo.GetirList(
@@ -410,7 +410,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult GetirKampanyaPaketleri(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -452,7 +452,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult GetirKampanyaPaketGruplari(int id)
         {
-            LoadCommonData();
+        
 
             try
             {

@@ -11,7 +11,7 @@ namespace WepApp.Controllers
         ARGEDurumRepository _argeDurumRepository = new ARGEDurumRepository();
         public IActionResult Index()
         {
-            LoadCommonData();
+        
             List<ARGEDurum> list = _argeDurumRepository.GetirList(x => x.Durumu == 1).OrderBy(x => x.Sira).ToList();
             ViewBag.ARGEDurumlar = list;
             return View();
@@ -21,7 +21,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Ekle(string Adi, int? Sira)
         {
-            LoadCommonData();
+        
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             int siraNo = Sira ?? 0;
             if (siraNo == 0)
@@ -57,7 +57,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Guncelle(int Id, string Adi, int Sira)
         {
-            LoadCommonData();
+        
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
 
 
@@ -89,7 +89,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (kullanici == null)
             {
@@ -123,7 +123,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SiraGuncelle(List<SiraGuncelleModel> siralamalar)
         {
-            LoadCommonData();
+        
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (kullanici == null)
             {
@@ -154,7 +154,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
             ARGEDurum item = _argeDurumRepository.Getir(id);
             if (item == null || item.Durumu == 0)
                 return NotFound();
@@ -170,7 +170,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult AdiKontrol(string adi, int? argeDurumId = null)
         {
-            LoadCommonData();
+        
 
             if (string.IsNullOrWhiteSpace(adi))
                 return Json(new { success = false, message = "ARGE durum adı boş olamaz." });
@@ -192,7 +192,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult SiraKontrol(int sira, int? argeDurumId = null)
         {
-            LoadCommonData();
+        
 
             if (sira <= 0)
                 return Json(new { success = false, message = "Sıra numarası 0'dan büyük olmalıdır." });

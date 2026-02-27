@@ -626,7 +626,10 @@ wwwroot\WebAdminTheme\assets\js\plugin\webfont\webfont.min.js
 wwwroot\WebAdminTheme\assets\js\setting-demo.js
 wwwroot\WebAdminTheme\assets\js\setting-demo2.js
 wwwroot\WebAdminTheme\BayiSozlesme\38f6fcad-fb6f-4ce5-9ca9-29b3cdcda3e6.pdf
+wwwroot\WebAdminTheme\BayiSozlesme\7538587d-6342-4c0a-b92a-db65f1c99316.pdf
 wwwroot\WebAdminTheme\BayiSozlesme\89d1a48e-91a7-452b-b24e-a07a3eb391ae.pdf
+wwwroot\WebAdminTheme\BayiSozlesme\8d80ba73-98fc-4b8a-a264-0e4fb857282d.pdf
+wwwroot\WebAdminTheme\BayiSozlesme\a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff.pdf
 wwwroot\WebAdminTheme\BayiSozlesme\c3d7f9cd-dea6-4118-a627-75cae0114a0b.pdf
 wwwroot\WebAdminTheme\charts\charts.html
 wwwroot\WebAdminTheme\charts\sparkline.html

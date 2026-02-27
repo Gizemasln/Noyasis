@@ -18,7 +18,7 @@ namespace WebApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData(); // Assuming this method exists in base controller
+         // Assuming this method exists in base controller
             List<Kategori> list = _repository.Listele().Where(x => x.Durumu == 1).ToList();
             ViewBag.KategoriList = list;
             return View();
@@ -27,7 +27,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Ekle(string Adi)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (!string.IsNullOrEmpty(Adi))
@@ -54,7 +54,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(int Id, string Adi)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Kategori existingEntity = _repository.Getir(Id);
@@ -77,7 +77,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Kategori kategori = _repository.Getir(Id);
@@ -99,7 +99,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             Kategori item = _repository.Getir(id);
             if (item == null)

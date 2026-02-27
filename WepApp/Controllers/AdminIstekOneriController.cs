@@ -21,8 +21,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            var redirectResult = LoadCommonData();
-            if (redirectResult != null) return redirectResult;
+         
 
             List<string> join = new List<string>();
             join.Add("LisansTip");
@@ -100,11 +99,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult CevapVer(int id, string aciklama)
         {
-            var redirectResult = LoadCommonData();
-            if (redirectResult != null)
-            {
-                return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
-            }
+            
 
             try
             {
@@ -201,8 +196,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult CevapGuncelle(int id, string aciklama)
         {
-            var redirectResult = LoadCommonData();
-            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
+    
 
             try
             {
@@ -242,10 +236,6 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetirCevap(int id)
         {
-            var redirectResult = LoadCommonData();
-            if (redirectResult != null)
-                return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
-
             try
             {
                 var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
@@ -309,8 +299,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            var redirectResult = LoadCommonData();
-            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
+           
 
             try
             {
@@ -344,8 +333,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult DurumGuncelle(int id, int durumId)
         {
-            var redirectResult = LoadCommonData();
-            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
+           
 
             try
             {
@@ -389,8 +377,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult DetayGetir(int id)
         {
-            var redirectResult = LoadCommonData();
-            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
+       
 
             try
             {
@@ -462,8 +449,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetirDurumlar()
         {
-            var redirectResult = LoadCommonData();
-            if (redirectResult != null) return Json(new { success = false, message = "Bu işlem için giriş yapmanız gerekmektedir." });
+       
 
             try
             {

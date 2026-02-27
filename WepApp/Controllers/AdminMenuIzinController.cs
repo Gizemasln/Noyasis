@@ -3,10 +3,11 @@ using WepApp.Models;
 using WepApp.Repositories;
 using System.Collections.Generic;
 using System.Linq;
+using WepApp.Controllers;
 
 namespace WebApp.Controllers
 {
-    public class AdminMenuIzinController : Controller
+    public class AdminMenuIzinController : AdminBaseController
     {
         private readonly MenuIzinRepository _repo = new MenuIzinRepository();
 

@@ -19,8 +19,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index(int page = 1, string tip = null, int? durum = 1, string filtre = "tumu")
         {
-            IActionResult redirectResult = LoadCommonData();
-            if (redirectResult != null) return redirectResult;
+   
 
             var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
             ViewBag.KullaniciTipi = kullaniciTipi;

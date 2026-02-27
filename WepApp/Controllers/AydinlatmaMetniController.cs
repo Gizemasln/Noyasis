@@ -10,6 +10,7 @@ namespace WepApp.Controllers
         public IActionResult Index()
         {
             LoadCommonData();
+
             GenelAydinlatmaRepository kVKKRepository = new GenelAydinlatmaRepository();
             GenelAydinlatma kvkk = kVKKRepository.Getir(x => x.Durumu == 1);
             ViewBag.Aydinlatma = kvkk;

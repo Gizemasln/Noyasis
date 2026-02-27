@@ -19,6 +19,7 @@ namespace WepApp.Controllers
         public IActionResult Index(int id)
         {
             LoadCommonData();
+
             List<string> list = new List<string>();
             list.Add("UrunGaleri");
             UrunRepository urunRepository = new UrunRepository();
@@ -38,7 +39,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Kaydet(int id, Teklifler teklif)
         {
-            LoadCommonData();
+        
 
             TekliflerRepository teklifRepository = new TekliflerRepository();
 

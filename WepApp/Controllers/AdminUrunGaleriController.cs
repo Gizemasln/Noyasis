@@ -24,7 +24,7 @@ namespace WebApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
             ViewBag.Kategoriler = _kategoriRepository.Listele().Where(x => x.Durumu == 1).ToList();
 
             List<UrunGaleri> list = _galeriRepository.Listele().Where(x => x.Durumu == 1).ToList();
@@ -44,7 +44,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult UrunlerByKategori(int kategoriId)
         {
-            LoadCommonData();
+        
 
             var urunler = _urunRepository.Listele().Where(u => u.KategoriId == kategoriId && u.Durumu == 1)
                 .Select(u => new { u.Id, u.Adi }).ToList();
@@ -54,7 +54,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Ekle(List<IFormFile> imagefile, int UrunId)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (imagefile != null && imagefile.Count != 0 && UrunId > 0)
@@ -110,7 +110,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             UrunGaleri urunGaleri = _galeriRepository.Getir(Id);

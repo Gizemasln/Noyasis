@@ -16,7 +16,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
             List<SSS> list = _repository.GetirList(x => x.Durumu == 1);
             ViewBag.SSSList = list;
@@ -26,7 +26,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Ekle(string Soru, string Cevap)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
 
@@ -68,7 +68,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(int Id, string Soru, string Cevap)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
 
@@ -112,7 +112,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             SSS sss = _repository.Getir(Id);
@@ -141,7 +141,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             SSS item = _repository.Getir(id);
             if (item == null)

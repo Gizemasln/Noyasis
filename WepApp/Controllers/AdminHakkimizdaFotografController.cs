@@ -22,7 +22,7 @@ namespace WebApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
             List<HakkimizdaFotograf> list = _repository.Listele().Where(x => x.Durumu == 1).ToList();
             ViewBag.FotografList = list;
@@ -32,7 +32,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Ekle(List<IFormFile> imagefile)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
 
@@ -81,7 +81,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
 

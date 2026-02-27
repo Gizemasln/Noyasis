@@ -11,7 +11,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
             List<TeklifDurum> teklifDurumlari = _teklifDurumRepository.GetirList(x => x.Durumu == 1)
                 .OrderBy(x => x.Sıra)          // Sıra'ya göre sırala
                 .ThenBy(x => x.Adi)
@@ -24,7 +24,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Ekle(string Adi, string? Aciklama, int Sıra = 0)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -70,7 +70,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(int Id, string Adi, string? Aciklama, int Sıra)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -115,7 +115,7 @@ namespace WepApp.Controllers
         {
             // Silme işlemi aynı kalıyor (soft delete)
             // ... (önceki kodunuz aynı)
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -149,7 +149,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             TeklifDurum item = _teklifDurumRepository.Getir(id);
             if (item == null || item.Durumu == 0)

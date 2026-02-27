@@ -17,7 +17,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
             List<Lokasyon> lokasyonList = _lokasyonRepository.GetirList(x => x.Durumu == 1);
             ViewBag.LokasyonList = lokasyonList;
             return View();
@@ -26,7 +26,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Ekle(string SehirAdi, string Adres, string Tip, string Telefon, string Email)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
 
@@ -51,7 +51,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(int Id, string SehirAdi, string Adres, string Tip, string Telefon, string Email)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Lokasyon existingEntity = _lokasyonRepository.Getir(Id);
@@ -79,7 +79,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Lokasyon lokasyon = _lokasyonRepository.Getir(Id);
@@ -101,7 +101,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             Lokasyon item = _lokasyonRepository.Getir(id);
             if (item == null)

@@ -47,7 +47,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -158,7 +158,7 @@ namespace WepApp.Controllers
                 ViewBag.CurrentMusteri = currentMusteri;
                 ViewBag.CurrentKullanici = currentKullanici;
 
-                LoadCommonData();
+            
                 return View();
             }
             catch (Exception ex)
@@ -171,7 +171,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public async Task<IActionResult> GetirSozlesmeBilgileri(int teklifId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -780,7 +780,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult DurumDegistir(int id, int durumId, int? nedenId = null, string? ertelenmeNedeni = null)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1153,7 +1153,7 @@ namespace WepApp.Controllers
 
                 ViewBag.Teklif = teklif;
                 ViewBag.TeklifDurumlari = _teklifDurumRepo.GetirList(x => x.Durumu == 1).ToList();
-                LoadCommonData();
+            
                 return View();
             }
             catch (Exception ex)

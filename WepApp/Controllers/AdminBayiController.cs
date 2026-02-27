@@ -38,7 +38,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
             Bayi bayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -92,7 +92,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SifreSifirla(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -147,7 +147,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult DetayGetir(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -205,7 +205,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetBayiMusterileri(int bayiId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -249,7 +249,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetBayiMusteriTeklifleri(int bayiId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -303,7 +303,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetBayiMusteriSozlesmeleri(int bayiId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -361,7 +361,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetBayiMusteriSozlesmeDosyalari(int bayiId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -413,7 +413,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult SozlesmeDosyaGoster(int sozlesmeId, string tip)
         {
-            LoadCommonData();
+        
             MusteriSozlesmeRepository repo = new MusteriSozlesmeRepository();
             MusteriSozlesme sozlesme = repo.Getir(sozlesmeId);
             if (sozlesme == null || sozlesme.Durumu != 1) return NotFound();
@@ -478,7 +478,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetYetkili(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -516,7 +516,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetBayiYetkililer(int bayiId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -551,7 +551,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult EkleBayiYetkililer([FromBody] BayiYetkiliEkleModel model)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -600,7 +600,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult SilBayiYetkili(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -631,7 +631,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetDepartmanlar()
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -660,7 +660,7 @@ namespace WepApp.Controllers
             int? UstBayiId, int? Aktif, IFormFile Logo, IFormFile Imza, bool Distributor = false, // YENİ PARAMETRE
             List<BayiYetkiliEkleModel> Yetkililer = null)
         {
-            LoadCommonData();
+        
             try
             {
                 Bayi bayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
@@ -780,7 +780,7 @@ namespace WepApp.Controllers
             int? UstBayiId, int? Aktif, IFormFile Logo, IFormFile Imza, bool Distributor = false, // YENİ PARAMETRE
             List<BayiYetkiliEkleModel> YeniYetkililer = null)
         {
-            LoadCommonData();
+        
             try
             {
                 Bayi currentBayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
@@ -907,7 +907,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
             try
             {
                 Bayi currentBayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
@@ -956,7 +956,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             List<string> join = new List<string> { "UstBayi" };
             try
@@ -1008,7 +1008,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult LogoGoster(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1028,7 +1028,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult ImzaGoster(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1048,7 +1048,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult LogoIndir(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1069,7 +1069,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult ImzaIndir(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1091,7 +1091,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SilLogo(int Id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1128,7 +1128,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SilImza(int Id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1164,7 +1164,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetDosyaBilgisi(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1206,7 +1206,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetSozlesmelerByBayiId(int bayiId)
         {
-            LoadCommonData();
+        
 
             var sozlesmeler = _sozlesmeRepo.GetirQueryable()
                 .Where(x => x.BayiId == bayiId && x.Durumu == 1)
@@ -1231,7 +1231,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult GuncelleBayiYetkili([FromBody] BayiYetkililerGuncelleModel model)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1268,7 +1268,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult ToggleYetkiliAktif([FromBody] ToggleRequest request)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1295,7 +1295,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult ToggleBayiAktif([FromBody] ToggleRequest request)
         {
-            LoadCommonData();
+        
             try
             {
                 Bayi bayi = _bayiRepository.Getir(request.Id);
@@ -1453,7 +1453,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public async Task<IActionResult> GetBayiSozlesmeDokumanlari(int bayiId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1515,7 +1515,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public async Task<IActionResult> GetSozlesmeDokumanDetay(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1601,7 +1601,7 @@ namespace WepApp.Controllers
 
         private IActionResult HiyerarsiGoster(int? kokBayiId = null)
         {
-            LoadCommonData();
+        
             Bayi currentBayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
 
             List<Bayi> bayiList = currentBayi != null
@@ -1799,7 +1799,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult IndirKimlikDosya(string dokumanNo)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1829,7 +1829,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GoruntuleImzaSirkusuDosya(string dokumanNo)
         {
-            LoadCommonData();
+        
 
             try
             {

@@ -38,7 +38,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index(int musteriId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -121,7 +121,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult KullaniciAdiKontrol(string kullaniciAdi, int? musteriId = null)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -148,7 +148,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetYetkili(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -186,7 +186,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult SozlesmeDosyaGoster(int sozlesmeId, string tip)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -257,7 +257,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult SozlesmeDosyaIndir(int sozlesmeId, string tip)
         {
-            LoadCommonData();
+        
 
             MusteriSozlesmeRepository repo = new MusteriSozlesmeRepository();
             MusteriSozlesme sozlesme = repo.Getir(sozlesmeId);
@@ -299,7 +299,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetMusteriSozlesmeDosyalari(int musteriId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -339,7 +339,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetMusteriYetkililer(int musteriId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -374,7 +374,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult EkleMusteriYetkililer([FromBody] MusteriYetkiliEkleModel model)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -414,7 +414,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult SilMusteriYetkili(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -439,7 +439,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult GuncelleMusteriYetkili([FromBody] MusteriYetkililerGuncelleModel model)
         {
-            LoadCommonData();
+        
             try
             {
                 MusteriYetkililer yetkili = _yetkiliRepo.Getir(model.Id);
@@ -469,7 +469,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetDepartmanlar()
         {
-            LoadCommonData();
+        
             try
             {
                 var departmanlar = _departmanRepo.GetirList(x => x.Durumu == 1)
@@ -496,11 +496,11 @@ namespace WepApp.Controllers
             string Diger,
             IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> Yetkililer = null)
         {
-            LoadCommonData();
+        
 
             try
             {
-                LoadCommonData();
+            
 
                 IEnumerable<MusteriTipi> musteriTipleri = ViewBag.MusteriTipleri as IEnumerable<MusteriTipi>;
                 int? digerTipiId = musteriTipleri?
@@ -614,7 +614,7 @@ namespace WepApp.Controllers
             string Diger,
             IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> YeniYetkililer = null)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -729,7 +729,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             List<string> join = new List<string> { "MusteriDurumu", "MusteriTipi", "Bayi" };
             try
@@ -782,7 +782,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -819,7 +819,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult LogoGoster(int id)
         {
-            LoadCommonData();
+        
             try
             {
                 Musteri musteri = _musteriRepository.Getir(id);
@@ -844,7 +844,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult ImzaGoster(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -871,7 +871,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult LogoIndir(int id)
         {
-            LoadCommonData();
+        
             try
             {
                 Musteri musteri = _musteriRepository.Getir(id);
@@ -897,7 +897,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult ImzaIndir(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -926,7 +926,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SilLogo(int Id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -956,7 +956,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SilImza(int Id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -986,7 +986,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetDosyaBilgisi(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1127,7 +1127,7 @@ namespace WepApp.Controllers
         // ============= DOSYA SİLME =============
         private void EskiDosyayiSil(string dosyaAdi)
         {
-            LoadCommonData();
+        
 
             if (string.IsNullOrEmpty(dosyaAdi))
                 return;
@@ -1161,7 +1161,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SifreSifirla(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1235,7 +1235,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult ToggleYetkiliAktif([FromBody] ToggleRequest request)
         {
-            LoadCommonData();
+        
 
             MusteriYetkililer yetkili = _yetkiliRepo.Getir(request.Id);
             if (yetkili == null || yetkili.Durumu != 1)
@@ -1251,7 +1251,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetMusteriTeklifleri(int musteriId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -1281,7 +1281,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetMusteriSozlesmeleri(int musteriId)
         {
-            LoadCommonData();
+        
 
             MusteriSozlesmeRepository _sozlesmeRepository = new MusteriSozlesmeRepository();
             try

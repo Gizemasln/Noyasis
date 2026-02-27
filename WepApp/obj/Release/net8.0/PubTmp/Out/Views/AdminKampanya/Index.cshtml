@@ -217,10 +217,10 @@
                                         <td>@k.BaslangicTarihi.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>@k.BitisTarihi.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-success me-1" onclick="paketleriGoster(@k.Id)" title="Sadece Paketler">
+                                            <button class="btn btn-sm btn-outline-success me-1" data-button-permission="paketgoster" onclick="paketleriGoster(@k.Id)" title="Sadece Paketler">
                                                 <i class="fas fa-box"></i>
                                             </button>
-                                            <button class="btn btn-sm btn-outline-primary" onclick="gruplariGoster(@k.Id)" title="Sadece Paket Grupları">
+                                            <button class="btn btn-sm btn-outline-primary" data-button-permission="grupgoster" onclick="gruplariGoster(@k.Id)" title="Sadece Paket Grupları">
                                                 <i class="fas fa-layer-group"></i>
                                             </button>
                                         </td>

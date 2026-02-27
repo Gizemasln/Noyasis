@@ -369,15 +369,16 @@
 
                 <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
                     <li data-filter="*" class="filter-active">Tümü</li>
+                     @if(ViewBag.Kategoriler != null){
                     @foreach (var kategori in ViewBag.Kategoriler)
                     {
                         <li data-filter=".filter-@kategori.Id">@kategori.Adi</li>
                     }
+                    }
                 </ul><!-- End Portfolio Filters -->
 
                 <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
-
-                    @foreach (var urun in ViewBag.Urunler)
+                @if(ViewBag.Urunler != null){   @foreach (var urun in ViewBag.Urunler)
                     {
                         @foreach (var galeri in urun.UrunGaleri ?? new List<UrunGaleri>())
                         {
@@ -388,7 +389,7 @@
                                         <img src="@galeri.FotografBuyuk" class="img-fluid" alt="@urun.Adi">
                                         <div class="portfolio-info">
                                             <a href="@galeri.FotografBuyuk" title="@urun.Adi" data-gallery="portfolio-gallery-@urun.KategoriId" class="glightbox preview-link"><i class="bi bi-zoom-in"></i></a>
-                                            <a href="/Urun/Detay/@urun.Id" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
+                                            <a href="/UrunDetay/Index/@urun.Id" title="More Details" class="details-link"><i class="bi bi-link-45deg"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -397,7 +398,8 @@
                             }
                         }
                     }
-
+}
+                 
                 </div><!-- End Portfolio Container -->
 
             </div>

@@ -20,7 +20,7 @@ namespace WebApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
             List<Slider> sliders = _repository.GetirList(x => x.Durumu == 1)
                 .OrderBy(x => x.SlaytSiraNo)
                 .ThenByDescending(x => x.EklenmeTarihi)
@@ -34,7 +34,7 @@ namespace WebApp.Controllers
             string SlaytButonAdi, bool YeniSekmeMi, bool YayindaMi, string Aciklama,
             IFormFile? Gorsel = null, IFormFile? Video = null)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
 
@@ -77,7 +77,7 @@ namespace WebApp.Controllers
             IFormFile? Gorsel = null, IFormFile? Video = null,
             string? MevcutGorsel = null, string? MevcutVideo = null)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Slider existingEntity = _repository.Getir(Id);
@@ -129,7 +129,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Slider slider = _repository.Getir(Id);
             if (slider != null)

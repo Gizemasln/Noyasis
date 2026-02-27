@@ -6726,8 +6726,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>9095p1qbe0</Fingerprint>
-      <Integrity>2Xmh8z+sJEEaa4scXXW+mai8pFyNZpkSiTLvVf7oo4Y=</Integrity>
+      <Fingerprint>9nkov8x1a4</Fingerprint>
+      <Integrity>e5JVrk8d97aCu16jG6Rqrx8LSiYE66bKSYVDPPbnKs0=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\assets\js\button-permission.js'))</OriginalItemSpec>
@@ -11304,6 +11304,24 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\38f6fcad-fb6f-4ce5-9ca9-29b3cdcda3e6.pdf'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\7538587d-6342-4c0a-b92a-db65f1c99316.pdf'))">
+      <SourceType>Package</SourceType>
+      <SourceId>WepApp</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/WepApp</BasePath>
+      <RelativePath>WebAdminTheme/BayiSozlesme/7538587d-6342-4c0a-b92a-db65f1c99316.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>bfhspiov8h</Fingerprint>
+      <Integrity>yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\7538587d-6342-4c0a-b92a-db65f1c99316.pdf'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\89d1a48e-91a7-452b-b24e-a07a3eb391ae.pdf'))">
       <SourceType>Package</SourceType>
       <SourceId>WepApp</SourceId>
@@ -11321,6 +11339,42 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\89d1a48e-91a7-452b-b24e-a07a3eb391ae.pdf'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\8d80ba73-98fc-4b8a-a264-0e4fb857282d.pdf'))">
+      <SourceType>Package</SourceType>
+      <SourceId>WepApp</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/WepApp</BasePath>
+      <RelativePath>WebAdminTheme/BayiSozlesme/8d80ba73-98fc-4b8a-a264-0e4fb857282d.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>bfhspiov8h</Fingerprint>
+      <Integrity>yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\8d80ba73-98fc-4b8a-a264-0e4fb857282d.pdf'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff.pdf'))">
+      <SourceType>Package</SourceType>
+      <SourceId>WepApp</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/WepApp</BasePath>
+      <RelativePath>WebAdminTheme/BayiSozlesme/a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>bfhspiov8h</Fingerprint>
+      <Integrity>yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff.pdf'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\c3d7f9cd-dea6-4118-a627-75cae0114a0b.pdf'))">
       <SourceType>Package</SourceType>

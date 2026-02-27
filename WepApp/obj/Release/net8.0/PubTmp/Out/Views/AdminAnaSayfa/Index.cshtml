@@ -667,19 +667,21 @@
                                         {
                                             <tr>
                                                 <td>
-                                                    <button class="detay-btn" data-button-permission="sozlesme-detay" onclick='detayGoster(
-                                            "bayi",
-                                            "@duyuru.Id",
-                                            "@duyuru.Baslik",
-                                            @Html.Raw(Json.Serialize(duyuru.Metin ?? "")),
-                                            "@(duyuru.GorselYolu ?? "")",
-                                            "@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")",
-                                            "@(duyuru.Oncelik == 1 ? "Yüksek Öncelikli" : "Normal")",
-                                            "",
-                                            "@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")"
-                                        )'>
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
+                                                  
+                                                        <button class="detay-btn" onclick='detayGoster(
+        "bayi",
+        "@duyuru.Id",
+        "@duyuru.Baslik",
+        @Html.Raw(Json.Serialize(duyuru.Metin ?? "")),
+        "@(duyuru.GorselYolu ?? "")",
+        "@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")",
+        "@(duyuru.Oncelik == 1 ? "Yüksek Öncelikli" : "Normal")",
+        "",
+        "@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")"
+    )'>
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                    
                                                 </td>
                                                 <td class="text-center">
                                                     @if (!string.IsNullOrEmpty(duyuru.GorselYolu))
@@ -767,9 +769,11 @@
                                         {
                                             <tr>
                                                 <td>
-                                                <button class="detay-btn" data-button-permission="sozlesme-detay" onclick="detayGoster('web', '@duyuru.Id', '@duyuru.Baslik', '@Html.Raw(duyuru.Metin?.Replace("'", "\\'"))', '@duyuru.GorselYolu', '@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")', '@(duyuru.Oncelik == 1 ? "Yüksek Öncelikli" : "Normal")', '', '@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")')">
+                                              
+                                                    <button class="detay-btn" onclick="detayGoster('web', '@duyuru.Id', '@duyuru.Baslik', '@Html.Raw(duyuru.Metin?.Replace("'", "\\'"))', '@duyuru.GorselYolu', '@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")', '@(duyuru.Oncelik == 1 ? "Yüksek Öncelikli" : "Normal")', '', '@duyuru.EklenmeTarihi.ToString("dd.MM.yyyy")')">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
+                                                
                                                 </td>
                                                 <td class="text-center">
                                                     @if (!string.IsNullOrEmpty(duyuru.GorselYolu))
@@ -854,9 +858,11 @@
                                         {
                                             <tr>
                                                 <td>
-                                                <button class="detay-btn" data-button-permission="sozlesme-detay" onclick="detayGoster('kampanya', '@kampanya.Id', '@kampanya.Baslik', '@Html.Raw(kampanya.Metin?.Replace("'", "\\'"))', '@kampanya.GorselYolu', '@kampanya.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")', '@(kampanya.BitisTarihi < DateTime.Now ? "Süresi Doldu" : "Aktif")', '@kampanya.IndirimYuzdesi', '@kampanya.BitisTarihi.ToString("dd.MM.yyyy")')">
+                                              
+                                                    <button class="detay-btn" onclick="detayGoster('kampanya', '@kampanya.Id', '@kampanya.Baslik', '@Html.Raw(kampanya.Metin?.Replace("'", "\\'"))', '@kampanya.GorselYolu', '@kampanya.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")', '@(kampanya.BitisTarihi < DateTime.Now ? "Süresi Doldu" : "Aktif")', '@kampanya.IndirimYuzdesi', '@kampanya.BitisTarihi.ToString("dd.MM.yyyy")')">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
+                                                
                                                 </td>
                                                 <td class="text-center">
                                                     @if (!string.IsNullOrEmpty(kampanya.GorselYolu))

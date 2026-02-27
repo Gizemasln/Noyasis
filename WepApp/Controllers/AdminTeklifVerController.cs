@@ -138,7 +138,7 @@ namespace WepApp.Controllers
             var kdv = new KDVRepository().Getir(x => x.Durumu == 1);
             ViewBag.KDV = kdv?.Oran ?? 20;
 
-            LoadCommonData();
+        
 
             return View();
         }
@@ -895,7 +895,7 @@ namespace WepApp.Controllers
         public IActionResult OlusturTeklif([FromBody] TeklifOlusturModel model, int? Id = null)
         {
             int kullanilacakMusteriId = model.MusteriId;
-            LoadCommonData();
+        
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici"); 
             Bayi bayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
 

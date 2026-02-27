@@ -21,7 +21,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
             // LoadCommonData(); // Eğer BaseController'dan gelmiyorsa kaldırın
             List<IKFormu> list = _repository.Listele().Where(x => x.Durumu == 1).ToList();
@@ -32,7 +32,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Ekle(string AdiSoyadi, string Telefon, string Eposta, string TC, IFormFile? Dosya, string Mesaj)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (string.IsNullOrEmpty(AdiSoyadi))
@@ -91,7 +91,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(int Id, string AdiSoyadi, string Telefon, string Eposta, string TC, IFormFile? Dosya, string Mesaj)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (string.IsNullOrEmpty(AdiSoyadi))
@@ -160,7 +160,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             IKFormu ikFormu = _repository.Getir(Id);

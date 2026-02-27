@@ -19,7 +19,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
             List<Urun> urun = new List<Urun>();
             UrunRepository urunRepository = new UrunRepository();
@@ -35,7 +35,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Ekle(string AdiSoyadi, string Telefon, string Eposta, string Aciklama, int UrunId)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (string.IsNullOrEmpty(AdiSoyadi))
@@ -80,7 +80,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(int Id, string AdiSoyadi, string Telefon, string Eposta, string Aciklama, int UrunId)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (string.IsNullOrEmpty(AdiSoyadi))
@@ -126,7 +126,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult OnayVer(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Teklifler teklif = _repository.Getir(Id);
@@ -155,7 +155,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult OnayKaldir(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Teklifler teklif = _repository.Getir(Id);
@@ -184,7 +184,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Teklifler teklif = _repository.Getir(Id);

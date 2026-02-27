@@ -21,7 +21,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
             List<Makale> list = _repository.Listele().Where(x => x.Durumu == 1).ToList();
             ViewBag.MakaleList = list;
@@ -31,7 +31,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Ekle(string Baslik, string Metin, IFormFile? Dosya)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (string.IsNullOrEmpty(Baslik))
@@ -87,7 +87,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(int Id, string Baslik, string Metin, IFormFile? Dosya)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (string.IsNullOrEmpty(Baslik))
@@ -153,7 +153,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Makale makale = _repository.Getir(Id);
@@ -192,7 +192,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             Makale item = _repository.Getir(id);
             if (item == null)

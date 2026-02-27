@@ -11,7 +11,7 @@ namespace WebApp.Controllers
     {
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
             // Web Duyuruları
             DuyuruRepository duyuruRepository = new DuyuruRepository();

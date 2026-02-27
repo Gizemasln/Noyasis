@@ -24,7 +24,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
 
             var (userType, userId) = GetCurrentUserInfo();
@@ -66,7 +66,7 @@ namespace WepApp.Controllers
         public async Task<IActionResult> Ekle(int MusteriId, int BayiId, string SertifikaAdi, string Aciklama,
             DateTime VerilisTarihi, DateTime? GecerlilikTarihi, IFormFile Dosya)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
 
@@ -115,7 +115,7 @@ namespace WepApp.Controllers
         public async Task<IActionResult> Guncelle(int Id, string SertifikaAdi, string Aciklama,
             DateTime VerilisTarihi, DateTime? GecerlilikTarihi, IFormFile? Dosya)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
 
@@ -208,7 +208,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             var (userType, userId) = GetCurrentUserInfo();
             BayiSertifika s = _sertifikaRepo.Getir(id);
@@ -235,7 +235,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetBayilerByMusteri(int musteriId)
         {
-            LoadCommonData();
+        
 
             var (userType, userId) = GetCurrentUserInfo();
 

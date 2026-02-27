@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "K3/biR4yhmmTRs8FcfwlgrnEsu2xe3rPCr5mfYU0V8s=",
+  "Hash": "zM1ZMunKCe5yrY2otu/1SU43l6raTW//vS9RYaWsx2o=",
   "Source": "WepApp",
   "BasePath": "_content/WepApp",
   "Mode": "Default",
@@ -7864,8 +7864,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "9095p1qbe0",
-      "Integrity": "2Xmh8z+sJEEaa4scXXW+mai8pFyNZpkSiTLvVf7oo4Y=",
+      "Fingerprint": "9nkov8x1a4",
+      "Integrity": "e5JVrk8d97aCu16jG6Rqrx8LSiYE66bKSYVDPPbnKs0=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\WebAdminTheme\\assets\\js\\button-permission.js"
@@ -13205,6 +13205,27 @@
       "OriginalItemSpec": "wwwroot\\WebAdminTheme\\BayiSozlesme\\38f6fcad-fb6f-4ce5-9ca9-29b3cdcda3e6.pdf"
     },
     {
+      "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\BayiSozlesme\\7538587d-6342-4c0a-b92a-db65f1c99316.pdf",
+      "SourceId": "WepApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\",
+      "BasePath": "_content/WepApp",
+      "RelativePath": "WebAdminTheme/BayiSozlesme/7538587d-6342-4c0a-b92a-db65f1c99316#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "bfhspiov8h",
+      "Integrity": "yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\WebAdminTheme\\BayiSozlesme\\7538587d-6342-4c0a-b92a-db65f1c99316.pdf"
+    },
+    {
       "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\BayiSozlesme\\89d1a48e-91a7-452b-b24e-a07a3eb391ae.pdf",
       "SourceId": "WepApp",
       "SourceType": "Discovered",
@@ -13224,6 +13245,48 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\WebAdminTheme\\BayiSozlesme\\89d1a48e-91a7-452b-b24e-a07a3eb391ae.pdf"
+    },
+    {
+      "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\BayiSozlesme\\8d80ba73-98fc-4b8a-a264-0e4fb857282d.pdf",
+      "SourceId": "WepApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\",
+      "BasePath": "_content/WepApp",
+      "RelativePath": "WebAdminTheme/BayiSozlesme/8d80ba73-98fc-4b8a-a264-0e4fb857282d#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "bfhspiov8h",
+      "Integrity": "yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\WebAdminTheme\\BayiSozlesme\\8d80ba73-98fc-4b8a-a264-0e4fb857282d.pdf"
+    },
+    {
+      "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\BayiSozlesme\\a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff.pdf",
+      "SourceId": "WepApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\",
+      "BasePath": "_content/WepApp",
+      "RelativePath": "WebAdminTheme/BayiSozlesme/a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "bfhspiov8h",
+      "Integrity": "yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\WebAdminTheme\\BayiSozlesme\\a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff.pdf"
     },
     {
       "Identity": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\BayiSozlesme\\c3d7f9cd-dea6-4118-a627-75cae0114a0b.pdf",
@@ -51668,7 +51731,7 @@
       ]
     },
     {
-      "Route": "WebAdminTheme/assets/js/button-permission.9095p1qbe0.js",
+      "Route": "WebAdminTheme/assets/js/button-permission.9nkov8x1a4.js",
       "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\assets\\js\\button-permission.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -51678,7 +51741,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2189"
+          "Value": "6398"
         },
         {
           "Name": "Content-Type",
@@ -51686,11 +51749,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"2Xmh8z+sJEEaa4scXXW+mai8pFyNZpkSiTLvVf7oo4Y=\""
+          "Value": "\"e5JVrk8d97aCu16jG6Rqrx8LSiYE66bKSYVDPPbnKs0=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 24 Feb 2026 13:58:21 GMT"
+          "Value": "Wed, 25 Feb 2026 12:05:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -51700,7 +51763,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "9095p1qbe0"
+          "Value": "9nkov8x1a4"
         },
         {
           "Name": "label",
@@ -51708,7 +51771,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-2Xmh8z+sJEEaa4scXXW+mai8pFyNZpkSiTLvVf7oo4Y="
+          "Value": "sha256-e5JVrk8d97aCu16jG6Rqrx8LSiYE66bKSYVDPPbnKs0="
         }
       ]
     },
@@ -51723,7 +51786,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2189"
+          "Value": "6398"
         },
         {
           "Name": "Content-Type",
@@ -51731,11 +51794,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"2Xmh8z+sJEEaa4scXXW+mai8pFyNZpkSiTLvVf7oo4Y=\""
+          "Value": "\"e5JVrk8d97aCu16jG6Rqrx8LSiYE66bKSYVDPPbnKs0=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Tue, 24 Feb 2026 13:58:21 GMT"
+          "Value": "Wed, 25 Feb 2026 12:05:14 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -51745,7 +51808,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-2Xmh8z+sJEEaa4scXXW+mai8pFyNZpkSiTLvVf7oo4Y="
+          "Value": "sha256-e5JVrk8d97aCu16jG6Rqrx8LSiYE66bKSYVDPPbnKs0="
         }
       ]
     },
@@ -72578,6 +72641,88 @@
       ]
     },
     {
+      "Route": "WebAdminTheme/BayiSozlesme/7538587d-6342-4c0a-b92a-db65f1c99316.bfhspiov8h.pdf",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\BayiSozlesme\\7538587d-6342-4c0a-b92a-db65f1c99316.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "518253"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 25 Feb 2026 07:57:04 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "bfhspiov8h"
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/BayiSozlesme/7538587d-6342-4c0a-b92a-db65f1c99316.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/BayiSozlesme/7538587d-6342-4c0a-b92a-db65f1c99316.pdf",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\BayiSozlesme\\7538587d-6342-4c0a-b92a-db65f1c99316.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "518253"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 25 Feb 2026 07:57:04 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E="
+        }
+      ]
+    },
+    {
       "Route": "WebAdminTheme/BayiSozlesme/89d1a48e-91a7-452b-b24e-a07a3eb391ae.pdf",
       "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\BayiSozlesme\\89d1a48e-91a7-452b-b24e-a07a3eb391ae.pdf",
       "Selectors": [],
@@ -72656,6 +72801,170 @@
         {
           "Name": "integrity",
           "Value": "sha256-ATpx/FpkMtjRFfPSilkzhMBuBJBgaod8CnDgPt5LCro="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/BayiSozlesme/8d80ba73-98fc-4b8a-a264-0e4fb857282d.bfhspiov8h.pdf",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\BayiSozlesme\\8d80ba73-98fc-4b8a-a264-0e4fb857282d.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "518253"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 25 Feb 2026 07:57:43 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "bfhspiov8h"
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/BayiSozlesme/8d80ba73-98fc-4b8a-a264-0e4fb857282d.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/BayiSozlesme/8d80ba73-98fc-4b8a-a264-0e4fb857282d.pdf",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\BayiSozlesme\\8d80ba73-98fc-4b8a-a264-0e4fb857282d.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "518253"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 25 Feb 2026 07:57:43 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/BayiSozlesme/a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff.bfhspiov8h.pdf",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\BayiSozlesme\\a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "518253"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 25 Feb 2026 07:57:24 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "bfhspiov8h"
+        },
+        {
+          "Name": "label",
+          "Value": "WebAdminTheme/BayiSozlesme/a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E="
+        }
+      ]
+    },
+    {
+      "Route": "WebAdminTheme/BayiSozlesme/a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff.pdf",
+      "AssetFile": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\BayiSozlesme\\a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "518253"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 25 Feb 2026 07:57:24 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO+E="
         }
       ]
     },

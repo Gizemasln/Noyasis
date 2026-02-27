@@ -1,56 +1,194 @@
-﻿// Kullanıcı tipini al
-getCurrentUserType() {
-    // 1. ÖNCELİK: window.__CURRENT_USER_TYPE (ViewBag'den gelen)
-    if (typeof window.__CURRENT_USER_TYPE !== 'undefined' && window.__CURRENT_USER_TYPE) {
-        if (window.__CURRENT_USER_TYPE !== 'YOK') {
-            this.log('Kullanıcı tipi window.__CURRENT_USER_TYPE\'dan alındı:', window.__CURRENT_USER_TYPE);
+﻿/**
+* Buton Yetkilendirme Sistemi
+* Tüm sayfalarda butonları otomatik gizler/gösterir
+*/
+
+class ButtonPermissionManager {
+    constructor() {
+        this.permissions = {};
+        this.currentUserType = this.getCurrentUserType();
+        this.currentPage = this.getCurrentPageName();
+        this.initialized = false;
+
+        console.log('🟢 ButonPermissionManager başlatıldı:', {
+            userType: this.currentUserType,
+            page: this.currentPage
+        });
+    }
+
+    // Kullanıcı tipini al
+    getCurrentUserType() {
+        // ViewBag'den gelen global değişken
+        if (window.__CURRENT_USER_TYPE && window.__CURRENT_USER_TYPE !== 'YOK') {
             return window.__CURRENT_USER_TYPE;
         }
-    }
-
-    // 2. window.userType (geriye uyumluluk)
-    if (typeof window.userType !== 'undefined' && window.userType) {
-        this.log('Kullanıcı tipi window.userType\'dan alındı:', window.userType);
-        return window.userType;
-    }
-
-    // 3. Cookie'den almayı dene
-    const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-        const [name, value] = cookie.trim().split('=');
-        if (name === 'UserType' || name === 'KullaniciTipi' || name === 'kullaniciTipi') {
-            const userType = decodeURIComponent(value);
-            this.log('Kullanıcı tipi cookie\'den alındı:', userType);
-            return userType;
-        }
-    }
-
-    // 4. localStorage'dan al
-    const userType = localStorage.getItem('userType') ||
-        localStorage.getItem('KullaniciTipi') ||
-        localStorage.getItem('kullaniciTipi');
-
-    if (userType) {
-        this.log('Kullanıcı tipi localStorage\'dan alındı:', userType);
-        return userType;
-    }
-
-    // 5. URL'den almayı dene
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlUserType = urlParams.get('kullaniciTipi') || urlParams.get('userType');
-    if (urlUserType) {
-        this.log('Kullanıcı tipi URL\'den alındı:', urlUserType);
-        return urlUserType;
-    }
-
-    // 6. Sayfa URL'inden çıkarım yap (opsiyonel)
-    if (window.location.pathname.includes('/Admin/') ||
-        window.location.pathname.includes('Admin')) {
-        this.log('URL\'den Admin olduğu çıkarıldı');
         return 'Admin';
     }
 
-    // 7. Varsayılan olarak Admin (Musteri DEĞİL!)
-    this.log('Varsayılan kullanıcı tipi kullanılıyor: Admin');
-    return 'Admin';
+    // Mevcut sayfa adını al
+    getCurrentPageName() {
+        const path = window.location.pathname;
+        const segments = path.split('/').filter(segment => segment);
+
+        if (segments.length > 0) {
+            let controller = segments[0];
+            // Controller varsa temizle
+            controller = controller.replace('Controller', '');
+            return controller;
+        }
+        return 'Home';
+    }
+
+    // İzinleri backend'den yükle
+    async loadPermissions() {
+        try {
+            console.log('📡 İzinler yükleniyor...');
+
+            const response = await fetch('/AdminButton/TumIzinleriGetirJson', {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('✅ İzinler alındı:', data);
+
+                this.permissions = data;
+                this.initialized = true;
+                this.applyPermissions();
+            } else {
+                console.error('❌ İzinler yüklenemedi:', response.status);
+            }
+        } catch (error) {
+            console.error('❌ İzinler yüklenirken hata:', error);
+        }
+    }
+
+    // Belirli bir buton için izin kontrolü
+    hasPermission(buttonAction) {
+        if (!this.initialized) {
+            return true; // Henüz yüklenmediyse göster
+        }
+
+        // Anahtar formatı: "SayfaAdi|ButonAksiyonu"
+        const key = `${this.currentPage}|${buttonAction}`;
+
+        if (this.permissions[this.currentUserType] &&
+            this.permissions[this.currentUserType][key] !== undefined) {
+
+            const result = this.permissions[this.currentUserType][key];
+            console.log(`🔍 ${key}: ${result ? '✅' : '❌'}`);
+            return result;
+        }
+
+        console.log(`❓ İzin bulunamadı: ${key} -> false`);
+        return false;
+    }
+
+    // Sayfadaki tüm butonları kontrol et
+    applyPermissions() {
+        if (!this.initialized) return;
+
+        console.log('🎯 Buton izinleri uygulanıyor...');
+        console.log(`👤 Kullanıcı: ${this.currentUserType}, Sayfa: ${this.currentPage}`);
+
+        // 1. data-button-permission attribute'u olanları kontrol et
+        document.querySelectorAll('[data-button-permission]').forEach(element => {
+            const permission = element.getAttribute('data-button-permission');
+            const hasPermission = this.hasPermission(permission);
+
+            if (!hasPermission) {
+                console.log(`👻 Gizleniyor: ${permission}`);
+                element.style.display = 'none';
+                element.classList.add('d-none');
+            }
+        });
+
+        // 2. data-permission attribute'u olanları kontrol et
+        document.querySelectorAll('[data-permission]').forEach(element => {
+            const permission = element.getAttribute('data-permission');
+            const hasPermission = this.hasPermission(permission);
+
+            if (!hasPermission) {
+                element.style.display = 'none';
+                element.classList.add('d-none');
+            }
+        });
+
+        console.log('✅ Buton izinleri uygulandı');
+    }
+
+    // Manuel yenileme
+    refresh() {
+        console.log('🔄 Manuel yenileme...');
+        this.currentPage = this.getCurrentPageName();
+        this.currentUserType = this.getCurrentUserType();
+
+        if (this.initialized) {
+            this.applyPermissions();
+        } else {
+            this.loadPermissions();
+        }
+    }
+
+    // Dinamik içerik için observer
+    observeDynamicContent() {
+        const observer = new MutationObserver((mutations) => {
+            let shouldRefresh = false;
+
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    shouldRefresh = true;
+                }
+            });
+
+            if (shouldRefresh && this.initialized) {
+                setTimeout(() => this.applyPermissions(), 100);
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    // Başlat
+    initialize() {
+        console.log('🚀 ButonPermissionManager başlatılıyor...');
+        this.loadPermissions();
+        this.observeDynamicContent();
+
+        // Sayfa tamamen yüklendiğinde tekrar kontrol et
+        window.addEventListener('load', () => {
+            setTimeout(() => this.refresh(), 500);
+        });
+    }
 }
+
+// Global instance oluştur
+window.buttonPermissionManager = new ButtonPermissionManager();
+
+// DOM yüklendiğinde başlat
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        window.buttonPermissionManager.initialize();
+    });
+} else {
+    window.buttonPermissionManager.initialize();
+}
+
+// Sayfa değişikliklerini dinle
+window.addEventListener('popstate', () => {
+    setTimeout(() => window.buttonPermissionManager.refresh(), 300);
+});
+
+// Bootstrap modal eventleri
+document.addEventListener('shown.bs.modal', () => {
+    setTimeout(() => window.buttonPermissionManager.refresh(), 300);
+});
+
+// Console'dan test için
+console.log('📝 Test komutları:');
+console.log('window.buttonPermissionManager.refresh() - Manuel yenile');
+console.log('window.buttonPermissionManager.hasPermission("bayi-duyuru-detay") - İzin kontrolü');

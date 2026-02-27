@@ -19,7 +19,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
             List<string> join = new List<string> { "LisansTip" };
             List<PaketGrup> gruplar = _paketGrupRepository.GetirList(x => x.Durumu == 1, join)
                 .OrderBy(x => x.Sira)
@@ -34,7 +34,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Ekle(PaketGrup model, int[] seciliPaketler, string EgitimSuresiInput)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -125,7 +125,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(PaketGrup model, int[] seciliPaketler, string EgitimSuresiInput)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -226,7 +226,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -270,7 +270,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             PaketGrup grup = _paketGrupRepository.Getir(id);
             if (grup == null || grup.Durumu == 0) return NotFound();
@@ -296,7 +296,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetirPaketler(int lisansTipId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -329,7 +329,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult HesaplaFiyat(int[] paketIds)
         {
-            LoadCommonData();
+        
 
             try
             {

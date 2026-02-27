@@ -11,7 +11,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
             List<Nedenler> nedenler = _nedenlerRepository.GetirList(x => x.Durumu == 1)
                 .OrderByDescending(x => x.EklenmeTarihi)
                 .ToList();
@@ -23,7 +23,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Ekle(string Adi)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -65,7 +65,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Guncelle(int Id, string Adi)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -108,7 +108,7 @@ namespace WepApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
             try
             {
                 Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
@@ -143,7 +143,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             try
             {

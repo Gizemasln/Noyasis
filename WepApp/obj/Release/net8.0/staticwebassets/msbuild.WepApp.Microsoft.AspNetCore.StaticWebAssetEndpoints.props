@@ -4476,17 +4476,17 @@
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"yf5m37m0mz"},{"Name":"integrity","Value":"sha256-8nt7k3phH8PqLqxM52BbUI9LuXBxZ4uMyDGwxglXNRY="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/assets/img/visa.svg"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"2336"},{"Name":"Content-Type","Value":"image/svg\u002Bxml"},{"Name":"ETag","Value":"\u00228nt7k3phH8PqLqxM52BbUI9LuXBxZ4uMyDGwxglXNRY=\u0022"},{"Name":"Last-Modified","Value":"Thu, 30 Oct 2025 11:37:16 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/assets/js/button-permission.9095p1qbe0.js">
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/assets/js/button-permission.9nkov8x1a4.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\assets\js\button-permission.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"9095p1qbe0"},{"Name":"integrity","Value":"sha256-2Xmh8z\u002BsJEEaa4scXXW\u002Bmai8pFyNZpkSiTLvVf7oo4Y="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/assets/js/button-permission.js"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"2189"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u00222Xmh8z\u002BsJEEaa4scXXW\u002Bmai8pFyNZpkSiTLvVf7oo4Y=\u0022"},{"Name":"Last-Modified","Value":"Tue, 24 Feb 2026 13:58:21 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"9nkov8x1a4"},{"Name":"integrity","Value":"sha256-e5JVrk8d97aCu16jG6Rqrx8LSiYE66bKSYVDPPbnKs0="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/assets/js/button-permission.js"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"6398"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022e5JVrk8d97aCu16jG6Rqrx8LSiYE66bKSYVDPPbnKs0=\u0022"},{"Name":"Last-Modified","Value":"Wed, 25 Feb 2026 12:05:14 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/assets/js/button-permission.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\assets\js\button-permission.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-2Xmh8z\u002BsJEEaa4scXXW\u002Bmai8pFyNZpkSiTLvVf7oo4Y="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"2189"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u00222Xmh8z\u002BsJEEaa4scXXW\u002Bmai8pFyNZpkSiTLvVf7oo4Y=\u0022"},{"Name":"Last-Modified","Value":"Tue, 24 Feb 2026 13:58:21 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-e5JVrk8d97aCu16jG6Rqrx8LSiYE66bKSYVDPPbnKs0="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"6398"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022e5JVrk8d97aCu16jG6Rqrx8LSiYE66bKSYVDPPbnKs0=\u0022"},{"Name":"Last-Modified","Value":"Wed, 25 Feb 2026 12:05:14 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/assets/js/ckeditor/build-config.5coiil74zn.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\assets\js\ckeditor\build-config.js'))</AssetFile>
@@ -7536,6 +7536,18 @@
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"vc3g9yaxyd"},{"Name":"integrity","Value":"sha256-ATpx/FpkMtjRFfPSilkzhMBuBJBgaod8CnDgPt5LCro="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/BayiSozlesme/38f6fcad-fb6f-4ce5-9ca9-29b3cdcda3e6.pdf"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"41896"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022ATpx/FpkMtjRFfPSilkzhMBuBJBgaod8CnDgPt5LCro=\u0022"},{"Name":"Last-Modified","Value":"Fri, 21 Nov 2025 08:32:22 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/BayiSozlesme/7538587d-6342-4c0a-b92a-db65f1c99316.bfhspiov8h.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\7538587d-6342-4c0a-b92a-db65f1c99316.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"bfhspiov8h"},{"Name":"integrity","Value":"sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/BayiSozlesme/7538587d-6342-4c0a-b92a-db65f1c99316.pdf"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"518253"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE=\u0022"},{"Name":"Last-Modified","Value":"Wed, 25 Feb 2026 07:57:04 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/BayiSozlesme/7538587d-6342-4c0a-b92a-db65f1c99316.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\7538587d-6342-4c0a-b92a-db65f1c99316.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"518253"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE=\u0022"},{"Name":"Last-Modified","Value":"Wed, 25 Feb 2026 07:57:04 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/BayiSozlesme/89d1a48e-91a7-452b-b24e-a07a3eb391ae.pdf">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\89d1a48e-91a7-452b-b24e-a07a3eb391ae.pdf'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
@@ -7547,6 +7559,30 @@
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"vc3g9yaxyd"},{"Name":"integrity","Value":"sha256-ATpx/FpkMtjRFfPSilkzhMBuBJBgaod8CnDgPt5LCro="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/BayiSozlesme/89d1a48e-91a7-452b-b24e-a07a3eb391ae.pdf"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"41896"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022ATpx/FpkMtjRFfPSilkzhMBuBJBgaod8CnDgPt5LCro=\u0022"},{"Name":"Last-Modified","Value":"Fri, 21 Nov 2025 08:33:45 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/BayiSozlesme/8d80ba73-98fc-4b8a-a264-0e4fb857282d.bfhspiov8h.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\8d80ba73-98fc-4b8a-a264-0e4fb857282d.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"bfhspiov8h"},{"Name":"integrity","Value":"sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/BayiSozlesme/8d80ba73-98fc-4b8a-a264-0e4fb857282d.pdf"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"518253"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE=\u0022"},{"Name":"Last-Modified","Value":"Wed, 25 Feb 2026 07:57:43 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/BayiSozlesme/8d80ba73-98fc-4b8a-a264-0e4fb857282d.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\8d80ba73-98fc-4b8a-a264-0e4fb857282d.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"518253"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE=\u0022"},{"Name":"Last-Modified","Value":"Wed, 25 Feb 2026 07:57:43 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/BayiSozlesme/a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff.bfhspiov8h.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"bfhspiov8h"},{"Name":"integrity","Value":"sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE="},{"Name":"label","Value":"_content/WepApp/WebAdminTheme/BayiSozlesme/a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff.pdf"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"518253"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE=\u0022"},{"Name":"Last-Modified","Value":"Wed, 25 Feb 2026 07:57:24 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/BayiSozlesme/a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\a77c78bf-3e5b-4f47-8748-e2d6a2ab03ff.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"518253"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022yTd8kFZEnwn4YRQ7Lo074qYnZm5cEH21Qxtlom7aO\u002BE=\u0022"},{"Name":"Last-Modified","Value":"Wed, 25 Feb 2026 07:57:24 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/WepApp/WebAdminTheme/BayiSozlesme/c3d7f9cd-dea6-4118-a627-75cae0114a0b.pdf">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\WebAdminTheme\BayiSozlesme\c3d7f9cd-dea6-4118-a627-75cae0114a0b.pdf'))</AssetFile>

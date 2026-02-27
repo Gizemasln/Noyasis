@@ -16,7 +16,7 @@ namespace WebApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
             // Sadece aktif olan Hakkımızda bilgisini getir
             HakkimizdaBilgileri hakkimizda = _repository.Listele().Where(x => x.Durumu == 1).FirstOrDefault();
             ViewBag.Hakkimizda = hakkimizda;
@@ -26,7 +26,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Ekle(string Baslik, string AltBaslik, string Metin)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
 
@@ -66,7 +66,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(int Id, string Baslik, string AltBaslik, string Metin)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             HakkimizdaBilgileri existingEntity = _repository.Getir(Id);
@@ -91,7 +91,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             HakkimizdaBilgileri hakkimizdaBilgileri = _repository.Getir(Id);
@@ -113,7 +113,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             HakkimizdaBilgileri item = _repository.Getir(id);
             if (item == null)

@@ -19,7 +19,7 @@ namespace WebApp.Controllers
         // Ana sayfa - Paket listesi
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -78,7 +78,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult Baglama(int id)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -138,7 +138,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult BaglamaKaydet(int paketId, List<int> bagliPaketIds)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -210,7 +210,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult BagliPaketleriGetir(int paketId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -240,7 +240,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult TumBagliPaketleriGetir(int paketId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -319,7 +319,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult BaglantiyiKaldir(int baglantiId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -352,7 +352,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult BaglantiDetay(int paketId)
         {
-            LoadCommonData();
+        
 
             try
             {
@@ -397,7 +397,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult CaprazBaglantilariTemizle(int paketId)
         {
-            LoadCommonData();
+        
 
             try
             {

@@ -70,13 +70,13 @@
                                         <td>
                                             @if (item.Onay == null || item.Onay == 0)
                                             {
-                                                <button type="button" class="btn btn-success btn-sm" onclick="onayOnay(@item.Id, '@item.AdiSoyadi')">
+                                                <button type="button" class="btn btn-success btn-sm" data-button-permission="onayla" onclick="onayOnay(@item.Id, '@item.AdiSoyadi')">
                                                     <i class="fas fa-check"></i> Onayla
                                                 </button>
                                             }
                                             else
                                             {
-                                                <button type="button" class="btn btn-secondary btn-sm" onclick="onayKaldir(@item.Id, '@item.AdiSoyadi')">
+                                                <button type="button" class="btn btn-secondary btn-sm" data-button-permission="onaykaldir" onclick="onayKaldir(@item.Id, '@item.AdiSoyadi')">
                                                     <i class="fas fa-times"></i> Onayı Kaldır
                                                 </button>
                                             }
@@ -94,7 +94,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="9" class="text-center">Henüz bilgi eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Bilgi Ekle</a></td>
+                                    <td colspan="9" class="text-center">Henüz bilgi eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" data-button-permission="ekle" class="btn btn-primary btn-sm">Yeni Bilgi Ekle</a></td>
                                 </tr>
                             }
                         </tbody>

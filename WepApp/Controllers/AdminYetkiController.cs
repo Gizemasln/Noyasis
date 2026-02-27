@@ -7,7 +7,7 @@ using WepApp.Repositories;
 
 namespace WepApp.Controllers
 {
-    public class AdminYetkiController : AdminBaseController // Assuming AdminBaseController exists; adjust if needed
+    public class AdminYetkiController : AdminBaseController 
     {
         private readonly YetkiRepository _repository;
 
@@ -18,7 +18,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData(); // Assuming this method exists in base controller
+         // Assuming this method exists in base controller
             List<Yetki> list = _repository.Listele().Where(x => x.Durumu == 1).ToList();
             ViewBag.YetkiList = list;
             return View();
@@ -27,7 +27,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Ekle(string Adi)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (!string.IsNullOrEmpty(Adi))
@@ -54,7 +54,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(int Id, string Adi)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Yetki existingEntity = _repository.Getir(Id);
@@ -77,7 +77,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Yetki yetki = _repository.Getir(Id);

@@ -84,7 +84,7 @@
                                         <td>@s.VerilisTarihi.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>@(s.GecerlilikTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
                                         <td>
-                                            <a href="@Url.Action("ViewSertifika", new { path = s.DosyaYolu })" target="_blank" class="btn btn-info btn-sm">
+                                            <a href="@Url.Action("ViewSertifika", new { path = s.DosyaYolu })" target="_blank" class="btn btn-info btn-sm" data-button-permission="goruntule">
                                                 <i class="fas fa-file-pdf"></i> Görüntüle
                                             </a>
                                         </td>
@@ -110,7 +110,7 @@
                                         Henüz sertifika eklenmemiş.
                                         @if (ViewBag.CurrentUserType != "Bayi")
                                         {
-                                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ekleModal" data-button-permission="ekle">
                                                 Yeni Sertifika Ekle
                                             </button>
                                         }

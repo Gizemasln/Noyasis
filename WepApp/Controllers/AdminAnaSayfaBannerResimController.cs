@@ -20,7 +20,7 @@ namespace WebApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
             // Sadece aktif olan banner'ı getir (en son eklenen veya tek aktif kayıt)
             AnaSayfaBannerResim banner = _repository.Listele().Where(x => x.Durumu == 1).FirstOrDefault();
             ViewBag.Banner = banner;
@@ -30,7 +30,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Ekle(IFormFile imagefile, string Metin, string Baslik)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
 
@@ -100,7 +100,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(int Id, string Metin, string Baslik)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             AnaSayfaBannerResim existingEntity = _repository.Getir(Id);
@@ -124,7 +124,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             AnaSayfaBannerResim anaSayfaFotograf = _repository.Getir(Id);
@@ -157,7 +157,7 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             AnaSayfaBannerResim item = _repository.Getir(id);
             if (item == null)

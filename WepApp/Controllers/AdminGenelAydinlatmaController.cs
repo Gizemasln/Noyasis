@@ -16,7 +16,7 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-            LoadCommonData();
+        
 
             List<GenelAydinlatma> list = _repository.Listele().Where(x => x.Durumu == 1).ToList();
             ViewBag.GenelAydinlatmaList = list;
@@ -26,7 +26,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Ekle(string Metin)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             if (!string.IsNullOrEmpty(Metin))
@@ -53,7 +53,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Guncelle(int Id, string Metin)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             GenelAydinlatma existingEntity = _repository.Getir(Id);
@@ -76,7 +76,7 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-            LoadCommonData();
+        
 
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             GenelAydinlatma genelAydinlatma = _repository.Getir(Id);
@@ -98,7 +98,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-            LoadCommonData();
+        
 
             GenelAydinlatma item = _repository.Getir(id);
             if (item == null)

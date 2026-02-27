@@ -10,6 +10,7 @@ namespace WepApp.Controllers
         public IActionResult Index()
         {
             LoadCommonData();
+
             KVKKRepository kVKKRepository = new KVKKRepository();
             KVKK kvkk = kVKKRepository.Getir(x => x.Durumu == 1);
             ViewBag.KVKK = kvkk;
