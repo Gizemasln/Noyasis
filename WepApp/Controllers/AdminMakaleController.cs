@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using WebApp.Models;
 using WepApp.Models;
-using WepApp.Repositories; // Repository'nizin namespace'i
+using WepApp.Repositories;
 
 namespace WepApp.Controllers
 {
@@ -16,36 +16,27 @@ namespace WepApp.Controllers
         public AdminMakaleController(IWebHostEnvironment environment)
         {
             _environment = environment;
-            _repository = new MakaleRepository(); // Dependency injection ile inject etmek daha iyi olur
+            _repository = new MakaleRepository();
         }
 
         public IActionResult Index()
         {
-        
-
             List<Makale> list = _repository.Listele().Where(x => x.Durumu == 1).ToList();
             ViewBag.MakaleList = list;
             return View();
         }
 
         [HttpPost]
-        public IActionResult Ekle(string Baslik, string Metin, IFormFile? Dosya)
+        public IActionResult Ekle(Makale model, IFormFile? Dosya)
         {
-        
-
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
-            if (string.IsNullOrEmpty(Baslik))
-            {
-                TempData["Error"] = "Lütfen başlık girin.";
-                return RedirectToAction("Index");
-            }
+
 
             try
             {
                 string dosyaYolu = null;
                 if (Dosya != null && Dosya.Length > 0)
                 {
-                    // wwwroot/WebAdminTheme/Makale/ klasörüne kaydet
                     string uploadsFolder = Path.Combine(_environment.WebRootPath, "WebAdminTheme", "Makale");
 
                     if (!Directory.Exists(uploadsFolder))
@@ -55,48 +46,45 @@ namespace WepApp.Controllers
 
                     string uniqueFileName = Guid.NewGuid().ToString() + "_" + Dosya.FileName;
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
                     using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         Dosya.CopyTo(fileStream);
                     }
-                    dosyaYolu = "/WebAdminTheme/Makale/" + uniqueFileName; // URL için göreli yol
+
+                    dosyaYolu = "/WebAdminTheme/Makale/" + uniqueFileName;
                 }
 
-                Makale model = new Makale
+                Makale yeniMakale = new Makale
                 {
-                    Baslik = Baslik,
-                    Metin = Metin,
+                    Baslik = model.Baslik,
+                    Metin = model.Metin,
                     Fotograf = dosyaYolu,
                     Durumu = 1,
                     EklenmeTarihi = DateTime.Now,
                     GuncellenmeTarihi = DateTime.Now,
                     KullanicilarId = kullanici.Id
                 };
-                _repository.Ekle(model);
-                TempData["Success"] = "Bilgi başarıyla eklendi.";
+
+                _repository.Ekle(yeniMakale);
+                TempData["Success"] = "Makale başarıyla eklendi.";
             }
             catch (Exception ex)
             {
                 TempData["Error"] = "Kayıt sırasında hata oluştu: " + ex.Message;
-                // Log ekleyin: ILogger ile
             }
 
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public IActionResult Guncelle(int Id, string Baslik, string Metin, IFormFile? Dosya)
+        public IActionResult Guncelle(Makale model, IFormFile? Dosya)
         {
-        
-
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
-            if (string.IsNullOrEmpty(Baslik))
-            {
-                TempData["Error"] = "Lütfen başlık girin.";
-                return RedirectToAction("Index");
-            }
 
-            Makale existingEntity = _repository.Getir(Id);
+          
+
+            Makale existingEntity = _repository.Getir(model.Id);
             if (existingEntity == null)
             {
                 TempData["Error"] = "Kayıt bulunamadı.";
@@ -105,8 +93,8 @@ namespace WepApp.Controllers
 
             try
             {
-                existingEntity.Baslik = Baslik;
-                existingEntity.Metin = Metin;
+                existingEntity.Baslik = model.Baslik;
+                existingEntity.Metin = model.Metin;
                 existingEntity.GuncellenmeTarihi = DateTime.Now;
                 existingEntity.KullanicilarId = kullanici.Id;
 
@@ -130,17 +118,19 @@ namespace WepApp.Controllers
                         Directory.CreateDirectory(uploadsFolder);
                     }
 
-                   string uniqueFileName = Guid.NewGuid().ToString() + "_" + Dosya.FileName;
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Dosya.FileName;
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
                     using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         Dosya.CopyTo(fileStream);
                     }
+
                     existingEntity.Fotograf = "/WebAdminTheme/Makale/" + uniqueFileName;
                 }
 
                 _repository.Guncelle(existingEntity);
-                TempData["Success"] = "Kayıt başarıyla güncellendi.";
+                TempData["Success"] = "Makale başarıyla güncellendi.";
             }
             catch (Exception ex)
             {
@@ -153,15 +143,14 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-        
-
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Makale makale = _repository.Getir(Id);
+
             if (makale != null)
             {
                 try
                 {
-                    // Dosyayı da sil
+                    // Dosyayı sil
                     if (!string.IsNullOrEmpty(makale.Fotograf))
                     {
                         string filePath = Path.Combine(_environment.WebRootPath, makale.Fotograf.TrimStart('/'));
@@ -175,7 +164,7 @@ namespace WepApp.Controllers
                     makale.GuncellenmeTarihi = DateTime.Now;
                     makale.KullanicilarId = kullanici.Id;
                     _repository.Guncelle(makale);
-                    TempData["Success"] = "Kayıt başarıyla silindi.";
+                    TempData["Success"] = "Makale başarıyla silindi.";
                 }
                 catch (Exception ex)
                 {
@@ -186,19 +175,19 @@ namespace WepApp.Controllers
             {
                 TempData["Error"] = "Kayıt bulunamadı.";
             }
+
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         public IActionResult Getir(int id)
         {
-        
-
             Makale item = _repository.Getir(id);
             if (item == null)
             {
                 return NotFound();
             }
+
             return Json(new
             {
                 id = item.Id,

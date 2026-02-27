@@ -329,6 +329,7 @@ namespace WebApp.Controllers
                 ["AdminMakale"] = new List<string> {
                     "ekle",
                     "duzenle",
+                    "detay",
                     "sil"
                 },
                 ["AdminIstekOneri"] = new List<string> {
