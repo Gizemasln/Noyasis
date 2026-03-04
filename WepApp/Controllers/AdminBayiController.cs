@@ -23,6 +23,8 @@ namespace WepApp.Controllers
         private readonly TeklifRepository _teklifRepository;
         private readonly IWebHostEnvironment _environment;
         private readonly MusteriSozlesmeRepository _musteriSozlesmeRepo;
+        private readonly illerRepository _illerRepo;
+        private readonly ilcelerRepository _ilcelerRepo;
 
         public AdminBayiController(IWebHostEnvironment environment)
         {
@@ -33,6 +35,8 @@ namespace WepApp.Controllers
             _musteriRepository = new MusteriRepository();
             _teklifRepository = new TeklifRepository();
             _musteriSozlesmeRepo = new MusteriSozlesmeRepository();
+            _illerRepo = new illerRepository();
+            _ilcelerRepo = new ilcelerRepository();
             _environment = environment;
         }
 
@@ -85,6 +89,8 @@ namespace WepApp.Controllers
             ViewBag.AnaBayiler = bayiList.Where(x => x.UstBayiId == null).ToList();
             ViewBag.CurrentBayi = bayi;
             ViewBag.CurrentKullanici = kullanici;
+            ViewBag.Iller = _illerRepo.Listele().OrderBy(i => i.sehiradi).ToList();
+
 
             return View();
         }
@@ -145,23 +151,73 @@ namespace WepApp.Controllers
             return result.ToString();
         }
         [HttpGet]
+        public IActionResult GetBayiAdi(int id)
+        {
+            try
+            {
+                var bayi = _bayiRepository.Getir(id);
+                if (bayi == null)
+                    return Json(new { success = false, message = "Bayi bulunamadı" });
+
+                return Json(new { success = true, ad = bayi.Unvan });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult KullaniciAdiKontrol(string kullaniciAdi)
+        {
+            try
+            {
+                // Bayi tablosunda kontrol
+                var mevcutBayi = _bayiRepository.Getir(x => x.KullaniciAdi == kullaniciAdi && x.Durumu == 1);
+
+                // Müşteri tablosunda kontrol (eğer müşterilerde de kullanıcı adı varsa)
+                var mevcutMusteri = _musteriRepository.Getir(x => x.KullaniciAdi == kullaniciAdi && x.Durum == 1);
+
+                bool kullaniliyor = mevcutBayi != null || mevcutMusteri != null;
+
+                return Json(new
+                {
+                    success = true,
+                    kullaniliyor = kullaniliyor,
+                    mesaj = kullaniliyor ? "Bu kullanıcı adı zaten kullanılıyor!" : "Kullanıcı adı uygun."
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        [HttpGet]
         public IActionResult DetayGetir(int id)
         {
         
 
             try
             {
-                List<string> join = new List<string> { "UstBayi" };
+                List<string> join = new List<string> { "UstBayi" ,"iller","ilceler"};
                 Bayi bayi = _bayiRepository.Getir(x => x.Id == id && x.Durumu == 1, join);
                 
 
                 if (bayi == null)
                     return Json(new { success = false, message = "Bayi bulunamadı." });
 
-                // Yetki kontrolü
                 Bayi currentBayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
+                Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
+
+                if (currentBayi == null && kullanici == null)
+                {
+                    return Json(new { success = false, message = "Oturum bulunamadı." });
+                }
+
                 if (currentBayi != null && !IsBayiAltinda(currentBayi.Id, id))
+                {
                     return Json(new { success = false, message = "Bu işlem için yetkiniz yok." });
+                }
 
                 return Json(new
                 {
@@ -174,8 +230,8 @@ namespace WepApp.Controllers
                     adres = bayi.Adres ?? "",
                     kodu = bayi.Kodu ?? "",
                     bolge = bayi.Bolge ?? "",
-                    il = bayi.Il ?? "",
-                    ilce = bayi.Ilce ?? "",
+                    il = bayi.iller.sehiradi ?? "",
+                    ilce = bayi.ilceler.ilceadi ?? "",
                     belde = bayi.Belde ?? "",
                     tcvNo = bayi.TCVNo ?? "",
                     distributor = bayi.Distributor, // YENİ ALAN
@@ -653,8 +709,8 @@ namespace WepApp.Controllers
         public async Task<IActionResult> Ekle(
             string Unvan, string KullaniciAdi, string Sifre,
             string Email, string Telefon, string Adres, string Kodu,
-            string Bolge, string Il, string Ilce, string Belde,
-            string TCVNo, string VergiDairesi, string KepAdresi,
+            string Bolge, int? Il,int? Ilce, string Belde,
+string TCVNo, string VergiDairesi, string KepAdresi,
             string WebAdresi, string Aciklama, string AlpemixFirmaAdi,
             string AlpemixGrupAdi, string AlpemixSifre,
             int? UstBayiId, int? Aktif, IFormFile Logo, IFormFile Imza, bool Distributor = false, // YENİ PARAMETRE
@@ -689,8 +745,8 @@ namespace WepApp.Controllers
                     Adres = Adres ?? "",
                     Kodu = Kodu ?? "",
                     Bolge = Bolge ?? "",
-                    Il = Il ?? "",
-                    Ilce = Ilce ?? "",
+                    illerId = Il,
+                    ilcelerId = Ilce,
                     Belde = Belde ?? "",
                     TCVNo = TCVNo ?? "",
                     VergiDairesi = VergiDairesi ?? "",
@@ -773,8 +829,7 @@ namespace WepApp.Controllers
         public async Task<IActionResult> Guncelle(
             int Id, string Unvan, string KullaniciAdi, string Sifre,
             string Email, string Telefon, string Adres, string Kodu,
-            string Bolge, string Il, string Ilce, string Belde,
-            string TCVNo, string VergiDairesi, string KepAdresi,
+            string Bolge, int? Il,int? Ilce, string Belde, string TCVNo, string VergiDairesi, string KepAdresi,
             string WebAdresi, string Aciklama, string AlpemixFirmaAdi,
             string AlpemixGrupAdi, string AlpemixSifre,
             int? UstBayiId, int? Aktif, IFormFile Logo, IFormFile Imza, bool Distributor = false, // YENİ PARAMETRE
@@ -817,8 +872,8 @@ namespace WepApp.Controllers
                 existing.Bolge = Bolge ?? "";
                 existing.Distributor = Distributor; // YENİ ALAN
 
-                existing.Il = Il ?? "";
-                existing.Ilce = Ilce ?? "";
+                existing.illerId = Il;
+                existing.ilcelerId = Ilce ;
                 existing.Belde = Belde ?? "";
                 existing.TCVNo = TCVNo ?? "";
                 existing.VergiDairesi = VergiDairesi ?? "";
@@ -956,9 +1011,9 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-        
 
-            List<string> join = new List<string> { "UstBayi" };
+
+            List<string> join = new List<string> { "UstBayi", "iller", "ilceler" }; // İl ve ilçe ilişkilerini ekle
             try
             {
                 Bayi item = _bayiRepository.Getir(x => x.Id == id && x.Durumu == 1, join);
@@ -980,12 +1035,16 @@ namespace WepApp.Controllers
                     adres = item.Adres ?? "",
                     kodu = item.Kodu ?? "",
                     bolge = item.Bolge ?? "",
-                    il = item.Il ?? "",
-                    ilce = item.Ilce ?? "",
+                    ilId = item.illerId,
+                    ilceId = item.ilcelerId,
+                    // ESKİ alanları uyumluluk için göndermeye devam edebiliriz (opsiyonel)
+                    il = item.iller?.sehiradi ?? "",
+                    ilce = item.ilceler?.ilceadi ?? "",
                     belde = item.Belde ?? "",
                     tcvNo = item.TCVNo ?? "",
                     distributor = item.Distributor, // YENİ ALAN
-
+                    sifreVarMi = !string.IsNullOrEmpty(item.Sifre) // Şifre var mı?
+,
                     vergiDairesi = item.VergiDairesi ?? "",
                     kepAdresi = item.KepAdresi ?? "",
                     webAdresi = item.WebAdresi ?? "",
@@ -1004,7 +1063,24 @@ namespace WepApp.Controllers
                 return Json(new { success = false, message = "Bayi bilgileri getirilirken hata: " + ex.Message });
             }
         }
+    
+        [HttpGet]
+        public IActionResult GetIlcelerByIlId(int ilId)
+        {
+            try
+            {
+                var ilceler = _ilcelerRepo.GetirList(x => x.illerId == ilId )
+                                           .OrderBy(i => i.ilceadi)
+                                           .Select(i => new { i.Id, i.ilceadi })
+                                           .ToList();
 
+                return Json(new { success = true, data = ilceler });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
         [HttpGet]
         public IActionResult LogoGoster(int id)
         {

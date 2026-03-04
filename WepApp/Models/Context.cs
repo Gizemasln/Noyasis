@@ -23,6 +23,7 @@ public partial class Context : DbContext
     public virtual DbSet<Slider> Slider { get; set; }
     public virtual DbSet<ButtonPermission> ButtonPermissions { get; set; }
     public virtual DbSet<MenuIzin> MenuIzin { get; set; }
+    public virtual DbSet<iller> iller { get; set; }
 
     public virtual DbSet<IstekOneriDurum> IstekOneriDurum{ get; set; }
     public virtual DbSet<ARGEDurum> ARGEDurum { get; set; }

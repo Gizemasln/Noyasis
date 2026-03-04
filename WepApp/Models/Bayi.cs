@@ -23,8 +23,8 @@ namespace WepApp.Models
         public string? Adres { get; set; } = string.Empty;
         public string? Kodu { get; set; } = string.Empty;
         public string? Bolge { get; set; } = string.Empty;
-        public string? Il { get; set; } = string.Empty;
-        public string? Ilce { get; set; } = string.Empty;
+        public int? illerId { get; set; } 
+        public int? ilcelerId { get; set; } 
         public string? Belde { get; set; } = string.Empty;
         public string? TCVNo { get; set; } = string.Empty;
         public string? VergiDairesi { get; set; } = string.Empty;
@@ -48,5 +48,7 @@ namespace WepApp.Models
 
         public DateTime EklenmeTarihi { get; set; } = DateTime.Now;
         public DateTime GuncellenmeTarihi { get; set; } = DateTime.Now;
+        public virtual iller? iller { get; set; }
+        public virtual ilceler? ilceler { get; set; }
     }
 }
