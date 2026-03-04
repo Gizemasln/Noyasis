@@ -75,6 +75,20 @@
         .remove-image-btn:hover {
             background-color: #bb2d3b;
         }
+
+    /* Toplu işlem butonları arası boşluk */
+    #topluDuyuruIslemButonlari {
+        gap: 10px !important;
+    }
+
+        #topluDuyuruIslemButonlari .btn {
+            margin: 0 5px !important;
+        }
+
+    /* Header'daki tüm öğeler arası boşluk */
+    .card-header .d-flex.align-items-center {
+        gap: 20px !important;
+    }
 </style>
 
 <!-- Görsel Modal -->
@@ -114,7 +128,26 @@
             <div class="card-header">
                 <div class="card-title d-flex justify-content-between align-items-center">
                     <span>Bayi Duyurular</span>
-                    <div class="mb-3">
+
+                    <div class="d-flex align-items-center" style="gap: 15px;">
+                        <!-- Seçili duyuru göstergesi -->
+                        <span id="seciliDuyuruGosterge" class="badge bg-primary d-none">
+                            <span id="seciliDuyuruMetin">0 duyuru seçili</span>
+                        </span>
+
+                        <!-- İşlem butonları -->
+                        <div class="btn-group" role="group" id="topluDuyuruIslemButonlari" style="gap: 8px;">
+                            <button type="button" class="btn btn-warning btn-sm" id="topluDuyuruDuzenleBtn" disabled data-button-permission="duzenle"
+                                    onclick="seciliDuyuruIslem('duzenle')">
+                                <i class="fas fa-edit"></i> Düzenle
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" id="topluDuyuruSilBtn" disabled data-button-permission="sil"
+                                    onclick="seciliDuyuruIslem('sil')">
+                                <i class="fas fa-trash"></i> Sil
+                            </button>
+                        </div>
+
+                        <!-- Yeni Ekle butonu (her zaman aktif) -->
                         <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
                             <i class="fas fa-plus"></i> Yeni Bayi Duyuru Ekle
                         </button>
@@ -123,17 +156,18 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered table-hover" id="duyuruTablosu">
                         <thead class="table-head-bg-primary">
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Görsel</th>
+                                <th scope="col" width="50">#</th>
+                                <th scope="col" width="50">Seç</th>
+                                <th scope="col" width="80">Görsel</th>
                                 <th scope="col">Başlık</th>
                                 <th scope="col">İçerik</th>
                                 <th scope="col">Oluşturma Tarihi</th>
                                 <th scope="col">Öncelik</th>
                                 <th scope="col">Yayın Durumu</th>
-                                <th scope="col">İşlemler</th>
+                                <!-- İşlemler sütunu kaldırıldı -->
                             </tr>
                         </thead>
                         <tbody>
@@ -142,8 +176,13 @@
                                 var counter = 1;
                                 foreach (var item in ViewBag.DuyuruList)
                                 {
-                                    <tr>
+                                    <tr data-duyuru-id="@item.Id" data-duyuru-baslik="@item.Baslik" class="duyuru-satiri">
                                         <td>@counter</td>
+                                        <td class="text-center">
+                                            <div class="form-check">
+                                                <input class="form-check-input duyuru-sec-checkbox" type="checkbox" value="@item.Id">
+                                            </div>
+                                        </td>
                                         <td class="text-center">
                                             @if (!string.IsNullOrEmpty(item.GorselYolu))
                                             {
@@ -183,14 +222,6 @@
                                                 <span class="badge bg-secondary">Yayında Değil</span>
                                             }
                                         </td>
-                                        <td>
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id)" title="Düzenle">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil"  onclick="silOnay(@item.Id, '@item.Baslik')" title="Sil">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
                                     </tr>
                                     counter++;
                                 }
@@ -198,7 +229,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="8" class="text-center">Henüz duyuru eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Duyuru Ekle</a></td>
+                                    <td colspan="9" class="text-center">Henüz duyuru eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Duyuru Ekle</a></td>
                                 </tr>
                             }
                         </tbody>
@@ -294,7 +325,7 @@
 <div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form action="@Url.Action("Guncelle","AdminBayiDuyuru")" method="post" id="duzenleForm" enctype="multipart/form-data">
+            <form action="@Url.Action("Guncelle", "AdminBayiDuyuru")" method="post" id="duzenleForm" enctype="multipart/form-data">
                 <input type="hidden" id="editId" name="Id">
                 <input type="hidden" id="editMevcutGorsel" name="MevcutGorsel">
 
@@ -390,7 +421,7 @@
 <div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Sil","AdminBayiDuyuru")" method="post">
+            <form action="@Url.Action("Sil", "AdminBayiDuyuru")" method="post">
                 <input type="hidden" id="silId" name="Id">
                 <div class="modal-header">
                     <h5 class="modal-title" id="silModalLabel">
@@ -421,6 +452,8 @@
 @section Script {
     <script>
         let silinecekGorselId = null;
+        let seciliDuyuruId = 0;
+        let seciliDuyuruBaslik = '';
 
         // Görsel önizleme fonksiyonu
         function previewImage(input, previewId) {
@@ -447,6 +480,81 @@
             document.getElementById('modalGorsel').src = gorselYolu;
             var gorselModal = new bootstrap.Modal(document.getElementById('gorselModal'));
             gorselModal.show();
+        }
+
+        // Seçili duyuru sayısını güncelle
+        function seciliDuyuruSayisiniGuncelle() {
+            const tumCheckboxlar = document.querySelectorAll('.duyuru-sec-checkbox');
+            const seciliCheckboxlar = document.querySelectorAll('.duyuru-sec-checkbox:checked');
+            const sayi = seciliCheckboxlar.length;
+            const gosterge = document.getElementById('seciliDuyuruGosterge');
+            const metinSpan = document.getElementById('seciliDuyuruMetin');
+
+            // Eğer birden fazla seçiliyse → sadece son seçileni bırak (tek seçim zorla)
+            if (sayi > 1) {
+                const sonSecili = seciliCheckboxlar[seciliCheckboxlar.length - 1];
+                tumCheckboxlar.forEach(cb => {
+                    if (cb !== sonSecili) cb.checked = false;
+                });
+                return seciliDuyuruSayisiniGuncelle();
+            }
+
+            if (sayi === 0) {
+                gosterge.classList.add('d-none');
+                metinSpan.textContent = '';
+
+                // Butonları devre dışı bırak
+                document.getElementById('topluDuyuruDuzenleBtn').disabled = true;
+                document.getElementById('topluDuyuruSilBtn').disabled = true;
+
+                seciliDuyuruId = 0;
+                seciliDuyuruBaslik = '';
+            }
+            else if (sayi === 1) {
+                // Tek duyuru seçili
+                const seciliTr = seciliCheckboxlar[0].closest('tr');
+                const baslikTd = seciliTr.querySelector('td:nth-child(4)'); // Başlık sütunu (4. td)
+                let baslik = baslikTd ? baslikTd.textContent.trim() : 'Duyuru';
+
+                // Çok uzunsa kısalt
+                if (baslik.length > 30) {
+                    baslik = baslik.substring(0, 27) + '...';
+                }
+
+                seciliDuyuruId = seciliCheckboxlar[0].value;
+                seciliDuyuruBaslik = baslik;
+
+                metinSpan.textContent = `"${baslik}" seçili`;
+                gosterge.classList.remove('d-none');
+
+                // Butonları aktif et
+                document.getElementById('topluDuyuruDuzenleBtn').disabled = false;
+                document.getElementById('topluDuyuruSilBtn').disabled = false;
+            }
+        }
+
+        // Seçili duyuru için işlem yap
+        function seciliDuyuruIslem(tip) {
+            const secili = document.querySelector('.duyuru-sec-checkbox:checked');
+            if (!secili) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Uyarı',
+                    text: 'Lütfen önce bir duyuru seçin!'
+                });
+                return;
+            }
+
+            const duyuruId = secili.value;
+
+            switch(tip) {
+                case 'duzenle':
+                    duzenleGetir(duyuruId);
+                    break;
+                case 'sil':
+                    silOnay(duyuruId, seciliDuyuruBaslik);
+                    break;
+            }
         }
 
         function duzenleGetir(id) {
@@ -593,6 +701,61 @@
                     input.files = files;
                     const previewId = input.id === 'Gorsel' ? 'eklePreview' : 'editPreview';
                     previewImage(input, previewId);
+                }
+            });
+        });
+
+        // Sayfa yüklendiğinde event listener'ları ekle
+        document.addEventListener('DOMContentLoaded', function() {
+            // Satır tıklama ile seçim
+            const duyuruTbody = document.querySelector('#duyuruTablosu tbody');
+            if (duyuruTbody) {
+                duyuruTbody.addEventListener('click', function(e) {
+                    const tr = e.target.closest('tr');
+                    if (!tr) return;
+
+                    // Eğer checkbox'a, butona veya link'e tıklanmışsa işlem yapma
+                    if (e.target.type === 'checkbox' ||
+                        e.target.tagName === 'BUTTON' ||
+                        e.target.closest('button') ||
+                        e.target.tagName === 'A' ||
+                        e.target.closest('a') ||
+                        e.target.classList.contains('duyuru-gorsel-preview')) {
+                        return;
+                    }
+
+                    const checkbox = tr.querySelector('.duyuru-sec-checkbox');
+                    if (checkbox) {
+                        // Diğer tüm checkbox'ları temizle
+                        document.querySelectorAll('.duyuru-sec-checkbox').forEach(cb => {
+                            cb.checked = false;
+                        });
+                        // Sadece bu satırın checkbox'ını seç
+                        checkbox.checked = true;
+                        seciliDuyuruSayisiniGuncelle();
+                    }
+                });
+            }
+
+            // Checkbox değişim olayı
+            document.addEventListener('change', function(e) {
+                if (e.target.classList.contains('duyuru-sec-checkbox')) {
+                    seciliDuyuruSayisiniGuncelle();
+                }
+            });
+
+            // Modal kapandığında seçimi temizle
+            const modals = ['duzenleModal', 'silModal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.addEventListener('hidden.bs.modal', function() {
+                        // Seçimi temizle
+                        document.querySelectorAll('.duyuru-sec-checkbox').forEach(cb => {
+                            cb.checked = false;
+                        });
+                        seciliDuyuruSayisiniGuncelle();
+                    });
                 }
             });
         });

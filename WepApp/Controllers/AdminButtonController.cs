@@ -254,7 +254,8 @@ namespace WebApp.Controllers
             "duzenle",                  // Düzenle butonu
             "sil",                      // Sil butonu
             "teklifler",                     // Detay butonu
-            "sozlesmeler"
+            "sozlesmeler",
+            "detay"
         },
                 ["AdminMusteri"] = new List<string> {
                     "ekle",

@@ -327,26 +327,27 @@ namespace WepApp.Controllers
                 }
 
                 var teklifler = _teklifRepository.GetirQueryable()
-                    .Where(t => musteriIds.Contains(t.MusteriId) && t.Aktif)
-                    .Include(t => t.Musteri)
-                    .Include(t => t.TeklifDurum)
-                    .Include(t => t.LisansTip)
-                    .OrderByDescending(t => t.EklenmeTarihi)
-                    .Select(t => new
-                    {
-                        t.Id,
-                        t.TeklifNo,
-                        EklenmeTarihi = t.EklenmeTarihi.HasValue ? t.EklenmeTarihi.Value.ToString("dd.MM.yyyy") : "-",
-                        GecerlilikTarihi = t.GecerlilikTarihi.HasValue ? t.GecerlilikTarihi.Value.ToString("dd.MM.yyyy") : "-",
-                        t.NetToplam,
-                        t.OnaylandiMi,
-                        TeklifDurumAdi = t.TeklifDurum != null ? t.TeklifDurum.Adi : "-",
-                        LisansTipAdi = t.LisansTip != null ? t.LisansTip.Adi : "-",
-                        MusteriAdi = t.Musteri.Ad + " " + (t.Musteri.Soyad ?? ""),
-                        MusteriTicariUnvan = t.Musteri.TicariUnvan ?? "",
-                        MusteriId = t.Musteri.Id
-                    })
-                    .ToList();
+        .Where(t => musteriIds.Contains(t.MusteriId) && t.Aktif)
+        .Include(t => t.Musteri)
+        .Include(t => t.TeklifDurum)
+        .Include(t => t.LisansTip)
+        .OrderByDescending(t => t.EklenmeTarihi)
+        .Select(t => new
+        {
+            t.Id,
+            t.TeklifNo,
+            OlusturmaTarihi = t.EklenmeTarihi.ToString() ?? "-",
+            GecerlilikTarihi = t.GecerlilikTarihi.ToString() ?? "-",
+            t.NetToplam,
+            Onay = t.OnaylandiMi ? "Evet" : "Hayır",
+            OnayBadge = t.OnaylandiMi ? "bg-success" : "bg-danger",
+            Durum = t.TeklifDurum.Adi ?? "Belirtilmemiş",
+            LisansTipi = t.LisansTip.Adi ?? "-",
+            MusteriAdi = (t.Musteri.Ad + " " + (t.Musteri.Soyad ?? "")).Trim(),
+            MusteriTicariUnvan = t.Musteri.TicariUnvan ?? "-",
+            PdfLink = $"/AdminTeklifVer/TeklifPdf?teklifId={t.Id}"   // ← Doğru controller + action
+        })
+        .ToList();
 
                 return Json(new { success = true, data = teklifler });
             }
@@ -355,7 +356,7 @@ namespace WepApp.Controllers
                 return Json(new { success = false, message = "Teklifler yüklenirken hata: " + ex.Message });
             }
         }
-
+    
         [HttpGet]
         public IActionResult GetBayiMusteriSozlesmeleri(int bayiId)
         {

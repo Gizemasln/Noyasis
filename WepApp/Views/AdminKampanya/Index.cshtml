@@ -171,16 +171,40 @@
         <div class="card" style="margin-top: 70px;">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span>Kampanyalar</span>
-                <button class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                    <i class="fas fa-plus"></i> Yeni Kampanya Ekle
-                </button>
+
+                <div class="d-flex align-items-center" style="gap: 15px;">
+                    <!-- gap: 15px yaptık -->
+                    <!-- Seçili kampanya göstergesi -->
+                    <span id="seciliKampanyaGosterge" class="badge bg-primary d-none">
+                        <span id="seciliKampanyaMetin">0 kampanya seçili</span>
+                    </span>
+
+                    <!-- İşlem butonları -->
+                    <div class="btn-group" role="group" id="topluKampanyaIslemButonlari" style="gap: 8px;">
+                        <!-- butonlar arası 8px -->
+                        <button type="button" class="btn btn-warning btn-sm" id="topluKampanyaDuzenleBtn" disabled data-button-permission="duzenle"
+                                onclick="seciliKampanyaIslem('duzenle')">
+                            <i class="fas fa-edit"></i> Düzenle
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" id="topluKampanyaSilBtn" disabled data-button-permission="sil"
+                                onclick="seciliKampanyaIslem('sil')">
+                            <i class="fas fa-trash"></i> Sil
+                        </button>
+                    </div>
+
+                    <!-- Yeni Ekle butonu (her zaman aktif) -->
+                    <button class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni Kampanya Ekle
+                    </button>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered table-hover" id="kampanyaTablosu">
                         <thead class="table-light">
                             <tr>
                                 <th width="50">#</th>
+                                <th width="50">Seç</th>
                                 <th width="70">Görsel</th>
                                 <th>Başlık</th>
                                 <th>Metin</th>
@@ -188,7 +212,6 @@
                                 <th>Başlangıç</th>
                                 <th>Bitiş</th>
                                 <th>İçerik</th>
-                                <th width="150" class="text-center">İşlemler</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -197,8 +220,13 @@
                                 var counter = 1;
                                 foreach (var k in ViewBag.Kampanyalar)
                                 {
-                                    <tr>
+                                    <tr data-kampanya-id="@k.Id" data-kampanya-baslik="@k.Baslik" class="kampanya-satiri">
                                         <td>@counter</td>
+                                        <td class="text-center">
+                                            <div class="form-check">
+                                                <input class="form-check-input kampanya-sec-checkbox" type="checkbox" value="@k.Id">
+                                            </div>
+                                        </td>
                                         <td class="text-center">
                                             @if (!string.IsNullOrEmpty(k.GorselYolu))
                                             {
@@ -224,14 +252,6 @@
                                                 <i class="fas fa-layer-group"></i>
                                             </button>
                                         </td>
-                                        <td class="table-actions text-center">
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@k.Id)" title="Düzenle">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@k.Id, '@k.Baslik')" title="Sil">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
                                     </tr>
                                     counter++;
                                 }
@@ -239,7 +259,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="9" class="text-center py-5">
+                                    <td colspan="10" class="text-center py-5">
                                         <i class="fas fa-tags fa-3x text-muted mb-3"></i>
                                         <p class="text-muted">Henüz kampanya eklenmemiş.</p>
                                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ekleModal">Yeni Kampanya Ekle</button>
@@ -590,6 +610,8 @@
 @section Script {
     <script>
         let silinecekGorselId = null;
+        let seciliKampanyaId = 0;
+        let seciliKampanyaBaslik = '';
 
         // Görsel önizleme fonksiyonu
         function previewImage(input, previewId) {
@@ -654,6 +676,81 @@
             });
         }
 
+        // Seçili kampanya sayısını güncelle
+        function seciliKampanyaSayisiniGuncelle() {
+            const tumCheckboxlar = document.querySelectorAll('.kampanya-sec-checkbox');
+            const seciliCheckboxlar = document.querySelectorAll('.kampanya-sec-checkbox:checked');
+            const sayi = seciliCheckboxlar.length;
+            const gosterge = document.getElementById('seciliKampanyaGosterge');
+            const metinSpan = document.getElementById('seciliKampanyaMetin');
+
+            // Eğer birden fazla seçiliyse → sadece son seçileni bırak (tek seçim zorla)
+            if (sayi > 1) {
+                const sonSecili = seciliCheckboxlar[seciliCheckboxlar.length - 1];
+                tumCheckboxlar.forEach(cb => {
+                    if (cb !== sonSecili) cb.checked = false;
+                });
+                return seciliKampanyaSayisiniGuncelle();
+            }
+
+            if (sayi === 0) {
+                gosterge.classList.add('d-none');
+                metinSpan.textContent = '';
+
+                // Butonları devre dışı bırak
+                document.getElementById('topluKampanyaDuzenleBtn').disabled = true;
+                document.getElementById('topluKampanyaSilBtn').disabled = true;
+
+                seciliKampanyaId = 0;
+                seciliKampanyaBaslik = '';
+            }
+            else if (sayi === 1) {
+                // Tek kampanya seçili
+                const seciliTr = seciliCheckboxlar[0].closest('tr');
+                const baslikTd = seciliTr.querySelector('td:nth-child(4)'); // Başlık sütunu (4. td)
+                let baslik = baslikTd ? baslikTd.textContent.trim() : 'Kampanya';
+
+                // Çok uzunsa kısalt
+                if (baslik.length > 30) {
+                    baslik = baslik.substring(0, 27) + '...';
+                }
+
+                seciliKampanyaId = seciliCheckboxlar[0].value;
+                seciliKampanyaBaslik = baslik;
+
+                metinSpan.textContent = `"${baslik}" seçili`;
+                gosterge.classList.remove('d-none');
+
+                // Butonları aktif et
+                document.getElementById('topluKampanyaDuzenleBtn').disabled = false;
+                document.getElementById('topluKampanyaSilBtn').disabled = false;
+            }
+        }
+
+        // Seçili kampanya için işlem yap
+        function seciliKampanyaIslem(tip) {
+            const secili = document.querySelector('.kampanya-sec-checkbox:checked');
+            if (!secili) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Uyarı',
+                    text: 'Lütfen önce bir kampanya seçin!'
+                });
+                return;
+            }
+
+            const kampanyaId = secili.value;
+
+            switch(tip) {
+                case 'duzenle':
+                    duzenleGetir(kampanyaId);
+                    break;
+                case 'sil':
+                    silOnay(kampanyaId, seciliKampanyaBaslik);
+                    break;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             // Ekle modalı başlangıç değerleri
             updateSummary();
@@ -716,6 +813,58 @@
                     if (bsAlert) bsAlert.close();
                 });
             }, 5000);
+
+            // Satır tıklama ile seçim
+            const kampanyaTbody = document.querySelector('#kampanyaTablosu tbody');
+            if (kampanyaTbody) {
+                kampanyaTbody.addEventListener('click', function(e) {
+                    const tr = e.target.closest('tr');
+                    if (!tr) return;
+
+                    // Eğer checkbox'a, butona veya link'e tıklanmışsa işlem yapma
+                    if (e.target.type === 'checkbox' ||
+                        e.target.tagName === 'BUTTON' ||
+                        e.target.closest('button') ||
+                        e.target.tagName === 'A' ||
+                        e.target.closest('a') ||
+                        e.target.classList.contains('kampanya-gorsel-preview')) {
+                        return;
+                    }
+
+                    const checkbox = tr.querySelector('.kampanya-sec-checkbox');
+                    if (checkbox) {
+                        // Diğer tüm checkbox'ları temizle
+                        document.querySelectorAll('.kampanya-sec-checkbox').forEach(cb => {
+                            cb.checked = false;
+                        });
+                        // Sadece bu satırın checkbox'ını seç
+                        checkbox.checked = true;
+                        seciliKampanyaSayisiniGuncelle();
+                    }
+                });
+            }
+
+            // Checkbox değişim olayı
+            document.addEventListener('change', function(e) {
+                if (e.target.classList.contains('kampanya-sec-checkbox')) {
+                    seciliKampanyaSayisiniGuncelle();
+                }
+            });
+
+            // Modal kapandığında seçimi temizle
+            const modals = ['duzenleModal', 'silModal'];
+            modals.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.addEventListener('hidden.bs.modal', function() {
+                        // Seçimi temizle
+                        document.querySelectorAll('.kampanya-sec-checkbox').forEach(cb => {
+                            cb.checked = false;
+                        });
+                        seciliKampanyaSayisiniGuncelle();
+                    });
+                }
+            });
         });
 
         // ===================== DÜZENLE MODALI =====================

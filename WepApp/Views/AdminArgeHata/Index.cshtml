@@ -425,8 +425,8 @@
                                 </div>
 
                                 <!-- Tip Filtresi -->
-                                <div class="col-md-2">
-                                    <label class="form-label fw-bold small">Bildirim Tipi</label>
+                                <div class="col-md-1">
+                                    <label class="form-label fw-bold small">Bildirim T.</label>
                                     <select class="form-select form-select-sm" id="tipFiltre">
                                         <option value="">Tüm Tipler</option>
                                         <option value="ARGE">AR-GE</option>
@@ -435,7 +435,7 @@
                                 </div>
 
                                 <!-- Durum Filtresi -->
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <label class="form-label fw-bold small">Durum</label>
                                     <select class="form-select form-select-sm" id="durumFiltre">
                                         <option value="0">Tüm Durumlar</option>
@@ -450,8 +450,8 @@
                                 </div>
 
                                 <!-- Lisans Tipi Filtresi -->
-                                <div class="col-md-2">
-                                    <label class="form-label fw-bold small">Lisans Tipi</label>
+                                <div class="col-md-1">
+                                    <label class="form-label fw-bold small">Lisans T.</label>
                                     <select class="form-select form-select-sm" id="lisansTipFiltre">
                                         <option value="0">Tüm Lisans Tipleri</option>
                                         @{
@@ -471,23 +471,16 @@
                                 </div>
 
                                 <!-- Cevap Durumu Filtresi -->
-                                <div class="col-md-2">
-                                    <label class="form-label fw-bold small">Cevap Durumu</label>
+                                <div class="col-md-1">
+                                    <label class="form-label fw-bold small">Cevap D.</label>
                                     <select class="form-select form-select-sm" id="cevapDurumFiltre">
                                         <option value="">Tümü</option>
                                         <option value="cevapli">Cevaplı</option>
                                         <option value="cevapsiz">Cevapsız</option>
                                     </select>
                                 </div>
-
-                                <!-- Müşteri Arama -->
-                                <div class="col-md-2">
-                                    <label class="form-label fw-bold small">Müşteri / Bayi</label>
-                                    <input type="text" class="form-control form-control-sm" id="musteriFiltre" placeholder="Müşteri veya bayi ara...">
-                                </div>
-
                                 <!-- Sıralama -->
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <label class="form-label fw-bold small">Sıralama</label>
                                     <select class="form-select form-select-sm" id="siralamaFiltre">
                                         <option value="yeni">En Yeni → En Eski</option>
@@ -498,6 +491,13 @@
                                         <option value="cevap">Cevap Durumuna Göre</option>
                                     </select>
                                 </div>
+                                <!-- Müşteri Arama -->
+                                <div class="col-md-2">
+                                    <label class="form-label fw-bold small">Müşteri / Bayi</label>
+                                    <input type="text" class="form-control form-control-sm" id="musteriFiltre" placeholder="Müşteri veya bayi ara...">
+                                </div>
+
+                               
 
                                 <!-- Aktif Filtreler -->
                                 <div class="col-12 mt-3" id="aktifFiltreler" style="display: none;">
