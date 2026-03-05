@@ -23,6 +23,49 @@
     input[type=number] {
         width: 100%;
     }
+
+    /* Seçim satırı için cursor pointer */
+    tr[data-teklif-durum-id] {
+        cursor: pointer;
+    }
+
+    /* Seçili satır efekti */
+    tr.table-active {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+
+    /* İşlem butonları alanı */
+    .islem-butonlari-alani {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .secili-bilgi {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+
+        .secili-bilgi i {
+            font-size: 1rem;
+        }
+
+    /* Buton stilleri */
+    .aksiyon-btn {
+        transition: all 0.2s;
+    }
+
+        .aksiyon-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .aksiyon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 </style>
 
 <div class="row">
@@ -44,11 +87,29 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="card-title d-flex justify-content-between align-items-center">
-                    <span>Teklif Durumları</span>
-                    <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                        <i class="fas fa-plus"></i> Yeni Teklif Durumu Ekle
-                    </button>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Teklif Durumları</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Seçili Kayıt Bilgisi ve İşlem Butonları -->
+                        <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                            <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                                <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                            </div>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-warning aksiyon-btn" id="seciliDuzenleBtn" data-button-permission="duzenle" title="Seçili Teklif Durumunu Düzenle" disabled>
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger aksiyon-btn" id="seciliSilBtn" data-button-permission="sil" title="Seçili Teklif Durumunu Sil" disabled>
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Yeni Ekle Butonu -->
+                        <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                            <i class="fas fa-plus"></i> Yeni Teklif Durumu Ekle
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -56,34 +117,32 @@
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
+                                <th width="40">Seç</th>
                                 <th width="80" class="text-center">Sıra</th>
                                 <th>Teklif Durumu Adı</th>
                                 <th>Açıklama</th>
                                 <th>Eklenme Tarihi</th>
                                 <th>Son Güncelleme</th>
-                                <th width="140" class="text-center">İşlemler</th>
+                                <!-- İşlemler sütunu kaldırıldı -->
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="teklifDurumTablosu">
                             @if (ViewBag.TeklifDurumlari != null && ((List<TeklifDurum>)ViewBag.TeklifDurumlari).Count > 0)
                             {
                                 var counter = 1;
                                 foreach (var item in (List<TeklifDurum>)ViewBag.TeklifDurumlari)
                                 {
-                                    <tr>
+                                    <tr data-teklif-durum-id="@item.Id" data-teklif-durum-adi="@item.Adi" data-teklif-durum-aciklama="@(item.Aciklama ?? "")" data-teklif-durum-sira="@item.Sıra" class="teklif-durum-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input teklif-durum-sec-radio" type="radio" name="seciliTeklifDurumRadio" value="@item.Id" id="secim_@item.Id">
+                                            </div>
+                                        </td>
                                         <td class="text-center"><strong>@item.Sıra</strong></td>
                                         <td><strong>@item.Adi</strong></td>
                                         <td>@(item.Aciklama ?? "-")</td>
                                         <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>@item.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
-                                        <td class="table-actions text-center">
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id, '@item.Adi', '@(item.Aciklama ?? "")', @item.Sıra)">
-                                                <i class="fas fa-edit"></i> 
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.Adi')">
-                                                <i class="fas fa-trash"></i> 
-                                            </button>
-                                        </td>
                                     </tr>
                                     counter++;
                                 }
@@ -134,7 +193,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="Sira" class="form-label">Sıra (opsiyonel)</label>
-                        <input type="number" class="form-control" id="Sira" name="Sıra" min="1" placeholder="Boş bırakılırsa en alta eklenir">
+                        <input  class="form-control" id="Sira" name="Sıra" min="1" placeholder="Boş bırakılırsa en alta eklenir">
                         <div class="form-text">Belirtilmezse otomatik olarak listenin en altına eklenir.</div>
                     </div>
                 </div>
@@ -151,7 +210,7 @@
 <div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Guncelle","AdminTeklifDurum")" method="post" id="duzenleForm">
+            <form action="@Url.Action("Guncelle", "AdminTeklifDurum")" method="post" id="duzenleForm">
                 @Html.AntiForgeryToken()
                 <input type="hidden" id="editId" name="Id">
                 <div class="modal-header">
@@ -171,7 +230,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="editSira" class="form-label">Sıra *</label>
-                        <input type="number" class="form-control" id="editSira" name="Sıra" required min="1">
+                        <input  class="form-control" id="editSira" name="Sıra" required min="1">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -187,7 +246,7 @@
 <div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Sil","AdminTeklifDurum")" method="post">
+            <form action="@Url.Action("Sil", "AdminTeklifDurum")" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" id="silId" name="Id">
                 <div class="modal-header">
@@ -210,70 +269,165 @@
 </div>
 
 @section Script {
+    <!-- Toastr için gerekli script ve CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
-        // Düzenle modalını doldur ve aç
-        function duzenleGetir(id, adi, aciklama, sira) {
-            $('#editId').val(id);
-            $('#editAdi').val(adi);
-            $('#editAciklama').val(aciklama);
-            $('#editSira').val(sira);
-            new bootstrap.Modal(document.getElementById('duzenleModal')).show();
-        }
+        $(document).ready(function() {
+            let suAnSeciliTeklifDurumId = null;
+            const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
+            const $seciliSilBtn = $('#seciliSilBtn');
+            const $seciliBilgiDiv = $('#seciliKayitBilgi');
 
-        // Silme onayı modalı
-        function silOnay(id, adi) {
-            $('#silId').val(id);
-            $('#silAdi').text(adi);
-            new bootstrap.Modal(document.getElementById('silModal')).show();
-        }
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
 
-        // Form validasyonları ve genel işlemler
-        document.addEventListener('DOMContentLoaded', function () {
-            // Adı alanı boş bırakılamasın
-            const forms = document.querySelectorAll('form');
-            forms.forEach(form => {
-                form.addEventListener('submit', function (e) {
-                    const adiInput = this.querySelector('input[name="Adi"]');
-                    if (adiInput && adiInput.value.trim().length === 0) {
-                        e.preventDefault();
-                        alert('Teklif durumu adı gereklidir.');
-                        adiInput.focus();
-                    }
-                });
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#teklifDurumTablosu tr[data-teklif-durum-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button')) {
+                    const $radio = $(this).find('.teklif-durum-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
+                }
             });
 
-            // Modal kapandığında formları sıfırla
-            ['ekleModal', 'duzenleModal'].forEach(modalId => {
-                const modalEl = document.getElementById(modalId);
-                if (modalEl) {
-                    modalEl.addEventListener('hidden.bs.modal', function () {
-                        const form = this.querySelector('form');
-                        if (form) form.reset();
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.teklif-durum-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliTeklifDurumId = $(this).val();
+                    const $seciliSatir = $(this).closest('tr');
+                    const teklifDurumAdi = $seciliSatir.data('teklif-durum-adi');
+
+                    // Tüm satırlardan active class'ı kaldır
+                    $('#teklifDurumTablosu tr').removeClass('table-active');
+                    // Seçili satıra active class ekle
+                    $seciliSatir.addClass('table-active');
+
+                    // Bilgiyi güncelle
+                    $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${teklifDurumAdi}`);
+
+                    // Butonları aktif et
+                    $seciliDuzenleBtn.prop('disabled', false);
+                    $seciliSilBtn.prop('disabled', false);
+                }
+            });
+
+            // Üstteki "Düzenle" butonu
+            $seciliDuzenleBtn.click(function() {
+                if (suAnSeciliTeklifDurumId) {
+                    const $seciliSatir = $(`tr[data-teklif-durum-id="${suAnSeciliTeklifDurumId}"]`);
+                    const adi = $seciliSatir.data('teklif-durum-adi');
+                    const aciklama = $seciliSatir.data('teklif-durum-aciklama') || '';
+                    const sira = $seciliSatir.data('teklif-durum-sira') || 1;
+
+                    duzenleGetir(suAnSeciliTeklifDurumId, adi, aciklama, sira);
+                } else {
+                    toastr.warning('Lütfen önce bir teklif durumu seçin.');
+                }
+            });
+
+            // Üstteki "Sil" butonu
+            $seciliSilBtn.click(function() {
+                if (suAnSeciliTeklifDurumId) {
+                    const $seciliSatir = $(`tr[data-teklif-durum-id="${suAnSeciliTeklifDurumId}"]`);
+                    const teklifDurumAdi = $seciliSatir.data('teklif-durum-adi');
+
+                    $('#silId').val(suAnSeciliTeklifDurumId);
+                    $('#silAdi').text(teklifDurumAdi);
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    toastr.warning('Lütfen önce bir teklif durumu seçin.');
+                }
+            });
+
+            // Silme modalı kapandıktan sonra seçimi temizleme
+            $('#silModal').on('hidden.bs.modal', function() {
+                if (suAnSeciliTeklifDurumId) {
+                    const $satir = $(`tr[data-teklif-durum-id="${suAnSeciliTeklifDurumId}"]`);
+                    if ($satir.length === 0) {
+                        // Satır silinmiş, seçimi temizle
+                        suAnSeciliTeklifDurumId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    } else {
+                        // İptal edildi, radio'yu temizle
+                        $(`.teklif-durum-sec-radio[value="${suAnSeciliTeklifDurumId}"]`).prop('checked', false);
+                        $('#teklifDurumTablosu tr').removeClass('table-active');
+                        suAnSeciliTeklifDurumId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    }
+                }
+            });
+
+            // ============= MEVCUT FONKSİYONLAR (AYNEN KORUNDU) =============
+
+            // Düzenle modalını doldur ve aç
+            window.duzenleGetir = function(id, adi, aciklama, sira) {
+                $('#editId').val(id);
+                $('#editAdi').val(adi);
+                $('#editAciklama').val(aciklama);
+                $('#editSira').val(sira);
+                new bootstrap.Modal(document.getElementById('duzenleModal')).show();
+            };
+
+            // Silme onayı modalı
+            window.silOnay = function(id, adi) {
+                $('#silId').val(id);
+                $('#silAdi').text(adi);
+                new bootstrap.Modal(document.getElementById('silModal')).show();
+            };
+
+            // Form validasyonları ve genel işlemler
+            document.addEventListener('DOMContentLoaded', function () {
+                // Adı alanı boş bırakılamasın
+                const forms = document.querySelectorAll('form');
+                forms.forEach(form => {
+                    form.addEventListener('submit', function (e) {
+                        const adiInput = this.querySelector('input[name="Adi"]');
+                        if (adiInput && adiInput.value.trim().length === 0) {
+                            e.preventDefault();
+                            toastr.error('Teklif durumu adı gereklidir.');
+                            adiInput.focus();
+                        }
                     });
-                }
+                });
+
+                // Modal kapandığında formları sıfırla
+                ['ekleModal', 'duzenleModal'].forEach(modalId => {
+                    const modalEl = document.getElementById(modalId);
+                    if (modalEl) {
+                        modalEl.addEventListener('hidden.bs.modal', function () {
+                            const form = this.querySelector('form');
+                            if (form) form.reset();
+                        });
+                    }
+                });
+
+                // Alert mesajlarını 5 saniye sonra kapat
+                setTimeout(() => {
+                    document.querySelectorAll('.alert').forEach(alert => {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    });
+                }, 5000);
             });
 
-            // Alert mesajlarını 5 saniye sonra kapat
-            setTimeout(() => {
-                document.querySelectorAll('.alert').forEach(alert => {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                });
-            }, 5000);
-        });
-
-        // Enter tuşu ile aktif modalın submit butonuna bas
-        document.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                const activeModal = document.querySelector('.modal.show');
-                if (activeModal) {
-                    const form = activeModal.querySelector('form');
-                    if (form) {
-                        const submitBtn = form.querySelector('button[type="submit"]');
-                        if (submitBtn) submitBtn.click();
+            // Enter tuşu ile aktif modalın submit butonuna bas
+            document.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    const activeModal = document.querySelector('.modal.show');
+                    if (activeModal) {
+                        const form = activeModal.querySelector('form');
+                        if (form) {
+                            const submitBtn = form.querySelector('button[type="submit"]');
+                            if (submitBtn) submitBtn.click();
+                        }
                     }
                 }
-            }
+            });
         });
     </script>
 }

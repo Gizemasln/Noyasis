@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "D:\\PROJELER\\Noyasis\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\views\\adminargehata\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\views\\adminargehata\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\views\\adminpaket\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\views\\adminpaket\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\controllers\\adminargehatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\controllers\\adminargehatacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\views\\adminteklif\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\views\\adminteklif\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\wwwroot\\webadmintheme\\assets\\css\\adminteklif.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\wwwroot\\webadmintheme\\assets\\css\\adminteklif.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     }
   ],
   "DocumentGroupContainers": [
@@ -24,26 +28,39 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Index.cshtml",
-              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminArgeHata\\Index.cshtml",
-              "RelativeDocumentMoniker": "WepApp\\Views\\AdminArgeHata\\Index.cshtml",
-              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminArgeHata\\Index.cshtml",
-              "RelativeToolTip": "WepApp\\Views\\AdminArgeHata\\Index.cshtml",
-              "ViewState": "AgIAABoHAAAAAAAAAADwvzQHAAAnAAAAAAAAAA==",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminPaket\\Index.cshtml",
+              "RelativeDocumentMoniker": "WepApp\\Views\\AdminPaket\\Index.cshtml",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminPaket\\Index.cshtml",
+              "RelativeToolTip": "WepApp\\Views\\AdminPaket\\Index.cshtml",
+              "ViewState": "AgIAAEsAAAAAAAAAAAAMwHAAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-03-04T14:07:28.312Z",
+              "WhenOpened": "2026-03-05T13:20:14.424Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "adminteklif.css",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\assets\\css\\adminteklif.css",
+              "RelativeDocumentMoniker": "WepApp\\wwwroot\\WebAdminTheme\\assets\\css\\adminteklif.css",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\assets\\css\\adminteklif.css",
+              "RelativeToolTip": "WepApp\\wwwroot\\WebAdminTheme\\assets\\css\\adminteklif.css",
+              "ViewState": "AgIAALUBAAAAAAAAAAAQwMABAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-03-05T12:15:36.36Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "AdminArgeHataController.cs",
-              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\AdminArgeHataController.cs",
-              "RelativeDocumentMoniker": "WepApp\\Controllers\\AdminArgeHataController.cs",
-              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\AdminArgeHataController.cs",
-              "RelativeToolTip": "WepApp\\Controllers\\AdminArgeHataController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-04T14:07:25.992Z",
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminTeklif\\Index.cshtml",
+              "RelativeDocumentMoniker": "WepApp\\Views\\AdminTeklif\\Index.cshtml",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminTeklif\\Index.cshtml",
+              "RelativeToolTip": "WepApp\\Views\\AdminTeklif\\Index.cshtml",
+              "ViewState": "AgIAAGQAAAAAAAAAAAAAAJcAAABsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-05T12:15:11.323Z",
               "EditorCaption": ""
             }
           ]

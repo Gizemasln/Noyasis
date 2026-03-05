@@ -19,6 +19,49 @@
         background-color: #f8f9fa;
         border-bottom: 2px solid #dee2e6;
     }
+
+    /* Seçim satırı için cursor pointer */
+    tr[data-lisans-id] {
+        cursor: pointer;
+    }
+
+    /* Seçili satır efekti */
+    tr.table-active {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+
+    /* İşlem butonları alanı */
+    .islem-butonlari-alani {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .secili-bilgi {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+
+        .secili-bilgi i {
+            font-size: 1rem;
+        }
+
+    /* Buton stilleri */
+    .aksiyon-btn {
+        transition: all 0.2s;
+    }
+
+        .aksiyon-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .aksiyon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 </style>
 
 <div class="row">
@@ -40,11 +83,29 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="card-title d-flex justify-content-between align-items-center">
-                    <span>Lisans Tipleri</span>
-                    <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                        <i class="fas fa-plus"></i> Yeni Lisans Tipi Ekle
-                    </button>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Lisans Tipleri</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Seçili Kayıt Bilgisi ve İşlem Butonları -->
+                        <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                            <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                                <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                            </div>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-warning aksiyon-btn" id="seciliDuzenleBtn" data-button-permission="duzenle" title="Seçili Lisans Tipini Düzenle" disabled>
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger aksiyon-btn" data-button-permission="sil" id="seciliSilBtn" title="Seçili Lisans Tipini Sil" disabled>
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Yeni Ekle Butonu -->
+                        <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                            <i class="fas fa-plus"></i> Yeni Lisans Tipi Ekle
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -52,34 +113,32 @@
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
+                                <th width="40">Seç</th>
                                 <th width="50">#</th>
                                 <th>Lisans Tipi Adı</th>
                                 <th>Sayı</th>
                                 <th>Eklenme Tarihi</th>
                                 <th>Son Güncelleme</th>
-                                <th width="120" class="text-center">İşlemler</th>
+                                <!-- İşlemler sütunu kaldırıldı -->
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="lisansTablosu">
                             @if (ViewBag.LisansTipleri != null && ((List<LisansTip>)ViewBag.LisansTipleri).Count > 0)
                             {
                                 var counter = 1;
                                 foreach (var item in (List<LisansTip>)ViewBag.LisansTipleri)
                                 {
-                                    <tr>
+                                    <tr data-lisans-id="@item.Id" data-lisans-adi="@item.Adi" class="lisans-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input lisans-sec-radio" type="radio" name="seciliLisansRadio" value="@item.Id" id="secim_@item.Id">
+                                            </div>
+                                        </td>
                                         <td>@counter</td>
                                         <td><strong>@item.Adi</strong></td>
                                         <td>@(item.Sayi?.ToString() ?? "-")</td>
                                         <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>@item.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
-                                        <td class="table-actions text-center">
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.Adi.Replace("'", "\\'")')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
                                     </tr>
                                     counter++;
                                 }
@@ -87,7 +146,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="6" class="text-center">
+                                    <td colspan="7" class="text-center">
                                         <div class="py-4">
                                             <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                             <p class="text-muted">Henüz lisans tipi eklenmemiş.</p>
@@ -142,7 +201,7 @@
 <div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Guncelle","AdminLisansTip")" method="post" id="duzenleForm">
+            <form action="@Url.Action("Guncelle", "AdminLisansTip")" method="post" id="duzenleForm">
                 @Html.AntiForgeryToken()
                 <input type="hidden" id="editId" name="Id">
                 <div class="modal-header">
@@ -173,7 +232,7 @@
 <div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Sil","AdminLisansTip")" method="post">
+            <form action="@Url.Action("Sil", "AdminLisansTip")" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" id="silId" name="Id">
                 <div class="modal-header">
@@ -195,57 +254,139 @@
 
 @section Script {
     <script>
-        // Silme onay fonksiyonu
-        function silOnay(id, adi) {
-            console.log('Sil butonu tıklandı:', id, adi); // Debug için
-            $('#silId').val(id);
-            $('#silAdi').text(adi);
-            new bootstrap.Modal(document.getElementById('silModal')).show();
-        }
+        $(document).ready(function() {
+            let suAnSeciliLisansId = null;
+            const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
+            const $seciliSilBtn = $('#seciliSilBtn');
+            const $seciliBilgiDiv = $('#seciliKayitBilgi');
 
-        // Düzenleme fonksiyonu (API'den veri çeken)
-        async function duzenleGetir(id) {
-            try {
-                const btn = event.target;
-                const originalHtml = btn.innerHTML;
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
 
-                // Loading state
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Yükleniyor...';
-                btn.disabled = true;
-
-                const response = await fetch('@Url.Action("Getir", "AdminLisansTip")?id=' + id);
-
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => null);
-                    throw new Error(errorData?.error || `HTTP error! status: ${response.status}`);
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#lisansTablosu tr[data-lisans-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button')) {
+                    const $radio = $(this).find('.lisans-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
                 }
+            });
 
-                const data = await response.json();
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.lisans-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliLisansId = $(this).val();
+                    const $seciliSatir = $(this).closest('tr');
+                    const lisansAdi = $seciliSatir.data('lisans-adi');
 
-                if (data.error) {
-                    throw new Error(data.error);
+                    // Tüm satırlardan active class'ı kaldır
+                    $('#lisansTablosu tr').removeClass('table-active');
+                    // Seçili satıra active class ekle
+                    $seciliSatir.addClass('table-active');
+
+                    // Bilgiyi güncelle
+                    $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${lisansAdi}`);
+
+                    // Butonları aktif et
+                    $seciliDuzenleBtn.prop('disabled', false);
+                    $seciliSilBtn.prop('disabled', false);
                 }
+            });
 
-                // Modalı doldur
-                document.getElementById('editId').value = data.id;
-                document.getElementById('editAdi').value = data.adi;
-                document.getElementById('editSayi').value = data.sayi === 0 ? '' : data.sayi;
+            // Üstteki "Düzenle" butonu
+            $seciliDuzenleBtn.click(function() {
+                if (suAnSeciliLisansId) {
+                    duzenleGetir(suAnSeciliLisansId);
+                } else {
+                    toastr.warning('Lütfen önce bir lisans tipi seçin.');
+                }
+            });
 
-                // Modalı göster
-                new bootstrap.Modal(document.getElementById('duzenleModal')).show();
+            // Üstteki "Sil" butonu
+            $seciliSilBtn.click(function() {
+                if (suAnSeciliLisansId) {
+                    const $seciliSatir = $(`tr[data-lisans-id="${suAnSeciliLisansId}"]`);
+                    const lisansAdi = $seciliSatir.data('lisans-adi');
 
-            } catch (error) {
-                console.error('Hata:', error);
-                alert('Lisans tipi bilgileri yüklenirken hata oluştu: ' + error.message);
-            } finally {
-                // Butonu eski haline getir
-                btn.innerHTML = originalHtml;
-                btn.disabled = false;
-            }
-        }
+                    $('#silId').val(suAnSeciliLisansId);
+                    $('#silAdi').text(lisansAdi);
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    toastr.warning('Lütfen önce bir lisans tipi seçin.');
+                }
+            });
 
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('DOM yüklendi'); // Debug için
+            // Silme modalı kapandıktan sonra seçimi temizleme (silme başarılı olursa)
+            $('#silModal').on('hidden.bs.modal', function() {
+                // Silme başarılı olduysa satır DOM'dan kalkmış olacak, kontrol et
+                if (suAnSeciliLisansId) {
+                    const $satir = $(`tr[data-lisans-id="${suAnSeciliLisansId}"]`);
+                    if ($satir.length === 0) {
+                        // Satır silinmiş, seçimi temizle
+                        suAnSeciliLisansId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    } else {
+                        // İptal edildi, radio'yu temizle
+                        $(`.lisans-sec-radio[value="${suAnSeciliLisansId}"]`).prop('checked', false);
+                        $('#lisansTablosu tr').removeClass('table-active');
+                        suAnSeciliLisansId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    }
+                }
+            });
+
+            // ============= MEVCUT FONKSİYONLAR (AYNEN KORUNDU) =============
+
+            // Silme onay fonksiyonu
+            window.silOnay = function(id, adi) {
+                $('#silId').val(id);
+                $('#silAdi').text(adi);
+                new bootstrap.Modal(document.getElementById('silModal')).show();
+            };
+
+            // Düzenleme fonksiyonu (API'den veri çeken)
+            window.duzenleGetir = async function(id) {
+                try {
+                    const btn = event.target;
+                    const originalHtml = btn.innerHTML;
+
+                    // Loading state
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    btn.disabled = true;
+
+                    const response = await fetch('@Url.Action("Getir", "AdminLisansTip")?id=' + id);
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => null);
+                        throw new Error(errorData?.error || `HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+
+                    // Modalı doldur
+                    document.getElementById('editId').value = data.id;
+                    document.getElementById('editAdi').value = data.adi;
+                    document.getElementById('editSayi').value = data.sayi === 0 ? '' : data.sayi;
+
+                    // Modalı göster
+                    new bootstrap.Modal(document.getElementById('duzenleModal')).show();
+
+                } catch (error) {
+                    console.error('Hata:', error);
+                    toastr.error('Lisans tipi bilgileri yüklenirken hata oluştu: ' + error.message);
+                } finally {
+                    // Butonu eski haline getir
+                    btn.innerHTML = originalHtml;
+                    btn.disabled = false;
+                }
+            };
 
             // Form validasyonları
             const forms = document.querySelectorAll('#ekleForm, #duzenleForm');
@@ -254,7 +395,7 @@
                     const adiInput = this.querySelector('input[name="Adi"]');
                     if (!adiInput.value.trim()) {
                         e.preventDefault();
-                        alert('Lisans tipi adı gereklidir.');
+                        toastr.error('Lisans tipi adı gereklidir.');
                         adiInput.focus();
                     }
                 });
@@ -276,4 +417,8 @@
             }, 5000);
         });
     </script>
+
+    <!-- Toastr için gerekli script ve CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 }

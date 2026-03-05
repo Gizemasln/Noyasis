@@ -36,6 +36,49 @@
         text-overflow: ellipsis;
         white-space: nowrap;
     }
+
+    /* Seçim satırı için cursor pointer */
+    tr[data-entegrator-id] {
+        cursor: pointer;
+    }
+
+    /* Seçili satır efekti */
+    tr.table-active {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+
+    /* İşlem butonları alanı */
+    .islem-butonlari-alani {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .secili-bilgi {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+
+        .secili-bilgi i {
+            font-size: 1rem;
+        }
+
+    /* Buton stilleri */
+    .aksiyon-btn {
+        transition: all 0.2s;
+    }
+
+        .aksiyon-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .aksiyon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 </style>
 
 <div class="row">
@@ -57,11 +100,29 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="card-title d-flex justify-content-between align-items-center">
-                    <span>Entegratör Yönetimi</span>
-                    <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                        <i class="fas fa-plus"></i> Yeni Entegratör Ekle
-                    </button>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Entegratör Yönetimi</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Seçili Kayıt Bilgisi ve İşlem Butonları -->
+                        <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                            <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                                <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                            </div>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-warning aksiyon-btn" id="seciliDuzenleBtn" data-button-permission="duzenle" title="Seçili Entegratörü Düzenle" disabled>
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger aksiyon-btn" id="seciliSilBtn" data-button-permission="sil" title="Seçili Entegratörü Sil" disabled>
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Yeni Ekle Butonu -->
+                        <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                            <i class="fas fa-plus"></i> Yeni Entegratör Ekle
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -69,29 +130,35 @@
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
+                                <th width="40">Seç</th>
                                 <th width="50">#</th>
                                 <th>Entegratör Adı</th>
                                 <th>Kodu</th>
                                 <th>Açıklama</th>
                                 <th>Eklenme Tarihi</th>
                                 <th>Son Güncelleme</th>
-                                <th width="150" class="text-center">İşlemler</th>
+                                <!-- İşlemler sütunu kaldırıldı -->
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="entegratorTablosu">
                             @if (ViewBag.Entegratorler != null && ((List<Entegrator>)ViewBag.Entegratorler).Count > 0)
                             {
                                 var counter = 1;
                                 foreach (var item in (List<Entegrator>)ViewBag.Entegratorler)
                                 {
-                                    <tr>
+                                    <tr data-entegrator-id="@item.Id"
+                                        data-entegrator-adi="@item.Adi"
+                                        data-entegrator-kodu="@item.Kodu"
+                                        data-entegrator-aciklama="@(item.Aciklama ?? "")"
+                                        class="entegrator-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input entegrator-sec-radio" type="radio" name="seciliEntegratorRadio" value="@item.Id" id="secim_@item.Id">
+                                            </div>
+                                        </td>
                                         <td>@counter</td>
-                                        <td>
-                                            <strong>@item.Adi</strong>
-                                        </td>
-                                        <td>
-                                            <span class="badge-entegrator">@item.Kodu</span>
-                                        </td>
+                                        <td><strong>@item.Adi</strong></td>
+                                        <td><span class="badge-entegrator">@item.Kodu</span></td>
                                         <td class="description-cell" title="@item.Aciklama">
                                             @if (!string.IsNullOrEmpty(item.Aciklama))
                                             {
@@ -104,14 +171,6 @@
                                         </td>
                                         <td>@item.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>@item.GuncellenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</td>
-                                        <td class="table-actions text-center">
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id, '@item.Adi', '@item.Kodu', '@item.Aciklama')">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.Adi')">
-                                                <i class="fas fa-trash"></i> 
-                                            </button>
-                                        </td>
                                     </tr>
                                     counter++;
                                 }
@@ -119,7 +178,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="7" class="text-center">
+                                    <td colspan="8" class="text-center">
                                         <div class="py-4">
                                             <i class="fas fa-plug fa-3x text-muted mb-3"></i>
                                             <p class="text-muted">Henüz entegratör eklenmemiş.</p>
@@ -165,8 +224,8 @@
                     <div class="mb-3">
                         <label for="Aciklama" class="form-label">Açıklama</label>
                         <textarea class="form-control" id="Aciklama" name="Aciklama"
-                                  rows="3" placeholder="Entegratör açıklamasını giriniz"
-                                  maxlength="500"></textarea>
+                              rows="3" placeholder="Entegratör açıklamasını giriniz"
+                              maxlength="500"></textarea>
                         <div class="form-text">Opsiyonel açıklama alanı.</div>
                     </div>
                 </div>
@@ -183,7 +242,7 @@
 <div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Guncelle","AdminEntegrator")" method="post" id="duzenleForm">
+            <form action="@Url.Action("Guncelle", "AdminEntegrator")" method="post" id="duzenleForm">
                 @Html.AntiForgeryToken()
                 <input type="hidden" id="editId" name="Id">
                 <div class="modal-header">
@@ -224,7 +283,7 @@
 <div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Sil","AdminEntegrator")" method="post">
+            <form action="@Url.Action("Sil", "AdminEntegrator")" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" id="silId" name="Id">
                 <div class="modal-header">
@@ -249,88 +308,183 @@
 </div>
 
 @section Script {
+    <!-- Toastr için gerekli script ve CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
-        // Düzenle modalını aç
-        function duzenleGetir(id, adi, kodu, aciklama) {
-            $('#editId').val(id);
-            $('#editAdi').val(adi);
-            $('#editKodu').val(kodu);
-            $('#editAciklama').val(aciklama);
-            new bootstrap.Modal('#duzenleModal').show();
-        }
+        $(document).ready(function() {
+            let suAnSeciliEntegratorId = null;
+            const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
+            const $seciliSilBtn = $('#seciliSilBtn');
+            const $seciliBilgiDiv = $('#seciliKayitBilgi');
 
-        // Silme onayı modalı
-        function silOnay(id, adi) {
-            $('#silId').val(id);
-            $('#silAdi').text(adi);
-            new bootstrap.Modal('#silModal').show();
-        }
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
 
-        // Form validasyonları
-        document.addEventListener('DOMContentLoaded', function() {
-            // Form submit kontrolleri
-            const forms = document.querySelectorAll('form');
-            forms.forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    const adiInput = this.querySelector('input[name="Adi"]');
-                    const koduInput = this.querySelector('input[name="Kodu"]');
-
-                    let isValid = true;
-
-                    if (adiInput && adiInput.value.trim().length === 0) {
-                        alert('Entegratör adı gereklidir.');
-                        adiInput.focus();
-                        isValid = false;
-                    }
-
-                    if (koduInput && koduInput.value.trim().length === 0) {
-                        alert('Entegratör kodu gereklidir.');
-                        koduInput.focus();
-                        isValid = false;
-                    }
-
-                    if (!isValid) {
-                        e.preventDefault();
-                    }
-                });
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#entegratorTablosu tr[data-entegrator-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button')) {
+                    const $radio = $(this).find('.entegrator-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
+                }
             });
 
-            // Modal kapandığında formları sıfırla
-            ['ekleModal', 'duzenleModal'].forEach(modalId => {
-                const modal = document.getElementById(modalId);
-                if (modal) {
-                    modal.addEventListener('hidden.bs.modal', function() {
-                        const form = this.querySelector('form');
-                        if (form) {
-                            form.reset();
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.entegrator-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliEntegratorId = $(this).val();
+                    const $seciliSatir = $(this).closest('tr');
+                    const entegratorAdi = $seciliSatir.data('entegrator-adi');
+
+                    // Tüm satırlardan active class'ı kaldır
+                    $('#entegratorTablosu tr').removeClass('table-active');
+                    // Seçili satıra active class ekle
+                    $seciliSatir.addClass('table-active');
+
+                    // Bilgiyi güncelle
+                    $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${entegratorAdi}`);
+
+                    // Butonları aktif et
+                    $seciliDuzenleBtn.prop('disabled', false);
+                    $seciliSilBtn.prop('disabled', false);
+                }
+            });
+
+            // Üstteki "Düzenle" butonu
+            $seciliDuzenleBtn.click(function() {
+                if (suAnSeciliEntegratorId) {
+                    const $seciliSatir = $(`tr[data-entegrator-id="${suAnSeciliEntegratorId}"]`);
+                    const adi = $seciliSatir.data('entegrator-adi');
+                    const kodu = $seciliSatir.data('entegrator-kodu');
+                    const aciklama = $seciliSatir.data('entegrator-aciklama') || '';
+
+                    duzenleGetir(suAnSeciliEntegratorId, adi, kodu, aciklama);
+                } else {
+                    toastr.warning('Lütfen önce bir entegratör seçin.');
+                }
+            });
+
+            // Üstteki "Sil" butonu
+            $seciliSilBtn.click(function() {
+                if (suAnSeciliEntegratorId) {
+                    const $seciliSatir = $(`tr[data-entegrator-id="${suAnSeciliEntegratorId}"]`);
+                    const entegratorAdi = $seciliSatir.data('entegrator-adi');
+
+                    $('#silId').val(suAnSeciliEntegratorId);
+                    $('#silAdi').text(entegratorAdi);
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    toastr.warning('Lütfen önce bir entegratör seçin.');
+                }
+            });
+
+            // Silme modalı kapandıktan sonra seçimi temizleme
+            $('#silModal').on('hidden.bs.modal', function() {
+                if (suAnSeciliEntegratorId) {
+                    const $satir = $(`tr[data-entegrator-id="${suAnSeciliEntegratorId}"]`);
+                    if ($satir.length === 0) {
+                        // Satır silinmiş, seçimi temizle
+                        suAnSeciliEntegratorId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    } else {
+                        // İptal edildi, radio'yu temizle
+                        $(`.entegrator-sec-radio[value="${suAnSeciliEntegratorId}"]`).prop('checked', false);
+                        $('#entegratorTablosu tr').removeClass('table-active');
+                        suAnSeciliEntegratorId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    }
+                }
+            });
+
+            // ============= MEVCUT FONKSİYONLAR (AYNEN KORUNDU) =============
+
+            // Düzenle modalını aç
+            window.duzenleGetir = function(id, adi, kodu, aciklama) {
+                $('#editId').val(id);
+                $('#editAdi').val(adi);
+                $('#editKodu').val(kodu);
+                $('#editAciklama').val(aciklama);
+                new bootstrap.Modal(document.getElementById('duzenleModal')).show();
+            };
+
+            // Silme onayı modalı
+            window.silOnay = function(id, adi) {
+                $('#silId').val(id);
+                $('#silAdi').text(adi);
+                new bootstrap.Modal(document.getElementById('silModal')).show();
+            };
+
+            // Form validasyonları
+            document.addEventListener('DOMContentLoaded', function() {
+                // Form submit kontrolleri
+                const forms = document.querySelectorAll('form');
+                forms.forEach(form => {
+                    form.addEventListener('submit', function(e) {
+                        const adiInput = this.querySelector('input[name="Adi"]');
+                        const koduInput = this.querySelector('input[name="Kodu"]');
+
+                        let isValid = true;
+
+                        if (adiInput && adiInput.value.trim().length === 0) {
+                            toastr.error('Entegratör adı gereklidir.');
+                            adiInput.focus();
+                            isValid = false;
+                        }
+
+                        if (koduInput && koduInput.value.trim().length === 0) {
+                            toastr.error('Entegratör kodu gereklidir.');
+                            koduInput.focus();
+                            isValid = false;
+                        }
+
+                        if (!isValid) {
+                            e.preventDefault();
                         }
                     });
-                }
+                });
+
+                // Modal kapandığında formları sıfırla
+                ['ekleModal', 'duzenleModal'].forEach(modalId => {
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.addEventListener('hidden.bs.modal', function() {
+                            const form = this.querySelector('form');
+                            if (form) {
+                                form.reset();
+                            }
+                        });
+                    }
+                });
+
+                // Alert mesajlarını 5 saniye sonra otomatik kapat
+                setTimeout(() => {
+                    document.querySelectorAll('.alert').forEach(alert => {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    });
+                }, 5000);
             });
 
-            // Alert mesajlarını 5 saniye sonra otomatik kapat
-            setTimeout(() => {
-                document.querySelectorAll('.alert').forEach(alert => {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                });
-            }, 5000);
-        });
-
-        // Enter tuşu ile form submit
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const activeModal = document.querySelector('.modal.show');
-                if (activeModal) {
-                    const form = activeModal.querySelector('form');
-                    if (form) {
-                        const submitButton = form.querySelector('button[type="submit"]');
-                        if (submitButton) {
-                            submitButton.click();
+            // Enter tuşu ile form submit
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const activeModal = document.querySelector('.modal.show');
+                    if (activeModal) {
+                        const form = activeModal.querySelector('form');
+                        if (form) {
+                            const submitButton = form.querySelector('button[type="submit"]');
+                            if (submitButton) {
+                                submitButton.click();
+                            }
                         }
                     }
                 }
-            }
+            });
         });
     </script>
 }

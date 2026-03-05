@@ -7,506 +7,9 @@
     var sozlesmeler = ViewBag.Sozlesmeler as List<MusteriSozlesme>;
 }
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+<link href="/WebAdminTheme/assets/css/adminmusterisozlesme.css" rel="stylesheet" />
 
-<style>
-    /* Belgeler eksik uyarı stili - Kıpırdama YOK */
-    .belgeler-eksik-row {
-        background-color: #fff3cd !important;
-        border-left: 4px solid #ffc107 !important;
-        /* animation: pulse 2s infinite; KALDIRILDI */
-    }
 
-    .belgeler-eksik-badge {
-        background-color: #ffc107 !important;
-        color: #856404 !important;
-        font-size: 0.7rem;
-        padding: 3px 8px;
-        border-radius: 12px;
-        margin-left: 5px;
-    }
-
-    /* Toastr özel stili */
-    .toast-bg-warning {
-        background-color: #ffc107 !important;
-        color: #856404 !important;
-    }
-    .satir-onaylandi {
-        background-color: #d4edda !important;
-        border-left: 4px solid #28a745;
-    }
-
-    .durum-onaylandi {
-        background-color: #d4edda !important;
-        color: #155724 !important;
-        border-color: #c3e6cb !important;
-    }
-    .lisans-iptal-btn {
-        background-color: #dc3545;
-        border-color: #dc3545;
-        color: white;
-        font-size: 0.7rem;
-        padding: 3px 6px;
-        margin-top: 3px;
-        width: 100%;
-    }
-
-        .lisans-iptal-btn:hover {
-            background-color: #c82333;
-            border-color: #bd2130;
-        }
-
-    /* Lisanslandı durumundaki butonlar için düzenleme */
-    .satir-lisanslandi .durum-hucresi .btn {
-        margin-top: 2px;
-    }
-    .dokuman-yukleme-alani {
-        padding: 15px;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        margin-bottom: 15px;
-        border: 1px solid #dee2e6;
-    }
-
-    .dokuman-check-group {
-        margin-bottom: 15px;
-        padding: 10px;
-        background-color: white;
-        border-radius: 6px;
-        border: 1px solid #dee2e6;
-    }
-
-    .dokuman-check-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
-
-    .dokuman-check-label {
-        font-weight: 500;
-        color: #2e2e5d;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .dokuman-durum {
-        font-size: 0.75rem;
-        padding: 2px 8px;
-        border-radius: 12px;
-    }
-
-    .dokuman-yuklu {
-        background-color: #d4edda;
-        color: #155724;
-    }
-
-    .dokuman-yuksuz {
-        background-color: #f8d7da;
-        color: #721c24;
-    }
-
-    .dokuman-dosya-info {
-        background-color: #e9ecef;
-        padding: 8px 12px;
-        border-radius: 4px;
-        margin-top: 8px;
-        font-size: 0.85rem;
-    }
-
-    .dokuman-aksiyonlar {
-        display: flex;
-        gap: 5px;
-        margin-top: 10px;
-    }
-
-    .dokuman-aksiyon-btn {
-        font-size: 0.7rem;
-        padding: 4px 8px;
-    }
-
-    .file-input-preview {
-        border: 2px dashed #dee2e6;
-        border-radius: 6px;
-        padding: 15px;
-        text-align: center;
-        background-color: #f8f9fa;
-        transition: all 0.3s;
-        margin-top: 10px;
-    }
-
-        .file-input-preview:hover {
-            border-color: #86b7fe;
-            background-color: #e7f3ff;
-        }
-
-    .file-preview {
-        max-width: 200px;
-        max-height: 150px;
-        margin-top: 10px;
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        display: none;
-    }
-
-        .file-preview.active {
-            display: inline-block;
-        }
-
-    .zorunlu-dokuman-section {
-        background-color: #fff3cd;
-        border-radius: 8px;
-        padding: 15px;
-        margin-bottom: 20px;
-        border-left: 4px solid #ffc107;
-    }
-
-    .zorunlu-dokuman-title {
-        font-weight: 600;
-        color: #856404;
-        margin-bottom: 15px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .dokuman-var-icon {
-        color: #28a745;
-    }
-
-    .dokuman-yok-icon {
-        color: #dc3545;
-    }
-
-    .dokuman-badge {
-        font-size: 0.7rem;
-        padding: 2px 6px;
-        margin-left: 5px;
-    }
-
-    /* Diğer stiller mevcut halinde kalacak */
-    .sozlesme-container {
-        font-family: 'Segoe UI', Arial, sans-serif;
-        background: #f8f9fa;
-        min-height: calc(100vh - 80px);
-        padding: 20px;
-    }
-
-    .card {
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
-        overflow: hidden;
-    }
-
-    .card-header {
-        background: linear-gradient(135deg, #2e2e5d, #4a4a8a);
-        color: white;
-        padding: 15px 20px;
-    }
-
-    .table th {
-        background: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: 600;
-        color: #2e2e5d;
-        padding: 12px 8px;
-        font-size: 0.85rem;
-    }
-
-    .table td {
-        padding: 10px 8px;
-        vertical-align: middle;
-        font-size: 0.8rem;
-        transition: all 0.3s ease;
-    }
-
-    .dokuman-no {
-        font-weight: 600;
-        color: #2e2e5d;
-    }
-
-    .musteri-adi {
-        font-weight: 500;
-        color: #495057;
-    }
-
-    .yillik-bakim {
-        font-weight: 600;
-        color: #28a745;
-    }
-
-    .durum-select {
-        font-size: 0.75rem;
-        padding: 5px 8px;
-        border-radius: 6px;
-        min-width: 130px;
-        cursor: pointer;
-        border: 1px solid #ced4da;
-        transition: all 0.2s;
-        font-weight: 500;
-    }
-
-        .durum-select:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        .durum-select:focus {
-            border-color: #86b7fe;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-            outline: none;
-        }
-
-    /* Durum stilleri */
-    .satir-sms-onay {
-        background-color: #e7f3fe !important;
-        border-left: 4px solid #0dcaf0;
-    }
-
-    .satir-bayi-onay {
-        background-color: #fff3cd !important;
-        border-left: 4px solid #ffc107;
-    }
-
-    .satir-distributor-onay {
-        background-color: #d1ecf1 !important;
-        border-left: 4px solid #17a2b8;
-    }
-
-    .satir-lisanslandi {
-        background-color: #d4edda !important;
-        border-left: 4px solid #28a745;
-    }
-
-    .satir-muhasebelendi {
-        background-color: #e2e3e5 !important;
-        border-left: 4px solid #6c757d;
-    }
-
-    .satir-iptal {
-        background-color: #f8d7da !important;
-        border-left: 4px solid #dc3545;
-    }
-
-    .durum-sms-onay {
-        background-color: #e7f3fe !important;
-        color: #0c5460 !important;
-        border-color: #bee5eb !important;
-    }
-
-    .durum-bayi-onay {
-        background-color: #fff3cd !important;
-        color: #856404 !important;
-        border-color: #ffeaa7 !important;
-    }
-
-    .durum-distributor-onay {
-        background-color: #d1ecf1 !important;
-        color: #0c5460 !important;
-        border-color: #bee5eb !important;
-    }
-
-    .durum-lisanslandi {
-        background-color: #d4edda !important;
-        color: #155724 !important;
-        border-color: #c3e6cb !important;
-    }
-
-    .durum-muhasebelendi {
-        background-color: #e2e3e5 !important;
-        color: #383d41 !important;
-        border-color: #d6d8db !important;
-    }
-
-    .durum-iptal {
-        background-color: #f8d7da !important;
-        color: #721c24 !important;
-        border-color: #f5c6cb !important;
-    }
-
-    .durum-belirtilmemis {
-        background-color: #f8f7da !important;
-        color: #856404 !important;
-        border-color: #f5f3c1 !important;
-    }
-
-    .aksiyon-btn {
-        padding: 4px 8px;
-        margin: 0 2px;
-        font-size: 0.75rem;
-        border-radius: 4px;
-        transition: all 0.2s;
-    }
-
-        .aksiyon-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-    .search-box {
-        max-width: 300px;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 40px;
-        color: #6c757d;
-    }
-
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            color: #dee2e6;
-        }
-
-    /* Loading spinner */
-    .durum-loading {
-        position: relative;
-        opacity: 0.7;
-    }
-
-        .durum-loading::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 16px;
-            height: 16px;
-            margin: -8px 0 0 -8px;
-            border: 2px solid #007bff;
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-    @@keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
-    }
-
-    .durum-hucresi {
-        min-width: 150px;
-        max-width: 180px;
-    }
-
-    .lisans-btn, .muhasebe-btn, .geri-al-btn {
-        font-size: 0.7rem;
-        padding: 3px 6px;
-        margin-top: 3px;
-        width: 100%;
-    }
-
-    .lisans-btn {
-        background-color: #28a745;
-        border-color: #28a745;
-    }
-
-    .muhasebe-btn {
-        background-color: #17a2b8;
-        border-color: #17a2b8;
-    }
-
-    .geri-al-btn {
-        background-color: #ffc107;
-        border-color: #ffc107;
-        color: #212529;
-    }
-
-    /* Arama inputu için özel stiller */
-    .search-box {
-        max-width: 300px;
-    }
-
-        .search-box .input-group {
-            border-radius: 6px;
-            border: 1px solid #dee2e6;
-            transition: all 0.3s ease;
-        }
-
-            .search-box .input-group:focus-within {
-                border-color: #86b7fe;
-                box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-            }
-
-        .search-box .input-group-text {
-            background-color: #f8f9fa;
-            border: none;
-            color: #6c757d;
-        }
-
-        .search-box .form-control {
-            border: none;
-            box-shadow: none;
-            font-size: 0.85rem;
-        }
-
-            .search-box .form-control:focus {
-                box-shadow: none;
-            }
-
-    /* Responsive */
-    @@media (max-width: 768px) {
-        .aksiyon-btn {
-            display: block;
-            margin: 3px 0;
-            width: 100%;
-        }
-
-        .table td, .table th {
-            padding: 8px 5px;
-            font-size: 0.75rem;
-        }
-
-        .durum-select {
-            min-width: 110px;
-            font-size: 0.7rem;
-        }
-
-        .card-header {
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .search-box {
-            max-width: 100%;
-        }
-
-        .dokuman-aksiyonlar {
-            flex-wrap: wrap;
-        }
-    }
-
-    .badge-sm {
-        font-size: 0.7rem;
-        padding: 3px 6px;
-    }
-
-    .option-disabled {
-        color: #adb5bd;
-        background-color: #f8f9fa;
-        font-style: italic;
-    }
-
-    .btn-icon {
-        width: 30px;
-        height: 30px;
-        padding: 0;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.8rem;
-    }
-
-    .islem-btns {
-        display: flex;
-        gap: 3px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-</style>
 
 <div class="sozlesme-container">
     <div class="container-fluid">
@@ -557,7 +60,7 @@
                                 </div>
 
                                 <!-- Tarih Filtreleri -->
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <label class="form-label fw-bold small">Tarih Aralığı</label>
                                     <div class="btn-group w-100" role="group">
                                         <button type="button" class="btn btn-outline-primary btn-sm tarih-hizli" data-periyot="bugun">Bugün</button>
@@ -566,19 +69,19 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <label class="form-label fw-bold small">Baş. T.</label>
                                     <input type="date" class="form-control form-control-sm" id="baslangicTarih">
                                 </div>
 
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <label class="form-label fw-bold small">Bit. T.</label>
                                     <input type="date" class="form-control form-control-sm" id="bitisTarih">
                                 </div>
 
                                 <!-- Durum Filtresi -->
                                 <div class="col-md-2">
-                                    <label class="form-label fw-bold small">Sözleşme Durumu</label>
+                                    <label class="form-label fw-bold small">Sözleşme D.</label>
                                     <select class="form-select form-select-sm" id="durumFiltre">
                                         <option value="0">Tüm Durumlar</option>
                                         @foreach (var durum in durumlar)
@@ -599,7 +102,22 @@
                                         <option value="durum">Duruma Göre</option>
                                     </select>
                                 </div>
-
+                                <div class="col-md-3">
+                                    <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                                        <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                                    </div>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button" class="btn btn-info aksiyon-btn btn-icon" id="seciliDetayGoster" data-button-permission="detay" title="Seçili Sözleşmenin Detaylarını Gör" disabled>
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-secondary aksiyon-btn btn-icon" id="seciliPdfGoster" data-button-permission="pdfgor" title="Seçili Sözleşmenin PDF'ini Gör" disabled>
+                                            <i class="fas fa-file-pdf"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger aksiyon-btn btn-icon"  data-button-permission="sil" id="seciliSil" title="Seçili Sözleşmeyi Sil" disabled>
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
                                 <!-- Aktif Filtreler -->
                                 <div class="col-12 mt-3" id="aktifFiltreler" style="display: none;">
                                     <div class="d-flex align-items-center">
@@ -615,6 +133,8 @@
                             <table class="table table-hover mb-0" id="sozlesmeTablosu">
                                 <thead>
                                     <tr>
+                                        <th width="40">Seç</th> <!-- YENİ SÜTUN -->
+
                                         <th width="120">Doküman No</th>
                                         <th width="180">Müşteri</th>
                                         <th width="150">Lisans No</th>
@@ -626,7 +146,6 @@
                                         <th width="110">Yayın Tarihi</th>
                                         <th width="110">Revizyon</th>
                                         <th width="160" class="durum-hucresi">Durum</th>
-                                        <th width="220" class="text-center">İşlemler</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -671,6 +190,11 @@
                                                     break;
                                             }
                                             <tr data-sozlesme-id="@sozlesme.Id" class="@satirCss" data-durum-id="@durumId">
+                                                <td class="text-center">
+                                                    <div class="form-check" onclick="event.stopPropagation();">
+                                                        <input class="form-check-input sozlesme-sec-radio" type="radio" name="seciliSozlesmeRadio" value="@sozlesme.Id" id="secim_@sozlesme.Id">
+                                                    </div>
+                                                </td>
                                                 <td><span class="dokuman-no">@sozlesme.DokumanNo</span></td>
                                                 <td>
                                                     <div class="musteri-adi">@(sozlesme.Musteri?.Ad + " " + (sozlesme.Musteri?.Soyad ?? ""))</div>
@@ -758,27 +282,7 @@
                                                         </button>
                                                     }
                                                 </td>
-                                                <td>
-                                                    <div class="islem-btns">
-                                                        <button class="btn btn-info btn-sm aksiyon-btn btn-icon detay-goster" data-button-permission="detay"
-                                                                data-sozlesme-id="@sozlesme.Id"
-                                                                title="Detay">
-                                                            <i class="fas fa-eye"></i>
-                                                        </button>
-                                                        <a href="/AdminTeklif/SozlesmePdf?sozlesmeId=@sozlesme.Id" data-button-permission="pdfgor"
-                                                           target="_blank"
-                                                           class="btn btn-secondary btn-sm aksiyon-btn btn-icon"
-                                                           title="PDF İndir">
-                                                            <i class="fas fa-file-pdf"></i>
-                                                        </a>
-                                                        <button class="btn btn-danger btn-sm aksiyon-btn btn-icon sil-sozlesme" data-button-permission="sil"
-                                                                data-sozlesme-id="@sozlesme.Id"
-                                                                data-dokuman-no="@sozlesme.DokumanNo"
-                                                                title="Sil">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
+                                            
                                             </tr>
                                         }
                                     }
@@ -1149,7 +653,115 @@
                 });
             });
         }
+                // ============= SATIR SEÇME VE ÜST BUTONLAR =============
+        let suAnSeciliSozlesmeId = null;
+        let suAnSeciliDokumanNo = null;
+        const $seciliDetayBtn = $('#seciliDetayGoster');
+        const $seciliPdfBtn = $('#seciliPdfGoster');
+        const $seciliSilBtn = $('#seciliSil');
+        const $seciliBilgiDiv = $('#seciliKayitBilgi');
 
+        // Tablo satırına tıklandığında radio'yu seç
+        $(document).on('click', '#sozlesmeTablosu tbody tr[data-sozlesme-id]', function(e) {
+            // Eğer tıklanan element radio butonunun kendisi değilse
+            if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button') && !$(e.target).is('select')) {
+                const $radio = $(this).find('.sozlesme-sec-radio');
+                $radio.prop('checked', true).trigger('change');
+            }
+        });
+
+        // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+        $(document).on('change', '.sozlesme-sec-radio', function() {
+            if ($(this).is(':checked')) {
+                suAnSeciliSozlesmeId = $(this).val();
+                const $seciliSatir = $(this).closest('tr');
+                suAnSeciliDokumanNo = $seciliSatir.find('.dokuman-no').text().trim();
+
+                // Tüm satırlardan active class'ı kaldır
+                $('#sozlesmeTablosu tbody tr').removeClass('table-active');
+                // Seçili satıra active class ekle
+                $seciliSatir.addClass('table-active');
+
+                // Bilgiyi güncelle
+                $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${suAnSeciliDokumanNo}`);
+
+                // Butonları aktif et
+                $seciliDetayBtn.prop('disabled', false);
+                $seciliPdfBtn.prop('disabled', false);
+                $seciliSilBtn.prop('disabled', false);
+            }
+        });
+
+        // Üstteki "Detay Göster" butonu
+        $seciliDetayBtn.click(function() {
+            if (suAnSeciliSozlesmeId) {
+                detaylariGetir(suAnSeciliSozlesmeId);
+            } else {
+                toastr.warning('Lütfen önce bir sözleşme seçin.');
+            }
+        });
+
+        // Üstteki "PDF Göster" butonu
+        $seciliPdfBtn.click(function() {
+            if (suAnSeciliSozlesmeId) {
+                window.open(`/AdminTeklif/SozlesmePdf?sozlesmeId=${suAnSeciliSozlesmeId}`, '_blank');
+            } else {
+                toastr.warning('Lütfen önce bir sözleşme seçin.');
+            }
+        });
+
+        // Üstteki "Sil" butonu
+        $seciliSilBtn.click(function() {
+            if (suAnSeciliSozlesmeId) {
+                $('#silinecekDokumanNo').text(suAnSeciliDokumanNo);
+                window.seciliSozlesmeId = suAnSeciliSozlesmeId;
+                new bootstrap.Modal('#silModal').show();
+            } else {
+                toastr.warning('Lütfen önce bir sözleşme seçin.');
+            }
+        });
+
+        // Silme modalı kapandıktan sonra seçimi temizleme
+        $('#silModal').on('hidden.bs.modal', function() {
+            if (suAnSeciliSozlesmeId) {
+                const $satir = $(`tr[data-sozlesme-id="${suAnSeciliSozlesmeId}"]`);
+                if ($satir.length === 0) {
+                    // Satır silinmiş, seçimi temizle
+                    suAnSeciliSozlesmeId = null;
+                    suAnSeciliDokumanNo = null;
+                    $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                    $seciliDetayBtn.prop('disabled', true);
+                    $seciliPdfBtn.prop('disabled', true);
+                    $seciliSilBtn.prop('disabled', true);
+                } else {
+                    // İptal edildi, radio'yu temizle
+                    $(`.sozlesme-sec-radio[value="${suAnSeciliSozlesmeId}"]`).prop('checked', false);
+                    $('#sozlesmeTablosu tbody tr').removeClass('table-active');
+                    suAnSeciliSozlesmeId = null;
+                    suAnSeciliDokumanNo = null;
+                    $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                    $seciliDetayBtn.prop('disabled', true);
+                    $seciliPdfBtn.prop('disabled', true);
+                    $seciliSilBtn.prop('disabled', true);
+                }
+            }
+        });
+
+        // Filtreleme sonrası seçimi temizle
+        $('#filtreleriTemizle, .tarih-hizli').click(function() {
+            setTimeout(function() {
+                if (suAnSeciliSozlesmeId) {
+                    $(`.sozlesme-sec-radio[value="${suAnSeciliSozlesmeId}"]`).prop('checked', false);
+                    $('#sozlesmeTablosu tbody tr').removeClass('table-active');
+                    suAnSeciliSozlesmeId = null;
+                    suAnSeciliDokumanNo = null;
+                    $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                    $seciliDetayBtn.prop('disabled', true);
+                    $seciliPdfBtn.prop('disabled', true);
+                    $seciliSilBtn.prop('disabled', true);
+                }
+            }, 100);
+        });
         // ============= SÖZLEŞME ARAMA FONKSİYONU =============
         document.addEventListener('DOMContentLoaded', function () {
             const aramaInput = document.getElementById('sozlesmeArama');
@@ -2105,18 +1717,28 @@
 
                 const res = await $.post('/AdminMusteriSozlesme/Sil', { id: id });
 
-                if (res.success) {
-                    // 1. Önce silme modalını kapat
-                    bootstrap.Modal.getInstance(document.getElementById('silModal')).hide();
+                     if (res.success) {
+            // 1. Önce silme modalını kapat
+            bootstrap.Modal.getInstance(document.getElementById('silModal')).hide();
 
-                    // 2. Başarı mesajı göster
-                    toastr.success(res.message || 'Sözleşme başarıyla silindi.');
+            // Seçili ID hala bu satırsa temizle
+            if (suAnSeciliSozlesmeId == id) {
+                suAnSeciliSozlesmeId = null;
+                suAnSeciliDokumanNo = null;
+                $('#seciliKayitBilgi').html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                $('#seciliDetayGoster').prop('disabled', true);
+                $('#seciliPdfGoster').prop('disabled', true);
+                $('#seciliSil').prop('disabled', true);
+            }
 
-                    // 3. Kısa bir gecikmeyle sayfayı yenile (toastr görünebilsin diye)
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1500); // 1.5 saniye sonra yenile
-                } else {
+            // 2. Başarı mesajı göster
+            toastr.success(res.message || 'Sözleşme başarıyla silindi.');
+
+            // 3. Kısa bir gecikmeyle sayfayı yenile (toastr görünebilsin diye)
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
                     toastr.error(res.message || 'Silme işlemi başarısız oldu.');
                 }
             } catch (err) {

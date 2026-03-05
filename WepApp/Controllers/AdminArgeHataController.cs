@@ -186,22 +186,18 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult Sil(int Id)
         {
-         
-
             try
             {
                 var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
                 if (string.IsNullOrEmpty(kullaniciTipi))
                 {
-                    TempData["Error"] = "Bu işlem için yetkiniz bulunmamaktadır.";
-                    return RedirectToAction("Index");
+                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
                 }
 
                 ArgeHata mevcut = _argeHataRepository.Getir(Id);
                 if (mevcut == null || mevcut.Durumu == 0)
                 {
-                    TempData["Error"] = "Kayıt bulunamadı.";
-                    return RedirectToAction("Index");
+                    return Json(new { success = false, message = "Kayıt bulunamadı." });
                 }
 
                 // Soft delete
@@ -210,13 +206,13 @@ namespace WepApp.Controllers
                 mevcut.GuncellenmeTarihi = DateTime.Now;
 
                 _argeHataRepository.Guncelle(mevcut);
-                TempData["Success"] = "Kayıt başarıyla silindi.";
+
+                return Json(new { success = true, message = "Kayıt başarıyla silindi." });
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Silme işlemi sırasında hata oluştu: {ex.Message}";
+                return Json(new { success = false, message = $"Silme işlemi sırasında hata oluştu: {ex.Message}" });
             }
-            return RedirectToAction("Index");
         }
 
         [HttpPost]

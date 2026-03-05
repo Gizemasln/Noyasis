@@ -4,6 +4,65 @@
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
 
+<style>
+    .table-actions {
+        white-space: nowrap;
+        width: 120px;
+    }
+
+    .card {
+        margin-top: 70px;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    /* Seçim satırı için cursor pointer */
+    tr[data-durum-id] {
+        cursor: pointer;
+    }
+
+    /* Seçili satır efekti */
+    tr.table-active {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+
+    /* İşlem butonları alanı */
+    .islem-butonlari-alani {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .secili-bilgi {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+
+        .secili-bilgi i {
+            font-size: 1rem;
+        }
+
+    /* Buton stilleri */
+    .aksiyon-btn {
+        transition: all 0.2s;
+    }
+
+        .aksiyon-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .aksiyon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+</style>
+
 <div class="row">
     <div class="col-md-12">
         @if (TempData["Success"] != null)
@@ -22,48 +81,64 @@
         }
         <div class="card" style="margin-top: 70px;">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span>İstek/Öneri Durumları</span>
-                <button class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                    <i class="fas fa-plus"></i> Yeni Durum Ekle
-                </button>
+                <h5 class="mb-0">İstek/Öneri Durumları</h5>
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Seçili Kayıt Bilgisi ve İşlem Butonları -->
+                    <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                        <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                            <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-warning aksiyon-btn" id="seciliDuzenleBtn" data-button-permission="duzenle" title="Seçili Durumu Düzenle" disabled>
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger aksiyon-btn" id="seciliSilBtn" data-button-permission="sil" title="Seçili Durumu Sil" disabled>
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Yeni Ekle Butonu -->
+                    <button class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni Durum Ekle
+                    </button>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover" id="durumTablosu">
                         <thead>
                             <tr>
+                                <th width="40">Seç</th>
                                 <th style="width: 60px;">Sıra</th>
                                 <th>Durum Adı</th>
                                 <th>Eklenme Tarihi</th>
-                                <th style="width: 150px;">İşlemler</th>
+                                <!-- İşlemler sütunu kaldırıldı -->
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="istekOneriDurumTablosu">
                             @if (ViewBag.IstekOneriDurumlar != null && ViewBag.IstekOneriDurumlar.Count > 0)
                             {
                                 foreach (var item in ViewBag.IstekOneriDurumlar)
                                 {
-                                    <tr data-id="@item.Id">
+                                    <tr data-durum-id="@item.Id" data-durum-adi="@item.Adi" data-durum-sira="@item.Sira" class="durum-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input durum-sec-radio" type="radio" name="seciliDurumRadio" value="@item.Id" id="secim_@item.Id">
+                                            </div>
+                                        </td>
                                         <td class="text-center">
                                             <span class="badge bg-secondary">@item.Sira</span>
                                         </td>
                                         <td><strong>@item.Adi</strong></td>
                                         <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
-                                        <td>
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id, '@item.Adi.Replace("'", "\\'")', @item.Sira)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.Adi.Replace("'", "\\'")')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
                                     </tr>
                                 }
                             }
                             else
                             {
                                 <tr>
-                                    <td colspan="4" class="text-center py-4">
+                                    <td colspan="5" class="text-center py-4">
                                         <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                         <p>Henüz istek/öneri durumu eklenmemiş.</p>
                                         <button class="btn btn-primary" data-bs-toggle="modal" data-button-permission="ekle" data-bs-target="#ekleModal">
@@ -85,7 +160,7 @@
 <div class="modal fade" id="ekleModal">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Ekle","AdminIstekOneriDurum")" method="post" id="ekleForm">
+            <form action="@Url.Action("Ekle", "AdminIstekOneriDurum")" method="post" id="ekleForm">
                 @Html.AntiForgeryToken()
                 <div class="modal-header">
                     <h5 class="modal-title">Yeni İstek/Öneri Durumu Ekle</h5>
@@ -101,7 +176,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Sıra Numarası</label>
-                        <input type="number" class="form-control" name="Sira" id="Sira"
+                        <input  class="form-control" name="Sira" id="Sira"
                                min="1" value="" oninput="kontrolEtSira()">
                         <div id="siraMesaj" class="form-text">
                             <small class="text-muted">Boş bırakırsanız otomatik sıralanacaktır.</small>
@@ -121,7 +196,7 @@
 <div class="modal fade" id="duzenleModal">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Guncelle","AdminIstekOneriDurum")" method="post" id="duzenleForm">
+            <form action="@Url.Action("Guncelle", "AdminIstekOneriDurum")" method="post" id="duzenleForm">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="Id" id="editId">
                 <div class="modal-header">
@@ -136,7 +211,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Sıra Numarası *</label>
-                        <input type="number" class="form-control" name="Sira" id="editSira" min="1" required oninput="kontrolEtSira(true)">
+                        <input  class="form-control" name="Sira" id="editSira" min="1" required oninput="kontrolEtSira(true)">
                         <div id="editSiraMesaj" class="form-text"></div>
                     </div>
                 </div>
@@ -153,7 +228,7 @@
 <div class="modal fade" id="silModal">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Sil","AdminIstekOneriDurum")" method="post">
+            <form action="@Url.Action("Sil", "AdminIstekOneriDurum")" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="Id" id="silId">
                 <div class="modal-header">
@@ -174,13 +249,108 @@
 </div>
 
 @section Script {
+    <!-- Toastr için gerekli script ve CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <!-- jQuery UI sortable tamamen kaldırıldı -->
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        $(document).ready(function() {
+            // Toastr ayarları
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
 
+            let suAnSeciliDurumId = null;
             let adiGecerli = false;
             let siraGecerli = true;
             let duzenleme = false;
+
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
+
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#istekOneriDurumTablosu tr[data-durum-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button')) {
+                    const $radio = $(this).find('.durum-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
+                }
+            });
+
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.durum-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliDurumId = $(this).val();
+                    const $seciliSatir = $(this).closest('tr');
+                    const durumAdi = $seciliSatir.data('durum-adi');
+
+                    // Tüm satırlardan active class'ı kaldır
+                    $('#istekOneriDurumTablosu tr').removeClass('table-active');
+                    // Seçili satıra active class ekle
+                    $seciliSatir.addClass('table-active');
+
+                    // Bilgiyi güncelle
+                    $('#seciliKayitBilgi').html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${durumAdi}`);
+
+                    // Butonları aktif et
+                    $('#seciliDuzenleBtn').prop('disabled', false);
+                    $('#seciliSilBtn').prop('disabled', false);
+                }
+            });
+
+            // Üstteki "Düzenle" butonu
+            $('#seciliDuzenleBtn').click(function() {
+                if (suAnSeciliDurumId) {
+                    const $seciliSatir = $(`tr[data-durum-id="${suAnSeciliDurumId}"]`);
+                    const adi = $seciliSatir.data('durum-adi');
+                    const sira = $seciliSatir.data('durum-sira');
+
+                    duzenleGetir(suAnSeciliDurumId, adi, sira);
+                } else {
+                    toastr.warning('Lütfen önce bir durum seçin.');
+                }
+            });
+
+            // Üstteki "Sil" butonu
+            $('#seciliSilBtn').click(function() {
+                if (suAnSeciliDurumId) {
+                    const $seciliSatir = $(`tr[data-durum-id="${suAnSeciliDurumId}"]`);
+                    const durumAdi = $seciliSatir.data('durum-adi');
+
+                    $('#silId').val(suAnSeciliDurumId);
+                    $('#silAdiGoster').text(durumAdi);
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    toastr.warning('Lütfen önce bir durum seçin.');
+                }
+            });
+
+            // Silme modalı kapandıktan sonra seçimi temizleme
+            $('#silModal').on('hidden.bs.modal', function() {
+                if (suAnSeciliDurumId) {
+                    const $satir = $(`tr[data-durum-id="${suAnSeciliDurumId}"]`);
+                    if ($satir.length === 0) {
+                        // Satır silinmiş, seçimi temizle
+                        suAnSeciliDurumId = null;
+                        $('#seciliKayitBilgi').html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $('#seciliDuzenleBtn').prop('disabled', true);
+                        $('#seciliSilBtn').prop('disabled', true);
+                    } else {
+                        // İptal edildi, radio'yu temizle
+                        $(`.durum-sec-radio[value="${suAnSeciliDurumId}"]`).prop('checked', false);
+                        $('#istekOneriDurumTablosu tr').removeClass('table-active');
+                        suAnSeciliDurumId = null;
+                        $('#seciliKayitBilgi').html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $('#seciliDuzenleBtn').prop('disabled', true);
+                        $('#seciliSilBtn').prop('disabled', true);
+                    }
+                }
+            });
+
+            // ============= MEVCUT FONKSİYONLAR (AYNEN KORUNDU) =============
 
             window.kontrolEtAdi = function (duzenle = false) {
                 const input = duzenle ? $('#editAdi') : $('#Adi');
@@ -282,15 +452,6 @@
                 const modal = new bootstrap.Modal(document.getElementById('silModal'));
                 modal.show();
             };
-
-            function showAlert(type, message) {
-                const alert = `<div class="alert alert-${type} alert-dismissible fade show position-fixed" style="top: 20px; right: 20px; z-index: 9999;">
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>`;
-                $('body').append(alert);
-                setTimeout(() => $('.alert').last().alert('close'), 5000);
-            }
 
             // Modal sıfırlama
             $('#ekleModal').on('show.bs.modal', function () {

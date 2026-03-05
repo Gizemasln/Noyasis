@@ -20,6 +20,49 @@
         background-color: #f8f9fa;
         border-bottom: 2px solid #dee2e6;
     }
+
+    /* Seçim satırı için cursor pointer */
+    tr[data-musteri-tip-id] {
+        cursor: pointer;
+    }
+
+    /* Seçili satır efekti */
+    tr.table-active {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+
+    /* İşlem butonları alanı */
+    .islem-butonlari-alani {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .secili-bilgi {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+
+        .secili-bilgi i {
+            font-size: 1rem;
+        }
+
+    /* Buton stilleri */
+    .aksiyon-btn {
+        transition: all 0.2s;
+    }
+
+        .aksiyon-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .aksiyon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 </style>
 
 <div class="row">
@@ -41,11 +84,29 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="card-title d-flex justify-content-between align-items-center">
-                    <span>Müşteri Tipleri</span>
-                    <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                        <i class="fas fa-plus"></i> Yeni Müşteri Tipi Ekle
-                    </button>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Müşteri Tipleri</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Seçili Kayıt Bilgisi ve İşlem Butonları -->
+                        <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                            <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                                <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                            </div>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-warning aksiyon-btn" id="seciliDuzenleBtn" data-button-permission="duzenle" title="Seçili Müşteri Tipini Düzenle" disabled>
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger aksiyon-btn" id="seciliSilBtn" data-button-permission="sil" title="Seçili Müşteri Tipini Sil" disabled>
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Yeni Ekle Butonu -->
+                        <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                            <i class="fas fa-plus"></i> Yeni Müşteri Tipi Ekle
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -53,34 +114,30 @@
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
+                                <th width="40">Seç</th>
                                 <th width="50">#</th>
                                 <th>Müşteri Tipi Adı</th>
                                 <th>Eklenme Tarihi</th>
                                 <th>Son Güncelleme</th>
-                                <th width="120" class="text-center">İşlemler</th>
+                                <!-- İşlemler sütunu kaldırıldı -->
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="musteriTipTablosu">
                             @if (ViewBag.MusteriTipleri != null && ((List<MusteriTipi>)ViewBag.MusteriTipleri).Count > 0)
                             {
                                 var counter = 1;
                                 foreach (var item in (List<MusteriTipi>)ViewBag.MusteriTipleri)
                                 {
-                                    <tr>
-                                        <td>@counter</td>
-                                        <td>
-                                            <strong>@item.Adi</strong>
+                                    <tr data-musteri-tip-id="@item.Id" data-musteri-tip-adi="@item.Adi" class="musteri-tip-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input musteri-tip-sec-radio" type="radio" name="seciliMusteriTipRadio" value="@item.Id" id="secim_@item.Id">
+                                            </div>
                                         </td>
+                                        <td>@counter</td>
+                                        <td><strong>@item.Adi</strong></td>
                                         <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>@item.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
-                                        <td class="table-actions text-center">
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id, '@item.Adi')">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.Adi')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
                                     </tr>
                                     counter++;
                                 }
@@ -88,7 +145,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="5" class="text-center">
+                                    <td colspan="6" class="text-center">
                                         <div class="py-4">
                                             <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                             <p class="text-muted">Henüz müşteri tipi eklenmemiş.</p>
@@ -138,7 +195,7 @@
 <div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Guncelle","AdminMusteriTipi")" method="post" id="duzenleForm">
+            <form action="@Url.Action("Guncelle", "AdminMusteriTipi")" method="post" id="duzenleForm">
                 @Html.AntiForgeryToken()
                 <input type="hidden" id="editId" name="Id">
                 <div class="modal-header">
@@ -165,7 +222,7 @@
 <div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Sil","AdminMusteriTipi")" method="post">
+            <form action="@Url.Action("Sil", "AdminMusteriTipi")" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" id="silId" name="Id">
                 <div class="modal-header">
@@ -191,78 +248,165 @@
 </div>
 
 @section Script {
+    <!-- Toastr için gerekli script ve CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
-        // ========================================
-        // Düzenle modalını aç
-        // ========================================
-        function duzenleGetir(id, adi) {
-            $('#editId').val(id);
-            $('#editAdi').val(adi);
-            new bootstrap.Modal('#duzenleModal').show();
-        }
+        $(document).ready(function() {
+            let suAnSeciliMusteriTipId = null;
+            const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
+            const $seciliSilBtn = $('#seciliSilBtn');
+            const $seciliBilgiDiv = $('#seciliKayitBilgi');
 
-        // ========================================
-        // Silme onayı modalı
-        // ========================================
-        function silOnay(id, adi) {
-            $('#silId').val(id);
-            $('#silAdi').text(adi);
-            new bootstrap.Modal('#silModal').show();
-        }
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
 
-        // ========================================
-        // Form validasyonları
-        // ========================================
-        document.addEventListener('DOMContentLoaded', function() {
-            // Form submit kontrolleri
-            const forms = document.querySelectorAll('form');
-            forms.forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    const adiInput = this.querySelector('input[name="Adi"]');
-                    if (adiInput && adiInput.value.trim().length === 0) {
-                        e.preventDefault();
-                        alert('Müşteri tipi adı gereklidir.');
-                        adiInput.focus();
-                    }
-                });
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#musteriTipTablosu tr[data-musteri-tip-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button')) {
+                    const $radio = $(this).find('.musteri-tip-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
+                }
             });
 
-            // Modal kapandığında formları sıfırla
-            ['ekleModal', 'duzenleModal'].forEach(modalId => {
-                const modal = document.getElementById(modalId);
-                if (modal) {
-                    modal.addEventListener('hidden.bs.modal', function() {
-                        const form = this.querySelector('form');
-                        if (form) {
-                            form.reset();
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.musteri-tip-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliMusteriTipId = $(this).val();
+                    const $seciliSatir = $(this).closest('tr');
+                    const musteriTipAdi = $seciliSatir.data('musteri-tip-adi');
+
+                    // Tüm satırlardan active class'ı kaldır
+                    $('#musteriTipTablosu tr').removeClass('table-active');
+                    // Seçili satıra active class ekle
+                    $seciliSatir.addClass('table-active');
+
+                    // Bilgiyi güncelle
+                    $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${musteriTipAdi}`);
+
+                    // Butonları aktif et
+                    $seciliDuzenleBtn.prop('disabled', false);
+                    $seciliSilBtn.prop('disabled', false);
+                }
+            });
+
+            // Üstteki "Düzenle" butonu
+            $seciliDuzenleBtn.click(function() {
+                if (suAnSeciliMusteriTipId) {
+                    const $seciliSatir = $(`tr[data-musteri-tip-id="${suAnSeciliMusteriTipId}"]`);
+                    const adi = $seciliSatir.data('musteri-tip-adi');
+
+                    duzenleGetir(suAnSeciliMusteriTipId, adi);
+                } else {
+                    toastr.warning('Lütfen önce bir müşteri tipi seçin.');
+                }
+            });
+
+            // Üstteki "Sil" butonu
+            $seciliSilBtn.click(function() {
+                if (suAnSeciliMusteriTipId) {
+                    const $seciliSatir = $(`tr[data-musteri-tip-id="${suAnSeciliMusteriTipId}"]`);
+                    const musteriTipAdi = $seciliSatir.data('musteri-tip-adi');
+
+                    $('#silId').val(suAnSeciliMusteriTipId);
+                    $('#silAdi').text(musteriTipAdi);
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    toastr.warning('Lütfen önce bir müşteri tipi seçin.');
+                }
+            });
+
+            // Silme modalı kapandıktan sonra seçimi temizleme
+            $('#silModal').on('hidden.bs.modal', function() {
+                if (suAnSeciliMusteriTipId) {
+                    const $satir = $(`tr[data-musteri-tip-id="${suAnSeciliMusteriTipId}"]`);
+                    if ($satir.length === 0) {
+                        // Satır silinmiş, seçimi temizle
+                        suAnSeciliMusteriTipId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    } else {
+                        // İptal edildi, radio'yu temizle
+                        $(`.musteri-tip-sec-radio[value="${suAnSeciliMusteriTipId}"]`).prop('checked', false);
+                        $('#musteriTipTablosu tr').removeClass('table-active');
+                        suAnSeciliMusteriTipId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    }
+                }
+            });
+
+            // ============= MEVCUT FONKSİYONLAR (AYNEN KORUNDU) =============
+
+            // Düzenle modalını aç
+            window.duzenleGetir = function(id, adi) {
+                $('#editId').val(id);
+                $('#editAdi').val(adi);
+                new bootstrap.Modal(document.getElementById('duzenleModal')).show();
+            };
+
+            // Silme onayı modalı
+            window.silOnay = function(id, adi) {
+                $('#silId').val(id);
+                $('#silAdi').text(adi);
+                new bootstrap.Modal(document.getElementById('silModal')).show();
+            };
+
+            // Form validasyonları
+            document.addEventListener('DOMContentLoaded', function() {
+                // Form submit kontrolleri
+                const forms = document.querySelectorAll('form');
+                forms.forEach(form => {
+                    form.addEventListener('submit', function(e) {
+                        const adiInput = this.querySelector('input[name="Adi"]');
+                        if (adiInput && adiInput.value.trim().length === 0) {
+                            e.preventDefault();
+                            toastr.error('Müşteri tipi adı gereklidir.');
+                            adiInput.focus();
                         }
                     });
-                }
+                });
+
+                // Modal kapandığında formları sıfırla
+                ['ekleModal', 'duzenleModal'].forEach(modalId => {
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.addEventListener('hidden.bs.modal', function() {
+                            const form = this.querySelector('form');
+                            if (form) {
+                                form.reset();
+                            }
+                        });
+                    }
+                });
+
+                // Alert mesajlarını 5 saniye sonra otomatik kapat
+                setTimeout(() => {
+                    document.querySelectorAll('.alert').forEach(alert => {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    });
+                }, 5000);
             });
 
-            // Alert mesajlarını 5 saniye sonra otomatik kapat
-            setTimeout(() => {
-                document.querySelectorAll('.alert').forEach(alert => {
-                    const bsAlert = new bootstrap.Alert(alert);
-                    bsAlert.close();
-                });
-            }, 5000);
-        });
-
-        // Enter tuşu ile form submit
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const activeModal = document.querySelector('.modal.show');
-                if (activeModal) {
-                    const form = activeModal.querySelector('form');
-                    if (form) {
-                        const submitButton = form.querySelector('button[type="submit"]');
-                        if (submitButton) {
-                            submitButton.click();
+            // Enter tuşu ile form submit
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const activeModal = document.querySelector('.modal.show');
+                    if (activeModal) {
+                        const form = activeModal.querySelector('form');
+                        if (form) {
+                            const submitButton = form.querySelector('button[type="submit"]');
+                            if (submitButton) {
+                                submitButton.click();
+                            }
                         }
                     }
                 }
-            }
+            });
         });
     </script>
 }

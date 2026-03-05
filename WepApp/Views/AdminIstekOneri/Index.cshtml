@@ -14,339 +14,10 @@
 
 }
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+<link href="/WebAdminTheme/assets/css/administekoneri.css" rel="stylesheet" />
 
 
-<style>
-    /* Ana Container */
-    .istekoner-container {
-        font-family: 'Segoe UI', Arial, sans-serif;
-        background: #f8f9fa;
-        min-height: calc(100vh - 80px);
-        padding: 20px;
-    }
 
-    .card {
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
-        overflow: hidden;
-    }
-
-    .card-header {
-        background: linear-gradient(135deg, #2e2e5d, #4a4a8a);
-        color: white;
-        padding: 15px 20px;
-    }
-
-    .table th {
-        background: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: 600;
-        color: #2e2e5d;
-        padding: 12px 8px;
-        font-size: 0.85rem;
-    }
-
-    .table td {
-        padding: 10px 8px;
-        vertical-align: middle;
-        font-size: 0.8rem;
-        transition: all 0.3s ease;
-    }
-
-    /* Konu badge */
-    .badge-konu {
-        background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
-        color: #2e7d32;
-        border: 1px solid #a5d6a7;
-        font-weight: 600;
-        padding: 4px 8px;
-        border-radius: 6px;
-        font-size: 0.75rem;
-    }
-
-    /* Satır renkleri */
-    .satir-yeni {
-        background-color: #f8f9fa !important;
-        border-left: 4px solid #6c757d;
-    }
-
-    .satir-degerlendirmede {
-        background-color: #fff8e1 !important;
-        border-left: 4px solid #ffb300;
-    }
-
-    .satir-onaylandi {
-        background-color: #d4edda !important;
-        border-left: 4px solid #28a745;
-    }
-
-    .satir-uygulandi {
-        background-color: #cce5ff !important;
-        border-left: 4px solid #007bff;
-    }
-
-    .satir-reddedildi {
-        background-color: #f8d7da !important;
-        border-left: 4px solid #dc3545;
-    }
-
-    .satir-ertelendi {
-        background-color: #fff3cd !important;
-        border-left: 4px solid #ffc107;
-    }
-
-    .satir-tamamlandi {
-        background-color: #d1ecf1 !important;
-        border-left: 4px solid #17a2b8;
-    }
-
-    .cevap-verildi {
-        background-color: #f0fff0 !important;
-        border-left: 4px solid #28a745 !important;
-    }
-
-    /* Cevap veren badge */
-    .badge-admin {
-        background: linear-gradient(135deg, #ffcc80, #ffa726);
-        color: #e65100;
-        border: 1px solid #ffb74d;
-        font-weight: 600;
-        padding: 3px 6px;
-        border-radius: 4px;
-        font-size: 0.7rem;
-    }
-
-    .badge-bayi {
-        background: linear-gradient(135deg, #c8e6c9, #81c784);
-        color: #1b5e20;
-        border: 1px solid #a5d6a7;
-        font-weight: 600;
-        padding: 3px 6px;
-        border-radius: 4px;
-        font-size: 0.7rem;
-    }
-
-    /* Durum select */
-    .durum-select {
-        font-size: 0.75rem;
-        padding: 5px 8px;
-        border-radius: 6px;
-        min-width: 130px;
-        cursor: pointer;
-        border: 1px solid #ced4da;
-        transition: all 0.2s;
-        font-weight: 500;
-    }
-
-    /* Durum select renkleri */
-    .durum-yeni {
-        background-color: #f8f9fa !important;
-        color: #6c757d !important;
-    }
-
-    .durum-degerlendirmede {
-        background-color: #fff8e1 !important;
-        color: #856404 !important;
-    }
-
-    .durum-onaylandi {
-        background-color: #d4edda !important;
-        color: #155724 !important;
-    }
-
-    .durum-uygulandi {
-        background-color: #cce5ff !important;
-        color: #004085 !important;
-    }
-
-    .durum-reddedildi {
-        background-color: #f8d7da !important;
-        color: #721c24 !important;
-    }
-
-    .durum-ertelendi {
-        background-color: #fff3cd !important;
-        color: #856404 !important;
-    }
-
-    .durum-tamamlandi {
-        background-color: #d1ecf1 !important;
-        color: #0c5460 !important;
-    }
-
-    /* Durum hücresi */
-    .durum-hucresi {
-        min-width: 150px;
-        max-width: 180px;
-    }
-
-    /* İçerik gösterimi */
-    .metin-kisaltma {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 250px;
-        line-height: 1.4;
-        max-height: 2.8em;
-    }
-
-    /* Cevap sütunu stili */
-    .cevap-sutunu {
-        min-width: 220px;
-        max-width: 280px;
-    }
-
-    .cevap-icerik {
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        padding: 8px;
-        margin-bottom: 5px;
-        font-size: 0.8rem;
-        line-height: 1.4;
-        max-height: 100px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-
-        .cevap-icerik:hover {
-            background-color: #e9ecef;
-            cursor: pointer;
-        }
-
-    .cevap-veren {
-        font-size: 0.75rem;
-        font-weight: 600;
-        margin-top: 5px;
-    }
-
-    /* Cevap yaz butonu */
-    .cevap-yaz {
-        transition: all 0.3s ease;
-        font-size: 0.75rem;
-        padding: 4px 10px;
-    }
-
-        .cevap-yaz:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-    /* Cevap düzenle butonu */
-    .cevap-duzenle {
-        transition: all 0.3s ease;
-        font-size: 0.7rem;
-        padding: 2px 6px;
-    }
-
-        .cevap-duzenle:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-    /* Boş durum */
-    .empty-state {
-        text-align: center;
-        padding: 40px;
-        color: #6c757d;
-    }
-
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            color: #dee2e6;
-        }
-
-    /* Arama */
-    .search-box {
-        max-width: 300px;
-    }
-
-    /* Butonlar */
-    .aksiyon-btn {
-        padding: 4px 8px;
-        margin: 0 2px;
-        font-size: 0.75rem;
-        border-radius: 4px;
-        transition: all 0.2s;
-    }
-
-        .aksiyon-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-    /* Kullanıcı info */
-    .user-info-badge {
-        background: linear-gradient(135deg, #e1bee7, #ba68c8);
-        color: white;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 500;
-    }
-
-    .bayi-info {
-        background: linear-gradient(135deg, #c8e6c9, #81c784);
-        color: #1b5e20;
-        padding: 5px 10px;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        margin-right: 10px;
-    }
-
-    /* Modal özelleştirmeleri */
-    .modal-cevap-textarea {
-        min-height: 120px;
-        resize: vertical;
-        font-size: 0.9rem;
-    }
-
-    .modal-durum-info {
-        background-color: #f8f9fa;
-        border-radius: 6px;
-        padding: 10px;
-        margin-bottom: 15px;
-        border-left: 4px solid #4a4a8a;
-    }
-
-        .modal-durum-info strong {
-            color: #2e2e5d;
-        }
-
-    /* Gönderen bilgisi */
-    .gonderen-info {
-        font-weight: 500;
-        color: #495057;
-    }
-
-    /* Responsive */
-    @@media (max-width: 768px) {
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        .metin-kisaltma {
-            max-width: 150px;
-        }
-
-        .durum-select {
-            min-width: 100px;
-        }
-
-        .durum-hucresi {
-            min-width: 120px;
-        }
-
-        .cevap-sutunu {
-            min-width: 180px;
-        }
-    }
-</style>
 
 <div class="istekoner-container">
     <div class="container-fluid">
@@ -405,7 +76,7 @@
                                 <!-- Tarih Filtreleri -->
                                 <div class="col-md-2">
                                     <label class="form-label fw-bold small">Tarih Aralığı</label>
-                                    <div class="btn-group w-100" role="group">
+                                    <div class="btn-group w-100 " role="group">
                                         <button type="button" class="btn btn-outline-primary btn-sm tarih-hizli" data-periyot="bugun">Bugün</button>
                                         <button type="button" class="btn btn-outline-primary btn-sm tarih-hizli" data-periyot="hafta">Bu Hafta</button>
                                         <button type="button" class="btn btn-outline-primary btn-sm tarih-hizli" data-periyot="ay">Bu Ay</button>
@@ -448,7 +119,7 @@
                                 </div>
 
                                 <!-- Lisans Tipi Filtresi -->
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <label class="form-label fw-bold small">Lisans Tipi</label>
                                     <select class="form-select form-select-sm" id="lisansTipFiltre">
                                         <option value="0">Tüm Lisans Tipleri</option>
@@ -471,8 +142,8 @@
 
 
                                 <!-- Cevap Durumu Filtresi -->
-                                <div class="col-md-2">
-                                    <label class="form-label fw-bold small">Cevap Durumu</label>
+                                <div class="col-md-1">
+                                    <label class="form-label fw-bold small">Cevap/label>
                                     <select class="form-select form-select-sm" id="cevapDurumFiltre">
                                         <option value="">Tümü</option>
                                         <option value="cevapli">Cevaplı</option>
@@ -481,7 +152,7 @@
                                 </div>
 
                                 <!-- Sıralama -->
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <label class="form-label fw-bold small">Sıralama</label>
                                     <select class="form-select form-select-sm" id="siralamaFiltre">
                                         <option value="yeni">En Yeni → En Eski</option>
@@ -495,15 +166,32 @@
 
 
                                 <!-- Gönderen Adı Filtresi -->
-                                <div class="col-md-2">
-                                    <label class="form-label fw-bold small">Gönderen Adı</label>
+                                <div class="col-md-1">
+                                    <label class="form-label fw-bold small">Gönd. Adı</label>
                                     <input type="text" class="form-control form-control-sm" id="gonderenAdFiltre" placeholder="Gönderen adı ara...">
                                 </div>
 
                                 <!-- Konu Filtresi -->
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <label class="form-label fw-bold small">Konu</label>
                                     <input type="text" class="form-control form-control-sm" id="konuFiltre" placeholder="Konu ara...">
+                                </div>
+                                <!-- YENİ: Seçim ve İşlem Butonları Alanı -->
+                                <div class="col-md-1 d-flex align-items-end">
+                                    <div class="d-flex flex-column w-100">
+                                        <label class="form-label fw-bold small invisible" style="user-select: none;">İşlemler</label>
+                                        <div class="d-flex align-items-center gap-2 bg-light p-2 rounded border">
+                                            <!-- Taşınan Butonlar -->
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <button type="button" class="btn btn-outline-primary aksiyon-btn" id="seciliDetayGoster" data-button-permission="detay" title="Seçili Bildirimin Detaylarını Gör" disabled>
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-outline-danger aksiyon-btn" id="seciliSil" data-button-permission="sil" title="Seçili Bildirimi Sil" disabled>
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <!-- Aktif Filtreler -->
                                 <div class="col-12 mt-3" id="aktifFiltreler" style="display: none;">
@@ -520,6 +208,8 @@
                             <table class="table table-hover mb-0">
                                 <thead>
                                     <tr>
+                                        <th width="40">Seç</th> <!-- YENİ SÜTUN -->
+
                                         <th width="60">ID</th>
                                         <th width="120">Konu</th>
                                         <th width="200">İçerik</th>
@@ -528,7 +218,7 @@
                                         <th width="220">Cevap</th>
                                         <th width="100" class="durum-hucresi">Durum</th>
                                         <th width="120">Tarih</th>
-                                        <th width="120" class="text-center">İşlemler</th>
+                                     
                                     </tr>
                                 </thead>
                                 <tbody id="bildirimTablosu">
@@ -622,6 +312,11 @@
 
                                             gosterilenSatir++;
                                             <tr data-bildirim-id="@bildirim.Id" data-durum-id="@durumId" class="@satirCss">
+                                                <td class="text-center">
+                                                    <div class="form-check" onclick="event.stopPropagation();">
+                                                        <input class="form-check-input bildirim-sec-radio" type="radio" name="seciliBildirimRadio" value="@bildirim.Id" id="secim_@bildirim.Id">
+                                                    </div>
+                                                </td>
                                                 <td><small class="text-muted">#@bildirim.Id</small></td>
 
                                                 <td>
@@ -721,25 +416,7 @@
                                                     <small class="text-muted">@bildirim.EklenmeTarihi.ToString("dd.MM.yy HH:mm")</small>
                                                 </td>
 
-                                                <td class="text-center">
-                                                    <div class="btn-group btn-group-sm">
-                                                        <button type="button"
-                                                                class="btn btn-outline-primary btn-sm aksiyon-btn detay-goster" data-button-permission="detay"
-                                                                data-bildirim-id="@bildirim.Id"
-                                                                title="Detayları Gör">
-                                                            <i class="fas fa-eye"></i>
-                                                        </button>
-                                                     
-                                                            <button type="button"
-                                                                    class="btn btn-outline-danger btn-sm aksiyon-btn sil-bildirim" data-button-permission="sil"
-                                                                    data-bildirim-id="@bildirim.Id"
-                                                                    data-konu="@bildirim.Konu"
-                                                                    title="Sil">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        
-                                                    </div>
-                                                </td>
+                                           
                                             </tr>
                                         }
                                         <!-- Debug: Kaç satır gösterildiğini kontrol et -->
@@ -1412,29 +1089,39 @@
                         dataType: 'json'
                     });
 
-                    if (response.success) {
-                        // Modal'ı kapat
-                        const silModal = bootstrap.Modal.getInstance(document.getElementById('silModal'));
-                        silModal.hide();
+                        if (response.success) {
+            // Modal'ı kapat
+            const silModal = bootstrap.Modal.getInstance(document.getElementById('silModal'));
+            silModal.hide();
 
-                        // Satırı tablodan kaldır
-                        $(`tr[data-bildirim-id="${seciliBildirimId}"]`).remove();
+            // Satırı tablodan kaldır
+            $(`tr[data-bildirim-id="${seciliBildirimId}"]`).fadeOut(300, function() {
+                $(this).remove();
 
-                        // Tablo boşsa boş durum mesajını göster
-                        if ($('#bildirimTablosu tr:not(.empty-state)').length === 0) {
-                            $('#bildirimTablosu').html(`
-                                <tr>
-                                    <td colspan="9" class="empty-state">
-                                        <i class="fas fa-inbox fa-2x mb-2"></i>
-                                        <h5>Henüz bildirim bulunmuyor</h5>
-                                        <p>Henüz istek veya öneri bildirimi eklenmemiş.</p>
-                                    </td>
-                                </tr>
-                            `);
-                        }
+                // Seçili ID hala bu satırsa temizle
+                if (suAnSeciliBildirimId == seciliBildirimId) {
+                    suAnSeciliBildirimId = null;
+                    $seciliBilgiDiv.html(`<i class="fas fa-info-circle me-1"></i> Kayıt seçilmedi`);
+                    $seciliDetayBtn.prop('disabled', true);
+                    $seciliSilBtn.prop('disabled', true);
+                }
 
-                        toastr.success(response.message || 'Kayıt başarıyla silindi.');
-                    } else {
+                // Tablo boşsa boş durum mesajını göster
+                if ($('#bildirimTablosu tr:not(.empty-state)').length === 0) {
+                    $('#bildirimTablosu').html(`
+                        <tr>
+                            <td colspan="10" class="empty-state">
+                                <i class="fas fa-inbox fa-2x mb-2"></i>
+                                <h5>Henüz bildirim bulunmuyor</h5>
+                                <p>Henüz istek veya öneri bildirimi eklenmemiş.</p>
+                            </td>
+                        </tr>
+                    `);
+                }
+            });
+
+            toastr.success(response.message || 'Kayıt başarıyla silindi.');
+        }else {
                         toastr.error(response.message || 'Silme işlemi başarısız oldu.');
                     }
                 } catch (error) {
@@ -1862,6 +1549,255 @@
 
         // Sayfa yüklendiğinde mevcut arama inputunu filtreleme sistemine entegre et
         $(document).ready(function() {
+                    // ============= YENİ: SATIR SEÇME VE ÜST BUTONLAR =============
+        let suAnSeciliBildirimId = null;
+        const $seciliDetayBtn = $('#seciliDetayGoster');
+        const $seciliSilBtn = $('#seciliSil');
+        const $seciliBilgiDiv = $('#seciliKayitBilgi');
+
+        // Tablo satırına tıklandığında radio'yu seç
+        $(document).on('click', '#bildirimTablosu tr[data-bildirim-id]', function(e) {
+            // Eğer tıklanan element radio butonunun kendisi, select veya buton değilse
+            if (!$(e.target).is('input[type=radio]') && !$(e.target).is('select') && !$(e.target).is('button')) {
+                const $radio = $(this).find('.bildirim-sec-radio');
+                $radio.prop('checked', true).trigger('change');
+            }
+        });
+
+        // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+        $(document).on('change', '.bildirim-sec-radio', function() {
+            if ($(this).is(':checked')) {
+                suAnSeciliBildirimId = $(this).val();
+                const $seciliSatir = $(this).closest('tr');
+                const bildirimId = suAnSeciliBildirimId;
+                const konu = $seciliSatir.find('td:nth-child(3)').text().trim(); // Konu sütunu (index: 1.seçim, 2.id, 3.konu)
+
+                // Bilgiyi güncelle
+                $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: #${bildirimId} - ${konu.substring(0, 30)}${konu.length > 30 ? '...' : ''}`);
+
+                // Butonları aktif et
+                $seciliDetayBtn.prop('disabled', false);
+                $seciliSilBtn.prop('disabled', false);
+            }
+        });
+
+          // Üstteki "Detay Göster" butonu
+        $seciliDetayBtn.click(function() {
+            if (suAnSeciliBildirimId) {
+                // Doğrudan detay modalını aç
+                detayGoster(suAnSeciliBildirimId);
+            } else {
+                toastr.warning('Lütfen önce bir bildirim seçin.');
+            }
+        });
+                // Detay gösterme fonksiyonu
+        async function detayGoster(bildirimId) {
+            try {
+                const detayModal = new bootstrap.Modal(document.getElementById('detayModal'));
+                detayModal.show();
+
+                $('#detayModalIcerik').html(
+                    '<div class="text-center py-5">' +
+                        '<div class="spinner-border text-success" role="status"></div>' +
+                        '<p class="mt-3">Bildirim detayları yükleniyor...</p>' +
+                    '</div>'
+                );
+
+                const response = await $.ajax({
+                    url: '/AdminIstekOneri/DetayGetir',
+                    type: 'GET',
+                    data: { id: bildirimId },
+                    dataType: 'json'
+                });
+
+                if (response.success) {
+                    let cevapHtml = '';
+                    if (response.distributorCevap) {
+                        cevapHtml = `
+                            <div class="col-12 mb-3">
+                                <div class="card border-success">
+                                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="fas fa-comment-dots me-2"></i>
+                                            Cevap
+                                        </div>
+                                        <span class="badge ${response.cevapVerenTip === 'Admin' ? 'badge-admin' : 'badge-bayi'}">
+                                            <i class="fas fa-user me-1"></i>${response.cevapVerenTip}
+                                        </span>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-2">
+                                            <strong>Cevap Tarihi:</strong> ${response.distributorCevapTarihi || '-'}
+                                        </div>
+                                        <div class="border rounded p-3 bg-light mb-2" style="white-space: pre-line;">
+                                            ${response.distributorCevap}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    $('#detayModalIcerik').html(`
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-header bg-primary text-white">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        Temel Bilgiler
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row small g-2">
+                                            <div class="col-12">
+                                                <label class="text-muted">ID:</label>
+                                                <div class="fw-bold">#${response.id}</div>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="text-muted">Konu:</label>
+                                                <div>${response.konu}</div>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="text-muted">Durum:</label>
+                                                <div class="fw-bold">${response.istekDurumAdi}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                                 <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <i class="fas fa-building me-2"></i>
+                    İşletme Bilgileri
+                </div>
+                <div class="card-body">
+                    <div class="row small g-2">
+                        <div class="col-12">
+                            <label class="text-muted">Gönderen:</label>
+                            <div>${response.musteriAdi != "Belirtilmemiş" ? response.musteriAdi : response.bayiAdi}</div>
+                        </div>
+                        <div class="col-12">
+                            <label class="text-muted">Gönderen Tipi:</label>
+                            <div>${response.musteriAdi != "Belirtilmemiş" ? 'Müşteri' : (response.bayiAdi != "Belirtilmemiş" ? 'Bayi' : 'Belirtilmemiş')}</div>
+                        </div>
+                        <div class="col-12">
+                            <label class="text-muted">Lisans Tipi:</label>
+                            <div>${response.lisansTipAdi}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header bg-warning">
+                                        <i class="fas fa-file-alt me-2"></i>
+                                        İçerik
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="border rounded p-3 bg-light" style="white-space: pre-line; min-height: 100px;">
+                                            ${response.metni || '-'}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            ${cevapHtml}
+
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header bg-secondary text-white">
+                                        <i class="fas fa-history me-2"></i>
+                                        Zaman Bilgileri
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row small g-2">
+                                            <div class="col-12">
+                                                <label class="text-muted">Eklenme Tarihi:</label>
+                                                <div>${response.eklenmeTarihi}</div>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="text-muted">Son Güncelleme:</label>
+                                                <div>${response.guncellenmeTarihi}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                } else {
+                    $('#detayModalIcerik').html(
+                        '<div class="alert alert-danger">' +
+                            '<i class="fas fa-exclamation-triangle me-2"></i>' +
+                            (response.message || 'Detay bilgileri alınamadı.') +
+                        '</div>'
+                    );
+                }
+            } catch (error) {
+                console.error('Hata:', error);
+                $('#detayModalIcerik').html(
+                    '<div class="alert alert-danger">' +
+                        '<i class="fas fa-exclamation-triangle me-2"></i>' +
+                        'Bir hata oluştu: ' + (error.message || 'Sunucu ile bağlantı kurulamadı.') +
+                    '</div>'
+                );
+            }
+        }
+        // Üstteki "Sil" butonu
+        $seciliSilBtn.click(function() {
+            if (suAnSeciliBildirimId) {
+                const $seciliSatir = $(`tr[data-bildirim-id="${suAnSeciliBildirimId}"]`);
+                const konu = $seciliSatir.find('td:nth-child(3)').text().trim();
+
+                // Global değişkenleri set et ve modalı göster
+                seciliBildirimId = suAnSeciliBildirimId;
+                $('#silinecekKonu').text(konu);
+                const silModal = new bootstrap.Modal(document.getElementById('silModal'));
+                silModal.show();
+            } else {
+                toastr.warning('Lütfen önce bir bildirim seçin.');
+            }
+        });
+
+        // Modal kapandıktan sonra seçimi temizle (silme başarılı veya iptal)
+        $('#silModal').on('hidden.bs.modal', function() {
+            if (suAnSeciliBildirimId) {
+                // Silme başarılı olduysa satır zaten DOM'dan kalktı, kontrol et
+                const $satir = $(`tr[data-bildirim-id="${suAnSeciliBildirimId}"]`);
+                if ($satir.length === 0) {
+                    // Satır silinmiş, seçimi temizle
+                    suAnSeciliBildirimId = null;
+                    $seciliBilgiDiv.html(`<i class="fas fa-info-circle me-1"></i> Kayıt seçilmedi`);
+                    $seciliDetayBtn.prop('disabled', true);
+                    $seciliSilBtn.prop('disabled', true);
+                } else {
+                    // İptal edildi, radio'yu temizle
+                    $(`.bildirim-sec-radio[value="${suAnSeciliBildirimId}"]`).prop('checked', false);
+                    suAnSeciliBildirimId = null;
+                    $seciliBilgiDiv.html(`<i class="fas fa-info-circle me-1"></i> Kayıt seçilmedi`);
+                    $seciliDetayBtn.prop('disabled', true);
+                    $seciliSilBtn.prop('disabled', true);
+                }
+            }
+            seciliBildirimId = null;
+        });
+
+        // Filtreleme sonrası seçimi temizle
+        $('#filtreleriTemizle, .tarih-hizli').click(function() {
+            setTimeout(function() {
+                if (suAnSeciliBildirimId) {
+                    $(`.bildirim-sec-radio[value="${suAnSeciliBildirimId}"]`).prop('checked', false);
+                    suAnSeciliBildirimId = null;
+                    $seciliBilgiDiv.html(`<i class="fas fa-info-circle me-1"></i> Kayıt seçilmedi`);
+                    $seciliDetayBtn.prop('disabled', true);
+                    $seciliSilBtn.prop('disabled', true);
+                }
+            }, 100);
+        });
+        // ============================================================
             // Mevcut arama inputu zaten varsa, onu da dinle
             const originalArama = $('#bildirimArama');
             if (originalArama.length) {

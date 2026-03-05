@@ -43,6 +43,49 @@
         padding: 8px;
         background-color: #fff;
     }
+
+    /* Seçim satırı için cursor pointer */
+    tr[data-sozlesme-id] {
+        cursor: pointer;
+    }
+
+    /* Seçili satır efekti */
+    tr.table-active {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+
+    /* İşlem butonları alanı */
+    .islem-butonlari-alani {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .secili-bilgi {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+
+        .secili-bilgi i {
+            font-size: 1rem;
+        }
+
+    /* Buton stilleri */
+    .aksiyon-btn {
+        transition: all 0.2s;
+    }
+
+        .aksiyon-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .aksiyon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 </style>
 
 <div class="row">
@@ -65,15 +108,34 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Bayi Sözleşmeleri</h5>
-                <button class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#sozlesmeModal">
-                    <i class="fas fa-plus"></i> Yeni Sözleşme Ekle
-                </button>
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Seçili Kayıt Bilgisi ve İşlem Butonları -->
+                    <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                        <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                            <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-warning aksiyon-btn btn-icon" id="seciliDuzenleBtn" data-button-permission="duzenle" title="Seçili Sözleşmeyi Düzenle" disabled>
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger aksiyon-btn btn-icon" data-button-permission="sil" id="seciliSilBtn" title="Seçili Sözleşmeyi Sil" disabled>
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Yeni Ekle Butonu -->
+                    <button class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#sozlesmeModal">
+                        <i class="fas fa-plus"></i> Yeni Sözleşme Ekle
+                    </button>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover table-bordered">
                         <thead class="table-light">
                             <tr>
+                                <th width="40">Seç</th>
                                 <th width="50">#</th>
                                 <th>Döküman No</th>
                                 <th>Bayi</th>
@@ -82,24 +144,28 @@
                                 <th>Sözleşme Durumu</th>
                                 <th>Kriterler</th>
                                 <th>Dosya</th>
-                                <th width="140" class="text-center">İşlemler</th>
+                                <!-- İşlemler sütunu kaldırıldı -->
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="bayiSozlesmeTablosu">
                             @if (ViewBag.Sozlesmeler != null && ((List<BayiSozlesme>)ViewBag.Sozlesmeler).Any())
                             {
                                 var sayac = 1;
                                 foreach (var s in (List<BayiSozlesme>)ViewBag.Sozlesmeler)
                                 {
                                     var kriterSayisi = s.BayiSozlesmeBayiKriter?.Count(k => k.Durumu == 1) ?? 0;
-                                    <tr>
+                                    <tr data-sozlesme-id="@s.Id" data-dokuman-no="@s.DokumanNo" class="bayi-sozlesme-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input bayi-sozlesme-sec-radio" type="radio" name="seciliSozlesmeRadio" value="@s.Id" id="secim_@s.Id">
+                                            </div>
+                                        </td>
                                         <td>@sayac</td>
                                         <td>
                                             <strong>@s.DokumanNo</strong>
                                             @if (!string.IsNullOrEmpty(s.RevizyonNo))
                                             {
                                                 <br />
-
                                                 <small class="text-muted">Rev. @s.RevizyonNo</small>
                                             }
                                         </td>
@@ -124,14 +190,6 @@
                                                 <span class="text-muted">-</span>
                                             }
                                         </td>
-                                        <td class="text-center">
-                                            <button class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenle(@s.Id)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@s.Id, '@s.DokumanNo')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
                                     </tr>
                                     sayac++;
                                 }
@@ -139,7 +197,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="9" class="text-center py-5 text-muted">
+                                    <td colspan="10" class="text-center py-5 text-muted">
                                         <i class="fas fa-inbox fa-3x mb-3"></i>
                                         <p>Henüz bayi sözleşmesi eklenmemiş.</p>
                                     </td>
@@ -230,6 +288,36 @@
         </div>
     </div>
 </div>
+
+<!-- Silme Onay Modal -->
+<div class="modal fade" id="silModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Sözleşme Silme
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2"><strong id="silinecekDokumanNo"></strong> numaralı sözleşmeyi silmek istediğinizden emin misiniz?</p>
+                <p class="text-danger mb-0">
+                    <small><i class="fas fa-info-circle me-1"></i> Bu işlem geri alınamaz.</small>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>İptal
+                </button>
+                <button type="button" class="btn btn-danger" id="silBtn">
+                    <i class="fas fa-trash me-2"></i>Sil
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Script {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -239,11 +327,101 @@
         let currentEditId = null;
 
         $(document).ready(function () {
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
+            let suAnSeciliSozlesmeId = null;
+            let suAnSeciliDokumanNo = null;
+            const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
+            const $seciliSilBtn = $('#seciliSilBtn');
+            const $seciliBilgiDiv = $('#seciliKayitBilgi');
+
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#bayiSozlesmeTablosu tr[data-sozlesme-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button')) {
+                    const $radio = $(this).find('.bayi-sozlesme-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
+                }
+            });
+
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.bayi-sozlesme-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliSozlesmeId = $(this).val();
+                    const $seciliSatir = $(this).closest('tr');
+                    suAnSeciliDokumanNo = $seciliSatir.data('dokuman-no');
+
+                    // Tüm satırlardan active class'ı kaldır
+                    $('#bayiSozlesmeTablosu tr').removeClass('table-active');
+                    // Seçili satıra active class ekle
+                    $seciliSatir.addClass('table-active');
+
+                    // Bilgiyi güncelle
+                    $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${suAnSeciliDokumanNo}`);
+
+                    // Butonları aktif et
+                    $seciliDuzenleBtn.prop('disabled', false);
+                    $seciliSilBtn.prop('disabled', false);
+                }
+            });
+
+            // Üstteki "Düzenle" butonu
+            $seciliDuzenleBtn.click(function() {
+                if (suAnSeciliSozlesmeId) {
+                    duzenle(suAnSeciliSozlesmeId);
+                } else {
+                    Swal.fire('Uyarı!', 'Lütfen önce bir sözleşme seçin.', 'warning');
+                }
+            });
+
+            // Üstteki "Sil" butonu
+            $seciliSilBtn.click(function() {
+                if (suAnSeciliSozlesmeId) {
+                    $('#silinecekDokumanNo').text(suAnSeciliDokumanNo);
+                    window.seciliSilinecekId = suAnSeciliSozlesmeId;
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    Swal.fire('Uyarı!', 'Lütfen önce bir sözleşme seçin.', 'warning');
+                }
+            });
+
+            // Silme modalı kapandıktan sonra seçimi temizleme
+            $('#silModal').on('hidden.bs.modal', function() {
+                if (suAnSeciliSozlesmeId) {
+                    const $satir = $(`tr[data-sozlesme-id="${suAnSeciliSozlesmeId}"]`);
+                    if ($satir.length === 0) {
+                        // Satır silinmiş, seçimi temizle
+                        suAnSeciliSozlesmeId = null;
+                        suAnSeciliDokumanNo = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    } else {
+                        // İptal edildi, radio'yu temizle
+                        $(`.bayi-sozlesme-sec-radio[value="${suAnSeciliSozlesmeId}"]`).prop('checked', false);
+                        $('#bayiSozlesmeTablosu tr').removeClass('table-active');
+                        suAnSeciliSozlesmeId = null;
+                        suAnSeciliDokumanNo = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    }
+                }
+            });
+
+            // Silme butonu işleyicisi
+            $('#silBtn').click(function() {
+                if (window.seciliSilinecekId) {
+                    sil(window.seciliSilinecekId);
+                }
+            });
+
+            // ============= MEVCUT FONKSİYONLAR (AYNEN KORUNDU) =============
+
             yukleVeriler();
             formEventleriAyarla();
         });
 
-             function yukleVeriler() {
+        function yukleVeriler() {
             // Bayileri yükle
             $.getJSON('/AdminBayiSozlesme/GetBayiler').done(function(data) {
                 var bayiSelect = $('#bayiId').empty().append('<option value="">Bayi Seçiniz</option>');
@@ -345,8 +523,9 @@
                 $('#kriterListesi').html('<p class="text-danger">Kriterler yüklenirken hata oluştu.</p>');
             });
         }
+
         // Düzenleme yaparken de bayi seçili kalsın
-            function duzenle(id) {
+        function duzenle(id) {
             currentEditId = id;
             $.get('/AdminBayiSozlesme/Getir?id=' + id, function(data) {
                 $('#sozlesmeId').val(data.id);
@@ -368,6 +547,7 @@
                 benzersizKontrol();
             });
         }
+
         function formKaydet() {
             if ($('#benzersizUyari').children().length > 0) {
                 Swal.fire('Uyarı!', 'Bu döküman no zaten kayıtlı!', 'warning');
@@ -419,6 +599,7 @@
                     });
             });
         }
+
         function formTemizle() {
             $('#sozlesmeForm')[0].reset();
             $('#sozlesmeId').val('0');

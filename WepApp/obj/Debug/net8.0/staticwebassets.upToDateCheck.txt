@@ -2,6 +2,10 @@ wwwroot\WebAdminTheme\AnaSayfaBanner\Buyuk\ea5c35a7-9e57-43fe-b30e-965b40a0ec88.
 wwwroot\WebAdminTheme\AnaSayfaBanner\Kucuk\ea5c35a7-9e57-43fe-b30e-965b40a0ec88.jpg
 wwwroot\WebAdminTheme\Arge\1fbb19bc-8f8c-423d-8376-88656f6dfb96.jpg
 wwwroot\WebAdminTheme\Arge\fcb75103-5ba9-4872-b873-56f66ff27bbc.png
+wwwroot\WebAdminTheme\assets\css\adminanasayfaslider.css
+wwwroot\WebAdminTheme\assets\css\adminargehata.css
+wwwroot\WebAdminTheme\assets\css\administekoneri.css
+wwwroot\WebAdminTheme\assets\css\adminmusterisozlesme.css
 wwwroot\WebAdminTheme\assets\css\bootstrap.min.css
 wwwroot\WebAdminTheme\assets\css\demo.css
 wwwroot\WebAdminTheme\assets\css\demo.css.map

@@ -1,0 +1,332 @@
+﻿
+/* Ana Container */
+.istekoner-container {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f8f9fa;
+    min-height: calc(100vh - 80px);
+    padding: 20px;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #2e2e5d, #4a4a8a);
+    color: white;
+    padding: 15px 20px;
+}
+
+.table th {
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    color: #2e2e5d;
+    padding: 12px 8px;
+    font-size: 0.85rem;
+}
+
+.table td {
+    padding: 10px 8px;
+    vertical-align: middle;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+/* Konu badge */
+.badge-konu {
+    background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+}
+
+/* Satır renkleri */
+.satir-yeni {
+    background-color: #f8f9fa !important;
+    border-left: 4px solid #6c757d;
+}
+
+.satir-degerlendirmede {
+    background-color: #fff8e1 !important;
+    border-left: 4px solid #ffb300;
+}
+
+.satir-onaylandi {
+    background-color: #d4edda !important;
+    border-left: 4px solid #28a745;
+}
+
+.satir-uygulandi {
+    background-color: #cce5ff !important;
+    border-left: 4px solid #007bff;
+}
+
+.satir-reddedildi {
+    background-color: #f8d7da !important;
+    border-left: 4px solid #dc3545;
+}
+
+.satir-ertelendi {
+    background-color: #fff3cd !important;
+    border-left: 4px solid #ffc107;
+}
+
+.satir-tamamlandi {
+    background-color: #d1ecf1 !important;
+    border-left: 4px solid #17a2b8;
+}
+
+.cevap-verildi {
+    background-color: #f0fff0 !important;
+    border-left: 4px solid #28a745 !important;
+}
+
+/* Cevap veren badge */
+.badge-admin {
+    background: linear-gradient(135deg, #ffcc80, #ffa726);
+    color: #e65100;
+    border: 1px solid #ffb74d;
+    font-weight: 600;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+}
+
+.badge-bayi {
+    background: linear-gradient(135deg, #c8e6c9, #81c784);
+    color: #1b5e20;
+    border: 1px solid #a5d6a7;
+    font-weight: 600;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+}
+
+/* Durum select */
+.durum-select {
+    font-size: 0.75rem;
+    padding: 5px 8px;
+    border-radius: 6px;
+    min-width: 130px;
+    cursor: pointer;
+    border: 1px solid #ced4da;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+/* Durum select renkleri */
+.durum-yeni {
+    background-color: #f8f9fa !important;
+    color: #6c757d !important;
+}
+
+.durum-degerlendirmede {
+    background-color: #fff8e1 !important;
+    color: #856404 !important;
+}
+
+.durum-onaylandi {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+}
+
+.durum-uygulandi {
+    background-color: #cce5ff !important;
+    color: #004085 !important;
+}
+
+.durum-reddedildi {
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+}
+
+.durum-ertelendi {
+    background-color: #fff3cd !important;
+    color: #856404 !important;
+}
+
+.durum-tamamlandi {
+    background-color: #d1ecf1 !important;
+    color: #0c5460 !important;
+}
+
+/* Durum hücresi */
+.durum-hucresi {
+    min-width: 150px;
+    max-width: 180px;
+}
+
+/* İçerik gösterimi */
+.metin-kisaltma {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+    line-height: 1.4;
+    max-height: 2.8em;
+}
+
+/* Cevap sütunu stili */
+.cevap-sutunu {
+    min-width: 220px;
+    max-width: 280px;
+}
+
+.cevap-icerik {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 5px;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    max-height: 100px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+    .cevap-icerik:hover {
+        background-color: #e9ecef;
+        cursor: pointer;
+    }
+
+.cevap-veren {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+/* Cevap yaz butonu */
+.cevap-yaz {
+    transition: all 0.3s ease;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+}
+
+    .cevap-yaz:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+/* Cevap düzenle butonu */
+.cevap-duzenle {
+    transition: all 0.3s ease;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+}
+
+    .cevap-duzenle:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+/* Boş durum */
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+}
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #dee2e6;
+    }
+
+/* Arama */
+.search-box {
+    max-width: 300px;
+}
+
+/* Butonlar */
+.aksiyon-btn {
+    padding: 4px 8px;
+    margin: 0 2px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+    .aksiyon-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+/* Kullanıcı info */
+.user-info-badge {
+    background: linear-gradient(135deg, #e1bee7, #ba68c8);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.bayi-info {
+    background: linear-gradient(135deg, #c8e6c9, #81c784);
+    color: #1b5e20;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    margin-right: 10px;
+}
+
+/* Modal özelleştirmeleri */
+.modal-cevap-textarea {
+    min-height: 120px;
+    resize: vertical;
+    font-size: 0.9rem;
+}
+
+.modal-durum-info {
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-left: 4px solid #4a4a8a;
+}
+
+    .modal-durum-info strong {
+        color: #2e2e5d;
+    }
+
+/* Gönderen bilgisi */
+.gonderen-info {
+    font-weight: 500;
+    color: #495057;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .metin-kisaltma {
+        max-width: 150px;
+    }
+
+    .durum-select {
+        min-width: 100px;
+    }
+
+    .durum-hucresi {
+        min-width: 120px;
+    }
+
+    .cevap-sutunu {
+        min-width: 180px;
+    }
+}
+
+

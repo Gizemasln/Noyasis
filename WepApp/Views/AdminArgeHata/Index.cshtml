@@ -13,342 +13,9 @@
     var isBayi = kullaniciTipi == "Bayi";
 }
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+<link href="/WebAdminTheme/assets/css/adminargehata.css" rel="stylesheet" />
 
-<style>
-    /* Ana Container */
-    .argehata-container {
-        font-family: 'Segoe UI', Arial, sans-serif;
-        background: #f8f9fa;
-        min-height: calc(100vh - 80px);
-        padding: 20px;
-    }
 
-    .card {
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
-        overflow: hidden;
-    }
-
-    .card-header {
-        background: linear-gradient(135deg, #2e2e5d, #4a4a8a);
-        color: white;
-        padding: 15px 20px;
-    }
-
-    .table th {
-        background: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        font-weight: 600;
-        color: #2e2e5d;
-        padding: 12px 8px;
-        font-size: 0.85rem;
-    }
-
-    .table td {
-        padding: 10px 8px;
-        vertical-align: middle;
-        font-size: 0.8rem;
-        transition: all 0.3s ease;
-    }
-
-    /* Durum badge renkleri */
-    .badge-ar-ge {
-        background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-        color: #0d47a1;
-        border: 1px solid #90caf9;
-        font-weight: 600;
-        padding: 4px 8px;
-        border-radius: 6px;
-        font-size: 0.75rem;
-    }
-
-    .badge-hata {
-        background: linear-gradient(135deg, #ffebee, #ffcdd2);
-        color: #b71c1c;
-        border: 1px solid #ef9a9a;
-        font-weight: 600;
-        padding: 4px 8px;
-        border-radius: 6px;
-        font-size: 0.75rem;
-    }
-
-    /* Satır renkleri */
-    .satir-yeni {
-        background-color: #f8f9fa !important;
-        border-left: 4px solid #6c757d;
-    }
-
-    .satir-degerlendirmede {
-        background-color: #fff8e1 !important;
-        border-left: 4px solid #ffb300;
-    }
-
-    .satir-onaylandi {
-        background-color: #d4edda !important;
-        border-left: 4px solid #28a745;
-    }
-
-    .satir-uygulandi {
-        background-color: #cce5ff !important;
-        border-left: 4px solid #007bff;
-    }
-
-    .satir-reddedildi {
-        background-color: #f8d7da !important;
-        border-left: 4px solid #dc3545;
-    }
-
-    .satir-ertelendi {
-        background-color: #fff3cd !important;
-        border-left: 4px solid #ffc107;
-    }
-
-    .satir-tamamlandi {
-        background-color: #d1ecf1 !important;
-        border-left: 4px solid #17a2b8;
-    }
-
-    .cevap-verildi {
-        background-color: #f0fff0 !important;
-        border-left: 4px solid #28a745 !important;
-    }
-
-    /* Cevap veren badge */
-    .badge-admin {
-        background: linear-gradient(135deg, #ffcc80, #ffa726);
-        color: #e65100;
-        border: 1px solid #ffb74d;
-        font-weight: 600;
-        padding: 3px 6px;
-        border-radius: 4px;
-        font-size: 0.7rem;
-    }
-
-    .badge-bayi {
-        background: linear-gradient(135deg, #c8e6c9, #81c784);
-        color: #1b5e20;
-        border: 1px solid #a5d6a7;
-        font-weight: 600;
-        padding: 3px 6px;
-        border-radius: 4px;
-        font-size: 0.7rem;
-    }
-
-    /* Durum select */
-    .durum-select {
-        font-size: 0.75rem;
-        padding: 5px 8px;
-        border-radius: 6px;
-        min-width: 130px;
-        cursor: pointer;
-        border: 1px solid #ced4da;
-        transition: all 0.2s;
-        font-weight: 500;
-    }
-
-    /* Durum select renkleri */
-    .durum-yeni {
-        background-color: #f8f9fa !important;
-        color: #6c757d !important;
-    }
-
-    .durum-degerlendirmede {
-        background-color: #fff8e1 !important;
-        color: #856404 !important;
-    }
-
-    .durum-onaylandi {
-        background-color: #d4edda !important;
-        color: #155724 !important;
-    }
-
-    .durum-uygulandi {
-        background-color: #cce5ff !important;
-        color: #004085 !important;
-    }
-
-    .durum-reddedildi {
-        background-color: #f8d7da !important;
-        color: #721c24 !important;
-    }
-
-    .durum-ertelendi {
-        background-color: #fff3cd !important;
-        color: #856404 !important;
-    }
-
-    .durum-tamamlandi {
-        background-color: #d1ecf1 !important;
-        color: #0c5460 !important;
-    }
-
-    /* Durum hücresi */
-    .durum-hucresi {
-        min-width: 150px;
-        max-width: 180px;
-    }
-
-    /* İçerik gösterimi */
-    .metin-kisaltma {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 250px;
-        line-height: 1.4;
-        max-height: 2.8em;
-    }
-
-    /* Cevap sütunu stili */
-    .cevap-sutunu {
-        min-width: 220px;
-        max-width: 280px;
-    }
-
-    .cevap-icerik {
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        padding: 8px;
-        margin-bottom: 5px;
-        font-size: 0.8rem;
-        line-height: 1.4;
-        max-height: 100px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-
-        .cevap-icerik:hover {
-            background-color: #e9ecef;
-            cursor: pointer;
-        }
-
-    .cevap-veren {
-        font-size: 0.75rem;
-        font-weight: 600;
-        margin-top: 5px;
-    }
-
-    /* Cevap yaz butonu */
-    .cevap-yaz {
-        transition: all 0.3s ease;
-        font-size: 0.75rem;
-        padding: 4px 10px;
-    }
-
-        .cevap-yaz:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-    /* Cevap düzenle butonu */
-    .cevap-duzenle {
-        transition: all 0.3s ease;
-        font-size: 0.7rem;
-        padding: 2px 6px;
-    }
-
-        .cevap-duzenle:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-    /* Boş durum */
-    .empty-state {
-        text-align: center;
-        padding: 40px;
-        color: #6c757d;
-    }
-
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            color: #dee2e6;
-        }
-
-    /* Arama */
-    .search-box {
-        max-width: 300px;
-    }
-
-    /* Butonlar */
-    .aksiyon-btn {
-        padding: 4px 8px;
-        margin: 0 2px;
-        font-size: 0.75rem;
-        border-radius: 4px;
-        transition: all 0.2s;
-    }
-
-        .aksiyon-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-    /* Kullanıcı info */
-    .user-info-badge {
-        background: linear-gradient(135deg, #e1bee7, #ba68c8);
-        color: white;
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        font-weight: 500;
-    }
-
-    .bayi-info {
-        background: linear-gradient(135deg, #c8e6c9, #81c784);
-        color: #1b5e20;
-        padding: 5px 10px;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        margin-right: 10px;
-    }
-
-    /* Modal özelleştirmeleri */
-    .modal-cevap-textarea {
-        min-height: 120px;
-        resize: vertical;
-        font-size: 0.9rem;
-    }
-
-    .modal-durum-info {
-        background-color: #f8f9fa;
-        border-radius: 6px;
-        padding: 10px;
-        margin-bottom: 15px;
-        border-left: 4px solid #4a4a8a;
-    }
-
-        .modal-durum-info strong {
-            color: #2e2e5d;
-        }
-
-    /* Responsive */
-    @@media (max-width: 768px) {
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        .metin-kisaltma {
-            max-width: 150px;
-        }
-
-        .durum-select {
-            min-width: 100px;
-        }
-
-        .durum-hucresi {
-            min-width: 120px;
-        }
-
-        .cevap-sutunu {
-            min-width: 180px;
-        }
-    }
-</style>
 
 <div class="argehata-container">
     <div class="container-fluid">
@@ -492,12 +159,32 @@
                                     </select>
                                 </div>
                                 <!-- Müşteri Arama -->
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <label class="form-label fw-bold small">Müşteri / Bayi</label>
                                     <input type="text" class="form-control form-control-sm" id="musteriFiltre" placeholder="Müşteri veya bayi ara...">
                                 </div>
 
-                               
+                                <!-- YENİ: Seçim ve İşlem Butonları Alanı -->
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <div class="d-flex flex-column w-100">
+                                        <label class="form-label fw-bold small invisible" style="user-select: none;">İşlemler</label> <!-- Görünmez label, hizalamayı düzeltir -->
+                                        <div class="d-flex align-items-center gap-2 bg-light p-2 rounded border">
+                                            <!-- Seçili Kayıt Bilgisi -->
+                                            <div id="seciliKayitBilgi" class="small text-muted flex-grow-1" style="min-width: 120px;">
+                                                <i class="fas fa-info-circle me-1"></i> Kayıt seçilmedi
+                                            </div>
+                                            <!-- Taşınan Butonlar -->
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <button type="button" class="btn btn-outline-primary aksiyon-btn" id="seciliDetayGoster" title="Seçili Bildirimin Detaylarını Gör" data-button-permission="detay">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-outline-danger aksiyon-btn" id="seciliSil" title="Seçili Bildirimi Sil" disabled data-button-permission="sil">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <!-- Aktif Filtreler -->
                                 <div class="col-12 mt-3" id="aktifFiltreler" style="display: none;">
@@ -514,19 +201,19 @@
                             <table class="table table-hover mb-0">
                                 <thead>
                                     <tr>
-                                        <th width="60">ID</th>
-                                        <th width="100">Tip</th>
-                                        <th width="120">Ad Soyad</th>
+                                        <th width="50">Seç</th>
+                                        <th width="50">ID</th>
+                                        <th width="50">Tip</th>
+                                        <th width="120">Ad/Soyad</th>
                                         <th width="150">Müşteri</th>
                                         <th width="120">Bayi</th>
-                                        <th width="120">Lisans Tipi</th>
-                                        <th width="120">Lisans No</th>
-                                        <th width="200">İçerik</th>
+                                        <th width="120">L. Tipi</th>
+                                        <th width="50">L. No</th>
+                                        <th width="50">İçerik</th>
                                         <th width="80">Dosya</th>
-                                        <th width="220">Cevap</th>
-                                        <th width="100" class="durum-hucresi">Durum</th>
-                                        <th width="120">Tarih</th>
-                                        <th width="120" class="text-center">İşlemler</th>
+                                        <th width="50">Cevap</th>
+                                        <th width="50" class="durum-hucresi">Durum</th>
+                                        <th width="50">Tarih</th>
                                     </tr>
                                 </thead>
                                 <tbody id="bildirimTablosu">
@@ -607,6 +294,12 @@
                                             var silebilir = isAdmin;
 
                                             <tr data-bildirim-id="@bildirim.Id" class="@satirCss">
+                                                <td class="text-center">
+                                                    <div class="form-check" onclick="event.stopPropagation();">
+                                                        <!-- Satır tıklaması burada durmalı -->
+                                                        <input class="form-check-input bildirim-sec-radio" type="radio" name="seciliBildirimRadio" value="@bildirim.Id" id="secim_@bildirim.Id">
+                                                    </div>
+                                                </td>
                                                 <td><small class="text-muted">#@bildirim.Id</small></td>
 
                                                 <td>
@@ -718,32 +411,14 @@
                                                     <small class="text-muted">@bildirim.EklenmeTarihi.ToString("dd.MM.yy HH:mm")</small>
                                                 </td>
 
-                                                <td class="text-center">
-                                                    <div class="btn-group btn-group-sm">
-                                                        <button type="button"
-                                                                class="btn btn-outline-primary btn-sm aksiyon-btn detay-goster" data-button-permission="detay"
-                                                                data-bildirim-id="@bildirim.Id"
-                                                                title="Detayları Gör">
-                                                            <i class="fas fa-eye"></i>
-                                                        </button>
-                                                      
-                                                            <button type="button"
-                                                                    class="btn btn-outline-danger btn-sm aksiyon-btn sil-bildirim" data-button-permission="sil"
-                                                                    data-bildirim-id="@bildirim.Id"
-                                                                    data-adsoyad="@bildirim.Adi @bildirim.Soyadi"
-                                                                    title="Sil">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        
-                                                    </div>
-                                                </td>
+                                              
                                             </tr>
                                         }
                                     }
                                     else
                                     {
                                         <tr>
-                                            <td colspan="12" class="empty-state">
+                                            <td colspan="13" class="empty-state">
                                                 <i class="fas fa-inbox fa-2x mb-2"></i>
                                                 <h5>Henüz bildirim bulunmuyor</h5>
                                                 <p>Henüz bildirim eklenmemiş.</p>
@@ -967,39 +642,40 @@
                     $('#cevapMetni').focus();
                 }, 500);
             });
-        $(document).on('click', '.cevap-duzenle', async function() {
-            const bildirimId = $(this).data('bildirim-id');
 
-            try {
-                const response = await $.ajax({
-                    url: '/AdminArgeHata/GetirCevap',
-                    type: 'GET',
-                    data: { id: bildirimId },
-                    dataType: 'json'
-                });
+            $(document).on('click', '.cevap-duzenle', async function() {
+                const bildirimId = $(this).data('bildirim-id');
 
-                if (response.success) {
-                    $('#cevapModalBaslik').text('Cevap Düzenle');
+                try {
+                    const response = await $.ajax({
+                        url: '/AdminArgeHata/GetirCevap',
+                        type: 'GET',
+                        data: { id: bildirimId },
+                        dataType: 'json'
+                    });
 
-                    // Düzeltme burada: response.cevapMetni kullanıyoruz
-                    $('#cevapMetni').val(response.cevapMetni || '');
+                    if (response.success) {
+                        $('#cevapModalBaslik').text('Cevap Düzenle');
 
-                    $('#cevapKaydetBtn')
-                        .data('islem', 'guncelle')
-                        .data('bildirim-id', bildirimId);
+                        // Düzeltme burada: response.cevapMetni kullanıyoruz
+                        $('#cevapMetni').val(response.cevapMetni || '');
 
-                    const cevapModal = new bootstrap.Modal(document.getElementById('cevapYazModal'));
-                    cevapModal.show();
+                        $('#cevapKaydetBtn')
+                            .data('islem', 'guncelle')
+                            .data('bildirim-id', bildirimId);
 
-                    setTimeout(() => $('#cevapMetni').focus(), 300);
-                } else {
-                    toastr.error(response.message || 'Cevap bilgileri alınamadı.');
+                        const cevapModal = new bootstrap.Modal(document.getElementById('cevapYazModal'));
+                        cevapModal.show();
+
+                        setTimeout(() => $('#cevapMetni').focus(), 300);
+                    } else {
+                        toastr.error(response.message || 'Cevap bilgileri alınamadı.');
+                    }
+                } catch (err) {
+                    console.error('GetirCevap hatası:', err);
+                    toastr.error('Sunucu ile iletişim kurulamadı.');
                 }
-            } catch (err) {
-                console.error('GetirCevap hatası:', err);
-                toastr.error('Sunucu ile iletişim kurulamadı.');
-            }
-        });
+            });
 
             // Cevap görüntüle butonu
             $(document).on('click', '.cevap-goruntule', async function() {
@@ -1077,93 +753,94 @@
                     toastr.error('Cevap bilgileri alınamadı.');
                 }
             });
-        // Cevap kaydet butonu (yeni + güncelle)
-        $('#cevapKaydetBtn').click(async function() {
-            const $btn = $(this);
-            const islem = $btn.data('islem');
-            const bildirimId = $btn.data('bildirim-id');
-            const cevap = $('#cevapMetni').val().trim();
 
-            // Validasyon
-            if (!cevap) {
-                toastr.warning('Lütfen cevap metnini giriniz.');
-                $('#cevapMetni').focus();
-                return;
-            }
-            if (cevap.length < 10) {
-                toastr.warning('Cevap metni en az 10 karakter olmalıdır.');
-                $('#cevapMetni').focus();
-                return;
-            }
+            // Cevap kaydet butonu (yeni + güncelle)
+            $('#cevapKaydetBtn').click(async function() {
+                const $btn = $(this);
+                const islem = $btn.data('islem');
+                const bildirimId = $btn.data('bildirim-id');
+                const cevap = $('#cevapMetni').val().trim();
 
-            // Butonu devre dışı bırak + loading göster
-            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Kaydediliyor...');
-
-            try {
-                let url = '';
-                if (islem === 'yeni') {
-                    url = '/AdminArgeHata/CevapVer';
-                } else {
-                    url = '/AdminArgeHata/CevapGuncelle';
+                // Validasyon
+                if (!cevap) {
+                    toastr.warning('Lütfen cevap metnini giriniz.');
+                    $('#cevapMetni').focus();
+                    return;
+                }
+                if (cevap.length < 10) {
+                    toastr.warning('Cevap metni en az 10 karakter olmalıdır.');
+                    $('#cevapMetni').focus();
+                    return;
                 }
 
-                const response = await $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: {
-                        id: bildirimId,
-                        aciklama: cevap,
-                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()  // ← BU SATIR ÇOK ÖNEMLİ!
-                    },
-                    dataType: 'json'
-                });
+                // Butonu devre dışı bırak + loading göster
+                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Kaydediliyor...');
 
-                if (response.success) {
-                    // Modal'ı kapat
-                    const cevapModal = bootstrap.Modal.getInstance(document.getElementById('cevapYazModal'));
-                    cevapModal.hide();
+                try {
+                    let url = '';
+                    if (islem === 'yeni') {
+                        url = '/AdminArgeHata/CevapVer';
+                    } else {
+                        url = '/AdminArgeHata/CevapGuncelle';
+                    }
 
-                    // Satırı güncelle (tablodaki görünümü yenile)
-                    const $row = $(`tr[data-bildirim-id="${bildirimId}"]`);
-                    const kisaCevap = cevap.length > 50 ? cevap.substring(0, 50) + '...' : cevap;
+                    const response = await $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {
+                            id: bildirimId,
+                            aciklama: cevap,
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()  // ← BU SATIR ÇOK ÖNEMLİ!
+                        },
+                        dataType: 'json'
+                    });
 
-                    const cevapVerenBadge = response.cevapVerenTip === 'Admin' ? 'badge-admin' : 'badge-bayi';
+                    if (response.success) {
+                        // Modal'ı kapat
+                        const cevapModal = bootstrap.Modal.getInstance(document.getElementById('cevapYazModal'));
+                        cevapModal.hide();
 
-                    const cevapHtml = `
-                        <div class="cevap-icerik" title="${cevap}">
-                            ${kisaCevap}
-                        </div>
+                        // Satırı güncelle (tablodaki görünümü yenile)
+                        const $row = $(`tr[data-bildirim-id="${bildirimId}"]`);
+                        const kisaCevap = cevap.length > 50 ? cevap.substring(0, 50) + '...' : cevap;
 
-                        <div class="mt-1">
-                            <button type="button" class="btn btn-sm btn-outline-warning cevap-duzenle" data-bildirim-id="${bildirimId}">
-                                <i class="fas fa-edit me-1"></i>Düzenle
-                            </button>
-                        </div>
-                    `;
+                        const cevapVerenBadge = response.cevapVerenTip === 'Admin' ? 'badge-admin' : 'badge-bayi';
 
-                    $row.find('.cevap-sutunu').html(cevapHtml);
-                    $row.addClass('cevap-verildi');
+                        const cevapHtml = `
+                            <div class="cevap-icerik" title="${cevap}">
+                                ${kisaCevap}
+                            </div>
 
-                    toastr.success(response.message || 'Cevabınız başarıyla kaydedildi.');
-                } else {
-                    toastr.error(response.message || 'Kayıt sırasında bir hata oluştu.');
+                            <div class="mt-1">
+                                <button type="button" class="btn btn-sm btn-outline-warning cevap-duzenle" data-bildirim-id="${bildirimId}">
+                                    <i class="fas fa-edit me-1"></i>Düzenle
+                                </button>
+                            </div>
+                        `;
+
+                        $row.find('.cevap-sutunu').html(cevapHtml);
+                        $row.addClass('cevap-verildi');
+
+                        toastr.success(response.message || 'Cevabınız başarıyla kaydedildi.');
+                    } else {
+                        toastr.error(response.message || 'Kayıt sırasında bir hata oluştu.');
+                    }
+                } catch (err) {
+                    console.error('AJAX Hatası:', err);
+
+                    if (err.status === 401 || err.status === 403) {
+                        toastr.error('Bu işlem için giriş yapmanız gerekmektedir.');
+                    } else if (err.status === 400) {
+                        toastr.error('Geçersiz istek. Lütfen formu kontrol edin.');
+                    } else if (err.status === 404) {
+                        toastr.error('Güncelleme servisi bulunamadı.');
+                    } else {
+                        toastr.error('Sunucu ile bağlantı kurulamadı. Lütfen daha sonra tekrar deneyin.');
+                    }
+                } finally {
+                    $btn.prop('disabled', false).html('<i class="fas fa-paper-plane me-2"></i>Gönder');
                 }
-            } catch (err) {
-                console.error('AJAX Hatası:', err);
-
-                if (err.status === 401 || err.status === 403) {
-                    toastr.error('Bu işlem için giriş yapmanız gerekmektedir.');
-                } else if (err.status === 400) {
-                    toastr.error('Geçersiz istek. Lütfen formu kontrol edin.');
-                } else if (err.status === 404) {
-                    toastr.error('Güncelleme servisi bulunamadı.');
-                } else {
-                    toastr.error('Sunucu ile bağlantı kurulamadı. Lütfen daha sonra tekrar deneyin.');
-                }
-            } finally {
-                $btn.prop('disabled', false).html('<i class="fas fa-paper-plane me-2"></i>Gönder');
-            }
-        });
+            });
 
             // Cevap içeriğine tıklayınca tamamını göster
             $(document).on('click', '.cevap-icerik', async function() {
@@ -1173,11 +850,8 @@
 
             });
 
-            // Detay göster
-            $(document).on('click', '.detay-goster', async function (e) {
-                e.stopPropagation();
-                const bildirimId = $(this).data('bildirim-id');
-
+            // ============= DETAY GÖSTERME FONKSİYONU (ÜST BUTON İÇİN) =============
+            async function detayGoster(bildirimId) {
                 try {
                     const detayModal = new bootstrap.Modal(document.getElementById('detayModal'));
                     detayModal.show();
@@ -1212,7 +886,7 @@
                                             </span>
                                         </div>
                                         <div class="card-body">
-                                           
+
                                             <div class="mb-2">
                                                 <strong>Cevap Tarihi:</strong> ${response.distributorCevapTarihi || '-'}
                                             </div>
@@ -1226,7 +900,7 @@
                         }
 
                         let islemButonlari = '';
-                  
+
                         if (response.durumDuzenleyebilir && !response.distributorCevap) {
                             islemButonlari += `<button type="button" class="btn btn-info btn-sm ms-2 durum-guncelle-modal" data-bildirim-id="${response.id}"><i class="fas fa-sync me-1"></i>Durum Güncelle</button>`;
                         }
@@ -1383,141 +1057,164 @@
                         '</div>'
                     );
                 }
+            }
+
+            // ============= SİLME FONKSİYONU =============
+            async function bildirimSil(bildirimId) {
+                if (!bildirimId) return;
+
+                try {
+                    const response = await $.ajax({
+                        url: '/AdminArgeHata/Sil',
+                        type: 'POST',
+                        data: { Id: bildirimId },
+                        dataType: 'json'
+                    });
+
+                    if (response.success) {
+                        // Satırı tablodan kaldır
+                        $(`tr[data-bildirim-id="${bildirimId}"]`).remove();
+
+                        // Tablo boşsa boş durum mesajını göster
+                        if ($('#bildirimTablosu tr:not(.empty-state)').length === 0) {
+                            $('#bildirimTablosu').html(`
+                                <tr>
+                                    <td colspan="14" class="empty-state">
+                                        <i class="fas fa-inbox fa-2x mb-2"></i>
+                                        <h5>Henüz bildirim bulunmuyor</h5>
+                                        <p>Henüz bildirim eklenmemiş.</p>
+                                    </td>
+                                </tr>
+                            `);
+                        }
+
+                        toastr.success(response.message || 'Kayıt başarıyla silindi.');
+                        return true;
+                    } else {
+                        toastr.error(response.message || 'Silme işlemi başarısız oldu.');
+                        return false;
+                    }
+                } catch (error) {
+                    console.error('Hata:', error);
+                    if (error.status === 401) {
+                        toastr.error('Bu işlem için yetkiniz bulunmamaktadır.');
+                    } else if (error.responseJSON && error.responseJSON.message) {
+                        toastr.error(error.responseJSON.message);
+                    } else {
+                        toastr.error('Silme işlemi sırasında bir hata oluştu.');
+                    }
+                    return false;
+                }
+            }
+
+            // ============= YENİ: SATIR SEÇME VE ÜST BUTONLAR =============
+            let suAnSeciliBildirimId = null;
+            const $seciliDetayBtn = $('#seciliDetayGoster');
+            const $seciliSilBtn = $('#seciliSil');
+            const $seciliBilgiDiv = $('#seciliKayitBilgi');
+
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#bildirimTablosu tr[data-bildirim-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse (sonsuz döngüyü engelle)
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('select') && !$(e.target).is('button')) {
+                    const $radio = $(this).find('.bildirim-sec-radio');
+                    $radio.prop('checked', true).trigger('change'); // change event'ini tetikle
+                }
             });
 
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.bildirim-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliBildirimId = $(this).val();
+                    const $seciliSatir = $(this).closest('tr');
+                    const bildirimId = suAnSeciliBildirimId;
+                    const adSoyad = $seciliSatir.find('td:nth-child(4)').text().trim(); // Ad Soyad sütunu
 
-             $(document).on('click', '.sil-bildirim', function (e) {
-            e.stopPropagation();
-            seciliBildirimId = $(this).data('bildirim-id');
-            $('#silinecekAdSoyad').text($(this).data('adsoyad'));
-            const silModal = new bootstrap.Modal(document.getElementById('silModal'));
-            silModal.show();
-        });
+                    // Bilgiyi güncelle
+                    $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: #${bildirimId} - ${adSoyad}`);
 
-        $('#silBtn').click(async function() {
-            if (!seciliBildirimId) return;
+                    // Butonları aktif et
+                    $seciliDetayBtn.prop('disabled', false);
+                    $seciliSilBtn.prop('disabled', false);
+                }
+            });
 
-            const $btn = $(this);
-            $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Siliniyor...');
+            // Üstteki "Detay Göster" butonu
+            $seciliDetayBtn.click(function() {
+                if (suAnSeciliBildirimId) {
+                    // Doğrudan detay fonksiyonunu çağır
+                    detayGoster(suAnSeciliBildirimId);
+                } else {
+                    toastr.warning('Lütfen önce bir bildirim seçin.');
+                }
+            });
 
-            try {
-                const response = await $.ajax({
-                    url: '/AdminArgeHata/Sil',
-                    type: 'POST',
-                    data: { Id: seciliBildirimId },
-                    dataType: 'json'
-                });
+            // Üstteki "Sil" butonu
+            $seciliSilBtn.click(function() {
+                if (suAnSeciliBildirimId) {
+                    const $seciliSatir = $(`tr[data-bildirim-id="${suAnSeciliBildirimId}"]`);
+                    const adSoyad = $seciliSatir.find('td:nth-child(4)').text().trim();
 
-                if (response.success) {
+                    // Global değişkenleri set et ve modalı göster
+                    seciliBildirimId = suAnSeciliBildirimId; // Mevcut silme kodundaki değişken
+                    $('#silinecekAdSoyad').text(adSoyad);
+                    const silModal = new bootstrap.Modal(document.getElementById('silModal'));
+                    silModal.show();
+                } else {
+                    toastr.warning('Lütfen önce bir bildirim seçin.');
+                }
+            });
+
+            // Silme butonu (modal içindeki)
+            $('#silBtn').click(async function() {
+                if (!seciliBildirimId) return;
+
+                const $btn = $(this);
+                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Siliniyor...');
+
+                const basarili = await bildirimSil(seciliBildirimId);
+
+                if (basarili) {
                     // Modal'ı kapat
                     const silModal = bootstrap.Modal.getInstance(document.getElementById('silModal'));
                     silModal.hide();
 
-                    // Satırı tablodan kaldır
-                    $(`tr[data-bildirim-id="${seciliBildirimId}"]`).remove();
-
-                    // Tablo boşsa boş durum mesajını göster
-                    if ($('#bildirimTablosu tr:not(.empty-state)').length === 0) {
-                        $('#bildirimTablosu').html(`
-                            <tr>
-                                <td colspan="12" class="empty-state">
-                                    <i class="fas fa-inbox fa-2x mb-2"></i>
-                                    <h5>Henüz bildirim bulunmuyor</h5>
-                                    <p>Henüz bildirim eklenmemiş.</p>
-                                </td>
-                            </tr>
-                        `);
+                    // Seçimi temizle
+                    if (suAnSeciliBildirimId == seciliBildirimId) {
+                        $(`.bildirim-sec-radio[value="${suAnSeciliBildirimId}"]`).prop('checked', false);
+                        suAnSeciliBildirimId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle me-1"></i> Kayıt seçilmedi`);
+                        $seciliDetayBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
                     }
 
-                    toastr.success(response.message || 'Kayıt başarıyla silindi.');
-                } else {
-                    toastr.error(response.message || 'Silme işlemi başarısız oldu.');
+                    seciliBildirimId = null;
                 }
-            } catch (error) {
-                console.error('Hata:', error);
-                if (error.status === 401) {
-                    toastr.error('Bu işlem için yetkiniz bulunmamaktadır.');
-                } else if (error.responseJSON && error.responseJSON.message) {
-                    toastr.error(error.responseJSON.message);
-                } else {
-                    toastr.error('Silme işlemi sırasında bir hata oluştu.');
-                }
-            } finally {
+
                 $btn.prop('disabled', false).html('<i class="fas fa-trash me-2"></i>Sil');
+            });
+
+            // Modal kapandıktan sonra seçimi temizleme (iptal durumunda)
+            $('#silModal').on('hidden.bs.modal', function() {
+                // Sadece silme işlemi başarısız olduysa veya iptal edildiyse
+                // Ama seçili öğeyi temizleme
                 seciliBildirimId = null;
-            }
-        });
+            });
 
-        // Modal kapatıldığında seçili ID'yi sıfırla
-        $('#silModal').on('hidden.bs.modal', function() {
-            seciliBildirimId = null;
-        });
-              // ============= AR-GE/HATA FİLTRELEME SİSTEMİ =============
-        let aktifFiltreler = {
-            baslangicTarih: null,
-            bitisTarih: null,
-            tip: '',
-            durumId: 0,
-            lisansTipId: 0,
-            cevapDurum: '',
-            musteriFiltre: '',
-            siralama: 'yeni'
-        };
+            // Filtreleme sonrası seçimi temizle (çünkü satırlar yeniden düzenleniyor)
+            $('#filtreUygula, #filtreleriTemizle').click(function() {
+                if (suAnSeciliBildirimId) {
+                    $(`.bildirim-sec-radio[value="${suAnSeciliBildirimId}"]`).prop('checked', false);
+                    suAnSeciliBildirimId = null;
+                    $seciliBilgiDiv.html(`<i class="fas fa-info-circle me-1"></i> Kayıt seçilmedi`);
+                    $seciliDetayBtn.prop('disabled', true);
+                    $seciliSilBtn.prop('disabled', true);
+                }
+            });
+            // ============================================================
 
-        // Tarih hızlı seçimler
-        $('.tarih-hizli').click(function() {
-            const periyot = $(this).data('periyot');
-            const bugun = new Date();
-            let baslangic = new Date();
-            let bitis = new Date();
-
-            switch(periyot) {
-                case 'bugun':
-                    baslangic = new Date(bugun.setHours(0,0,0,0));
-                    bitis = new Date(bugun.setHours(23,59,59,999));
-                    break;
-                case 'hafta':
-                    // Pazartesi'den bugüne
-                    const gun = bugun.getDay();
-                    const pazartesiFarki = gun === 0 ? 6 : gun - 1;
-                    baslangic = new Date(bugun);
-                    baslangic.setDate(bugun.getDate() - pazartesiFarki);
-                    baslangic.setHours(0,0,0,0);
-                    bitis = new Date();
-                    bitis.setHours(23,59,59,999);
-                    break;
-                case 'ay':
-                    baslangic = new Date(bugun.getFullYear(), bugun.getMonth(), 1);
-                    baslangic.setHours(0,0,0,0);
-                    bitis = new Date(bugun.getFullYear(), bugun.getMonth() + 1, 0);
-                    bitis.setHours(23,59,59,999);
-                    break;
-            }
-
-            $('#baslangicTarih').val(formatDateForInput(baslangic));
-            $('#bitisTarih').val(formatDateForInput(bitis));
-
-            filtreUygula();
-        });
-
-        // Filtre uygula butonu
-        $('#filtreUygula').click(function() {
-            filtreUygula();
-        });
-
-        // Filtreleri temizle
-        $('#filtreleriTemizle').click(function() {
-            $('#baslangicTarih').val('');
-            $('#bitisTarih').val('');
-            $('#tipFiltre').val('');
-            $('#durumFiltre').val('0');
-            $('#lisansTipFiltre').val('0');
-            $('#cevapDurumFiltre').val('');
-            $('#musteriFiltre').val('');
-            $('#siralamaFiltre').val('yeni');
-            $('#bildirimArama').val('');
-
-            aktifFiltreler = {
+            // ============= AR-GE/HATA FİLTRELEME SİSTEMİ =============
+            let aktifFiltreler = {
                 baslangicTarih: null,
                 bitisTarih: null,
                 tip: '',
@@ -1528,328 +1225,378 @@
                 siralama: 'yeni'
             };
 
-            $('#aktifFiltreler').hide();
-            $('#filtreEtiketleri').empty();
+            // Tarih hızlı seçimler
+            $('.tarih-hizli').click(function() {
+                const periyot = $(this).data('periyot');
+                const bugun = new Date();
+                let baslangic = new Date();
+                let bitis = new Date();
 
-            // Tüm satırları göster
-            $('#bildirimTablosu tr').show();
+                switch(periyot) {
+                    case 'bugun':
+                        baslangic = new Date(bugun.setHours(0,0,0,0));
+                        bitis = new Date(bugun.setHours(23,59,59,999));
+                        break;
+                    case 'hafta':
+                        // Pazartesi'den bugüne
+                        const gun = bugun.getDay();
+                        const pazartesiFarki = gun === 0 ? 6 : gun - 1;
+                        baslangic = new Date(bugun);
+                        baslangic.setDate(bugun.getDate() - pazartesiFarki);
+                        baslangic.setHours(0,0,0,0);
+                        bitis = new Date();
+                        bitis.setHours(23,59,59,999);
+                        break;
+                    case 'ay':
+                        baslangic = new Date(bugun.getFullYear(), bugun.getMonth(), 1);
+                        baslangic.setHours(0,0,0,0);
+                        bitis = new Date(bugun.getFullYear(), bugun.getMonth() + 1, 0);
+                        bitis.setHours(23,59,59,999);
+                        break;
+                }
 
-            filtreleVeSirala();
-        });
+                $('#baslangicTarih').val(formatDateForInput(baslangic));
+                $('#bitisTarih').val(formatDateForInput(bitis));
 
-        // Ana filtreleme fonksiyonu
-        function filtreUygula() {
-            // Filtre değerlerini al
-            const baslangicTarih = $('#baslangicTarih').val();
-            const bitisTarih = $('#bitisTarih').val();
-            const tip = $('#tipFiltre').val();
-            const durumId = parseInt($('#durumFiltre').val());
-            const lisansTipId = parseInt($('#lisansTipFiltre').val());
-            const cevapDurum = $('#cevapDurumFiltre').val();
-            const musteriFiltre = $('#musteriFiltre').val().toLowerCase().trim();
-            const siralama = $('#siralamaFiltre').val();
+                filtreUygula();
+            });
 
-            // Aktif filtreleri güncelle
-            aktifFiltreler = {
-                baslangicTarih: baslangicTarih || null,
-                bitisTarih: bitisTarih || null,
-                tip: tip,
-                durumId: durumId,
-                lisansTipId: lisansTipId,
-                cevapDurum: cevapDurum,
-                musteriFiltre: musteriFiltre,
-                siralama: siralama
-            };
+            // Filtre uygula butonu
+            $('#filtreUygula').click(function() {
+                filtreUygula();
+            });
+
+            // Filtreleri temizle
+            $('#filtreleriTemizle').click(function() {
+                $('#baslangicTarih').val('');
+                $('#bitisTarih').val('');
+                $('#tipFiltre').val('');
+                $('#durumFiltre').val('0');
+                $('#lisansTipFiltre').val('0');
+                $('#cevapDurumFiltre').val('');
+                $('#musteriFiltre').val('');
+                $('#siralamaFiltre').val('yeni');
+                $('#bildirimArama').val('');
+
+                aktifFiltreler = {
+                    baslangicTarih: null,
+                    bitisTarih: null,
+                    tip: '',
+                    durumId: 0,
+                    lisansTipId: 0,
+                    cevapDurum: '',
+                    musteriFiltre: '',
+                    siralama: 'yeni'
+                };
+
+                $('#aktifFiltreler').hide();
+                $('#filtreEtiketleri').empty();
+
+                // Tüm satırları göster
+                $('#bildirimTablosu tr').show();
+
+                filtreleVeSirala();
+            });
+
+            // Ana filtreleme fonksiyonu
+            function filtreUygula() {
+                // Filtre değerlerini al
+                const baslangicTarih = $('#baslangicTarih').val();
+                const bitisTarih = $('#bitisTarih').val();
+                const tip = $('#tipFiltre').val();
+                const durumId = parseInt($('#durumFiltre').val());
+                const lisansTipId = parseInt($('#lisansTipFiltre').val());
+                const cevapDurum = $('#cevapDurumFiltre').val();
+                const musteriFiltre = $('#musteriFiltre').val().toLowerCase().trim();
+                const siralama = $('#siralamaFiltre').val();
+
+                // Aktif filtreleri güncelle
+                aktifFiltreler = {
+                    baslangicTarih: baslangicTarih || null,
+                    bitisTarih: bitisTarih || null,
+                    tip: tip,
+                    durumId: durumId,
+                    lisansTipId: lisansTipId,
+                    cevapDurum: cevapDurum,
+                    musteriFiltre: musteriFiltre,
+                    siralama: siralama
+                };
+
+                // Filtre etiketlerini göster
+                filtreEtiketleriniGoster();
+
+                // Filtrele ve sırala
+                filtreleVeSirala();
+            }
 
             // Filtre etiketlerini göster
-            filtreEtiketleriniGoster();
+            function filtreEtiketleriniGoster() {
+                const etiketler = [];
+
+                if (aktifFiltreler.baslangicTarih) {
+                    etiketler.push(`<span class="badge bg-primary">Başlangıç: ${formatDateForDisplay(aktifFiltreler.baslangicTarih)}</span>`);
+                }
+                if (aktifFiltreler.bitisTarih) {
+                    etiketler.push(`<span class="badge bg-primary">Bitiş: ${formatDateForDisplay(aktifFiltreler.bitisTarih)}</span>`);
+                }
+                if (aktifFiltreler.tip) {
+                    etiketler.push(`<span class="badge bg-info">Tip: ${aktifFiltreler.tip}</span>`);
+                }
+                if (aktifFiltreler.durumId && aktifFiltreler.durumId !== 0) {
+                    const durumAdi = $('#durumFiltre option:selected').text();
+                    etiketler.push(`<span class="badge bg-success">Durum: ${durumAdi}</span>`);
+                }
+                if (aktifFiltreler.lisansTipId && aktifFiltreler.lisansTipId !== 0) {
+                    const lisansAdi = $('#lisansTipFiltre option:selected').text();
+                    etiketler.push(`<span class="badge bg-secondary">Lisans: ${lisansAdi}</span>`);
+                }
+                if (aktifFiltreler.cevapDurum) {
+                    const cevapAdi = aktifFiltreler.cevapDurum === 'cevapli' ? 'Cevaplı' : 'Cevapsız';
+                    etiketler.push(`<span class="badge bg-warning">${cevapAdi}</span>`);
+                }
+                if (aktifFiltreler.musteriFiltre) {
+                    etiketler.push(`<span class="badge bg-dark">Arama: ${aktifFiltreler.musteriFiltre}</span>`);
+                }
+                if (aktifFiltreler.siralama !== 'yeni') {
+                    const siralamaMetin = {
+                        'eski': 'En Eski',
+                        'tip': 'Tip',
+                        'durum': 'Durum',
+                        'musteri': 'Müşteri',
+                        'cevap': 'Cevap Durumu'
+                    };
+                    etiketler.push(`<span class="badge bg-info">Sıralama: ${siralamaMetin[aktifFiltreler.siralama]}</span>`);
+                }
+
+                if (etiketler.length > 0) {
+                    $('#filtreEtiketleri').html(etiketler.join(' '));
+                    $('#aktifFiltreler').show();
+                } else {
+                    $('#aktifFiltreler').hide();
+                }
+            }
 
             // Filtrele ve sırala
-            filtreleVeSirala();
-        }
+            function filtreleVeSirala() {
+                const $tablo = $('#bildirimTablosu');
+                const $satirlar = $tablo.find('tr:not(.empty-state)');
 
-        // Filtre etiketlerini göster
-        function filtreEtiketleriniGoster() {
-            const etiketler = [];
+                // Eğer hiç satır yoksa çık
+                if ($satirlar.length === 0) return;
 
-            if (aktifFiltreler.baslangicTarih) {
-                etiketler.push(`<span class="badge bg-primary">Başlangıç: ${formatDateForDisplay(aktifFiltreler.baslangicTarih)}</span>`);
-            }
-            if (aktifFiltreler.bitisTarih) {
-                etiketler.push(`<span class="badge bg-primary">Bitiş: ${formatDateForDisplay(aktifFiltreler.bitisTarih)}</span>`);
-            }
-            if (aktifFiltreler.tip) {
-                etiketler.push(`<span class="badge bg-info">Tip: ${aktifFiltreler.tip}</span>`);
-            }
-            if (aktifFiltreler.durumId && aktifFiltreler.durumId !== 0) {
-                const durumAdi = $('#durumFiltre option:selected').text();
-                etiketler.push(`<span class="badge bg-success">Durum: ${durumAdi}</span>`);
-            }
-            if (aktifFiltreler.lisansTipId && aktifFiltreler.lisansTipId !== 0) {
-                const lisansAdi = $('#lisansTipFiltre option:selected').text();
-                etiketler.push(`<span class="badge bg-secondary">Lisans: ${lisansAdi}</span>`);
-            }
-            if (aktifFiltreler.cevapDurum) {
-                const cevapAdi = aktifFiltreler.cevapDurum === 'cevapli' ? 'Cevaplı' : 'Cevapsız';
-                etiketler.push(`<span class="badge bg-warning">${cevapAdi}</span>`);
-            }
-            if (aktifFiltreler.musteriFiltre) {
-                etiketler.push(`<span class="badge bg-dark">Arama: ${aktifFiltreler.musteriFiltre}</span>`);
-            }
-            if (aktifFiltreler.siralama !== 'yeni') {
-                const siralamaMetin = {
-                    'eski': 'En Eski',
-                    'tip': 'Tip',
-                    'durum': 'Durum',
-                    'musteri': 'Müşteri',
-                    'cevap': 'Cevap Durumu'
-                };
-                etiketler.push(`<span class="badge bg-info">Sıralama: ${siralamaMetin[aktifFiltreler.siralama]}</span>`);
-            }
+                let gorunenSatirlar = [];
 
-            if (etiketler.length > 0) {
-                $('#filtreEtiketleri').html(etiketler.join(' '));
-                $('#aktifFiltreler').show();
-            } else {
-                $('#aktifFiltreler').hide();
-            }
-        }
+                // Filtreleme işlemi
+                $satirlar.each(function() {
+                    const $satir = $(this);
 
-        // Filtrele ve sırala
-        function filtreleVeSirala() {
-            const $tablo = $('#bildirimTablosu');
-            const $satirlar = $tablo.find('tr:not(.empty-state)');
+                    // Tarih (sondan 3. sütun - index: -3)
+                    const tarihStr = $satir.find('td:nth-last-child(3) small').text().trim() ||
+                                     $satir.find('td:nth-last-child(3)').text().trim();
+                    const tarih = parseDateTime(tarihStr);
 
-            // Eğer hiç satır yoksa çık
-            if ($satirlar.length === 0) return;
+                    // Tip (3. sütun - çünkü 1.seçim, 2.id, 3.tip)
+                    const tip = $satir.find('td:nth-child(3) .badge').text().trim();
 
-            let gorunenSatirlar = [];
+                    // Durum ID (data attribute)
+                    const durumId = parseInt($satir.data('durum-id') || '0');
 
-            // Filtreleme işlemi
-            $satirlar.each(function() {
-                const $satir = $(this);
+                    // Lisans tipi (7. sütun)
+                    const lisansTipi = $satir.find('td:nth-child(7) .small').text().trim();
 
-                // Tarih (sondan 3. sütun - index: -3)
-                const tarihStr = $satir.find('td:nth-last-child(3) small').text().trim() ||
-                                 $satir.find('td:nth-last-child(3)').text().trim();
-                const tarih = parseDateTime(tarihStr);
+                    // Cevap durumu (11. sütunda cevap var mı?)
+                    const cevapVar = $satir.find('.cevap-icerik').length > 0 ||
+                                     $satir.find('.cevap-veren').length > 0;
 
-                // Tip (2. sütun)
-                const tip = $satir.find('td:nth-child(2) .badge').text().trim();
+                    // Müşteri/Bayi bilgisi (5. ve 6. sütunlar)
+                    const musteriAdi = $satir.find('td:nth-child(5)').text().toLowerCase();
+                    const bayiAdi = $satir.find('td:nth-child(6)').text().toLowerCase();
 
-                // Durum ID (data attribute)
-                const durumId = parseInt($satir.data('durum-id') || '0');
+                    let goster = true;
 
-                // Lisans tipi (6. sütun)
-                const lisansTipi = $satir.find('td:nth-child(6) .small').text().trim();
-
-                // Cevap durumu (9. sütunda cevap var mı?)
-                const cevapVar = $satir.find('.cevap-icerik').length > 0 ||
-                                 $satir.find('.cevap-veren').length > 0 ||
-                                 $satir.find('.cevap-yaz').length === 0;
-
-                // Müşteri/Bayi bilgisi (4. ve 5. sütunlar)
-                const musteriAdi = $satir.find('td:nth-child(4)').text().toLowerCase();
-                const bayiAdi = $satir.find('td:nth-child(5)').text().toLowerCase();
-
-                let goster = true;
-
-                // Tarih filtresi
-                if (aktifFiltreler.baslangicTarih && tarih) {
-                    const baslangic = new Date(aktifFiltreler.baslangicTarih);
-                    baslangic.setHours(0,0,0,0);
-                    if (tarih < baslangic) goster = false;
-                }
-
-                if (goster && aktifFiltreler.bitisTarih && tarih) {
-                    const bitis = new Date(aktifFiltreler.bitisTarih);
-                    bitis.setHours(23,59,59,999);
-                    if (tarih > bitis) goster = false;
-                }
-
-                // Tip filtresi
-                if (goster && aktifFiltreler.tip) {
-                    if (tip !== aktifFiltreler.tip) goster = false;
-                }
-
-                // Durum filtresi
-                if (goster && aktifFiltreler.durumId && aktifFiltreler.durumId !== 0) {
-                    if (durumId !== aktifFiltreler.durumId) goster = false;
-                }
-
-                // Lisans tipi filtresi
-                if (goster && aktifFiltreler.lisansTipId && aktifFiltreler.lisansTipId !== 0) {
-                    const seciliLisansAdi = $('#lisansTipFiltre option:selected').text().toLowerCase();
-                    if (!lisansTipi.toLowerCase().includes(seciliLisansAdi)) {
-                        goster = false;
+                    // Tarih filtresi
+                    if (aktifFiltreler.baslangicTarih && tarih) {
+                        const baslangic = new Date(aktifFiltreler.baslangicTarih);
+                        baslangic.setHours(0,0,0,0);
+                        if (tarih < baslangic) goster = false;
                     }
-                }
 
-                // Cevap durumu filtresi
-                if (goster && aktifFiltreler.cevapDurum) {
-                    if (aktifFiltreler.cevapDurum === 'cevapli' && !cevapVar) {
-                        goster = false;
-                    } else if (aktifFiltreler.cevapDurum === 'cevapsiz' && cevapVar) {
-                        goster = false;
+                    if (goster && aktifFiltreler.bitisTarih && tarih) {
+                        const bitis = new Date(aktifFiltreler.bitisTarih);
+                        bitis.setHours(23,59,59,999);
+                        if (tarih > bitis) goster = false;
                     }
-                }
 
-                // Müşteri/Bayi arama filtresi
-                if (goster && aktifFiltreler.musteriFiltre) {
-                    const aranacakMetin = musteriAdi + ' ' + bayiAdi;
-                    if (!aranacakMetin.includes(aktifFiltreler.musteriFiltre)) {
-                        goster = false;
+                    // Tip filtresi
+                    if (goster && aktifFiltreler.tip) {
+                        if (tip !== aktifFiltreler.tip) goster = false;
                     }
-                }
 
-                if (goster) {
-                    gorunenSatirlar.push($satir);
-                } else {
-                    $satir.hide();
-                }
-            });
+                    // Durum filtresi
+                    if (goster && aktifFiltreler.durumId && aktifFiltreler.durumId !== 0) {
+                        if (durumId !== aktifFiltreler.durumId) goster = false;
+                    }
 
-            // Sıralama işlemi
-            if (gorunenSatirlar.length > 0) {
-                siralaVeGoster(gorunenSatirlar, $tablo);
-            } else {
-                // Hiç sonuç yoksa mesaj göster
-                $tablo.find('.arama-bos-mesaj').remove();
-                $tablo.append(`
-                    <tr class="arama-bos-mesaj">
-                        <td colspan="12" class="text-center text-muted py-5">
-                            <i class="fas fa-filter fa-2x mb-3"></i><br>
-                            Filtreleme kriterlerine uygun bildirim bulunamadı.
-                        </td>
-                    </tr>
-                `);
-            }
-        }
+                    // Lisans tipi filtresi
+                    if (goster && aktifFiltreler.lisansTipId && aktifFiltreler.lisansTipId !== 0) {
+                        const seciliLisansAdi = $('#lisansTipFiltre option:selected').text().toLowerCase();
+                        if (!lisansTipi.toLowerCase().includes(seciliLisansAdi)) {
+                            goster = false;
+                        }
+                    }
 
-        // Sıralama ve gösterme
-        function siralaVeGoster(satirlar, $tablo) {
-            const siralamaliSatirlar = [...satirlar];
+                    // Cevap durumu filtresi
+                    if (goster && aktifFiltreler.cevapDurum) {
+                        if (aktifFiltreler.cevapDurum === 'cevapli' && !cevapVar) {
+                            goster = false;
+                        } else if (aktifFiltreler.cevapDurum === 'cevapsiz' && cevapVar) {
+                            goster = false;
+                        }
+                    }
 
-            switch(aktifFiltreler.siralama) {
-                case 'yeni':
-                    siralamaliSatirlar.sort((a, b) => {
-                        const tarihA = parseDateTime($(a).find('td:nth-last-child(3) small').text().trim() ||
-                                                    $(a).find('td:nth-last-child(3)').text().trim());
-                        const tarihB = parseDateTime($(b).find('td:nth-last-child(3) small').text().trim() ||
-                                                    $(b).find('td:nth-last-child(3)').text().trim());
-                        return (tarihB || 0) - (tarihA || 0);
-                    });
-                    break;
+                    // Müşteri/Bayi arama filtresi
+                    if (goster && aktifFiltreler.musteriFiltre) {
+                        const aranacakMetin = musteriAdi + ' ' + bayiAdi;
+                        if (!aranacakMetin.includes(aktifFiltreler.musteriFiltre)) {
+                            goster = false;
+                        }
+                    }
 
-                case 'eski':
-                    siralamaliSatirlar.sort((a, b) => {
-                        const tarihA = parseDateTime($(a).find('td:nth-last-child(3) small').text().trim() ||
-                                                    $(a).find('td:nth-last-child(3)').text().trim());
-                        const tarihB = parseDateTime($(b).find('td:nth-last-child(3) small').text().trim() ||
-                                                    $(b).find('td:nth-last-child(3)').text().trim());
-                        return (tarihA || 0) - (tarihB || 0);
-                    });
-                    break;
-
-                case 'tip':
-                    siralamaliSatirlar.sort((a, b) => {
-                        const tipA = $(a).find('td:nth-child(2) .badge').text().trim();
-                        const tipB = $(b).find('td:nth-child(2) .badge').text().trim();
-                        return tipA.localeCompare(tipB, 'tr');
-                    });
-                    break;
-
-                case 'durum':
-                    siralamaliSatirlar.sort((a, b) => {
-                        const durumA = parseInt($(a).data('durum-id') || '0');
-                        const durumB = parseInt($(b).data('durum-id') || '0');
-                        return durumA - durumB;
-                    });
-                    break;
-
-                case 'musteri':
-                    siralamaliSatirlar.sort((a, b) => {
-                        const musteriA = $(a).find('td:nth-child(4)').text().trim();
-                        const musteriB = $(b).find('td:nth-child(4)').text().trim();
-                        return musteriA.localeCompare(musteriB, 'tr');
-                    });
-                    break;
-
-                case 'cevap':
-                    siralamaliSatirlar.sort((a, b) => {
-                        const cevapA = $(a).find('.cevap-icerik').length > 0 ? 1 : 0;
-                        const cevapB = $(b).find('.cevap-icerik').length > 0 ? 1 : 0;
-                        return cevapB - cevapA;
-                    });
-                    break;
-            }
-
-            // Tüm satırları gizle
-            $tablo.find('tr:not(.arama-bos-mesaj)').hide();
-
-            // Sıralanmış satırları göster
-            siralamaliSatirlar.forEach(satir => {
-                $(satir).show();
-            });
-
-            // Boş mesaj varsa kaldır
-            $tablo.find('.arama-bos-mesaj').remove();
-        }
-
-        // Tarih formatlama yardımcı fonksiyonları
-        function formatDateForInput(date) {
-            const yil = date.getFullYear();
-            const ay = String(date.getMonth() + 1).padStart(2, '0');
-            const gun = String(date.getDate()).padStart(2, '0');
-            return `${yil}-${ay}-${gun}`;
-        }
-
-        function formatDateForDisplay(dateStr) {
-            if (!dateStr) return '';
-            const [yil, ay, gun] = dateStr.split('-');
-            return `${gun}.${ay}.${yil}`;
-        }
-
-        function parseDateTime(dateStr) {
-            if (!dateStr) return null;
-            // Format: dd.MM.yy HH:mm
-            const parts = dateStr.split(' ');
-            if (parts.length < 2) return null;
-
-            const dateParts = parts[0].split('.');
-            if (dateParts.length !== 3) return null;
-
-            const gun = parseInt(dateParts[0]);
-            const ay = parseInt(dateParts[1]) - 1;
-            let yil = parseInt(dateParts[2]);
-
-            // 2 haneli yıl formatı varsa 20 ekle
-            if (yil < 100) {
-                yil = 2000 + yil;
-            }
-
-            return new Date(yil, ay, gun);
-        }
-
-        // Enter tuşu ile filtreleme
-        $('#baslangicTarih, #bitisTarih, #tipFiltre, #durumFiltre, #lisansTipFiltre, #cevapDurumFiltre, #musteriFiltre, #siralamaFiltre').on('keyup change', function(e) {
-            if (e.type === 'change' || (e.type === 'keyup' && e.key === 'Enter')) {
-                filtreUygula();
-            }
-        });
-
-        // Sayfa yüklendiğinde mevcut arama inputunu filtreleme sistemine entegre et
-        $(document).ready(function() {
-            // Mevcut arama inputu zaten varsa, onu da dinle
-            const originalArama = $('#bildirimArama');
-            if (originalArama.length) {
-                originalArama.on('input', function() {
-                    const deger = $(this).val().toLowerCase().trim();
-                    $('#musteriFiltre').val(deger);
-                    aktifFiltreler.musteriFiltre = deger;
-                    filtreleVeSirala();
+                    if (goster) {
+                        gorunenSatirlar.push($satir);
+                    } else {
+                        $satir.hide();
+                    }
                 });
+
+                // Sıralama işlemi
+                if (gorunenSatirlar.length > 0) {
+                    siralaVeGoster(gorunenSatirlar, $tablo);
+                } else {
+                    // Hiç sonuç yoksa mesaj göster
+                    $tablo.find('.arama-bos-mesaj').remove();
+                    $tablo.append(`
+                        <tr class="arama-bos-mesaj">
+                            <td colspan="14" class="text-center text-muted py-5">
+                                <i class="fas fa-filter fa-2x mb-3"></i><br>
+                                Filtreleme kriterlerine uygun bildirim bulunamadı.
+                            </td>
+                        </tr>
+                    `);
+                }
             }
-        });  });
+
+            // Sıralama ve gösterme
+            function siralaVeGoster(satirlar, $tablo) {
+                const siralamaliSatirlar = [...satirlar];
+
+                switch(aktifFiltreler.siralama) {
+                    case 'yeni':
+                        siralamaliSatirlar.sort((a, b) => {
+                            const tarihA = parseDateTime($(a).find('td:nth-last-child(3) small').text().trim() ||
+                                                        $(a).find('td:nth-last-child(3)').text().trim());
+                            const tarihB = parseDateTime($(b).find('td:nth-last-child(3) small').text().trim() ||
+                                                        $(b).find('td:nth-last-child(3)').text().trim());
+                            return (tarihB || 0) - (tarihA || 0);
+                        });
+                        break;
+
+                    case 'eski':
+                        siralamaliSatirlar.sort((a, b) => {
+                            const tarihA = parseDateTime($(a).find('td:nth-last-child(3) small').text().trim() ||
+                                                        $(a).find('td:nth-last-child(3)').text().trim());
+                            const tarihB = parseDateTime($(b).find('td:nth-last-child(3) small').text().trim() ||
+                                                        $(b).find('td:nth-last-child(3)').text().trim());
+                            return (tarihA || 0) - (tarihB || 0);
+                        });
+                        break;
+
+                    case 'tip':
+                        siralamaliSatirlar.sort((a, b) => {
+                            const tipA = $(a).find('td:nth-child(3) .badge').text().trim();
+                            const tipB = $(b).find('td:nth-child(3) .badge').text().trim();
+                            return tipA.localeCompare(tipB, 'tr');
+                        });
+                        break;
+
+                    case 'durum':
+                        siralamaliSatirlar.sort((a, b) => {
+                            const durumA = parseInt($(a).data('durum-id') || '0');
+                            const durumB = parseInt($(b).data('durum-id') || '0');
+                            return durumA - durumB;
+                        });
+                        break;
+
+                    case 'musteri':
+                        siralamaliSatirlar.sort((a, b) => {
+                            const musteriA = $(a).find('td:nth-child(5)').text().trim();
+                            const musteriB = $(b).find('td:nth-child(5)').text().trim();
+                            return musteriA.localeCompare(musteriB, 'tr');
+                        });
+                        break;
+
+                    case 'cevap':
+                        siralamaliSatirlar.sort((a, b) => {
+                            const cevapA = $(a).find('.cevap-icerik').length > 0 ? 1 : 0;
+                            const cevapB = $(b).find('.cevap-icerik').length > 0 ? 1 : 0;
+                            return cevapB - cevapA;
+                        });
+                        break;
+                }
+
+                // Tüm satırları gizle
+                $tablo.find('tr:not(.arama-bos-mesaj)').hide();
+
+                // Sıralanmış satırları göster
+                siralamaliSatirlar.forEach(satir => {
+                    $(satir).show();
+                });
+
+                // Boş mesaj varsa kaldır
+                $tablo.find('.arama-bos-mesaj').remove();
+            }
+
+            // Tarih formatlama yardımcı fonksiyonları
+            function formatDateForInput(date) {
+                const yil = date.getFullYear();
+                const ay = String(date.getMonth() + 1).padStart(2, '0');
+                const gun = String(date.getDate()).padStart(2, '0');
+                return `${yil}-${ay}-${gun}`;
+            }
+
+            function formatDateForDisplay(dateStr) {
+                if (!dateStr) return '';
+                const [yil, ay, gun] = dateStr.split('-');
+                return `${gun}.${ay}.${yil}`;
+            }
+
+            function parseDateTime(dateStr) {
+                if (!dateStr) return null;
+                // Format: dd.MM.yy HH:mm
+                const parts = dateStr.split(' ');
+                if (parts.length < 2) return null;
+
+                const dateParts = parts[0].split('.');
+                if (dateParts.length !== 3) return null;
+
+                const gun = parseInt(dateParts[0]);
+                const ay = parseInt(dateParts[1]) - 1;
+                let yil = parseInt(dateParts[2]);
+
+                // 2 haneli yıl formatı varsa 20 ekle
+                if (yil < 100) {
+                    yil = 2000 + yil;
+                }
+
+                return new Date(yil, ay, gun);
+            }
+
+            // Enter tuşu ile filtreleme
+            $('#baslangicTarih, #bitisTarih, #tipFiltre, #durumFiltre, #lisansTipFiltre, #cevapDurumFiltre, #musteriFiltre, #siralamaFiltre').on('keyup change', function(e) {
+                if (e.type === 'change' || (e.type === 'keyup' && e.key === 'Enter')) {
+                    filtreUygula();
+                }
+            });
+        });
     </script>
 }

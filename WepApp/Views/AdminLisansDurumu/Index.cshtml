@@ -18,6 +18,49 @@
         background-color: #f8f9fa;
         border-bottom: 2px solid #dee2e6;
     }
+
+    /* Seçim satırı için cursor pointer */
+    tr[data-lisans-durum-id] {
+        cursor: pointer;
+    }
+
+    /* Seçili satır efekti */
+    tr.table-active {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+
+    /* İşlem butonları alanı */
+    .islem-butonlari-alani {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .secili-bilgi {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+
+        .secili-bilgi i {
+            font-size: 1rem;
+        }
+
+    /* Buton stilleri */
+    .aksiyon-btn {
+        transition: all 0.2s;
+    }
+
+        .aksiyon-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .aksiyon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 </style>
 
 <div class="row">
@@ -39,11 +82,29 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="card-title d-flex justify-content-between align-items-center">
-                    <span>Lisans Durumları</span>
-                    <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                        <i class="fas fa-plus"></i> Yeni Durum Ekle
-                    </button>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Lisans Durumları</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Seçili Kayıt Bilgisi ve İşlem Butonları -->
+                        <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                            <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                                <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                            </div>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-warning aksiyon-btn" id="seciliDuzenleBtn" data-button-permission="duzenle" title="Seçili Lisans Durumunu Düzenle" disabled>
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger aksiyon-btn" id="seciliSilBtn" data-button-permission="sil" title="Seçili Lisans Durumunu Sil" disabled>
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Yeni Ekle Butonu -->
+                        <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                            <i class="fas fa-plus"></i> Yeni Durum Ekle
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -51,32 +112,30 @@
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
+                                <th width="40">Seç</th>
                                 <th width="50">#</th>
                                 <th>Durum Adı</th>
                                 <th>Eklenme Tarihi</th>
                                 <th>Son Güncelleme</th>
-                                <th width="120" class="text-center">İşlemler</th>
+                                <!-- İşlemler sütunu kaldırıldı -->
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="lisansDurumTablosu">
                             @if (ViewBag.LisansDurumlari != null && ((List<LisansDurumu>)ViewBag.LisansDurumlari).Count > 0)
                             {
                                 var counter = 1;
                                 foreach (var item in (List<LisansDurumu>)ViewBag.LisansDurumlari)
                                 {
-                                    <tr>
+                                    <tr data-lisans-durum-id="@item.Id" data-lisans-durum-adi="@item.Adi" class="lisans-durum-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input lisans-durum-sec-radio" type="radio" name="seciliLisansDurumRadio" value="@item.Id" id="secim_@item.Id">
+                                            </div>
+                                        </td>
                                         <td>@counter</td>
                                         <td><strong>@item.Adi</strong></td>
                                         <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>@item.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
-                                        <td class="table-actions text-center">
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id, '@Html.Raw(item.Adi)')">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@Html.Raw(item.Adi)')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
                                     </tr>
                                     counter++;
                                 }
@@ -84,7 +143,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="5" class="text-center py-5">
+                                    <td colspan="6" class="text-center py-5">
                                         <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                         <p class="text-muted">Henüz lisans durumu eklenmemiş.</p>
                                         <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
@@ -180,27 +239,118 @@
 </div>
 
 @section Script {
+    <!-- Toastr için gerekli script ve CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
-        function duzenleGetir(id, adi) {
-            $('#editId').val(id);
-            $('#editAdi').val(adi);
-            new bootstrap.Modal('#duzenleModal').show();
-        }
+        $(document).ready(function() {
+            let suAnSeciliLisansDurumId = null;
+            const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
+            const $seciliSilBtn = $('#seciliSilBtn');
+            const $seciliBilgiDiv = $('#seciliKayitBilgi');
 
-        function silOnay(id, adi) {
-            $('#silId').val(id);
-            $('#silAdi').text(adi);
-            new bootstrap.Modal('#silModal').show();
-        }
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
 
-        document.addEventListener('DOMContentLoaded', () => {
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#lisansDurumTablosu tr[data-lisans-durum-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button')) {
+                    const $radio = $(this).find('.lisans-durum-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
+                }
+            });
+
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.lisans-durum-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliLisansDurumId = $(this).val();
+                    const $seciliSatir = $(this).closest('tr');
+                    const lisansDurumAdi = $seciliSatir.data('lisans-durum-adi');
+
+                    // Tüm satırlardan active class'ı kaldır
+                    $('#lisansDurumTablosu tr').removeClass('table-active');
+                    // Seçili satıra active class ekle
+                    $seciliSatir.addClass('table-active');
+
+                    // Bilgiyi güncelle
+                    $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${lisansDurumAdi}`);
+
+                    // Butonları aktif et
+                    $seciliDuzenleBtn.prop('disabled', false);
+                    $seciliSilBtn.prop('disabled', false);
+                }
+            });
+
+            // Üstteki "Düzenle" butonu
+            $seciliDuzenleBtn.click(function() {
+                if (suAnSeciliLisansDurumId) {
+                    const $seciliSatir = $(`tr[data-lisans-durum-id="${suAnSeciliLisansDurumId}"]`);
+                    const adi = $seciliSatir.data('lisans-durum-adi');
+
+                    duzenleGetir(suAnSeciliLisansDurumId, adi);
+                } else {
+                    toastr.warning('Lütfen önce bir lisans durumu seçin.');
+                }
+            });
+
+            // Üstteki "Sil" butonu
+            $seciliSilBtn.click(function() {
+                if (suAnSeciliLisansDurumId) {
+                    const $seciliSatir = $(`tr[data-lisans-durum-id="${suAnSeciliLisansDurumId}"]`);
+                    const lisansDurumAdi = $seciliSatir.data('lisans-durum-adi');
+
+                    $('#silId').val(suAnSeciliLisansDurumId);
+                    $('#silAdi').text(lisansDurumAdi);
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    toastr.warning('Lütfen önce bir lisans durumu seçin.');
+                }
+            });
+
+            // Silme modalı kapandıktan sonra seçimi temizleme
+            $('#silModal').on('hidden.bs.modal', function() {
+                if (suAnSeciliLisansDurumId) {
+                    const $satir = $(`tr[data-lisans-durum-id="${suAnSeciliLisansDurumId}"]`);
+                    if ($satir.length === 0) {
+                        // Satır silinmiş, seçimi temizle
+                        suAnSeciliLisansDurumId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    } else {
+                        // İptal edildi, radio'yu temizle
+                        $(`.lisans-durum-sec-radio[value="${suAnSeciliLisansDurumId}"]`).prop('checked', false);
+                        $('#lisansDurumTablosu tr').removeClass('table-active');
+                        suAnSeciliLisansDurumId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    }
+                }
+            });
+
+            // ============= MEVCUT FONKSİYONLAR (AYNEN KORUNDU) =============
+
+            window.duzenleGetir = function(id, adi) {
+                $('#editId').val(id);
+                $('#editAdi').val(adi);
+                new bootstrap.Modal(document.getElementById('duzenleModal')).show();
+            };
+
+            window.silOnay = function(id, adi) {
+                $('#silId').val(id);
+                $('#silAdi').text(adi);
+                new bootstrap.Modal(document.getElementById('silModal')).show();
+            };
+
             // Form boş göndermeyi engelle
             document.querySelectorAll('form').forEach(f => {
                 f.addEventListener('submit', e => {
                     const adi = f.querySelector('[name="Adi"]');
                     if (adi && !adi.value.trim()) {
                         e.preventDefault();
-                        alert('Durum adı gereklidir.');
+                        toastr.error('Durum adı gereklidir.');
                         adi.focus();
                     }
                 });
