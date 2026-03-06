@@ -173,16 +173,17 @@
                                     <tr>
                                         <th width="40">Seç</th>
 
-                                        <th width="150">Teklif No</th>
+                                        <th width="110">No</th>
                                         <th width="180">Müşteri</th>
-                                        <th width="150">Bayi</th>
-                                        <th width="120">Lisans Tipi</th>
-                                        <th width="110">Net Toplam</th>
-                                        <th width="110">Toplam İndirim</th>
-                                        <th width="110">Ara Toplam</th>
-                                        <th width="110">KDV Tutarı</th>
-                                        <th width="110">Oluşturulma Tarihi</th>
-                                        <th width="110">Geçerlilik Tarihi</th>
+                                        <th width="250">M. Durumu</th>
+                                        <th width="130">Bayi</th>
+                                        <th width="120">Lisans</th>
+                                        <th width="150">Net Tot.</th>
+                                        <th width="150">Tot. İnd.</th>
+                                        <th width="150">Ara Tot.</th>
+                                        <th width="110">KDV</th>
+                                        <th width="110">Ol. T.</th>
+                                        <th width="110">Geç. T.</th>
                                         <th width="90" class="durum-hucresi">Durum</th>
 
                                     </tr>
@@ -272,6 +273,7 @@
                                                         <span class="text-muted">-</span>
                                                     }
                                                 </td>
+                                                    <td>@teklif.Musteri.MusteriDurumu.Adi</td>
                                                 <td>
                                                     <div class="musteri-adi">@(teklif.Musteri?.Bayi?.Unvan ?? "-")</div>
                                                     <small class="text-muted">@teklif.Musteri?.Bayi?.Telefon</small>

@@ -1698,7 +1698,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox2</rd:DefaultName>
-            <Top>0.30276cm</Top>
+            <Top>3.89227cm</Top>
             <Left>1.38571cm</Left>
             <Height>0.6cm</Height>
             <Width>3.74354cm</Width>
@@ -1809,8 +1809,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox5</rd:DefaultName>
-            <Top>3.92755cm</Top>
-            <Left>0.37902cm</Left>
+            <Top>0.44387cm</Top>
+            <Left>0.32148cm</Left>
             <Height>0.6cm</Height>
             <Width>5.75693cm</Width>
             <ZIndex>3</ZIndex>
@@ -2920,6 +2920,7 @@
           <Source>Embedded</Source>
           <Value>Ekrangörüntüsü20251119163538</Value>
           <Sizing>FitProportional</Sizing>
+          <Top>0cm</Top>
           <Left>2.65287cm</Left>
           <Height>3.37854cm</Height>
           <Width>14.27396cm</Width>

@@ -5,7 +5,9 @@ wwwroot\WebAdminTheme\Arge\fcb75103-5ba9-4872-b873-56f66ff27bbc.png
 wwwroot\WebAdminTheme\assets\css\adminanasayfaslider.css
 wwwroot\WebAdminTheme\assets\css\adminargehata.css
 wwwroot\WebAdminTheme\assets\css\administekoneri.css
+wwwroot\WebAdminTheme\assets\css\adminmusteri.css
 wwwroot\WebAdminTheme\assets\css\adminmusterisozlesme.css
+wwwroot\WebAdminTheme\assets\css\adminteklif.css
 wwwroot\WebAdminTheme\assets\css\bootstrap.min.css
 wwwroot\WebAdminTheme\assets\css\demo.css
 wwwroot\WebAdminTheme\assets\css\demo.css.map
@@ -653,7 +655,6 @@ wwwroot\WebAdminTheme\Hakkimizda\Buyuk\fd1031a5-e283-4a34-bce3-ba3ea5accb34.jpg
 wwwroot\WebAdminTheme\Hakkimizda\Kucuk\fd1031a5-e283-4a34-bce3-ba3ea5accb34.jpg
 wwwroot\WebAdminTheme\IK\129c313f-6a83-44e5-9dd7-7eea9c8a9ee3_fatura_ABC2025143425354 (1).pdf
 wwwroot\WebAdminTheme\IK\18977fd2-166d-4b27-b68e-a6ae8682dfbb_98bf36s02en2_kospdf.pdf
-wwwroot\WebAdminTheme\IK\27e3eaff-2c07-4cf7-a301-05f6be5c05e2_43d78e21-9e07-4948-bf33-e9537adb5bff.pdf
 wwwroot\WebAdminTheme\IK\2be7005e-1593-483f-8b8d-2589e00032d3_98bf36s02en2_kospdf.pdf
 wwwroot\WebAdminTheme\IK\37fe5865-aee2-4955-bc7d-365f06b6eb93_43d78e21-9e07-4948-bf33-e9537adb5bff.pdf
 wwwroot\WebAdminTheme\IK\4d7b5e31-31fc-4afa-8a98-103647cd9823_fatura_ABC2025143425354 (1).pdf

@@ -98,18 +98,24 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-        
+            try
+            {
+                KVKK item = _repository.Getir(id);
+                if (item == null)
+                {
+                    return NotFound(new { error = "Kayıt bulunamadı" });
+                }
 
-            KVKK item = _repository.Getir(id);
-            if (item == null)
-            {
-                return NotFound();
+                return Json(new
+                {
+                    id = item.Id,
+                    metin = item.Metin
+                });
             }
-            return Json(new
+            catch (Exception ex)
             {
-                id = item.Id,
-                metin = item.Metin
-            });
+                return StatusCode(500, new { error = ex.Message });
+            }
         }
     }
 }

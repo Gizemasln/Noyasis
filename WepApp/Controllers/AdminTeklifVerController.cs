@@ -1101,8 +1101,8 @@ namespace WepApp.Controllers
                         Diger = model.YeniMusteri.Diger ?? "",
                         BayiId = model.YeniMusteri.BayiId,
                         Bolge = model.YeniMusteri.Bolge ?? "",
-                        Il = model.YeniMusteri.Il ?? "",
-                        Ilce = model.YeniMusteri.Ilce ?? "",
+                        illerId = model.YeniMusteri.illerId,
+                        ilcelerId = model.YeniMusteri.ilcelerId,
                         Belde = model.YeniMusteri.Belde ?? "",
                         Adres = model.YeniMusteri.Adres ?? "",
                         TCVNo = model.YeniMusteri.TCVNo ?? "",
@@ -1366,25 +1366,28 @@ namespace WepApp.Controllers
                 new List<string> { "Musteri", "LisansTip", "Detaylar" });
             if (teklif == null)
                 return NotFound();
-
+            Bayi bayi = _bayiRepository.Getir(x => x.Unvan == teklif.TeklifVerenFirma);
             Musteri musteri = teklif.Musteri;
+
             decimal genelToplam = teklif.NetToplam;
             string yaziIle = SayiyiYaziyaCevir(genelToplam);
+
             string tarihStr = DateTime.Now.ToString("dd MMMM yyyy", new CultureInfo("tr-TR"));
             string tarihStr15 = DateTime.Now
                 .AddDays(15)
                 .ToString("dd MMMM yyyy", new CultureInfo("tr-TR"));
+
             string gecerlilik = DateTime.Now.AddDays(15).ToString("dd.MM.yyyy");
 
             var baslik = new
             {
                 teklif.TeklifNo,
                 Tarih = tarihStr,
-                TeklifVerenFirma = teklif.TeklifVerenFirma,
-                Tarih15=tarihStr15,
-                MusteriAdi = $"{musteri.Ad} {musteri.Soyad}",
-                MusteriTelefon = musteri.Telefon ?? "",
-                MusteriYetkili = musteri.Ad ?? "Noyasis İş Ortağı",
+                TeklifVerenFirma = teklif.TeklifVerenFirma ?? "Teklif oluşturan Admin",
+                Tarih15 = tarihStr15,
+                MusteriAdi = $"{musteri?.Ad} {musteri?.Soyad}",
+                MusteriTelefon = bayi?.Telefon ?? "",
+                MusteriYetkili = musteri?.Ad ?? "Müşteri",
                 GecerlilikTarihi = gecerlilik,
                 Aciklama = string.IsNullOrWhiteSpace(teklif.Aciklama) ? "" : "* " + teklif.Aciklama.Trim(),
                 AraToplam = teklif.AraToplam.ToString("N2"),
@@ -1393,12 +1396,9 @@ namespace WepApp.Controllers
                 GenelToplam = genelToplam.ToString("N2"),
                 YaziIle = yaziIle,
                 LisansTipi = teklif.LisansTip?.Adi ?? "",
-                Toplam=teklif.ToplamListeFiyat.ToString("N2"),
-                EgitimSuresi = teklif.EgitimSuresi.ToString("N0") // Eğitim süresi eklendi
-
-
+                Toplam = teklif.ToplamListeFiyat.ToString("N2"),
+                EgitimSuresi = teklif.EgitimSuresi.ToString("N0")
             };
-
             List<TeklifRapor> satirlar = new List<TeklifRapor>();
             List<TeklifDetay> detaylar = teklif.Detaylar.OrderBy(x => x.SiraNo).ToList();
 
@@ -1608,8 +1608,8 @@ namespace WepApp.Controllers
         public string Email { get; set; } = string.Empty;
         public string Telefon { get; set; } = string.Empty;
         public string Bolge { get; set; } = string.Empty;
-        public string Il { get; set; } = string.Empty;
-        public string Ilce { get; set; } = string.Empty;
+        public int illerId { get; set; } 
+        public int ilcelerId { get; set; } 
         public string Belde { get; set; } = string.Empty;
         public string Adres { get; set; } = string.Empty;
 

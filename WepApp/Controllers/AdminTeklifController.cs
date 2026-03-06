@@ -75,7 +75,7 @@ namespace WepApp.Controllers
 
                     // 3. Adım: Bu müşterilere ait teklifleri getir
                     teklifler = _teklifRepo.GetirList(x => x.Aktif == true && musteriIds.Contains(x.MusteriId),
-                        new List<string> { "Musteri", "LisansTip", "Musteri.Bayi", "TeklifDurum", "Nedenler" }
+                        new List<string> { "Musteri", "LisansTip", "Musteri.Bayi", "TeklifDurum", "Nedenler" , "Musteri.MusteriDurumu" }
                     )
                     .OrderByDescending(x => x.EklenmeTarihi)
                     .ToList();
@@ -85,7 +85,7 @@ namespace WepApp.Controllers
                     // MÜŞTERİ GİRİŞİ: Sadece kendi teklifleri
                     teklifler = _teklifRepo.GetirList(
                         x => x.Aktif == true && x.MusteriId == currentMusteri.Id,
-                        new List<string> { "Musteri", "LisansTip", "Musteri.Bayi", "TeklifDurum", "Nedenler" }
+                        new List<string> { "Musteri", "LisansTip", "Musteri.Bayi", "TeklifDurum", "Nedenler", "Musteri.MusteriDurumu" }
                     )
                     .OrderByDescending(x => x.EklenmeTarihi)
                     .ToList();
@@ -95,7 +95,7 @@ namespace WepApp.Controllers
                     // ADMIN GİRİŞİ: Tüm teklifler
                     teklifler = _teklifRepo.GetirList(
                         x => x.Aktif == true,
-                        new List<string> { "Musteri", "LisansTip", "Musteri.Bayi", "TeklifDurum", "Nedenler" }
+                        new List<string> { "Musteri", "LisansTip", "Musteri.Bayi", "TeklifDurum", "Nedenler" , "Musteri.MusteriDurumu" }
                     )
                     .OrderByDescending(x => x.EklenmeTarihi)
                     .ToList();
@@ -260,8 +260,8 @@ namespace WepApp.Controllers
                             telefon = teklif.Musteri?.Telefon ?? "",
                             adres1 = teklif.Musteri?.Adres ?? "",
                             adres2 = "",
-                            il = teklif.Musteri?.Il ?? "",
-                            ilce = teklif.Musteri?.Ilce ?? "",
+                            il = teklif.Musteri?.iller.sehiradi ?? "",
+                            ilce = teklif.Musteri?.ilceler.ilceadi ?? "",
                             vergiDairesi = teklif.Musteri?.VergiDairesi ?? "",
                             vergiNo = teklif.Musteri?.TCVNo ?? "",
                             email = teklif.Musteri?.Email ?? "",

@@ -47,11 +47,11 @@
                                                     <small class="text-muted">Eklenme Tarihi: @ViewBag.Banner.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</small>
                                                 </div>
                                                 <div class="col-md-6 text-end">
-                                                    <button type="button" class="btn btn-warning" data-button-permission="duzenle" onclick="duzenleGetir(@ViewBag.Banner.Id)">
-                                                        <i class="fas fa-edit"></i> Düzenle
+                                                    <button type="button" class="btn btn-warning" title="Düzenle" data-button-permission="duzenle" onclick="duzenleGetir(@ViewBag.Banner.Id)">
+                                                        <i class="fas fa-edit"></i> 
                                                     </button>
-                                                    <button type="button" class="btn btn-danger" data-button-permission="sil" onclick="silOnay(@ViewBag.Banner.Id, '@ViewBag.Banner.Baslik')">
-                                                        <i class="fas fa-trash"></i> Sil
+                                                    <button type="button" class="btn btn-danger" data-button-permission="sil" title="Sil"onclick="silOnay(@ViewBag.Banner.Id, '@ViewBag.Banner.Baslik')">
+                                                        <i class="fas fa-trash"></i> 
                                                     </button>
                                                 </div>
                                             </div>

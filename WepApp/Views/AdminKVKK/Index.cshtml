@@ -3,6 +3,64 @@
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
 
+<style>
+    /* Seçim satırı için cursor pointer */
+    tr[data-kvkk-id] {
+        cursor: pointer;
+    }
+
+    /* Seçili satır efekti */
+    tr.table-active {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+
+    /* İşlem butonları alanı */
+    .islem-butonlari-alani {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .secili-bilgi {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+
+        .secili-bilgi i {
+            font-size: 1rem;
+        }
+
+    /* Buton stilleri */
+    .aksiyon-btn {
+        transition: all 0.2s;
+    }
+
+        .aksiyon-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .aksiyon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    /* Buton grupları için */
+    .btn-group .btn {
+        margin: 0 2px;
+    }
+
+        .btn-group .btn:first-child {
+            margin-left: 0;
+        }
+
+        .btn-group .btn:last-child {
+            margin-right: 0;
+        }
+</style>
+
 <div class="row">
     <div class="col-md-12">
         <!-- Başarı/Hata Mesajları -->
@@ -21,17 +79,29 @@
             </div>
         }
 
-        <!-- EKLE BUTONU HER ZAMAN GÖRÜNÜR OLMASI İÇİN BAĞIMSIZ YERLEŞTİRİLDİ -->
-        <div class="mb-3">
-            <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                <i class="fas fa-plus"></i> Yeni KVKK Ekle
-            </button>
-        </div>
-
         <div class="card">
-            <div class="card-header">
-                <div class="card-title d-flex justify-content-between align-items-center">
-                    <span>KVKK Bilgileri</span>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">KVKK Bilgileri</h5>
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Seçili Kayıt Bilgisi ve İşlem Butonları -->
+                    <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                        <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                            <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-warning btn-sm" id="seciliDuzenleBtn" data-button-permission="duzenle" title="Seçili KVKK'yı Düzenle" disabled style="margin-right:5px;">
+                                <i class="fas fa-edit"></i> 
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" id="seciliSilBtn" data-button-permission="sil" title="Seçili KVKK'yı Sil" disabled>
+                                <i class="fas fa-trash"></i> 
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Yeni Ekle Butonu -->
+                    <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni KVKK Ekle
+                    </button>
                 </div>
             </div>
             <div class="card-body">
@@ -39,30 +109,29 @@
                     <table class="table table-bordered table-hover">
                         <thead class="table-head-bg-primary">
                             <tr>
+                                <th width="40">Seç</th>
                                 <th scope="col">#</th>
                                 <th scope="col">Metin</th>
                                 <th scope="col">Eklenme Tarihi</th>
-                                <th scope="col">İşlemler</th>
+                                <!-- İşlemler sütunu kaldırıldı -->
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="kvkkTablosu">
                             @if (ViewBag.KVKKList != null && ViewBag.KVKKList.Count > 0)
                             {
                                 var counter = 1;
                                 foreach (var item in ViewBag.KVKKList)
                                 {
-                                    <tr>
+                                    <tr data-kvkk-id="@item.Id" data-kvkk-metin="@item.Metin" class="kvkk-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input kvkk-sec-radio" type="radio" name="seciliKVKKRadio" value="@item.Id" id="secim_@item.Id">
+                                            </div>
+                                        </td>
                                         <td>@counter</td>
                                         <td>@Html.Raw(item.Metin != null && item.Metin.Length > 50 ? item.Metin.Substring(0, 50) + "..." : item.Metin)</td>
                                         <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
-                                        <td>
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id)">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
+                                        <!-- İşlemler sütunundaki butonlar KALDIRILDI -->
                                     </tr>
                                     counter++;
                                 }
@@ -70,7 +139,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="4" class="text-center">Henüz KVKK bilgisi eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" data-button-permission="ekle" class="btn btn-primary btn-sm">Yeni Bilgi Ekle</a></td>
+                                    <td colspan="5" class="text-center">Henüz KVKK bilgisi eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" data-button-permission="ekle" class="btn btn-primary btn-sm">Yeni Bilgi Ekle</a></td>
                                 </tr>
                             }
                         </tbody>
@@ -114,7 +183,7 @@
 <div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
-            <form action="@Url.Action("Guncelle","AdminKVKK")" method="post" id="duzenleForm">
+            <form action="@Url.Action("Guncelle", "AdminKVKK")" method="post" id="duzenleForm">
                 @Html.AntiForgeryToken()
                 <input type="hidden" id="editId" name="Id">
                 <div class="modal-header">
@@ -143,7 +212,7 @@
 <div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Sil","AdminKVKK")" method="post">
+            <form action="@Url.Action("Sil", "AdminKVKK")" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" id="silId" name="Id">
                 <div class="modal-header">
@@ -162,151 +231,275 @@
         </div>
     </div>
 </div>
-
 @section Script {
+    <!-- Toastr için gerekli script ve CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <!-- CKEditor -->
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+
     <script>
-        // Global editor değişkenleri
-        var ekleEditor = null;
-        var duzenleEditor = null;
+        $(document).ready(function () {
+            // Toastr ayarları
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
 
-        // CKEditor başlatma fonksiyonu
-        function initCKEditors() {
-            console.log('CKEditor başlatılıyor...');
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
+            let suAnSeciliKVKKId = null;
+            let suAnSeciliKVKKMetin = null;
+            let suAnSeciliSatir = null;
 
-            // CKEditor'ün yüklenip yüklenmediğini kontrol et
-            if (typeof CKEDITOR === 'undefined') {
-                console.error('CKEDITOR hala tanımlı değil, 500ms sonra tekrar denenecek');
-                setTimeout(initCKEditors, 500);
-                return;
-            }
+            const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
+            const $seciliSilBtn = $('#seciliSilBtn');
+            const $seciliBilgiDiv = $('#seciliKayitBilgi');
 
-            try {
-                // Ekleme editorünü başlat
-                if (document.getElementById('Metin') && !ekleEditor) {
-                    ekleEditor = CKEDITOR.replace('Metin', {
-                        height: 300,
-                        toolbar: [
-                            { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'] },
-                            { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote'] },
-                            { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
-                            { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
-                            { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
-                            { name: 'colors', items: ['TextColor', 'BGColor'] },
-                            { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
-                        ],
-                        language: 'tr',
-                        removePlugins: 'elementspath',
-                        resize_enabled: true
-                    });
-                    console.log('Ekleme editorü başlatıldı');
+            // Global editor değişkenleri - window objesine ekleyelim
+            window.ekleEditor = null;
+            window.duzenleEditor = null;
+
+            // CKEditor başlatma fonksiyonu
+            function initCKEditors() {
+                console.log('CKEditor başlatılıyor...');
+
+                if (typeof CKEDITOR === 'undefined') {
+                    console.error('CKEDITOR yüklenemedi!');
+                    toastr.error('CKEditor yüklenemedi. Sayfayı yenileyin.');
+                    return;
                 }
 
-                // Düzenleme editorünü başlat
-                if (document.getElementById('editMetin') && !duzenleEditor) {
-                    duzenleEditor = CKEDITOR.replace('editMetin', {
-                        height: 300,
-                        toolbar: [
-                            { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'] },
-                            { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote'] },
-                            { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
-                            { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
-                            { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
-                            { name: 'colors', items: ['TextColor', 'BGColor'] },
-                            { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
-                        ],
-                        language: 'tr',
-                        removePlugins: 'elementspath',
-                        resize_enabled: true
-                    });
-                    console.log('Düzenleme editorü başlatıldı');
+                try {
+                    // Ekleme editorünü başlat
+                    if (document.getElementById('Metin') && !window.ekleEditor) {
+                        window.ekleEditor = CKEDITOR.replace('Metin', {
+                            height: 300,
+                            toolbar: [
+                                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'] },
+                                { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote'] },
+                                { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+                                { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
+                                { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
+                                { name: 'colors', items: ['TextColor', 'BGColor'] },
+                                { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
+                            ],
+                            language: 'tr',
+                            removePlugins: 'elementspath',
+                            resize_enabled: true,
+                            on: {
+                                instanceReady: function() {
+                                    console.log('Ekleme editorü hazır');
+                                }
+                            }
+                        });
+                        console.log('Ekleme editorü başlatıldı');
+                    }
+
+                    // Düzenleme editorünü başlat
+                    if (document.getElementById('editMetin') && !window.duzenleEditor) {
+                        window.duzenleEditor = CKEDITOR.replace('editMetin', {
+                            height: 300,
+                            toolbar: [
+                                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'] },
+                                { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote'] },
+                                { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+                                { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar'] },
+                                { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
+                                { name: 'colors', items: ['TextColor', 'BGColor'] },
+                                { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
+                            ],
+                            language: 'tr',
+                            removePlugins: 'elementspath',
+                            resize_enabled: true,
+                            on: {
+                                instanceReady: function() {
+                                    console.log('Düzenleme editorü hazır');
+                                }
+                            }
+                        });
+                        console.log('Düzenleme editorü başlatıldı');
+                    }
+                } catch (error) {
+                    console.error('CKEditor başlatma hatası:', error);
+                    toastr.error('CKEditor başlatılamadı: ' + error.message);
                 }
-            } catch (error) {
-                console.error('CKEditor başlatma hatası:', error);
-            }
-        }
-
-        // Sayfa tamamen yüklendiğinde CKEditor'ü başlat
-        function initializePage() {
-            console.log('Sayfa başlatılıyor...');
-
-            // Önce CKEditor'ün yüklenmesini bekle
-            if (typeof CKEDITOR === 'undefined') {
-                console.log('CKEDITOR henüz yüklenmedi, bekleniyor...');
-                setTimeout(initializePage, 100);
-                return;
             }
 
-            console.log('CKEDITOR yüklendi, editorler başlatılıyor');
-            initCKEditors();
+            // CKEditor'ün yüklenmesini bekle
+            function waitForCKEditor() {
+                if (typeof CKEDITOR !== 'undefined') {
+                    console.log('CKEDITOR yüklendi, editorler başlatılıyor...');
+                    initCKEditors();
+                } else {
+                    console.log('CKEDITOR yükleniyor, bekleniyor...');
+                    setTimeout(waitForCKEditor, 200);
+                }
+            }
+
+            // Sayfa yüklendiğinde CKEditor'ü bekle
+            waitForCKEditor();
+
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#kvkkTablosu tr[data-kvkk-id]', function(e) {
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button') && !$(e.target).is('a') && !$(e.target).is('span')) {
+                    const $radio = $(this).find('.kvkk-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
+                }
+            });
+
+            // Radio butonu değiştiğinde
+            $(document).on('change', '.kvkk-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliKVKKId = $(this).val();
+                    suAnSeciliSatir = $(this).closest('tr');
+                    suAnSeciliKVKKMetin = suAnSeciliSatir.data('kvkk-metin');
+
+                    $('#kvkkTablosu tr').removeClass('table-active');
+                    suAnSeciliSatir.addClass('table-active');
+
+                    $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: #${suAnSeciliKVKKId}`);
+
+                    $seciliDuzenleBtn.prop('disabled', false);
+                    $seciliSilBtn.prop('disabled', false);
+                }
+            });
+
+            // Üstteki "Düzenle" butonu
+            $seciliDuzenleBtn.click(function() {
+                if (suAnSeciliKVKKId) {
+                    duzenleGetir(suAnSeciliKVKKId);
+                } else {
+                    toastr.warning('Lütfen önce bir KVKK kaydı seçin.');
+                }
+            });
+
+            // Üstteki "Sil" butonu
+            $seciliSilBtn.click(function() {
+                if (suAnSeciliKVKKId) {
+                    $('#silId').val(suAnSeciliKVKKId);
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    toastr.warning('Lütfen önce bir KVKK kaydı seçin.');
+                }
+            });
+
+            // Silme modalı kapandıktan sonra
+            $('#silModal').on('hidden.bs.modal', function() {
+                if (suAnSeciliKVKKId) {
+                    const $satir = $(`tr[data-kvkk-id="${suAnSeciliKVKKId}"]`);
+                    if ($satir.length === 0) {
+                        clearSelection();
+                    } else {
+                        $(`.kvkk-sec-radio[value="${suAnSeciliKVKKId}"]`).prop('checked', false);
+                        clearSelection();
+                    }
+                }
+            });
+
+            // Seçimi temizleme
+            function clearSelection() {
+                $('#kvkkTablosu tr').removeClass('table-active');
+                suAnSeciliKVKKId = null;
+                suAnSeciliKVKKMetin = null;
+                suAnSeciliSatir = null;
+                $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                $seciliDuzenleBtn.prop('disabled', true);
+                $seciliSilBtn.prop('disabled', true);
+            }
+
+            // Modal event'leri
+            function setupModalEvents() {
+                var ekleModal = document.getElementById('ekleModal');
+                var duzenleModal = document.getElementById('duzenleModal');
+
+                if (ekleModal) {
+                    ekleModal.addEventListener('shown.bs.modal', function() {
+                        setTimeout(function() {
+                            if (window.ekleEditor) {
+                                window.ekleEditor.resize('100%', 300);
+                                window.ekleEditor.focus();
+                            }
+                        }, 200);
+                    });
+
+                    ekleModal.addEventListener('hidden.bs.modal', function() {
+                        if (window.ekleEditor) {
+                            window.ekleEditor.setData('');
+                        }
+                        this.querySelector('form').reset();
+                    });
+                }
+
+                if (duzenleModal) {
+                    duzenleModal.addEventListener('shown.bs.modal', function() {
+                        setTimeout(function() {
+                            if (window.duzenleEditor) {
+                                window.duzenleEditor.resize('100%', 300);
+                                window.duzenleEditor.focus();
+                            }
+                        }, 200);
+                    });
+
+                    duzenleModal.addEventListener('hidden.bs.modal', function() {
+                        if (window.duzenleEditor) {
+                            window.duzenleEditor.setData('');
+                        }
+                        this.querySelector('form').reset();
+                    });
+                }
+            }
+
             setupModalEvents();
-        }
 
-        // Modal event'lerini ayarla
-        function setupModalEvents() {
-            var ekleModal = document.getElementById('ekleModal');
-            var duzenleModal = document.getElementById('duzenleModal');
-
-            if (ekleModal) {
-                ekleModal.addEventListener('shown.bs.modal', function() {
-                    setTimeout(function() {
-                        if (ekleEditor) {
-                            ekleEditor.resize('100%', 300);
-                            ekleEditor.focus();
-                        } else {
-                            // Editor henüz başlatılmadıysa, modal gösterildikten sonra başlat
-                            setTimeout(initCKEditors, 50);
-                        }
-                    }, 100);
+            // Başarı mesajlarını kapat
+            setTimeout(function() {
+                var alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function(alert) {
+                    var bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
                 });
+            }, 5000);
+        });
 
-                ekleModal.addEventListener('hidden.bs.modal', function() {
-                    if (ekleEditor) {
-                        ekleEditor.setData('');
-                    }
-                });
-            }
-
-            if (duzenleModal) {
-                duzenleModal.addEventListener('shown.bs.modal', function() {
-                    setTimeout(function() {
-                        if (duzenleEditor) {
-                            duzenleEditor.resize('100%', 300);
-                            duzenleEditor.focus();
-                        } else {
-                            // Editor henüz başlatılmadıysa, modal gösterildikten sonra başlat
-                            setTimeout(initCKEditors, 50);
-                        }
-                    }, 100);
-                });
-
-                duzenleModal.addEventListener('hidden.bs.modal', function() {
-                    if (duzenleEditor) {
-                        duzenleEditor.setData('');
-                    }
-                    document.getElementById('duzenleForm').reset();
-                });
-            }
-        }
-
-        // Fonksiyonlar
+        // Düzenleme fonksiyonu - global scope'da
         function duzenleGetir(id) {
-            fetch('@Url.Action("Getir", "AdminKVKK")' + '?id=' + id)
+            var url = '@Url.Action("Getir", "AdminKVKK")' + '?id=' + id;
+
+            fetch(url)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                        return response.json().then(err => {
+                            throw new Error(err.error || 'HTTP error ' + response.status);
+                        });
                     }
                     return response.json();
                 })
                 .then(data => {
                     document.getElementById('editId').value = data.id;
 
-                    // Editor hazırsa veriyi set et, değilse textarea'ya yaz ve editorü başlat
-                    if (duzenleEditor) {
-                        duzenleEditor.setData(data.metin || '');
+                    // Editor kontrolü ve veri yükleme
+                    if (window.duzenleEditor) {
+                        // Editor hazır, direkt veriyi yükle
+                        window.duzenleEditor.setData(data.metin || '');
                     } else {
+                        // Editor yoksa textarea'ya yaz
                         document.getElementById('editMetin').value = data.metin || '';
-                        // Editor'ü tekrar başlatmayı dene
-                        setTimeout(initCKEditors, 100);
+
+                        // Editor'ün yüklenmesini bekle
+                        var editorCheckInterval = setInterval(function() {
+                            if (window.duzenleEditor) {
+                                clearInterval(editorCheckInterval);
+                                window.duzenleEditor.setData(data.metin || '');
+                            }
+                        }, 200);
+
+                        // 5 saniye sonra kontrolü durdur
+                        setTimeout(function() {
+                            clearInterval(editorCheckInterval);
+                        }, 5000);
                     }
 
                     var duzenleModal = new bootstrap.Modal(document.getElementById('duzenleModal'));
@@ -314,7 +507,7 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Kayıt getirilirken bir hata oluştu.');
+                    toastr.error('Kayıt getirilirken bir hata oluştu: ' + error.message);
                 });
         }
 
@@ -329,23 +522,13 @@
             var ekleForm = document.getElementById('ekleForm');
             if (ekleForm) {
                 ekleForm.addEventListener('submit', function(e) {
-                    // CKEditor verisini textarea'ya aktar
-                    if (ekleEditor && ekleEditor.status === 'ready') {
-                        var data = ekleEditor.getData();
-                        if (!data.trim()) {
-                            alert('Lütfen metin girin.');
-                            e.preventDefault();
-                            return false;
-                        }
+                    if (window.ekleEditor && window.ekleEditor.status === 'ready') {
+                        var data = window.ekleEditor.getData();
+                       
                         document.getElementById('Metin').value = data;
                     } else {
-                        // CKEditor yoksa normal textarea değerini kontrol et
                         var textareaValue = document.getElementById('Metin').value;
-                        if (!textareaValue.trim()) {
-                            alert('Lütfen metin girin.');
-                            e.preventDefault();
-                            return false;
-                        }
+                       
                     }
                 });
             }
@@ -353,56 +536,16 @@
             var duzenleForm = document.getElementById('duzenleForm');
             if (duzenleForm) {
                 duzenleForm.addEventListener('submit', function(e) {
-                    // CKEditor verisini textarea'ya aktar
-                    if (duzenleEditor && duzenleEditor.status === 'ready') {
-                        var data = duzenleEditor.getData();
-                        if (!data.trim()) {
-                            alert('Lütfen metin girin.');
-                            e.preventDefault();
-                            return false;
-                        }
+                    if (window.duzenleEditor && window.duzenleEditor.status === 'ready') {
+                        var data = window.duzenleEditor.getData();
+                       
                         document.getElementById('editMetin').value = data;
                     } else {
-                        // CKEditor yoksa normal textarea değerini kontrol et
                         var textareaValue = document.getElementById('editMetin').value;
-                        if (!textareaValue.trim()) {
-                            alert('Lütfen metin girin.');
-                            e.preventDefault();
-                            return false;
-                        }
+                     
                     }
                 });
             }
         });
-
-        // Başarı mesajlarını 5 saniye sonra otomatik kapat
-        setTimeout(function() {
-            var alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
-                var bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            });
-        }, 5000);
-
-        // Sayfa yükleme event'leri
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOMContentLoaded event fired');
-            initializePage();
-        });
-
-        // Fallback: Sayfa tamamen yüklendiğinde
-        window.addEventListener('load', function() {
-            console.log('Window load event fired');
-            if (typeof CKEDITOR === 'undefined') {
-                console.warn('CKEditor hala yüklenmedi, manuel olarak tekrar denenecek');
-                setTimeout(initializePage, 1000);
-            }
-        });
-
-        // Eğer DOM zaten yüklenmişse
-        if (document.readyState === 'interactive' || document.readyState === 'complete') {
-            console.log('Document already ready, initializing directly');
-            setTimeout(initializePage, 100);
-        }
     </script>
 }

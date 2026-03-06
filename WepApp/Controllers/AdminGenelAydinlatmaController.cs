@@ -94,22 +94,27 @@ namespace WepApp.Controllers
             }
             return RedirectToAction("Index");
         }
-
         [HttpGet]
         public IActionResult Getir(int id)
         {
-        
-
-            GenelAydinlatma item = _repository.Getir(id);
-            if (item == null)
+            try
             {
-                return NotFound();
+                GenelAydinlatma item = _repository.Getir(id);
+                if (item == null)
+                {
+                    return Json(new { success = false, message = "Kayıt bulunamadı" });
+                }
+                return Json(new
+                {
+                    success = true,
+                    id = item.Id,
+                    metin = item.Metin
+                });
             }
-            return Json(new
+            catch (Exception ex)
             {
-                id = item.Id,
-                metin = item.Metin
-            });
+                return Json(new { success = false, message = ex.Message });
+            }
         }
     }
 }

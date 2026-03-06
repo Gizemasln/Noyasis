@@ -23,6 +23,8 @@ namespace WepApp.Controllers
         private readonly MusteriYetkililerRepository _yetkiliRepo;
         private readonly DepartmanRepository _departmanRepo;
         private readonly IWebHostEnvironment _environment;
+        private readonly illerRepository _illerRepo;
+        private readonly ilcelerRepository _ilcelerRepo;
 
         public AdminMusteriController(IWebHostEnvironment environment)
         {
@@ -33,6 +35,8 @@ namespace WepApp.Controllers
             _musteriDurumuRepository = new MusteriDurumuRepository();
             _yetkiliRepo = new MusteriYetkililerRepository();
             _departmanRepo = new DepartmanRepository();
+            _illerRepo = new illerRepository();
+            _ilcelerRepo = new ilcelerRepository();
             _environment = environment;
         }
 
@@ -108,6 +112,7 @@ namespace WepApp.Controllers
                 ViewBag.CurrentBayi = currentBayi;
                 ViewBag.CurrentMusteri = musteris;
                 ViewBag.CurrentKullanici = kullanici;
+                ViewBag.Iller = _illerRepo.Listele().OrderBy(i => i.sehiradi).ToList();
 
                 return View();
             }
@@ -117,7 +122,23 @@ namespace WepApp.Controllers
                 return View();
             }
         }
+        [HttpGet]
+        public IActionResult GetIlcelerByIlId(int ilId)
+        {
+            try
+            {
+                var ilceler = _ilcelerRepo.GetirList(x => x.illerId == ilId)
+                                           .OrderBy(i => i.ilceadi)
+                                           .Select(i => new { i.Id, i.ilceadi })
+                                           .ToList();
 
+                return Json(new { success = true, data = ilceler });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
         [HttpGet]
         public IActionResult KullaniciAdiKontrol(string kullaniciAdi, int? musteriId = null)
         {
@@ -484,24 +505,19 @@ namespace WepApp.Controllers
                 return Json(new { success = false, message = $"Hata: {ex.Message}" });
             }
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ekle(
             string Ad, string Soyad, string KullaniciAdi, string Sifre,
-            string Email, string Telefon, string Adres, string Il, string Ilce, string Belde, string Bolge,
+            string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,  // Il ve Ilce artık int?
             string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
             string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
             int? MusteriTipiId, int MusteriDurumuId, int? BayiId, string TicariUnvan,
             string Diger,
             IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> Yetkililer = null)
         {
-        
-
             try
             {
-            
-
                 IEnumerable<MusteriTipi> musteriTipleri = ViewBag.MusteriTipleri as IEnumerable<MusteriTipi>;
                 int? digerTipiId = musteriTipleri?
                     .FirstOrDefault(x => x.Adi.ToLower() == "diğer")
@@ -529,8 +545,11 @@ namespace WepApp.Controllers
                     Email = Email ?? "",
                     Telefon = Telefon ?? "",
                     Adres = Adres ?? "",
-                    Il = Il ?? "",
-                    Ilce = Ilce ?? "",
+
+                    // İl ve ilçe ID'lerini ekle (YENİ)
+                    illerId = Il,
+                    ilcelerId = Ilce,
+
                     Belde = Belde ?? "",
                     Bolge = Bolge ?? "",
                     TCVNo = TCVNo ?? "",
@@ -602,20 +621,17 @@ namespace WepApp.Controllers
             }
             return RedirectToAction("Index");
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Guncelle(
             int Id, string Ad, string Soyad, string KullaniciAdi, string Sifre,
-            string Email, string Telefon, string Adres, string Il, string Ilce, string Belde, string Bolge,
+            string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,  // Il ve Ilce artık int?
             string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
             string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
             int? MusteriTipiId, int? MusteriDurumuId, int? BayiId, string TicariUnvan,
             string Diger,
             IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> YeniYetkililer = null)
         {
-        
-
             try
             {
                 Musteri existing = _musteriRepository.Getir(Id);
@@ -645,15 +661,18 @@ namespace WepApp.Controllers
 
                 // Güncelleme işlemleri
                 existing.Ad = Ad ?? "";
-                existing.TicariUnvan = TicariUnvan;
+                existing.TicariUnvan = TicariUnvan ?? "";
                 existing.Soyad = Soyad ?? "";
                 existing.KullaniciAdi = KullaniciAdi ?? "";
                 if (!string.IsNullOrEmpty(Sifre)) existing.Sifre = Sifre;
                 existing.Email = Email ?? "";
                 existing.Telefon = Telefon ?? "";
                 existing.Adres = Adres ?? "";
-                existing.Il = Il ?? "";
-                existing.Ilce = Ilce ?? "";
+
+                // İl ve ilçe ID'lerini güncelle (YENİ)
+                existing.illerId = Il;
+                existing.ilcelerId = Ilce;
+
                 existing.Belde = Belde ?? "";
                 existing.Bolge = Bolge ?? "";
                 existing.TCVNo = TCVNo ?? "";
@@ -729,9 +748,7 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-        
-
-            List<string> join = new List<string> { "MusteriDurumu", "MusteriTipi", "Bayi" };
+            List<string> join = new List<string> { "MusteriDurumu", "MusteriTipi", "Bayi", "iller", "ilceler" }; // İl/ilçe join'lerini ekle
             try
             {
                 Musteri item = _musteriRepository.Getir(x => x.Id == id && x.Durum == 1, join);
@@ -749,8 +766,10 @@ namespace WepApp.Controllers
                     email = item.Email ?? "",
                     telefon = item.Telefon ?? "",
                     adres = item.Adres ?? "",
-                    il = item.Il ?? "",
-                    ilce = item.Ilce ?? "",
+                    ilId = item.illerId,  // YENİ
+                    ilceId = item.ilcelerId,  // YENİ
+                    il = item.iller?.sehiradi ?? "",  // İl adı
+                    ilce = item.ilceler?.ilceadi ?? "",  // İlçe adı
                     belde = item.Belde ?? "",
                     bolge = item.Bolge ?? "",
                     tcvNo = item.TCVNo ?? "",
