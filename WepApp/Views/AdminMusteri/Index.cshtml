@@ -2307,7 +2307,7 @@ $('#duzenleForm').on('submit', function(e) {
 });
 
 
-               // Müşteri durumuna göre alanları aktif/pasif yap
+        // Müşteri durumuna göre alanları aktif/pasif yap
         function toggleAdayMusteriAlanları(durumId, modalTipi = 'ekle') {
             const prefix = modalTipi === 'ekle' ? '' : 'edit';
             const adayMi = durumId == 2; // Aday müşteri durum ID'si 2
@@ -2441,6 +2441,159 @@ $('#duzenleForm').on('submit', function(e) {
                 musteriTipiSelect.style.backgroundColor = '#ffffff';
             }
 
+            // ============= YENİ EKLENEN ALANLAR =============
+
+            // İl/İlçe dropdown'larını yönet
+            const ilSelect = document.getElementById(prefix + 'Il');
+            const ilceSelect = document.getElementById(prefix + 'Ilce');
+
+            if (ilSelect) {
+                ilSelect.disabled = adayMi;
+                ilSelect.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                if (adayMi) {
+                    ilSelect.value = '';
+                }
+            }
+
+            if (ilceSelect) {
+                ilceSelect.disabled = adayMi;
+                ilceSelect.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                if (adayMi) {
+                    ilceSelect.value = '';
+                    // İlçe dropdown'ını sıfırla
+                    if (ilceSelect.options.length > 0) {
+                        ilceSelect.innerHTML = '<option value="">Önce il seçiniz</option>';
+                    }
+                }
+            }
+
+            // Logo ve İmza yükleme alanlarını yönet
+            if (modalTipi === 'duzenle') {
+                // Düzenle modalı için
+                const logoUploadContainer = document.getElementById('logoUploadContainer');
+                const imzaUploadContainer = document.getElementById('imzaUploadContainer');
+                const mevcutLogoContainer = document.getElementById('mevcutLogoContainer');
+                const mevcutImzaContainer = document.getElementById('mevcutImzaContainer');
+                const logoDurumBadge = document.getElementById('logoDurumBadge');
+                const imzaDurumBadge = document.getElementById('imzaDurumBadge');
+                const logoStat = document.getElementById('logoStat');
+                const imzaStat = document.getElementById('imzaStat');
+
+                // Dosya yükleme alanlarını göster/gizle
+                if (logoUploadContainer) {
+                    logoUploadContainer.style.pointerEvents = adayMi ? 'none' : 'auto';
+                    logoUploadContainer.style.opacity = adayMi ? '0.5' : '1';
+                }
+
+                if (imzaUploadContainer) {
+                    imzaUploadContainer.style.pointerEvents = adayMi ? 'none' : 'auto';
+                    imzaUploadContainer.style.opacity = adayMi ? '0.5' : '1';
+                }
+
+                // Mevcut dosyaları göster/gizle (aday müşteride mevcut dosya olmamalı)
+                if (adayMi) {
+                    if (mevcutLogoContainer) mevcutLogoContainer.style.display = 'none';
+                    if (mevcutImzaContainer) mevcutImzaContainer.style.display = 'none';
+                    if (logoDurumBadge) {
+                        logoDurumBadge.className = 'badge bg-secondary';
+                        logoDurumBadge.textContent = 'Yok (Aday)';
+                    }
+                    if (imzaDurumBadge) {
+                        imzaDurumBadge.className = 'badge bg-secondary';
+                        imzaDurumBadge.textContent = 'Yok (Aday)';
+                    }
+                    if (logoStat) {
+                        logoStat.className = 'badge bg-secondary';
+                        logoStat.textContent = 'Yok (Aday)';
+                    }
+                    if (imzaStat) {
+                        imzaStat.className = 'badge bg-secondary';
+                        imzaStat.textContent = 'Yok (Aday)';
+                    }
+                }
+            } else {
+                // Ekle modalı için
+                const logoInput = document.getElementById('Logo');
+                const imzaInput = document.getElementById('Imza');
+                const logoPreviewEkle = document.getElementById('logoPreviewEkle');
+                const imzaPreviewEkle = document.getElementById('imzaPreviewEkle');
+                const logoUploadPrompt = document.querySelector('#ekleModal .file-upload-container:has(#Logo) .upload-prompt');
+                const imzaUploadPrompt = document.querySelector('#ekleModal .file-upload-container:has(#Imza) .upload-prompt');
+
+                if (logoInput) {
+                    logoInput.disabled = adayMi;
+                    if (logoUploadPrompt) {
+                        logoUploadPrompt.style.opacity = adayMi ? '0.5' : '1';
+                    }
+                    if (logoPreviewEkle) {
+                        logoPreviewEkle.innerHTML = ''; // Aday müşteri seçildiğinde önizlemeyi temizle
+                    }
+                }
+
+                if (imzaInput) {
+                    imzaInput.disabled = adayMi;
+                    if (imzaUploadPrompt) {
+                        imzaUploadPrompt.style.opacity = adayMi ? '0.5' : '1';
+                    }
+                    if (imzaPreviewEkle) {
+                        imzaPreviewEkle.innerHTML = ''; // Aday müşteri seçildiğinde önizlemeyi temizle
+                    }
+                }
+            }
+
+            // Yetkililer sekmesini yönet
+            if (modalTipi === 'ekle') {
+                // Ekle modalı için yetkili butonu
+                const yetkiliEkleBtn = document.querySelector('#yetkililer-tab + .tab-pane .btn-primary');
+                const yetkiliContainer = document.getElementById('ekleYetkiliListesi');
+
+                if (yetkiliEkleBtn) {
+                    yetkiliEkleBtn.disabled = adayMi;
+                    yetkiliEkleBtn.style.opacity = adayMi ? '0.5' : '1';
+                }
+
+                if (adayMi && yetkiliContainer) {
+                    ekleYetkiliListesi = []; // Aday müşteri için yetkili listesini temizle
+                    yetkiliContainer.innerHTML = '<div class="alert alert-info text-center"><i class="fas fa-info-circle"></i> Aday müşteriler için yetkili eklenemez.</div>';
+                } else if (!adayMi && yetkiliContainer && ekleYetkiliListesi.length === 0) {
+                    guncelleEkleYetkiliListesi();
+                }
+            } else {
+                // Düzenle modalı için yetkili tablosu ve butonu
+                const yetkiliEkleBtn = document.querySelector('#editYetkililer .btn-primary');
+                const yetkiliTablosu = document.getElementById('musteriYetkililerTablosu');
+                const yetkiliTbody = yetkiliTablosu ? yetkiliTablosu.querySelector('tbody') : null;
+
+                if (yetkiliEkleBtn) {
+                    yetkiliEkleBtn.disabled = adayMi;
+                    yetkiliEkleBtn.style.opacity = adayMi ? '0.5' : '1';
+                }
+
+                if (adayMi) {
+                    duzenleYetkiliListesi = []; // Aday müşteri için yeni yetkili listesini temizle
+                    guncelleDuzenleYetkiliListesi();
+
+                    // Mevcut yetkilileri göster/gizle veya pasif yap
+                    if (yetkiliTbody) {
+                        const rows = yetkiliTbody.querySelectorAll('tr');
+                        rows.forEach(row => {
+                            const cells = row.querySelectorAll('td');
+                            if (cells.length > 0) {
+                                // Son hücre (işlemler) devre dışı
+                                const islemHucresi = cells[cells.length - 1];
+                                if (islemHucresi) {
+                                    const buttons = islemHucresi.querySelectorAll('button');
+                                    buttons.forEach(btn => {
+                                        btn.disabled = adayMi;
+                                        btn.style.opacity = adayMi ? '0.5' : '1';
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+
             // Aday müşteri için bilgi notu göster
             const uyariDivId = modalTipi === 'ekle' ? 'adayMusteriUyariEkle' : 'adayMusteriUyariDuzenle';
             let uyariDiv = document.getElementById(uyariDivId);
@@ -2453,6 +2606,7 @@ $('#duzenleForm').on('submit', function(e) {
                     uyariDiv.innerHTML = `
                         <i class="fas fa-info-circle me-2"></i>
                         <strong>Aday Müşteri:</strong> Sadece temel bilgiler ve email alanları doldurulabilir.
+                        İl/İlçe, logo, imza ve yetkili ekleme işlemleri yapılamaz.
                         Diğer alanlar müşteri kaydedildikten sonra düzenlenebilir.
                     `;
 
@@ -2831,6 +2985,13 @@ $('#duzenleForm').on('submit', function(e) {
 
                 // ============= SAYFA YÜKLENDİĞİNDE =============
                 $(document).ready(function () {
+                            // Sayfa yüklendiğinde varsayılan müşteri durumunu kontrol et
+        setTimeout(function() {
+            const ekleDurumSelect = document.getElementById('MusteriDurumuId');
+            if (ekleDurumSelect && ekleDurumSelect.value == 2) {
+                toggleAdayMusteriAlanları(2, 'ekle');
+            }
+        }, 500);
                           setTimeout(function() {
             const ekleDurumSelect = document.getElementById('MusteriDurumuId');
             if (ekleDurumSelect && ekleDurumSelect.value == 2) {

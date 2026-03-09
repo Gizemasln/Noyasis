@@ -16,6 +16,7 @@ public partial class Context : DbContext
     }
 
     public virtual DbSet<AnaSayfaFotograf> AnaSayfaFotograf { get; set; }
+    public virtual DbSet<Arsiv> Arsiv { get; set; }
     public virtual DbSet<AnaSayfaRakamlari> AnaSayfaRakamlari { get; set; }
     public virtual DbSet<HakkimizdaBilgileri> HakkimizdaBilgileri { get; set; }
     public virtual DbSet<Nedenler> Nedenler { get; set; }

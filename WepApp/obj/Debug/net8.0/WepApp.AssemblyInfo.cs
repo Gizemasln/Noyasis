@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WepApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dc254606180e6105f3f89be90d5326728884b0fd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9cc435c4ae63582983b2bf8efa933bd19e14348d")]
 [assembly: System.Reflection.AssemblyProductAttribute("WepApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WepApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -19,6 +19,7 @@ wwwroot\WebAdminTheme\assets\css\kaiadmin.min.css
 wwwroot\WebAdminTheme\assets\css\plugins.css
 wwwroot\WebAdminTheme\assets\css\plugins.css.map
 wwwroot\WebAdminTheme\assets\css\plugins.min.css
+wwwroot\WebAdminTheme\assets\css\teklif-olustur.css
 wwwroot\WebAdminTheme\assets\fonts\fontawesome\fa-brands-400.eot
 wwwroot\WebAdminTheme\assets\fonts\fontawesome\fa-brands-400.svg
 wwwroot\WebAdminTheme\assets\fonts\fontawesome\fa-brands-400.ttf

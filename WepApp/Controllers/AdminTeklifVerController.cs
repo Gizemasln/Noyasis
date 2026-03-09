@@ -26,6 +26,9 @@ namespace WepApp.Controllers
         private readonly MusteriDurumuRepository _musteriDurumuRepository = new MusteriDurumuRepository();
         private readonly BayiRepository _bayiRepository = new BayiRepository();
         private readonly PaketBaglantiRepository _paketBaglantiRepo = new PaketBaglantiRepository();
+        private readonly illerRepository _illerRepo = new illerRepository();
+        private readonly ilcelerRepository _ilcelerRepo = new ilcelerRepository();
+       
 
         public AdminTeklifVerController(IWebHostEnvironment webHostEnvironment)
         {
@@ -51,6 +54,8 @@ namespace WepApp.Controllers
                     ViewBag.MevcutTeklif = mevcutTeklif;
                     ViewBag.YeniTeklifNo = yeniTeklifNo;
                     ViewBag.TeklifId = teklifId;
+                    ViewBag.Iller = _illerRepo.Listele().OrderBy(i => i.sehiradi).ToList();
+
 
                     if (mevcutTeklif.GecerlilikTarihi.HasValue)
                     {
@@ -141,6 +146,23 @@ namespace WepApp.Controllers
         
 
             return View();
+        }
+[HttpGet]
+        public IActionResult GetIlcelerByIlId(int ilId)
+        {
+            try
+            {
+                var ilceler = _ilcelerRepo.GetirList(x => x.illerId == ilId)
+                                           .OrderBy(i => i.ilceadi)
+                                           .Select(i => new { i.Id, i.ilceadi })
+                                           .ToList();
+
+                return Json(new { success = true, data = ilceler });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
         private string TeklifNumarasiniGuncelle(string mevcutTeklifNo)
         {
@@ -773,8 +795,8 @@ namespace WepApp.Controllers
                     Email = model.Email ?? "",
                     Telefon = model.Telefon ?? "",
                     Adres = model.Adres ?? "",
-                    Il = model.Il ?? "",
-                    Ilce = model.Ilce ?? "",
+                    illerId = model.illerId,
+                    ilcelerId = model.ilcelerId,
                     Belde = model.Belde ?? "",
                     Bolge = model.Bolge ?? "",
                     TCVNo = model.TCVNo ?? "",
@@ -841,8 +863,9 @@ namespace WepApp.Controllers
             public string Email { get; set; } = "";
             public string Telefon { get; set; } = "";
             public string Adres { get; set; } = "";
-            public string Il { get; set; } = "";
-            public string Ilce { get; set; } = "";
+            // İl ve ilçe ID'leri (YENİ)
+            public int? illerId { get; set; }
+            public int? ilcelerId { get; set; }
             public string Belde { get; set; } = "";
             public string Bolge { get; set; } = "";
             public string TCVNo { get; set; } = "";
@@ -1608,8 +1631,8 @@ namespace WepApp.Controllers
         public string Email { get; set; } = string.Empty;
         public string Telefon { get; set; } = string.Empty;
         public string Bolge { get; set; } = string.Empty;
-        public int illerId { get; set; } 
-        public int ilcelerId { get; set; } 
+        public int? illerId { get; set; } 
+        public int? ilcelerId { get; set; } 
         public string Belde { get; set; } = string.Empty;
         public string Adres { get; set; } = string.Empty;
 

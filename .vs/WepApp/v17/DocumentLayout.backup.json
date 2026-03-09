@@ -1,37 +1,12 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "D:\\PROJELER\\Noyasis\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\views\\adminargehata\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\views\\adminargehata\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedWidth": 306,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminArgeHata\\Index.cshtml",
-              "RelativeDocumentMoniker": "WepApp\\Views\\AdminArgeHata\\Index.cshtml",
-              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminArgeHata\\Index.cshtml",
-              "RelativeToolTip": "WepApp\\Views\\AdminArgeHata\\Index.cshtml",
-              "ViewState": "AgIAAL8AAAAAAAAAAAD4v9IAAAA0AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-03-06T13:05:27.671Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }

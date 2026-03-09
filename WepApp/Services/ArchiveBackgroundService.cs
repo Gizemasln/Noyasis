@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading;
 using System.Threading.Tasks;
+using WepApp.Models;
 
 namespace WepApp.Services
 {
@@ -21,7 +22,6 @@ namespace WepApp.Services
             _logger = logger;
             _scopeFactory = scopeFactory;
         }
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Sözleşme arşivleme servisi başladı.");
@@ -38,11 +38,19 @@ namespace WepApp.Services
                     var teklifRepo = scope.ServiceProvider
                         .GetRequiredService<TeklifRepository>();
 
-                    var birAyOnce = DateTime.Today.AddMonths(-1);
+                    var arsivRepo = scope.ServiceProvider
+                        .GetRequiredService<ArsivRepository>();
+
+                    Arsiv arsiv = arsivRepo.Getir(x => x.Durumu == 1);
+
+                    if (arsiv == null)
+                        continue;
+
+                    var tarih = DateTime.Today.AddDays(-arsiv.Gun);
 
                     var arsivlenecekSozlesmeler = sozlesmeRepo
                         .GetirList(s => s.Durumu == 1 &&
-                                       s.YayinTarihi.Date == birAyOnce.Date)
+                                        s.YayinTarihi.Date <= tarih)
                         .ToList();
 
                     foreach (var sozlesme in arsivlenecekSozlesmeler)
@@ -50,10 +58,12 @@ namespace WepApp.Services
                         if (sozlesme.TeklifId != 0)
                         {
                             var teklif = teklifRepo.Getir(sozlesme.TeklifId);
+
                             if (teklif != null && teklif.TeklifDurumId != 12)
                             {
                                 teklif.TeklifDurumId = 12;
                                 teklif.GuncellenmeTarihi = DateTime.Now;
+
                                 teklifRepo.Guncelle(teklif);
 
                                 _logger.LogInformation(
