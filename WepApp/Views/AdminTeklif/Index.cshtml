@@ -852,10 +852,8 @@
 
                     toastr.success(response.message || `Durum "${response.yeniDurum}" olarak güncellendi.`);
 
-                    // TÜM DURUM DEĞİŞİKLİKLERİNDEN SONRA SAYFAYI YENİLE
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1500); // 1.5 saniye gecikmeli sayfa yenileme (kullanıcı mesajı görebilsin)
+                location.reload(); // Hemen yenile, bekleme yok
+
 
                     // Durum 9 (Sözleşmede) ise 1 ay sonra Arşiv'e çekme zamanlayıcısı
                     if (yeniDurumId === 9) {
@@ -906,78 +904,8 @@
                                title="Sil">
                            <i class="fas fa-trash"></i>
                        </button>`;
-               } else {
-                   // Diğer kilitli durumlarda (8, 9, 10, 12): Sadece PDF ve Detay
-                   buttonsHtml = `
-                       <!-- Sadece PDF ve detay butonları -->
-                       <button class="btn btn-info btn-sm aksiyon-btn detay-goster" data-button-permission="sozlesme-detay"
-                               data-teklif-id="${teklifId}"
-                               title="Detayları Gör">
-                           <i class="fas fa-eye"></i>
-                       </button>
-                       <a href="/AdminTeklifVer/TeklifPdf?teklifId=${teklifId}"
-                          target="_blank"
-                          class="btn btn-secondary btn-sm aksiyon-btn"
-                          title="PDF İndir">
-                           <i class="fas fa-file-pdf"></i>
-                       </a>`;
-               }
-           } else if (durumId === 6) { // Müşteri Onaylandı
-                buttonsHtml = `
-                    <button class="btn btn-info btn-sm aksiyon-btn detay-goster" data-button-permission="sozlesme-detay"
-                            data-teklif-id="${teklifId}"
-                            title="Detayları Gör">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <button class="btn btn-success btn-sm aksiyon-btn sozlesme-btn"
-                            data-teklif-id="${teklifId}"
-                            title="Sözleşme Oluştur">
-                        <i class="fas fa-file-contract"></i>
-                    </button>
-                    <a href="/AdminTeklifVer/TeklifPdf?teklifId=${teklifId}"
-                       target="_blank"
-                       class="btn btn-secondary btn-sm aksiyon-btn"
-                       title="PDF İndir">
-                        <i class="fas fa-file-pdf"></i>
-                    </a>
-                    <a href="/AdminTeklifVer?teklifId=${teklifId}"
-                       target="_blank"
-                       class="btn btn-light btn-sm aksiyon-btn"
-                        title="Revize">
-                        <i class="fas fa-pen-alt"></i>
-                    </a>
-                    <button class="btn btn-danger btn-sm aksiyon-btn sil-teklif" data-button-permission="sil"
-                            data-teklif-id="${teklifId}"
-                            data-teklif-no="${teklifNo}"
-                            title="Sil">
-                        <i class="fas fa-trash"></i>
-                    </button>`;
-            } else { // Diğer durumlar
-                buttonsHtml = `
-                    <button class="btn btn-info btn-sm aksiyon-btn detay-goster" data-button-permission="sozlesme-detay"
-                            data-teklif-id="${teklifId}"
-                            title="Detayları Gör">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                    <a href="/AdminTeklifVer/TeklifPdf?teklifId=${teklifId}"
-                       target="_blank"
-                       class="btn btn-secondary btn-sm aksiyon-btn"
-                       title="PDF İndir">
-                        <i class="fas fa-file-pdf"></i>
-                    </a>
-                    <a href="/AdminTeklifVer?teklifId=${teklifId}"
-                       target="_blank"
-                       class="btn btn-light btn-sm aksiyon-btn"
-                        title="Revize">
-                        <i class="fas fa-pen-alt"></i>
-                    </a>
-                    <button class="btn btn-danger btn-sm aksiyon-btn sil-teklif" data-button-permission="sil"
-                            data-teklif-id="${teklifId}"
-                            data-teklif-no="${teklifNo}"
-                            title="Sil">
-                        <i class="fas fa-trash"></i>
-                    </button>`;
-            }
+               } 
+           } 
 
             $buttonsCell.html(buttonsHtml);
         }

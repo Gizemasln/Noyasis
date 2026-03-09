@@ -54,7 +54,6 @@ namespace WepApp.Controllers
                     ViewBag.MevcutTeklif = mevcutTeklif;
                     ViewBag.YeniTeklifNo = yeniTeklifNo;
                     ViewBag.TeklifId = teklifId;
-                    ViewBag.Iller = _illerRepo.Listele().OrderBy(i => i.sehiradi).ToList();
 
 
                     if (mevcutTeklif.GecerlilikTarihi.HasValue)
@@ -142,8 +141,9 @@ namespace WepApp.Controllers
 
             var kdv = new KDVRepository().Getir(x => x.Durumu == 1);
             ViewBag.KDV = kdv?.Oran ?? 20;
+            ViewBag.Iller = _illerRepo.Listele().OrderBy(i => i.sehiradi).ToList();
 
-        
+
 
             return View();
         }

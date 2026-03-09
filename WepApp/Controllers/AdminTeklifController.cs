@@ -47,8 +47,6 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-        
-
             try
             {
                 // Session'dan kullanıcı bilgilerini al
@@ -58,11 +56,22 @@ namespace WepApp.Controllers
 
                 List<Teklif> teklifler = new List<Teklif>();
 
+                // Include edilecek navigation property'ler
+                var includes = new List<string> {
+            "Musteri",
+            "LisansTip",
+            "Musteri.Bayi",
+            "TeklifDurum",
+            "Nedenler",
+            "Musteri.MusteriDurumu",
+            "Musteri.iller",    // İl bilgisi için
+            "Musteri.ilceler"   // İlçe bilgisi için
+        };
+
                 // Kullanıcı tipine göre teklifleri filtrele
                 if (currentBayi != null)
                 {
                     // BAYI GİRİŞİ: Bayi ve alt bayilerine ait müşterilerin teklifleri
-
                     var bayiVeAltBayiler = _bayiRepository.GetBayiVeAltBayiler(currentBayi.Id) ?? new List<Bayi>();
                     var bayiVeAltBayiIds = bayiVeAltBayiler.Select(b => b.Id).ToList();
 
@@ -74,31 +83,27 @@ namespace WepApp.Controllers
                     .ToList();
 
                     // 3. Adım: Bu müşterilere ait teklifleri getir
-                    teklifler = _teklifRepo.GetirList(x => x.Aktif == true && musteriIds.Contains(x.MusteriId),
-                        new List<string> { "Musteri", "LisansTip", "Musteri.Bayi", "TeklifDurum", "Nedenler" , "Musteri.MusteriDurumu" }
-                    )
-                    .OrderByDescending(x => x.EklenmeTarihi)
-                    .ToList();
+                    teklifler = _teklifRepo.GetirList(x => x.Aktif == true && musteriIds.Contains(x.MusteriId), includes)
+                        .OrderByDescending(x => x.EklenmeTarihi)
+                        .ToList();
                 }
                 else if (currentMusteri != null)
                 {
                     // MÜŞTERİ GİRİŞİ: Sadece kendi teklifleri
                     teklifler = _teklifRepo.GetirList(
                         x => x.Aktif == true && x.MusteriId == currentMusteri.Id,
-                        new List<string> { "Musteri", "LisansTip", "Musteri.Bayi", "TeklifDurum", "Nedenler", "Musteri.MusteriDurumu" }
-                    )
-                    .OrderByDescending(x => x.EklenmeTarihi)
-                    .ToList();
+                        includes)
+                        .OrderByDescending(x => x.EklenmeTarihi)
+                        .ToList();
                 }
                 else if (currentKullanici != null)
                 {
                     // ADMIN GİRİŞİ: Tüm teklifler
                     teklifler = _teklifRepo.GetirList(
                         x => x.Aktif == true,
-                        new List<string> { "Musteri", "LisansTip", "Musteri.Bayi", "TeklifDurum", "Nedenler" , "Musteri.MusteriDurumu" }
-                    )
-                    .OrderByDescending(x => x.EklenmeTarihi)
-                    .ToList();
+                        includes)
+                        .OrderByDescending(x => x.EklenmeTarihi)
+                        .ToList();
                 }
 
                 // Sözleşmeleri de getir (tüm sözleşmeler - filtreleme yok)
@@ -114,11 +119,7 @@ namespace WepApp.Controllers
                 // Eksik navigation property'leri manuel doldur (gerekirse)
                 foreach (var teklif in teklifler)
                 {
-                    // Müşteri bilgisi gelmemişse getir
-                    if (teklif.Musteri == null && teklif.MusteriId > 0)
-                    {
-                        teklif.Musteri = _musteriRepo.Getir(teklif.MusteriId);
-                    }
+                 
 
                     // Müşterinin bayi bilgisini getir
                     if (teklif.Musteri != null && teklif.Musteri.Bayi == null && teklif.Musteri.BayiId > 0)
@@ -158,7 +159,6 @@ namespace WepApp.Controllers
                 ViewBag.CurrentMusteri = currentMusteri;
                 ViewBag.CurrentKullanici = currentKullanici;
 
-            
                 return View();
             }
             catch (Exception ex)
@@ -171,8 +171,6 @@ namespace WepApp.Controllers
         [HttpGet]
         public async Task<IActionResult> GetirSozlesmeBilgileri(int teklifId)
         {
-        
-
             try
             {
                 // 1. Önce bu teklife ait aktif bir sözleşme var mı kontrol et
@@ -193,7 +191,7 @@ namespace WepApp.Controllers
                 // 2. Teklif bilgilerini getir
                 Teklif teklif = _teklifRepo.Getir(
                     x => x.Id == teklifId && x.Aktif == true,
-                    new List<string> { "Musteri", "LisansTip", "Detaylar", "Musteri.MusteriTipi", "Detaylar.PaketGrup" });
+                    new List<string> { "Musteri", "LisansTip", "Detaylar", "Musteri.MusteriTipi", "Detaylar.PaketGrup", "Musteri.iller", "Musteri.ilceler" });
 
                 if (teklif == null)
                 {
@@ -233,7 +231,7 @@ namespace WepApp.Controllers
                     .ToList();
 
                 // 7. Aktif UYB oranını al
-                UYB uybOrani = _uybRepo.Getir(x=> x.Durumu==1);
+                UYB uybOrani = _uybRepo.Getir(x => x.Durumu == 1);
                 decimal tutarKdvsiz = teklif.NetToplam / 1.20m; // KDV'siz tutar
                 decimal uybTutari = tutarKdvsiz * (uybOrani.Oran / 100m);
 
@@ -260,8 +258,9 @@ namespace WepApp.Controllers
                             telefon = teklif.Musteri?.Telefon ?? "",
                             adres1 = teklif.Musteri?.Adres ?? "",
                             adres2 = "",
-                            il = teklif.Musteri?.iller.sehiradi ?? "",
-                            ilce = teklif.Musteri?.ilceler.ilceadi ?? "",
+                            // İl/ilçe bilgilerini yeni yapıya göre düzenle
+                            il = teklif.Musteri?.iller?.sehiradi ?? "",
+                            ilce = teklif.Musteri?.ilceler?.ilceadi ?? "",
                             vergiDairesi = teklif.Musteri?.VergiDairesi ?? "",
                             vergiNo = teklif.Musteri?.TCVNo ?? "",
                             email = teklif.Musteri?.Email ?? "",
@@ -299,7 +298,10 @@ namespace WepApp.Controllers
 
                 if (!int.TryParse(form["MusteriId"], out int musteriId))
                     return Json(new { success = false, message = "Geçersiz müşteri ID." });
-
+                MusteriRepository musteriRepository = new MusteriRepository();
+                Musteri musteri = musteriRepository.Getir(musteriId);
+                musteri.MusteriDurumuId = 1;
+                musteriRepository.Guncelle(musteri);
                 // LisansNo zorunlu değil, null olabilir
                 string lisansNo = form["LisansNo"].ToString()?.Trim() ?? "";
                 decimal yillikBakim;
@@ -991,7 +993,15 @@ namespace WepApp.Controllers
             {
                 Teklif teklif = _teklifRepo.Getir(
                     x => x.Id == id && x.Aktif == true,
-                    new List<string> { "Musteri", "LisansTip", "Detaylar", "TeklifDurum", "Nedenler" });
+                    new List<string> {
+                "Musteri",
+                "LisansTip",
+                "Detaylar",
+                "TeklifDurum",
+                "Nedenler",
+                "Musteri.iller",     // İl bilgisi için
+                "Musteri.ilceler"    // İlçe bilgisi için
+                    });
 
                 if (teklif == null)
                     return Json(new { success = false, message = "Teklif bulunamadı." });
@@ -1027,6 +1037,8 @@ namespace WepApp.Controllers
                     musteriAdi = (teklif.Musteri?.Ad + " " + teklif.Musteri?.Soyad).Trim(),
                     musteriTelefon = teklif.Musteri?.Telefon,
                     musteriEmail = teklif.Musteri?.Email,
+                    musteriIl = teklif.Musteri?.iller?.sehiradi ?? "",
+                    musteriIlce = teklif.Musteri?.ilceler?.ilceadi ?? "",
                     lisansTipi = teklif.LisansTip?.Adi,
                     aciklama = teklif.Aciklama,
                     grupIndirimOrani = teklif.GrupIndirimOrani,

@@ -211,7 +211,6 @@
         </div>
     </div>
 </div>
-
 <!-- Yeni Müşteri Modal -->
 <div class="modal fade" id="yeniMusteriModal" tabindex="-1" aria-labelledby="yeniMusteriModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-xl">
@@ -241,6 +240,7 @@
                         </li>
                     </ul>
                     <div class="tab-content">
+                        <!-- TEMEL BİLGİLER TAB'I - Zorunlu alanlar burada -->
                         <div class="tab-pane fade show active" id="yeniTemel">
                             <div class="row g-3">
                                 <div class="col-md-6">
@@ -263,9 +263,11 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="yeniKullaniciAdi" name="KullaniciAdi" required>
+                                        <input type="text" class="form-control" id="yeniKullaniciAdi" name="KullaniciAdi" readonly required>
                                         <label>Kullanıcı Adı *</label>
-                                        <div class="form-text text-danger small" id="yeniKullaniciAdiKontrol"></div>
+                                        <div class="form-text text-info small" id="yeniKullaniciAdiKontrol">
+                                            <i class="fas fa-info-circle me-1"></i> Kullanıcı adı otomatik oluşturulur.
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -301,7 +303,7 @@
                                 <div class="col-md-4" id="yeniDigerContainer" style="display:none;">
                                     <div class="form-floating">
                                         <input type="text" class="form-control" id="yeniDiger" name="Diger">
-                                        <label>Diğer Tipi (Zorunlu)</label>
+                                        <label>Diğer Tipi</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -320,7 +322,7 @@
                             </div>
                         </div>
 
-                        <!-- İletişim & Adres tab'ı -->
+                        <!-- İLETİŞİM & ADRES TAB'I - İl/İlçe zorunlu, diğerleri opsiyonel -->
                         <div class="tab-pane fade" id="yeniIletisim">
                             <div class="row g-3">
                                 <div class="col-md-6">
@@ -335,6 +337,7 @@
                                         <label>Telefon</label>
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="form-floating">
                                         <input type="text" class="form-control" id="yeniBolge" name="Bolge">
@@ -343,8 +346,17 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <select class="form-select" id="yeniIl" name="Il" onchange="yeniIlSecildi(this.value)">
-                                            <option value="">Seçiniz</option>
+                                        <input type="text" class="form-control" id="yeniBelde" name="Belde">
+                                        <label>Belde</label>
+                                    </div>
+                                </div>
+                           
+
+                                <!-- İL - ZORUNLU (kullanıcı adı için) -->
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="yeniIl" name="Il" onchange="yeniIlSecildi(this.value)" required>
+                                            <option value="">Seçiniz *</option>
                                             @if (ViewBag.Iller != null)
                                             {
                                                 foreach (var il in ViewBag.Iller)
@@ -353,23 +365,20 @@
                                                 }
                                             }
                                         </select>
-                                        <label for="yeniIl">İl</label>
+                                        <label for="yeniIl">İl *</label>
                                     </div>
                                 </div>
+
+                                <!-- İLÇE - ZORUNLU (kullanıcı adı için) -->
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <select class="form-select" id="yeniIlce" name="Ilce">
-                                            <option value="">Önce il seçiniz</option>
+                                        <select class="form-select" id="yeniIlce" name="Ilce" required>
+                                            <option value="">Önce il seçiniz *</option>
                                         </select>
-                                        <label for="yeniIlce">İlçe</label>
+                                        <label for="yeniIlce">İlçe *</label>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="yeniBelde" name="Belde">
-                                        <label>Belde</label>
-                                    </div>
-                                </div>
+                          
                                 <div class="col-12">
                                     <div class="form-floating">
                                         <textarea class="form-control" id="yeniAdres" name="Adres" style="height:100px"></textarea>
@@ -379,7 +388,7 @@
                             </div>
                         </div>
 
-                        <!-- Vergi & Resmi tab'ı -->
+                        <!-- VERGİ & RESMİ TAB'I - Tümü opsiyonel -->
                         <div class="tab-pane fade" id="yeniVergi">
                             <div class="row g-3">
                                 <div class="col-md-6">
@@ -415,7 +424,7 @@
                             </div>
                         </div>
 
-                        <!-- Alpemix tab'ı -->
+                        <!-- ALPEMİX TAB'I - Tümü opsiyonel -->
                         <div class="tab-pane fade" id="yeniAlpemix">
                             <div class="row g-3">
                                 <div class="col-md-6">
@@ -439,7 +448,7 @@
                             </div>
                         </div>
 
-                        <!-- Dosyalar tab'ı -->
+                        <!-- DOSYALAR TAB'I - Tümü opsiyonel -->
                         <div class="tab-pane fade" id="yeniDosyalar">
                             <div class="row g-3">
                                 <div class="col-md-6">
@@ -464,22 +473,6 @@
                     </button>
                 </div>
             </form>
-        </div>
-    </div>
-</div>
-
-<!-- Alert Modal -->
-<div class="modal fade" id="alertModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="alertModalTitle">Bilgi</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="alertModalBody"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Tamam</button>
-            </div>
         </div>
     </div>
 </div>
@@ -487,155 +480,6 @@
 <!-- Toast Container -->
 <div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;"></div>
 
-<div class="modal fade" id="yeniMusteriModal" tabindex="-1" aria-labelledby="yeniMusteriModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <form id="yeniMusteriForm" enctype="multipart/form-data">
-                @Html.AntiForgeryToken()
-                <div class="modal-header">
-                    <h5 class="modal-title" id="yeniMusteriModalLabel">Yeni Müşteri Ekle</h5>                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="nav nav-tabs mb-3" id="yeniMusteriTab" role="tablist">
-                        <li class="nav-item">
-                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#yeniTemel" type="button">Temel Bilgiler</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#yeniIletisim" type="button">İletişim & Adres</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#yeniVergi" type="button">Vergi & Resmi</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#yeniAlpemix" type="button">Alpemix</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#yeniDosyalar" type="button">Dosyalar</button>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="yeniTemel">
-                            <div class="row g-3">
-                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniTicariUnvan" name="TicariUnvan" required><label>Ticari Unvan *</label></div></div>
-                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniAd" name="Ad" required><label>Ad *</label></div></div>
-                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniSoyad" name="Soyad" required><label>Soyad *</label></div></div>
-                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniKullaniciAdi" name="KullaniciAdi" required><label>Kullanıcı Adı *</label><div class="form-text text-danger small" id="yeniKullaniciAdiKontrol"></div></div></div>
-                                <div class="col-md-6"><div class="form-floating"><input type="password" class="form-control" id="yeniSifre" name="Sifre" required ><label>Şifre *</label></div></div>
-                                <div class="col-md-4">
-                                    <div class="form-floating">
-                                        <select class="form-select" id="yeniMusteriDurumuId" name="MusteriDurumuId" required>
-                                            <option value="">Durum *</option>@foreach (var d in ViewBag.MusteriDurumu ?? new List<MusteriDurumu>())
-                                            {
-                                                <option value="@d.Id">@d.Adi</option>
-                                            }
-                                        </select><label>Müşteri Durumu</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-floating">
-                                        <select class="form-select" id="yeniMusteriTipiId" name="MusteriTipiId">
-                                            <option value="">Tip</option>@foreach (var t in ViewBag.MusteriTipleri ?? new List<MusteriTipi>())
-                                            {
-                                                <option value="@t.Id">@t.Adi</option>
-                                            }
-                                        </select><label>Müşteri Tipi</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4" id="yeniDigerContainer" style="display:none;"><div class="form-floating"><input type="text" class="form-control" id="yeniDiger" name="Diger"><label>Diğer Tipi (Zorunlu)</label></div></div>
-                                <div class="col-md-4">
-                                    <div class="form-floating">
-                                        <select class="form-select" id="yeniBayiId" name="BayiId">
-                                            <option value="">Bağımsız Müşteri</option>@foreach (var b in (List<Bayi>)ViewBag.TumBayiler ?? new List<Bayi>())
-                                            {
-                                                var p = string.Concat(Enumerable.Repeat("└─ ", b.Seviye ?? 0));
-                                                <option value="@b.Id">@p @b.Unvan</option>
-                                            }
-                                        </select><label>Bayi</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- İletişim & Adres tab'ındaki il/ilçe alanlarını değiştirin -->
-                        <div class="tab-pane fade" id="yeniIletisim">
-                            <div class="row g-3">
-                                <div class="col-md-6"><div class="form-floating"><input type="email" class="form-control" id="yeniEmail" name="Email"><label>Email</label></div></div>
-                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniTelefon" name="Telefon"><label>Telefon</label></div></div>
-                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniBolge" name="Bolge"><label>Bölge</label></div></div>
-
-                                <!-- İL DROPDOWN (Değiştirildi) -->
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <select class="form-select" id="yeniIl" name="Il" onchange="yeniIlSecildi(this.value)">
-                                            <option value="">Seçiniz</option>
-                                            @if (ViewBag.Iller != null)
-                                            {
-                                                foreach (var il in ViewBag.Iller)
-                                                {
-                                                    <option value="@il.Id">@il.sehiradi</option>
-                                                }
-                                            }
-                                        </select>
-                                        <label for="yeniIl">İl</label>
-                                    </div>
-                                </div>
-
-                                <!-- İLÇE DROPDOWN (Değiştirildi) -->
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <select class="form-select" id="yeniIlce" name="Ilce">
-                                            <option value="">Önce il seçiniz</option>
-                                        </select>
-                                        <label for="yeniIlce">İlçe</label>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniBelde" name="Belde"><label>Belde</label></div></div>
-                                <div class="col-12"><div class="form-floating"><textarea class="form-control" id="yeniAdres" name="Adres" style="height:100px"></textarea><label>Adres</label></div></div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="yeniVergi">
-                            <div class="row g-3">
-                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniTCVNo" name="TCVNo" maxlength="11"><label>TC/Vergi No</label></div></div>
-                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniVergiDairesi" name="VergiDairesi"><label>Vergi Dairesi</label></div></div>
-                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniKepAdresi" name="KepAdresi"><label>KEP Adresi</label></div></div>
-                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniWebAdresi" name="WebAdresi"><label>Web Adresi</label></div></div>
-                                <div class="col-12"><div class="form-floating"><textarea class="form-control" id="yeniAciklama" name="Aciklama" style="height:100px"></textarea><label>Açıklama</label></div></div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="yeniAlpemix">
-                            <div class="row g-3">
-                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniAlpemixFirmaAdi" name="AlpemixFirmaAdi"><label>Alpemix Firma Adı</label></div></div>
-                                <div class="col-md-6"><div class="form-floating"><input type="text" class="form-control" id="yeniAlpemixGrupAdi" name="AlpemixGrupAdi"><label>Alpemix Grup Adı</label></div></div>
-                                <div class="col-12"><div class="form-floating"><input type="text" class="form-control" id="yeniAlpemixSifre" name="AlpemixSifre"><label>Alpemix Şifre</label></div></div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="yeniDosyalar">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Logo</label>
-                                    <input type="file" class="form-control" id="yeniLogo" name="Logo" accept=".jpg,.jpeg,.png,.gif">
-                                    <div class="form-text">JPG, PNG, GIF - max 5MB</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">İmza</label>
-                                    <input type="file" class="form-control" id="yeniImza" name="Imza" accept=".jpg,.jpeg,.png,.gif">
-                                    <div class="form-text">JPG, PNG, GIF - max 5MB</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vazgeç</button>
-                    <button type="button" class="btn btn-success" id="geciciMusteriKaydetBtn">
-                        <span class="spinner-border spinner-border-sm d-none" id="yeniMusteriSpinner"></span>
-                        Geçici Kaydet ve Kullan
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 <div class="modal fade" id="alertModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -650,7 +494,6 @@
         </div>
     </div>
 </div>
-<div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;"></div>
 @section Script {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -679,7 +522,52 @@
         function format(num) {
             return new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num || 0);
         }
+            // İlçeleri getir (yeni müşteri modalı için)
+    function ilceleriGetirYeni(ilId, hedefSelectId) {
+        return new Promise((resolve, reject) => {
+            const ilceSelect = document.getElementById(hedefSelectId);
+            if (!ilceSelect) {
+                reject('Hedef select bulunamadı');
+                return;
+            }
 
+                ilceSelect.innerHTML = '<option value="">Yükleniyor...</option>';
+                ilceSelect.disabled = true;
+
+                if (!ilId) {
+                    ilceSelect.innerHTML = '<option value="">Önce il seçiniz</option>';
+                    ilceSelect.disabled = false;
+                    resolve();
+                    return;
+                }
+
+                fetch(`/AdminTeklifVer/GetIlcelerByIlId?ilId=${ilId}`)
+                    .then(response => response.json())
+                    .then(res => {
+                        ilceSelect.innerHTML = '<option value="">Seçiniz</option>';
+                        if (res.success && res.data && res.data.length > 0) {
+                            res.data.forEach(ilce => {
+                                ilceSelect.innerHTML += `<option value="${ilce.id}">${escapeHtml(ilce.ilceadi)}</option>`;
+                            });
+
+                            // Seçim yapıldıktan sonra change event'ini ekle
+                            $(ilceSelect).off('change').on('change', function() {
+                                yeniIlceSecildi();
+                            });
+                        } else {
+                            ilceSelect.innerHTML = '<option value="">İlçe bulunamadı</option>';
+                        }
+                        ilceSelect.disabled = false;
+                        resolve();
+                    })
+                    .catch(err => {
+                        console.error('İlçeler yüklenirken hata:', err);
+                        ilceSelect.innerHTML = '<option value="">Hata oluştu</option>';
+                        ilceSelect.disabled = false;
+                        reject(err);
+                    });
+            });
+        }
         function showToast(title, message, success = true) {
             const toastHtml = `
                 <div class="toast align-items-center text-bg-${success ? 'success' : 'danger'} border-0" role="alert" aria-live="assertive" aria-atomic="true">
@@ -701,46 +589,7 @@
         }
 
         // İlçeleri getir (yeni müşteri modalı için)
-        function ilceleriGetirYeni(ilId, hedefSelectId) {
-            return new Promise((resolve, reject) => {
-                const ilceSelect = document.getElementById(hedefSelectId);
-                if (!ilceSelect) {
-                    reject('Hedef select bulunamadı');
-                    return;
-                }
 
-                ilceSelect.innerHTML = '<option value="">Yükleniyor...</option>';
-                ilceSelect.disabled = true;
-
-                if (!ilId) {
-                    ilceSelect.innerHTML = '<option value="">Önce il seçiniz</option>';
-                    ilceSelect.disabled = false;
-                    resolve();
-                    return;
-                }
-
-                fetch(`/AdminTeklifVer/GetIlcelerByIlId?ilId=${ilId}`)
-                    .then(response => response.json())
-                    .then(res => {
-                        ilceSelect.innerHTML = '<option value="">Seçiniz</option>';
-                        if (res.success && res.data && res.data.length > 0) {
-                            res.data.forEach(ilce => {
-                                ilceSelect.innerHTML += `<option value="${ilce.id}">${escapeHtml(ilce.ilceadi)}</option>`;
-                            });
-                        } else {
-                            ilceSelect.innerHTML = '<option value="">İlçe bulunamadı</option>';
-                        }
-                        ilceSelect.disabled = false;
-                        resolve();
-                    })
-                    .catch(err => {
-                        console.error('İlçeler yüklenirken hata:', err);
-                        ilceSelect.innerHTML = '<option value="">Hata oluştu</option>';
-                        ilceSelect.disabled = false;
-                        reject(err);
-                    });
-            });
-        }
         function yuklePaketBagimliliklari() {
             console.log('Paket bağımlılıkları yükleniyor...');
 
@@ -799,6 +648,37 @@
                 }
             });
         }
+                                // Kullanıcı adı oluştur (ilk sistemdeki mantıkla)
+                function kullaniciAdiOluşturYeni() {
+                    const durumId = parseInt($('#yeniMusteriDurumuId').val()) || 0;
+                    if (durumId == 2) return; // Aday müşteri için oluşturma
+
+                    const ilSelect = document.getElementById('yeniIl');
+                    const ilceSelect = document.getElementById('yeniIlce');
+                    const kullaniciAdiInput = document.getElementById('yeniKullaniciAdi');
+                    const durumDiv = document.getElementById('yeniKullaniciAdiKontrol');
+
+                    if (!ilSelect.value) {
+                        durumDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> Lütfen önce il seçiniz.';
+                        durumDiv.className = 'form-text text-warning small';
+                        return;
+                    }
+
+                    if (!ilceSelect.value) {
+                        durumDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> Lütfen önce ilçe seçiniz.';
+                        durumDiv.className = 'form-text text-warning small';
+                        return;
+                    }
+
+                    const ilId = ilSelect.value;
+                    const ilceId = ilceSelect.value;
+                    const rastgeleSayi = Math.floor(1000 + Math.random() * 9000);
+                    let olusanKullaniciAdi = `${ilId}${ilceId}${rastgeleSayi}`;
+
+                    kullaniciAdiInput.value = olusanKullaniciAdi;
+                    kullaniciAdiKontrolEtYeni(olusanKullaniciAdi);
+                }
+
         // Kaldırılan modüle bağımlı olan diğer modülleri kontrol et
         function bagliPaketleriKontrolEt(kaldirilanModulId, kaldirilanModulAdi) {
             console.log(`Kaldırılan modül: ${kaldirilanModulAdi} (ID: ${kaldirilanModulId}) - Bağımlı modüller kontrol ediliyor...`);
@@ -1098,9 +978,6 @@
                 hesaplaToplam();
             }
         }
-                // ==================== YENİ MÜŞTERİ MODALI İÇİN ADAY MÜŞTERİ FONKSİYONLARI ====================
-
-        // Yeni müşteri modalı için toggle fonksiyonu
         function toggleAdayMusteriAlanlariYeni(durumId) {
             const adayMi = durumId == 2; // Aday müşteri durum ID'si 2
 
@@ -1109,10 +986,13 @@
                 'yeniTicariUnvan', 'yeniAd', 'yeniSoyad'
             ];
 
-            // İletişim - email her zaman aktif, diğerleri adayda pasif
+            // İletişim alanları
             const iletisimAlanlari = [
-                'yeniEmail', 'yeniTelefon', 'yeniBolge', 'yeniIl', 'yeniIlce', 'yeniBelde', 'yeniAdres'
+                'yeniTelefon', 'yeniBolge', 'yeniIl', 'yeniIlce', 'yeniBelde', 'yeniAdres'
             ];
+
+            // Email özel olarak yönetilecek
+            const emailInput = document.getElementById('yeniEmail');
 
             // Vergi bilgileri - adayda tamamen pasif
             const vergiAlanlari = [
@@ -1132,20 +1012,55 @@
             const logoInput = document.getElementById('yeniLogo');
             const imzaInput = document.getElementById('yeniImza');
 
-            // Kullanıcı adı ve şifre alanları
+            // İl/İlçe dropdown'ları
+            const ilSelect = document.getElementById('yeniIl');
+            const ilceSelect = document.getElementById('yeniIlce');
+
+            // EMAIL ALANI - Adayda zorunlu, normalde opsiyonel
+            if (emailInput) {
+                if (adayMi) {
+                    // Aday müşteri: Email zorunlu
+                    emailInput.required = true;
+                    emailInput.readOnly = false;
+                    emailInput.disabled = false;
+                    emailInput.style.backgroundColor = '#ffffff';
+                    emailInput.style.opacity = '1';
+                    emailInput.placeholder = 'E-posta adresi (zorunlu)';
+
+                    // Email için required mesajını özelleştir
+                    emailInput.setCustomValidity('');
+                } else {
+                    // Normal müşteri: Email opsiyonel
+                    emailInput.required = false;
+                    emailInput.readOnly = false;
+                    emailInput.disabled = false;
+                    emailInput.style.backgroundColor = '#ffffff';
+                    emailInput.style.opacity = '1';
+                    emailInput.placeholder = 'E-posta adresi (opsiyonel)';
+                    emailInput.setCustomValidity('');
+                }
+            }
+
+            // Kullanıcı adı alanı - ADAYDA TAMAMEN KİLİTLİ
             if (kullaniciAdiInput) {
-                kullaniciAdiInput.readOnly = adayMi;
+                kullaniciAdiInput.readOnly = true; // Her durumda readonly
+                kullaniciAdiInput.disabled = adayMi; // Adayda tamamen disable
                 kullaniciAdiInput.required = !adayMi;
-                kullaniciAdiInput.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                kullaniciAdiInput.style.backgroundColor = adayMi ? '#e9ecef' : '#f8f9fa';
+                kullaniciAdiInput.style.opacity = adayMi ? '0.5' : '1';
+                kullaniciAdiInput.placeholder = adayMi ? 'Aday müşteri için kullanıcı adı oluşturulmaz' : 'İl/İlçe seçildiğinde otomatik oluşur';
                 if (adayMi) {
                     kullaniciAdiInput.value = ''; // Aday müşteri için kullanıcı adını temizle
                 }
             }
 
+            // Şifre alanı
             if (sifreInput) {
                 sifreInput.readOnly = adayMi;
+                sifreInput.disabled = adayMi;
                 sifreInput.required = !adayMi;
                 sifreInput.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                sifreInput.style.opacity = adayMi ? '0.5' : '1';
                 if (adayMi) {
                     sifreInput.value = ''; // Aday müşteri için şifreyi temizle
                 }
@@ -1168,33 +1083,63 @@
                 }
             }
 
+            // İl/İlçe dropdown'larını yönet
+            if (ilSelect) {
+                ilSelect.disabled = adayMi;
+                ilSelect.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                ilSelect.style.opacity = adayMi ? '0.5' : '1';
+                if (adayMi) {
+                    ilSelect.value = '';
+                }
+            }
+
+            if (ilceSelect) {
+                ilceSelect.disabled = adayMi;
+                ilceSelect.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                ilceSelect.style.opacity = adayMi ? '0.5' : '1';
+                if (adayMi) {
+                    ilceSelect.value = '';
+                    ilceSelect.innerHTML = '<option value="">Önce il seçiniz</option>';
+                }
+            }
+
+            // Kullanıcı adı kontrol mesajını güncelle
+            const kullaniciAdiKontrol = document.getElementById('yeniKullaniciAdiKontrol');
+            if (kullaniciAdiKontrol) {
+                if (adayMi) {
+                    kullaniciAdiKontrol.innerHTML = '<i class="fas fa-info-circle me-1"></i> Aday müşteri için kullanıcı adı oluşturulmaz.';
+                    kullaniciAdiKontrol.className = 'form-text text-secondary small';
+                } else {
+                    kullaniciAdiKontrol.innerHTML = '<i class="fas fa-info-circle me-1"></i> Kullanıcı adı otomatik oluşturulur.';
+                    kullaniciAdiKontrol.className = 'form-text text-info small';
+                }
+            }
+
             // Temel alanları aktif tut
             temelAktifAlanlar.forEach(alanId => {
                 const input = document.getElementById(alanId);
                 if (input) {
                     input.readOnly = false;
+                    input.disabled = false;
                     input.required = true;
                     input.style.backgroundColor = '#ffffff';
+                    input.style.opacity = '1';
                 }
             });
 
-            // İletişim alanlarını düzenle (email hariç diğerleri adayda pasif)
+            // Diğer iletişim alanlarını yönet
             iletisimAlanlari.forEach(alanId => {
                 const input = document.getElementById(alanId);
                 if (input) {
-                    if (alanId === 'yeniEmail') {
-                        // Email her zaman aktif ve opsiyonel
-                        input.readOnly = false;
-                        input.required = false;
-                        input.style.backgroundColor = '#ffffff';
-                    } else {
-                        // Diğer iletişim alanları adayda pasif
-                        input.readOnly = adayMi;
-                        input.required = !adayMi;
-                        input.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
-                        if (adayMi) {
-                            input.value = '';
-                        }
+                    // Diğer iletişim alanları (telefon, bölge, il, ilçe, belde, adres)
+                    // Adayda pasif, normalde aktif AMA HİÇBİR ZAMAN required DEĞİL
+                    input.readOnly = adayMi;
+                    input.disabled = adayMi;
+                    input.required = false;
+                    input.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                    input.style.opacity = adayMi ? '0.5' : '1';
+                    if (adayMi) {
+                        input.value = '';
                     }
                 }
             });
@@ -1204,8 +1149,10 @@
                 const input = document.getElementById(alanId);
                 if (input) {
                     input.readOnly = adayMi;
+                    input.disabled = adayMi;
                     input.required = false;
                     input.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                    input.style.opacity = adayMi ? '0.5' : '1';
                     if (adayMi) {
                         input.value = '';
                     }
@@ -1217,26 +1164,36 @@
                 const input = document.getElementById(alanId);
                 if (input) {
                     input.readOnly = adayMi;
+                    input.disabled = adayMi;
                     input.required = false;
                     input.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                    input.style.opacity = adayMi ? '0.5' : '1';
                     if (adayMi) {
                         input.value = '';
                     }
                 }
             });
 
-            // Select elementler - tümü aktif ama değerleri korunabilir
+            // Select elementler
             const yeniBayiId = document.getElementById('yeniBayiId');
             const yeniMusteriTipiId = document.getElementById('yeniMusteriTipiId');
 
             if (yeniBayiId) {
-                yeniBayiId.disabled = false;
-                yeniBayiId.style.backgroundColor = '#ffffff';
+                yeniBayiId.disabled = adayMi;
+                yeniBayiId.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                yeniBayiId.style.opacity = adayMi ? '0.5' : '1';
+                if (adayMi) {
+                    yeniBayiId.value = '';
+                }
             }
 
             if (yeniMusteriTipiId) {
-                yeniMusteriTipiId.disabled = false;
-                yeniMusteriTipiId.style.backgroundColor = '#ffffff';
+                yeniMusteriTipiId.disabled = adayMi;
+                yeniMusteriTipiId.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                yeniMusteriTipiId.style.opacity = adayMi ? '0.5' : '1';
+                if (adayMi) {
+                    yeniMusteriTipiId.value = '';
+                }
             }
 
             // Sekmeleri yönet - aday müşteride gereksiz sekmeleri devre dışı bırak
@@ -1264,9 +1221,10 @@
                     uyariDiv.className = 'alert alert-info mt-3';
                     uyariDiv.innerHTML = `
                         <i class="fas fa-info-circle me-2"></i>
-                        <strong>Aday Müşteri:</strong> Sadece temel bilgiler ve email alanları doldurulabilir.
-                        İletişim, vergi, Alpemix ve dosya bilgileri daha sonra eklenebilir.
-                        Kullanıcı adı ve şifre aday müşteri için zorunlu değildir.
+                        <strong>Aday Müşteri:</strong> Sadece temel bilgiler ve e-posta adresi doldurulabilir.
+                        İletişim (e-posta hariç), vergi, Alpemix, bayi seçimi, dosya bilgileri
+                        ve kullanıcı adı/şifre alanları pasiftir.
+                        E-posta adresi zorunludur. Diğer bilgiler müşteri kaydedildikten sonra düzenlenebilir.
                     `;
 
                     const tabContent = document.querySelector('#yeniTemel');
@@ -1281,8 +1239,7 @@
             }
         }
 
-        // Yeni müşteri durumu değiştiğinde
-        function setupYeniMusteriDurumDinleyici() {
+              function setupYeniMusteriDurumDinleyici() {
             $('#yeniMusteriDurumuId').off('change').on('change', function() {
                 const durumId = parseInt($(this).val()) || 0;
                 toggleAdayMusteriAlanlariYeni(durumId);
@@ -1548,7 +1505,102 @@
                 }
             });
         }
+                // İl seçildiğinde ilçeleri getir
+        function yeniIlSecildi(ilId) {
+            ilceleriGetirYeni(ilId, 'yeniIlce');
 
+            // İl seçildiğinde otomatik kullanıcı adı oluştur (aday değilse)
+            const durumId = parseInt($('#yeniMusteriDurumuId').val()) || 0;
+            if (durumId != 2 && ilId) {
+                const ilceSelect = document.getElementById('yeniIlce');
+                if (ilceSelect && ilceSelect.value) {
+                    kullaniciAdiOluşturYeni();
+                }
+            }
+        }
+
+        // İlçe seçildiğinde otomatik kullanıcı adı oluştur
+        function yeniIlceSecildi() {
+            const durumId = parseInt($('#yeniMusteriDurumuId').val()) || 0;
+            if (durumId != 2) { // Aday değilse
+                kullaniciAdiOluşturYeni();
+            }
+        }
+
+        // İlçeleri getir (güncellenmiş)
+        function ilceleriGetirYeni(ilId, hedefSelectId) {
+            return new Promise((resolve, reject) => {
+                const ilceSelect = document.getElementById(hedefSelectId);
+                if (!ilceSelect) {
+                    reject('Hedef select bulunamadı');
+                    return;
+                }
+
+                ilceSelect.innerHTML = '<option value="">Yükleniyor...</option>';
+                ilceSelect.disabled = true;
+
+                if (!ilId) {
+                    ilceSelect.innerHTML = '<option value="">Önce il seçiniz</option>';
+                    ilceSelect.disabled = false;
+                    resolve();
+                    return;
+                }
+
+                fetch(`/AdminTeklifVer/GetIlcelerByIlId?ilId=${ilId}`)
+                    .then(response => response.json())
+                    .then(res => {
+                        ilceSelect.innerHTML = '<option value="">Seçiniz</option>';
+                        if (res.success && res.data && res.data.length > 0) {
+                            res.data.forEach(ilce => {
+                                ilceSelect.innerHTML += `<option value="${ilce.id}">${escapeHtml(ilce.ilceadi)}</option>`;
+                            });
+
+                            // Seçim yapıldıktan sonra change event'ini ekle
+                            $(ilceSelect).off('change').on('change', function() {
+                                yeniIlceSecildi();
+                            });
+                        } else {
+                            ilceSelect.innerHTML = '<option value="">İlçe bulunamadı</option>';
+                        }
+                        ilceSelect.disabled = false;
+                        resolve();
+                    })
+                    .catch(err => {
+                        console.error('İlçeler yüklenirken hata:', err);
+                        ilceSelect.innerHTML = '<option value="">Hata oluştu</option>';
+                        ilceSelect.disabled = false;
+                        reject(err);
+                    });
+            });
+        }
+
+        // Kullanıcı adı benzersizlik kontrolü
+        function kullaniciAdiKontrolEtYeni(kullaniciAdi) {
+            if (!kullaniciAdi) return;
+
+            const durumDiv = document.getElementById('yeniKullaniciAdiKontrol');
+
+            fetch(`/AdminMusteri/KullaniciAdiKontrol?kullaniciAdi=${encodeURIComponent(kullaniciAdi)}`)
+                .then(response => response.json())
+                .then(res => {
+                    if (res.success) {
+                        durumDiv.innerHTML = '<i class="fas fa-check-circle me-1"></i> Kullanılabilir.';
+                        durumDiv.className = 'form-text text-success small';
+                    } else {
+                        durumDiv.innerHTML = `<i class="fas fa-times-circle me-1"></i> ${res.message}`;
+                        durumDiv.className = 'form-text text-danger small';
+
+                        // 2 saniye sonra yeni kullanıcı adı oluştur
+                        setTimeout(() => {
+                            kullaniciAdiOluşturYeni();
+                        }, 2000);
+                    }
+                })
+                .catch(err => {
+                    durumDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> Kontrol sırasında hata oluştu.';
+                    durumDiv.className = 'form-text text-danger small';
+                });
+        }
         function hesaplaFiyatOrani(itemId, miktar, itemKey) {
             const hamVeri = hamVeriler.find(v => v.id === itemId);
             const miktarKademesiVar = hamVeri?.miktarKademesiVar || false;
@@ -1895,6 +1947,15 @@
                 bagliPaketleriKontrolEt(kaldirilanModulId, kaldirilanModulAdi);
             }
         }
+        // ==================== YARDIMCI FONKSİYONLAR ====================
+function escapeHtml(text) {
+    if (text === null || text === undefined) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+
         function itemKaldirSağPanelden(itemKey, event) {
             if (!event || event.detail < 2) return;
 
@@ -2527,6 +2588,16 @@
 
         // ==================== MÜŞTERİ İŞLEMLERİ ====================
             function setupYeniMusteriForm() {
+                        $('#yeniMusteriForm').on('submit', function(e) {
+            // Bu 4 alanı validation dışı bırak
+            ['yeniTelefon', 'yeniBolge', 'yeniBelde', 'yeniAdres'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.removeAttribute('required');
+                    el.setCustomValidity(''); // tarayıcı mesajını temizle
+                }
+            });
+        });
             $('#yeniMusteriTipiId').on('change', function () {
                 toggleDigerInputYeniMusteri();
             });
@@ -2548,7 +2619,7 @@
                 kaydetGeciciMusteri();
             });
 
-                $('#yeniMusteriModal').on('shown.bs.modal', function () {
+                  $('#yeniMusteriModal').on('shown.bs.modal', function () {
             // Modal açıldığında mevcut durumu kontrol et
             const durumId = parseInt($('#yeniMusteriDurumuId').val()) || 0;
             toggleAdayMusteriAlanlariYeni(durumId);
@@ -2557,6 +2628,10 @@
             // İl/ilçe dropdown'larını sıfırla
             $('#yeniIl').val('');
             $('#yeniIlce').html('<option value="">Önce il seçiniz</option>');
+
+            // Kullanıcı adı alanını temizle
+            $('#yeniKullaniciAdi').val('');
+            $('#yeniKullaniciAdiKontrol').html('<i class="fas fa-info-circle me-1"></i> Kullanıcı adı otomatik oluşturulur.');
         });
             $('#yeniMusteriModal').on('hidden.bs.modal', function () {
                 $('#yeniDigerContainer').hide();
@@ -2605,7 +2680,6 @@
                 console.error('Kullanıcı adı kontrolü hatası:', err);
             }
         }
-
         function kaydetGeciciMusteri() {
             const form = $('#yeniMusteriForm')[0];
             if (!form.checkValidity()) {
@@ -2615,40 +2689,39 @@
 
             const musteriDurumuId = parseInt($('#yeniMusteriDurumuId').val()) || 1;
             const musteriTipiId = parseInt($('#yeniMusteriTipiId').val()) || null;
-            const diger = $('#yeniDiger').val().trim();
+            const diger = $('#yeniDiger').val() ? $('#yeniDiger').val().trim() : '';
             const adayMi = musteriDurumuId == 2;
 
             // Aday müşteri için özel kontroller
             if (adayMi) {
-                // Aday müşteri için sadece temel alanları kontrol et
-                const ticariUnvan = $('#yeniTicariUnvan').val().trim();
-                const ad = $('#yeniAd').val().trim();
-                const soyad = $('#yeniSoyad').val().trim();
+                const ticariUnvan = $('#yeniTicariUnvan').val() ? $('#yeniTicariUnvan').val().trim() : '';
+                const ad = $('#yeniAd').val() ? $('#yeniAd').val().trim() : '';
+                const soyad = $('#yeniSoyad').val() ? $('#yeniSoyad').val().trim() : '';
 
                 if (!ticariUnvan || !ad || !soyad) {
                     showToast('Hata', 'Aday müşteri için Ticari Unvan, Ad ve Soyad alanları zorunludur!', false);
                     return;
                 }
-
-             
-
-                // Aday müşteri için diğer kontrolleri atla
             } else {
-                // Normal müşteri kontrolleri
                 if (musteriTipiId === digerTipId && !diger) {
                     showToast('Hata', 'Müşteri tipi "Diğer" seçildiyse, lütfen diğer tipi belirtin.', false);
                     return;
                 }
 
-                // Kullanıcı adı kontrolü
-                const kullaniciAdi = $('#yeniKullaniciAdi').val().trim();
+                const ilId = $('#yeniIl').val();
+                const ilceId = $('#yeniIlce').val();
+                if (!ilId || !ilceId) {
+                    showToast('Hata', 'İl ve ilçe seçimi zorunludur!', false);
+                    return;
+                }
+
+                const kullaniciAdi = $('#yeniKullaniciAdi').val() ? $('#yeniKullaniciAdi').val().trim() : '';
                 if (!kullaniciAdi) {
                     showToast('Hata', 'Kullanıcı adı zorunludur!', false);
                     return;
                 }
 
-                // Şifre kontrolü
-                const sifre = $('#yeniSifre').val().trim();
+                const sifre = $('#yeniSifre').val() ? $('#yeniSifre').val().trim() : '';
                 if (!sifre) {
                     showToast('Hata', 'Şifre zorunludur!', false);
                     return;
@@ -2658,37 +2731,52 @@
             const spinner = $('#yeniMusteriSpinner');
             const btn = $('#geciciMusteriKaydetBtn');
             spinner.removeClass('d-none');
-            btn.prop('disabled', true).text('Kaydediliyor...');
+            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Kaydediliyor...');
 
-                const formData = {
-            TicariUnvan: $('#yeniTicariUnvan').val().trim(),
-            Ad: $('#yeniAd').val().trim(),
-            Soyad: $('#yeniSoyad').val().trim(),
-            KullaniciAdi: adayMi ? '' : $('#yeniKullaniciAdi').val().trim(),
-            Sifre: adayMi ? '' : $('#yeniSifre').val().trim(),
-            Email: $('#yeniEmail').val().trim(),
-            Telefon: adayMi ? '' : $('#yeniTelefon').val().trim(),
-            Adres: adayMi ? '' : $('#yeniAdres').val().trim(),
+            // Form verilerini topla - TÜM ALANLAR İÇİN GÜVENLİ ERİŞİM
+            const formData = {
+                // Temel Bilgiler
+                TicariUnvan: $('#yeniTicariUnvan').val() ? $('#yeniTicariUnvan').val().trim() : '',
+                Ad: $('#yeniAd').val() ? $('#yeniAd').val().trim() : '',
+                Soyad: $('#yeniSoyad').val() ? $('#yeniSoyad').val().trim() : '',
+                KullaniciAdi: adayMi ? '' : ($('#yeniKullaniciAdi').val() ? $('#yeniKullaniciAdi').val().trim() : ''),
+                Sifre: adayMi ? '' : ($('#yeniSifre').val() ? $('#yeniSifre').val().trim() : ''),
 
-            // İL VE İLÇE ID'LERİ - DOĞRU YERDE
-            illerId: adayMi ? null : parseInt($('#yeniIl').val()) || null,
-            ilcelerId: adayMi ? null : parseInt($('#yeniIlce').val()) || null,
+                // İletişim Bilgileri
+                Email: $('#yeniEmail').length ? ($('#yeniEmail').val() ? $('#yeniEmail').val().trim() : '') : '',
+                Telefon: $('#yeniTelefon').length ? ($('#yeniTelefon').val() ? $('#yeniTelefon').val().trim() : '') : '',
+                Bolge: $('#yeniBolge').length ? ($('#yeniBolge').val() ? $('#yeniBolge').val().trim() : '') : '',
 
-            Belde: adayMi ? '' : $('#yeniBelde').val().trim(),
-            Bolge: adayMi ? '' : $('#yeniBolge').val().trim(),
-            TCVNo: adayMi ? '' : $('#yeniTCVNo').val().trim(),
-            VergiDairesi: adayMi ? '' : $('#yeniVergiDairesi').val().trim(),
-            KepAdresi: adayMi ? '' : $('#yeniKepAdresi').val().trim(),
-            WebAdresi: adayMi ? '' : $('#yeniWebAdresi').val().trim(),
-            Aciklama: adayMi ? '' : $('#yeniAciklama').val().trim(),
-            AlpemixFirmaAdi: adayMi ? '' : $('#yeniAlpemixFirmaAdi').val().trim(),
-            AlpemixGrupAdi: adayMi ? '' : $('#yeniAlpemixGrupAdi').val().trim(),
-            AlpemixSifre: adayMi ? '' : $('#yeniAlpemixSifre').val().trim(),
-            MusteriTipiId: musteriTipiId,
-            MusteriDurumuId: musteriDurumuId,
-            BayiId: parseInt($('#yeniBayiId').val()) || null,
-            Diger: diger
-        };
+                // İL VE İLÇE ID'LERİ
+                illerId: parseInt($('#yeniIl').val()) || null,
+                ilcelerId: parseInt($('#yeniIlce').val()) || null,
+                Belde: $('#yeniBelde').length ? ($('#yeniBelde').val() ? $('#yeniBelde').val().trim() : '') : '',
+                Adres: $('#yeniAdres').length ? ($('#yeniAdres').val() ? $('#yeniAdres').val().trim() : '') : '',
+
+                // Vergi Bilgileri
+                TCVNo: $('#yeniTCVNo').length ? ($('#yeniTCVNo').val() ? $('#yeniTCVNo').val().trim() : '') : '',
+                VergiDairesi: $('#yeniVergiDairesi').length ? ($('#yeniVergiDairesi').val() ? $('#yeniVergiDairesi').val().trim() : '') : '',
+                KepAdresi: $('#yeniKepAdresi').length ? ($('#yeniKepAdresi').val() ? $('#yeniKepAdresi').val().trim() : '') : '',
+                WebAdresi: $('#yeniWebAdresi').length ? ($('#yeniWebAdresi').val() ? $('#yeniWebAdresi').val().trim() : '') : '',
+                Aciklama: $('#yeniAciklama').length ? ($('#yeniAciklama').val() ? $('#yeniAciklama').val().trim() : '') : '',
+
+                // Alpemix Bilgileri
+                AlpemixFirmaAdi: $('#yeniAlpemixFirmaAdi').length ? ($('#yeniAlpemixFirmaAdi').val() ? $('#yeniAlpemixFirmaAdi').val().trim() : '') : '',
+                AlpemixGrupAdi: $('#yeniAlpemixGrupAdi').length ? ($('#yeniAlpemixGrupAdi').val() ? $('#yeniAlpemixGrupAdi').val().trim() : '') : '',
+                AlpemixSifre: $('#yeniAlpemixSifre').length ? ($('#yeniAlpemixSifre').val() ? $('#yeniAlpemixSifre').val().trim() : '') : '',
+
+                // İlişkili Alanlar
+                MusteriTipiId: musteriTipiId,
+                MusteriDurumuId: musteriDurumuId,
+                BayiId: parseInt($('#yeniBayiId').val()) || null,
+                Diger: diger,
+
+                // Dosyalar
+                Logo: $('#yeniLogo').length && $('#yeniLogo').val() ? $('#yeniLogo')[0].files[0]?.name : '',
+                Imza: $('#yeniImza').length && $('#yeniImza').val() ? $('#yeniImza')[0].files[0]?.name : ''
+            };
+
+            console.log('Gönderilen müşteri verileri:', formData);
 
             $.ajax({
                 url: '/AdminTeklifVer/GeciciMusteriKaydet',
@@ -2700,23 +2788,33 @@
                         geciciMusteriVar = true;
                         geciciMusteriData = formData;
                         geciciMusteri = formData;
-                        const musteriAdi = res.musteriAdi || `${formData.Ad} ${formData.Soyad}`.trim();
-                        const durumText = adayMi ? ' (Aday - Yeni)' : ' (Yeni - Kaydedilmedi)';
+
+                        const musteriAdi = res.musteriAdi || `${formData.Ad} ${formData.Soyad}`.trim() || formData.TicariUnvan;
+                        const durumText = adayMi ? ' (Aday)' : ' (Yeni)';
+
                         const newOption = new Option(musteriAdi + durumText, -1, true, true);
                         $('#musteriSelect').append(newOption).trigger('change');
                         seciliMusteriId = -1;
+
                         showToast('Başarılı', 'Müşteri geçici olarak kaydedildi. Teklif oluşturulduğunda kalıcı olacak.', true);
                         $('#yeniMusteriModal').modal('hide');
+
+                        $('#yeniMusteriForm')[0].reset();
+                        $('#yeniDigerContainer').hide();
+                        $('#yeniIlce').html('<option value="">Önce il seçiniz</option>');
+                        $('#yeniKullaniciAdiKontrol').html('<i class="fas fa-info-circle me-1"></i> Kullanıcı adı otomatik oluşturulur.');
                     } else {
                         showToast('Hata', res.message || 'Müşteri kaydedilemedi.', false);
                     }
                 },
-                error: function () {
-                    showToast('Hata', 'Sunucu hatası oluştu.', false);
+                error: function (xhr, status, error) {
+                    console.error('AJAX Hatası:', error);
+                    console.error('Response:', xhr.responseText);
+                    showToast('Hata', 'Sunucu hatası oluştu: ' + error, false);
                 },
                 complete: function () {
                     spinner.addClass('d-none');
-                    btn.prop('disabled', false).text('Geçici Kaydet ve Kullan');
+                    btn.prop('disabled', false).html('Geçici Kaydet ve Kullan');
                 }
             });
         }
