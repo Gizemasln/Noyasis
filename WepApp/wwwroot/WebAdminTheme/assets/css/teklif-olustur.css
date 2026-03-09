@@ -482,9 +482,7 @@ h5, h6 {
     padding: 0.35rem 0.7rem;
 }
 
-.search-box {
-    margin-bottom: 8px;
-}
+
 
     .search-box input {
         font-size: 0.8rem;
@@ -561,3 +559,53 @@ h5, h6 {
 }
 
 
+/* Paket arama ve butonlar satırı */
+.gap-2 {
+    gap: 0.5rem !important;
+}
+
+.gap-1 {
+    gap: 0.25rem !important;
+}
+
+.flex-shrink-0 {
+    flex-shrink: 0;
+}
+/* Checkbox etiketi için */
+.form-check-inline {
+    margin-right: 0;
+}
+
+.form-check-label {
+    user-select: none; /* Metin seçimini engeller */
+    margin-left: 0.2rem;
+}
+/* Seçili Olmayanları Gizle butonu için */
+#seciliOlmayanlariGizleBtn {
+    border-color: #ced4da;
+}
+/* Butonlar ve checkbox için düzenlemeler */
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+#paketListesi {
+    margin-top: 8px;
+}
+
+/* Üst butonlar için hover efektleri */
+#tumunuSecUst:hover, #tumunuKaldirUst:hover {
+    transform: translateY(-1px);
+    transition: all 0.2s;
+}
+
+/* Responsive düzenlemeler */
+@media (max-width: 1200px) {
+    .d-flex.gap-2.flex-wrap {
+        gap: 0.5rem !important;
+    }
+
+    #paketArama {
+        min-width: 150px;
+    }
+}

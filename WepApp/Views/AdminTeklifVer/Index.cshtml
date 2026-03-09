@@ -80,7 +80,7 @@
                     <div class="row">
                         <div class="col-12">
                             <h6 class="mb-1">Müşteri</h6>
-                            <div class="input-group input-group-sm">
+                            <div class="input-group input-group-sm" style="background-color:#F8F9FC;">
                                 <select id="musteriSelect" class="form-select form-select-sm" style="font-size:12px;">
                                     <option value="">-- Müşteri Seçiniz --</option>
                                     @foreach (var musteri in ViewBag.Musteriler as List<Musteri>)
@@ -127,14 +127,45 @@
                     <h5 class="d-flex justify-content-between align-items-center mb-3">
                         <span>Paketler ve Modüller</span>
                     </h5>
-                    <div class="search-box">
-                        <input type="text" id="paketArama" class="form-control form-control-sm" placeholder="Paket veya modül ara...">
+
+                    <!-- ÜST SATIR: Arama + Checkbox + Butonlar -->
+                    <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                        <!-- Arama Kutusu -->
+                        <div class="flex-grow-1 search-box" style="width: 20%;">
+                            <input type="text" id="paketArama" class="form-control form-control-sm" placeholder="Paket veya modül ara...">
+                        </div>
+
+                        <!-- Checkbox: Paketleri Göster (başlangıçta seçili) -->
+                        <div class="form-check-inline me-0 d-flex align-items-center">
+                            <input class="form-check-input" type="checkbox" id="paketleriGosterCheck" checked style="margin-top: 0; cursor: pointer;">
+                            <label class="form-check-label ms-1" for="paketleriGosterCheck" style="margin-bottom: 0px; font-size: 0.75rem; cursor: pointer; user-select: none; white-space: nowrap;">
+                                Paketleri Göster
+                            </label>
+                        </div>
+
+                        <!-- Seçili Olanları Gizle Butonu -->
+                        <button id="seciliOlanlariGizleBtn" class="btn btn-outline-secondary btn-sm px-2" style="font-size: 0.75rem; white-space: nowrap; height: 31px; display: flex; align-items: center;">
+                            <i class="fas fa-eye-slash me-1" style="font-size: 10px;"></i>
+                            Seçili Olanları Gizle
+                        </button>
+
+                        <!-- Tümünü Seç Butonu -->
+                        <button id="tumunuSecUst" class="btn btn-outline-primary btn-sm" style="font-size: 0.75rem; white-space: nowrap; height: 31px; display: flex; align-items: center;" >
+                            <i class="fas fa-check-double me-1" style="font-size: 10px;"></i>
+                            Tümünü Seç
+                        </button>
+
+                        <!-- Seçimi Temizle Butonu -->
+                        <button id="tumunuKaldirUst" class="btn btn-outline-secondary btn-sm" style="font-size: 0.75rem; white-space: nowrap; height: 31px; display: flex; align-items: center;" >
+                            <i class="fas fa-times me-1" style="font-size: 10px;"></i>
+                            Seçimi Temizle
+                        </button>
                     </div>
+
+                    <!-- Paket Listesi -->
                     <div id="paketListesi" class="paket-list flex-grow-1"></div>
-                    <div class="mt-3">
-                        <button id="tumunuSec" class="btn btn-outline-primary btn-sm me-2" disabled>Tümünü Seç</button>
-                        <button id="tumunuKaldir" class="btn btn-outline-secondary btn-sm" disabled>Seçimi Temizle</button>
-                    </div>
+
+                    <!-- Alt kısımdaki butonları kaldırdık, onun yerine üstte ekledik -->
                 </div>
             </div>
         </div>
@@ -953,8 +984,8 @@
                             }
 
                             renderAll();
-                            $('#tumunuSec, #tumunuKaldir, #grupIndirimInput').prop('disabled', false);
-                            resolve();
+        $('#tumunuSec, #tumunuKaldir, #tumunuSecUst, #tumunuKaldirUst, #grupIndirimInput').prop('disabled', false);
+        resolve();
                         } else {
                             reject();
                         }
@@ -1676,8 +1707,9 @@
             const item = tumVeriler.find(x => x.id === id);
             if (!item) return;
 
-            if (!event || event.detail < 2) {
-                const seciliClass = $(event.currentTarget).hasClass('secili') ? 'secili' : '';
+            // Programatik çağrıldığında (event undefined olabilir) veya çift tıklama kontrolü
+            if (event && event.currentTarget && event.detail < 2) {
+                // Tek tıklama ile sadece görsel güncelleme
                 if (tip === 'grup') {
                     if (seciliItemler.has(id)) {
                         $(event.currentTarget).addClass('secili');
@@ -1697,73 +1729,22 @@
                 return;
             }
 
-            console.log('Çift tıklandı:', item.adi, 'tip:', tip);
+            // Çift tıklama veya programatik çağrı durumunda (event undefined)
+            console.log('Öğe işleniyor:', item.adi, 'tip:', tip);
 
             if (item.tip === 'grup' && tip !== 'grup') {
                 showToast('Hata', `"${item.adi}" bir pakettir ve modül olarak eklenemez!`, false);
                 return;
             }
 
-            if (tip === 'grup' && !seciliItemler.has(id)) {
-                const yeniGrupModulIds = hamVeriler
-                    .filter(x => x.parentId == id && x.tip !== 'grup')
-                    .map(x => x.id);
+            // Eğer öğe zaten seçiliyse kaldır, değilse ekle
+            const zatenSecili = seciliItemler.has(id) || [...seciliItemler.values()].some(x => x.id === id && x.paketMi);
 
-                const mevcutPaketler = Array.from(seciliItemler.values())
-                    .filter(x => x.tip === 'grup');
-
-                for (const mevcutGrup of mevcutPaketler) {
-                    const mevcutGrupModulIds = hamVeriler
-                        .filter(x => x.parentId == mevcutGrup.id && x.tip !== 'grup')
-                        .map(x => x.id);
-
-                    if (mevcutGrup.id === id) continue;
-
-                    const yeniModulSayisi = yeniGrupModulIds.length;
-                    const mevcutModulSayisi = mevcutGrupModulIds.length;
-
-                    if (mevcutModulSayisi > 0 && yeniModulSayisi > 0) {
-                        seciliItemler.delete(mevcutGrup.id);
-                        for (const [key, val] of seciliItemler.entries()) {
-                            if (val.paketMi && val.parentId === mevcutGrup.id) {
-                                seciliItemler.delete(key);
-                            }
-                        }
-                        showToast('Bilgi', `"${mevcutGrup.adi}" paketi kaldırıldı, yerine "${item.adi}" paketi eklenecek.`);
-                    }
-                }
-
-                if (tip !== 'grup') {
-                    const icerenPaketler = hamVeriler
-                        .filter(x => x.id === id && x.parentId)
-                        .map(x => x.parentId);
-
-                    for (const paketId of icerenPaketler) {
-                        if (seciliItemler.has(paketId)) {
-                            const paket = tumVeriler.find(x => x.id === paketId);
-                            showToast('Uyarı', `"${item.adi}" modülü "${paket?.adi}" paketi içeriğinde bulunmaktadır.`, false);
-                            return;
-                        }
-                    }
-                }
-
-                for (const mevcutGrup of mevcutPaketler) {
-                    const mevcutGrupModulIds = hamVeriler
-                        .filter(x => x.parentId == mevcutGrup.id && x.tip !== 'grup')
-                        .map(x => x.id);
-
-                    if (mevcutGrupModulIds.length > yeniGrupModulIds.length &&
-                        yeniGrupModulIds.every(modulId => mevcutGrupModulIds.includes(modulId))) {
-                        showToast('Uyarı', `"${mevcutGrup.adi}" paketi daha kapsamlı olduğu için "${item.adi}" eklenemez.`, false);
-                        return;
-                    }
-                }
-            }
-
-            if (seciliItemler.has(id) || [...seciliItemler.values()].some(x => x.id === id && x.paketMi)) {
+            if (zatenSecili) {
                 itemKaldir(id);
             } else {
                 if (tip === 'grup') {
+                    // Paket ekleme
                     itemEkle(id, 'grup');
                     const altModuller = hamVeriler.filter(x => x.parentId == id && x.tip !== 'grup');
                     altModuller.forEach(modul => {
@@ -1793,19 +1774,18 @@
                     setTimeout(() => {
                         otomatikBagliPaketleriKontrolEt(id, item.adi);
                     }, 500);
+                } else {
+                    // Modül ekleme
+                    if (item.tip === 'grup') {
+                        showToast('Hata', `"${item.adi}" bir pakettir, modül olarak eklenemez!`, false);
+                        return;
+                    }
+                    itemEkle(id, 'modul', false);
 
-                    // toggleItem fonksiyonunun içinde, modül eklenen kısımda:
-        } else {
-            if (item.tip === 'grup') {
-                showToast('Hata', `"${item.adi}" bir pakettir, modül olarak eklenemez!`, false);
-                return;
-            }
-            itemEkle(id, 'modul', false);
-
-            setTimeout(() => {
-                otomatikBagliPaketleriSec(id); // Bu fonksiyon doğru çağrılıyor
-            }, 500);
-        }
+                    setTimeout(() => {
+                        otomatikBagliPaketleriSec(id);
+                    }, 500);
+                }
                 renderAll();
             }
         }
@@ -2848,6 +2828,201 @@ function escapeHtml(text) {
 
         // ==================== SAYFA YÜKLENME ====================
         $(document).ready(function () {
+            // TÜMÜNÜ SEÇ ve TÜMÜNÜ KALDIR BUTONLARI - DÜZELTİLMİŞ VERSİYON
+        // Üst paneldeki butonlar için (tumunuSecUst ve tumunuKaldirUst)
+        $('#tumunuSecUst').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (tumVeriler.length === 0) {
+                showToast('Uyarı', 'Henüz yüklenecek paket bulunmuyor.', false);
+                return;
+            }
+
+            const paketler = tumVeriler.filter(x => x.tip === 'grup');
+            if (paketler.length === 0) {
+                showToast('Uyarı', 'Seçilebilecek paket bulunamadı.', false);
+                return;
+            }
+
+            // Her paket için toggleItem'ı event olmadan çağır
+            paketler.forEach(g => {
+                // Direkt ekleme yap (event parametresi gönderme)
+                if (!seciliItemler.has(g.id)) {
+                    itemEkle(g.id, 'grup');
+                    const altModuller = hamVeriler.filter(x => x.parentId == g.id && x.tip !== 'grup');
+                    altModuller.forEach(modul => {
+                        const key = modul.id + '_p' + g.id;
+                        seciliItemler.set(key, {
+                            id: modul.id,
+                            key: key,
+                            tip: 'modul',
+                            adi: modul.adi,
+                            paketMi: true,
+                            parentId: g.id,
+                            paketAdi: g.adi,
+                            indirimYuzdesi: 0,
+                            miktar: 1,
+                            fiyatOrani: 0,
+                            kampanyaYuzde: modul.kampanyaYuzde || 0,
+                            kampanyaBaslik: modul.kampanyaBaslik || '',
+                            kampanyaVar: !!modul.kampanyaVar,
+                            fiyat: modul.fiyat,
+                            listeFiyati: modul.KFiyat || modul.fiyat,
+                            birimFiyatNet: modul.fiyat,
+                            satirToplamNet: modul.fiyat
+                        });
+                    });
+                }
+            });
+
+            renderAll();
+            showToast('Başarılı', `${paketler.length} paket seçildi.`, true);
+        });
+
+        $('#tumunuKaldirUst').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (seciliItemler.size === 0) {
+                showToast('Bilgi', 'Zaten hiç öğe seçili değil.', false);
+                return;
+            }
+
+            const seciliSayisi = seciliItemler.size;
+            seciliItemler.clear();
+            renderAll();
+            showToast('Başarılı', `${seciliSayisi} öğe kaldırıldı.`, true);
+        });
+
+        // Alttaki butonlar için (eğer varsa)
+        $('#tumunuSec').click(function(e) {
+            e.preventDefault();
+
+            if (tumVeriler.length === 0) {
+                showToast('Uyarı', 'Henüz yüklenecek paket bulunmuyor.', false);
+                return;
+            }
+
+            const paketler = tumVeriler.filter(x => x.tip === 'grup');
+            if (paketler.length === 0) {
+                showToast('Uyarı', 'Seçilebilecek paket bulunamadı.', false);
+                return;
+            }
+
+            paketler.forEach(g => {
+                if (!seciliItemler.has(g.id)) {
+                    itemEkle(g.id, 'grup');
+                    const altModuller = hamVeriler.filter(x => x.parentId == g.id && x.tip !== 'grup');
+                    altModuller.forEach(modul => {
+                        const key = modul.id + '_p' + g.id;
+                        seciliItemler.set(key, {
+                            id: modul.id,
+                            key: key,
+                            tip: 'modul',
+                            adi: modul.adi,
+                            paketMi: true,
+                            parentId: g.id,
+                            paketAdi: g.adi,
+                            indirimYuzdesi: 0,
+                            miktar: 1,
+                            fiyatOrani: 0,
+                            kampanyaYuzde: modul.kampanyaYuzde || 0,
+                            kampanyaBaslik: modul.kampanyaBaslik || '',
+                            kampanyaVar: !!modul.kampanyaVar,
+                            fiyat: modul.fiyat,
+                            listeFiyati: modul.KFiyat || modul.fiyat,
+                            birimFiyatNet: modul.fiyat,
+                            satirToplamNet: modul.fiyat
+                        });
+                    });
+                }
+            });
+
+            renderAll();
+            showToast('Başarılı', `${paketler.length} paket seçildi.`, true);
+        });
+
+        $('#tumunuKaldir').click(function(e) {
+            e.preventDefault();
+
+            if (seciliItemler.size === 0) {
+                showToast('Bilgi', 'Zaten hiç öğe seçili değil.', false);
+                return;
+            }
+
+            const seciliSayisi = seciliItemler.size;
+            seciliItemler.clear();
+            renderAll();
+            showToast('Başarılı', `${seciliSayisi} öğe kaldırıldı.`, true);
+        });
+                    // ==================== YENİ: PAKET GÖSTER/GİZLE VE SEÇİLİ OLANLARI GİZLE ====================
+
+        // "Paketleri Göster" checkbox'ı
+        $('#paketleriGosterCheck').change(function() {
+            const showPackages = $(this).is(':checked');
+            if (showPackages) {
+                // Paketleri göster (grup-item class'ına sahip olanlar)
+                $('.grup-item').show();
+            } else {
+                // Paketleri gizle, sadece alt-paketler (modüller) kalsın
+                $('.grup-item').hide();
+            }
+        });
+
+        // "Seçili Olanları Gizle" butonu - İSİM VE İŞLEV DEĞİŞTİ
+        $('#seciliOlanlariGizleBtn').click(function() {
+            const btn = $(this);
+            const currentText = btn.text();
+
+            if (currentText === 'Seçili Olanları Gizle') {
+                // Seçili olanları gizle
+                $('#paketListesi .paket-item.secili').hide();
+                btn.text('Tümünü Göster');
+            } else {
+                // Tümünü göster (gizlenenleri geri getir)
+                $('#paketListesi .paket-item').show();
+                btn.text('Seçili Olanları Gizle');
+
+                // Eğer "Paketleri Göster" checkbox'ı işaretli değilse, paketleri tekrar gizle
+                if (!$('#paketleriGosterCheck').is(':checked')) {
+                    $('.grup-item').hide();
+                }
+            }
+        });
+
+        // Buton metnini sıfırlama fonksiyonu
+        function resetGizleButonu() {
+            const btn = $('#seciliOlanlariGizleBtn');
+            if (btn.text() === 'Tümünü Göster') {
+                btn.text('Seçili Olanları Gizle');
+            }
+        }
+
+        // renderAll fonksiyonunu güncelle (mevcut fonksiyonun üzerine yaz veya içine resetGizleButonu() ekle)
+        function renderAll(yenidenHesapla = true) {
+            renderPaketListesi();
+            renderSecilenItemler();
+            resetGizleButonu(); // Buton metnini sıfırla
+
+            const paketOlustu = otomatikPaketTamamla(false);
+
+            if (paketOlustu) {
+                renderPaketListesi();
+                renderSecilenItemler();
+                resetGizleButonu(); // Tekrar sıfırla
+            }
+
+            if (yenidenHesapla) {
+                hesaplaToplam();
+            }
+        }
+
+        // Arama kutusu event'ini güncelle
+        $('#paketArama').off('input').on('input', function() {
+            renderPaketListesi();
+            resetGizleButonu();
+        });
                     // Sayfa yüklendiğinde varsayılan müşteri durumunu kontrol et
         setTimeout(function() {
             const yeniDurumSelect = document.getElementById('yeniMusteriDurumuId');
@@ -2988,8 +3163,30 @@ function escapeHtml(text) {
                 hesaplaToplam();
             });
 
-            $('#tumunuSec').click(() => tumVeriler.filter(x => x.tip === 'grup').forEach(g => toggleItem(g.id, 'grup')));
-            $('#tumunuKaldir').click(() => { seciliItemler.clear(); renderAll(); });
+              // Tümünü Seç - tüm paketleri seç
+        $('#tumunuSec').click(function(e) {
+            e.preventDefault();
+            if (tumVeriler.length === 0) {
+                showToast('Uyarı', 'Henüz yüklenecek paket bulunmuyor.', false);
+                return;
+            }
+            const paketler = tumVeriler.filter(x => x.tip === 'grup');
+            paketler.forEach(g => toggleItem(g.id, 'grup'));
+            showToast('Başarılı', `${paketler.length} paket seçildi.`, true);
+        });
+
+        // Tümünü Kaldır - tüm seçimleri temizle
+        $('#tumunuKaldir').click(function(e) {
+            e.preventDefault();
+            if (seciliItemler.size === 0) {
+                showToast('Bilgi', 'Zaten hiç öğe seçili değil.', false);
+                return;
+            }
+            const seciliSayisi = seciliItemler.size;
+            seciliItemler.clear();
+            renderAll();
+            showToast('Başarılı', `${seciliSayisi} öğe kaldırıldı.`, true);
+        });
             $('#paketArama').on('input', renderPaketListesi);
             $('#secilenArama').on('input', renderSecilenItemler);
             $('#teklifOlustur').click(teklifOlustur);
