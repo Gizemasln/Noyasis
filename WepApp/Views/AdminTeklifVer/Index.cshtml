@@ -1281,7 +1281,7 @@
                 }, 100);
             });
         }
-        function renderPaketListesi() {
+              function renderPaketListesi() {
             const container = $('#paketListesi').empty();
             const arama = $('#paketArama').val().toLowerCase().trim();
             container.append(`
@@ -1301,6 +1301,13 @@
                     return adiMatch || grupMatch;
                 })
                 .sort((a, b) => {
+                    // Bağımsız modüller her zaman en altta olsun (tip: 'paket' ve parentId'si olmayanlar)
+                    const aBagimsizModul = a.tip === 'paket' && !a.parentId;
+                    const bBagimsizModul = b.tip === 'paket' && !b.parentId;
+
+                    if (aBagimsizModul && !bBagimsizModul) return 1;
+                    if (!aBagimsizModul && bBagimsizModul) return -1;
+
                     const siraA = a.sira || 0;
                     const siraB = b.sira || 0;
                     if (siraA !== siraB) return siraA - siraB;
@@ -1399,30 +1406,37 @@
                     <div class="resize-handle"></div>
                 </div>`);
 
-            const sirali = Array.from(seciliItemler.values())
-                .map(item => {
-                    let modulSira = 0;
-                    let miktarKademesiVar = false;
-                    if (item.tip === 'grup') {
-                        const grupVeri = tumVeriler.find(v => v.id === item.id) || {};
-                        modulSira = grupVeri.sira || 0;
-                    } else {
-                        const hamVeri = hamVeriler.find(v => v.id === item.id) || {};
-                        modulSira = hamVeri.sira || 0;
-                        miktarKademesiVar = hamVeri.miktarKademesiVar || false;
-                    }
-                    return {
-                        ...item,
-                        modulSira: modulSira,
-                        miktarKademesiVar: miktarKademesiVar,
-                        tipSirasi: item.tip === 'grup' ? 1 : 2
-                    };
-                })
-                .sort((a, b) => {
-                    if (a.tipSirasi !== b.tipSirasi) return a.tipSirasi - b.tipSirasi;
-                    if (a.modulSira !== b.modulSira) return a.modulSira - b.modulSira;
-                    return (a.adi || '').localeCompare(b.adi || '', 'tr');
-                });
+                const sirali = Array.from(seciliItemler.values())
+            .map(item => {
+                let modulSira = 0;
+                let miktarKademesiVar = false;
+                if (item.tip === 'grup') {
+                    const grupVeri = tumVeriler.find(v => v.id === item.id) || {};
+                    modulSira = grupVeri.sira || 0;
+                } else {
+                    const hamVeri = hamVeriler.find(v => v.id === item.id) || {};
+                    modulSira = hamVeri.sira || 0;
+                    miktarKademesiVar = hamVeri.miktarKademesiVar || false;
+                }
+                return {
+                    ...item,
+                    modulSira: modulSira,
+                    miktarKademesiVar: miktarKademesiVar,
+                    tipSirasi: item.tip === 'grup' ? 1 : 2
+                };
+            })
+            .sort((a, b) => {
+                // Bağımsız modüller her zaman en altta olsun
+                const aBagimsiz = a.tip === 'modul' && !a.paketMi;
+                const bBagimsiz = b.tip === 'modul' && !b.paketMi;
+
+                if (aBagimsiz && !bBagimsiz) return 1;
+                if (!aBagimsiz && bBagimsiz) return -1;
+
+                if (a.tipSirasi !== b.tipSirasi) return a.tipSirasi - b.tipSirasi;
+                if (a.modulSira !== b.modulSira) return a.modulSira - b.modulSira;
+                return (a.adi || '').localeCompare(b.adi || '', 'tr');
+            });
 
             sirali.forEach(item => {
                 const veri = tumVeriler.find(v => v.id === item.id) || {};
@@ -1790,7 +1804,7 @@
             }
         }
 
-        function itemEkle(id, tip, paketMi = false, parentId = 0, miktar = null) {
+          function itemEkle(id, tip, paketMi = false, parentId = 0, miktar = null) {
             const v = tumVeriler.find(x => x.id === id);
             if (!v) {
                 console.log('Öğe bulunamadı:', id);
@@ -1802,6 +1816,23 @@
             const varsayilanMiktar = miktar !== null ? miktar : 1;
             const bagimsizMi = (tip !== 'grup' && !paketMi);
             const key = paketMi ? `${id}_p${parentId}` : id;
+
+            // Eğer paket ekleniyorsa ve bu paketin içindeki modüllerden biri bağımsız olarak eklenmişse,
+            // bağımsız olanları kaldır
+            if (tip === 'grup') {
+                const paketIciModuller = hamVeriler.filter(x => x.parentId == id && x.tip !== 'grup');
+
+                paketIciModuller.forEach(modul => {
+                    // Bu modül bağımsız olarak eklenmiş mi kontrol et
+                    for (const [existingKey, existingItem] of seciliItemler.entries()) {
+                        if (existingItem.id === modul.id && existingItem.tip === 'modul' && !existingItem.paketMi) {
+                            // Bağımsız modülü kaldır
+                            seciliItemler.delete(existingKey);
+                            console.log(`Bağımsız modül kaldırıldı: ${modul.adi} (paket içinde olduğu için)`);
+                        }
+                    }
+                });
+            }
 
             seciliItemler.set(key, {
                 id: id,

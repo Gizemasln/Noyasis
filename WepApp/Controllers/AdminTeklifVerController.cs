@@ -502,6 +502,7 @@ namespace WepApp.Controllers
                 var tumSeciliItemler = new List<SeciliItem>();
                 var islenmisItemler = new HashSet<int>(); // ID'leri takip et
 
+                // Önce tüm bağımsız modülleri ve paketleri topla
                 foreach (var item in model.SeciliItemler)
                 {
                     // Öğeyi ekle
@@ -512,7 +513,8 @@ namespace WepApp.Controllers
                     }
 
                     // Eğer paket tipindeyse, bağlı paketleri kontrol et
-                 
+                    if (item.Tip == "paket")
+                    {
                         var bagliPaketler = _paketBaglantiRepo.GetBagliPaketler(item.Id);
 
                         foreach (var bagliPaket in bagliPaketler.Where(p => p.Durumu == 1))
@@ -523,7 +525,7 @@ namespace WepApp.Controllers
                                 tumSeciliItemler.Add(new SeciliItem
                                 {
                                     Id = bagliPaket.Id,
-                                    Tip = "modul",
+                                    Tip = "paket",
                                     Adi = bagliPaket.Adi,
                                     IndirimYuzdesi = item.IndirimYuzdesi, // Ana paketin indirimini miras al
                                     Miktar = item.Miktar,
@@ -533,7 +535,7 @@ namespace WepApp.Controllers
 
                                 islenmisItemler.Add(bagliPaket.Id);
                             }
-                        
+                        }
                     }
                 }
 
