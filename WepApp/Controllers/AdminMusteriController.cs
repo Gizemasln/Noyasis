@@ -82,7 +82,7 @@ namespace WepApp.Controllers
                     List<Musteri> musteriler = _musteriRepository.GetirList(
                         x => x.Durum == 1 && x.Id == musteris.Id,
                         new List<string> { "MusteriTipi", "Bayi" }
-                    )?.OrderBy(x => x.Ad).ThenBy(x => x.Soyad).ToList() ?? new List<Musteri>();
+                    )?.OrderBy(x => x.AdSoyad).ToList() ?? new List<Musteri>();
                     ViewBag.MusteriList = musteriler;
                 }
                 else if (currentBayi != null)
@@ -94,7 +94,7 @@ namespace WepApp.Controllers
                     List<Musteri> musteriler = _musteriRepository.GetirList(
                         x => x.Durum == 1 && bayiVeAltBayiIds.Contains(x.BayiId ?? 0),
                         new List<string> { "MusteriTipi", "Bayi" }
-                    )?.OrderBy(x => x.Ad).ThenBy(x => x.Soyad).ToList() ?? new List<Musteri>();
+                    )?.OrderBy(x => x.AdSoyad).ToList() ?? new List<Musteri>();
 
                     ViewBag.MusteriList = musteriler;
                 }
@@ -104,7 +104,7 @@ namespace WepApp.Controllers
                     List<Musteri> musteriler = _musteriRepository.GetirList(
                         x => x.Durum == 1,
                         new List<string> { "MusteriTipi", "Bayi" }
-                    )?.OrderBy(x => x.Ad).ThenBy(x => x.Soyad).ToList() ?? new List<Musteri>();
+                    )?.OrderBy(x => x.AdSoyad).ToList() ?? new List<Musteri>();
                     ViewBag.MusteriList = musteriler;
                 }
 
@@ -508,7 +508,7 @@ namespace WepApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ekle(
-            string Ad, string Soyad, string KullaniciAdi, string Sifre,
+            string AdSoyad, string KullaniciAdi, string Sifre,
             string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,  // Il ve Ilce artık int?
             string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
             string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
@@ -537,8 +537,8 @@ namespace WepApp.Controllers
 
                 Musteri model = new Musteri
                 {
-                    Ad = Ad ?? "",
-                    Soyad = Soyad ?? "",
+                    AdSoyad = AdSoyad ?? "",
+                    
                     TicariUnvan = TicariUnvan ?? "",
                     KullaniciAdi = KullaniciAdi ?? "",
                     Sifre = Sifre ?? "",
@@ -624,7 +624,7 @@ namespace WepApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Guncelle(
-            int Id, string Ad, string Soyad, string KullaniciAdi, string Sifre,
+            int Id, string AdSoyad, string KullaniciAdi, string Sifre,
             string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,  // Il ve Ilce artık int?
             string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
             string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
@@ -660,9 +660,8 @@ namespace WepApp.Controllers
                 }
 
                 // Güncelleme işlemleri
-                existing.Ad = Ad ?? "";
+                existing.AdSoyad = AdSoyad ?? "";
                 existing.TicariUnvan = TicariUnvan ?? "";
-                existing.Soyad = Soyad ?? "";
                 existing.KullaniciAdi = KullaniciAdi ?? "";
                 if (!string.IsNullOrEmpty(Sifre)) existing.Sifre = Sifre;
                 existing.Email = Email ?? "";
@@ -759,9 +758,8 @@ namespace WepApp.Controllers
                 {
                     success = true,
                     id = item.Id,
-                    ad = item.Ad ?? "",
+                    adSoyad = item.AdSoyad ?? "", // AdSoyad olarak birleştirilmiş
                     ticariUnvan = item.TicariUnvan ?? "",
-                    soyad = item.Soyad ?? "",
                     kullaniciAdi = item.KullaniciAdi ?? "",
                     email = item.Email ?? "",
                     telefon = item.Telefon ?? "",

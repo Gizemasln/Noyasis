@@ -40,8 +40,7 @@ namespace WepApp.Models
 
         // Müşteri bilgileri
         public string TicariUnvan { get; set; } = string.Empty;
-        public string Adi { get; set; } = string.Empty;
-        public string Soyadi { get; set; } = string.Empty;
+        public string AdSoyad { get; set; } = string.Empty;
         public string Telefon { get; set; } = string.Empty;
         public string CepTelefon { get; set; } = string.Empty;
         public string Adres1 { get; set; } = string.Empty;

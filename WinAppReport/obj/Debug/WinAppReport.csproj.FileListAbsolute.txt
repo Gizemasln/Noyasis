@@ -16,3 +16,4 @@ D:\PROJELER\Noyasis\WinAppReport\bin\Debug\WinAppReport.pdb
 D:\PROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.Properties.Resources.resources
 D:\PROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.csproj.GenerateResource.cache
 D:\PROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.csproj.CoreCompileInputs.cache
+D:\PROJELER\Noyasis\WinAppReport\obj\Debug\WinAppReport.exe.config

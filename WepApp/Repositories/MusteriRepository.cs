@@ -82,7 +82,7 @@ namespace WepApp.Repositories
                     query = query.Where(filter);
                 }
 
-                return query.OrderBy(m => m.Ad).ThenBy(m => m.Soyad).ToList();
+                return query.OrderBy(m => m.AdSoyad).ToList();
             }
             catch (Exception ex)
             {
@@ -247,7 +247,7 @@ namespace WepApp.Repositories
 
                 return new Dictionary<string, object>
                 {
-                    ["MusteriAd"] = $"{musteri.Ad} {musteri.Soyad}",
+                    ["MusteriAd"] = $"{musteri.AdSoyad} ",
                     ["AnaBayiSayisi"] = anaBayiler,
                     ["ToplamBayiSayisi"] = tumBayiler.Count,
                     ["AltBayiSayisi"] = tumBayiler.Count - anaBayiler,

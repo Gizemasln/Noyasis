@@ -16,8 +16,7 @@ namespace WinAppReport
         public string Toplam { get; set; }
         public string YaziIle { get; set; }
         public string Unvan { get; set; }
-        public string Adi { get; set; }
-        public string Soyadi { get; set; }
+        public string AdSoyad { get; set; }
         public string Adres { get; set; }
         public string IletisimNo { get; set; }
         public string CepTelefonu { get; set; }

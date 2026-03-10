@@ -239,13 +239,11 @@ public partial class Context : DbContext
             entity.HasKey(e => e.Id);
 
             // Properties
-            entity.Property(e => e.Ad)
+            entity.Property(e => e.AdSoyad)
                 .IsRequired()
                 .HasMaxLength(100);
 
-            entity.Property(e => e.Soyad)
-                .IsRequired()
-                .HasMaxLength(100);
+        
 
             entity.Property(e => e.KullaniciAdi)
                 .IsRequired()

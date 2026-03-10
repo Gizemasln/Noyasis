@@ -679,12 +679,11 @@ namespace WepApp.Controllers
                     id = sozlesme.Id,
                     dokumanNo = sozlesme.DokumanNo,
                     lisansNo = sozlesme.LisansNo,
-                    musteriAdi = $"{sozlesme.Musteri?.Ad} {sozlesme.Musteri?.Soyad}",
+                    musteriAdi = $"{sozlesme.Musteri?.AdSoyad}",
                     musteriTelefon = sozlesme.Telefon,
                     musteriEmail = sozlesme.Email,
                     ticariUnvan = sozlesme.TicariUnvan,
-                    adi = sozlesme.Adi,
-                    soyadi = sozlesme.Soyadi,
+                    adisoyadi = sozlesme.AdSoyad,
                     adres1 = sozlesme.Adres1,
                     adres2 = sozlesme.Adres2,
                     il = sozlesme.Il,
@@ -1091,7 +1090,7 @@ namespace WepApp.Controllers
                 sorgu = sorgu.Where(s =>
                     s.DokumanNo.Contains(arama) ||
                     s.LisansNo.Contains(arama) ||
-                    (s.Musteri.Ad + " " + s.Musteri.Soyad).Contains(arama) ||
+                    (s.Musteri.AdSoyad).Contains(arama) ||
                     s.Email.Contains(arama)
                 );
             }

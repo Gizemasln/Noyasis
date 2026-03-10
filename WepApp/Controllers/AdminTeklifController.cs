@@ -253,8 +253,8 @@ namespace WepApp.Controllers
                         {
                             id = teklif.Musteri?.Id ?? 0,
                             ticariUnvan = teklif.Musteri?.TicariUnvan ?? "",
-                            adi = teklif.Musteri?.Ad,
-                            soyadi = teklif.Musteri?.Soyad,
+                            adSoyad = teklif.Musteri?.AdSoyad ?? "", // AdSoyad olarak birleştirilmiş
+
                             telefon = teklif.Musteri?.Telefon ?? "",
                             adres1 = teklif.Musteri?.Adres ?? "",
                             adres2 = "",
@@ -424,8 +424,8 @@ namespace WepApp.Controllers
 
                 // Müşteri bilgilerini kontrol et
                 string ticariUnvan = form["TicariUnvan"].ToString()?.Trim() ?? "";
-                string adi = form["Adi"].ToString()?.Trim() ?? "";
-                string soyadi = form["Soyadi"].ToString()?.Trim() ?? "";
+                string adSoyad = form["AdSoyad"].ToString()?.Trim() ?? ""; // AdSoyad TEK ALAN
+
                 string telefon = form["Telefon"].ToString()?.Trim() ?? "";
                 string adres1 = form["Adres1"].ToString()?.Trim() ?? "";
                 string il = form["Il"].ToString()?.Trim() ?? "";
@@ -440,10 +440,8 @@ namespace WepApp.Controllers
 
                 if (string.IsNullOrWhiteSpace(ticariUnvan))
                     hatalar.Add("Ticari Ünvan");
-                if (string.IsNullOrWhiteSpace(adi))
-                    hatalar.Add("Adı");
-                if (string.IsNullOrWhiteSpace(soyadi))
-                    hatalar.Add("Soyadı");
+                if (string.IsNullOrWhiteSpace(adSoyad)) // AdSoyad kontrolü
+                    hatalar.Add("Ad Soyad");
                 if (string.IsNullOrWhiteSpace(telefon))
                     hatalar.Add("Telefon");
                 if (string.IsNullOrWhiteSpace(adres1))
@@ -521,8 +519,8 @@ namespace WepApp.Controllers
 
                     // Müşteri bilgileri
                     TicariUnvan = ticariUnvan,
-                    Adi = adi,
-                    Soyadi = soyadi,
+                    AdSoyad = adSoyad,
+                    
                     Telefon = telefon,
                     CepTelefon = form["CepTelefon"].ToString()?.Trim() ?? "",
                     Adres1 = adres1,
@@ -672,12 +670,11 @@ namespace WepApp.Controllers
             MusteriSozlesme musteriSozlesme = _sozlesmeRepo.Getir(x => x.Id == sozlesmeId, join);
 
             SozlesmeRapor sozlesmeRapor = new SozlesmeRapor();
-            sozlesmeRapor.Adi = musteriSozlesme.Adi;
+            sozlesmeRapor.AdSoyad = musteriSozlesme.AdSoyad;
             sozlesmeRapor.PaketAdi = musteriSozlesme.Teklif.Detaylar.FirstOrDefault()?.PaketGrupAdi;
             sozlesmeRapor.PaketIcerigi = string.Join(", ",
                 musteriSozlesme.Teklif.Detaylar.Select(x => x.ItemAdi));
             sozlesmeRapor.Kampanya = musteriSozlesme.Teklif.Detaylar.FirstOrDefault()?.KampanyaBaslik ?? "Kampanya yok";
-            sozlesmeRapor.Soyadi = musteriSozlesme.Soyadi;
             sozlesmeRapor.Unvan = musteriSozlesme.TicariUnvan;
             sozlesmeRapor.Adres = musteriSozlesme.Adres1 + " " + musteriSozlesme.Adres2;
             sozlesmeRapor.IletisimNo = musteriSozlesme.Telefon;
@@ -1034,7 +1031,7 @@ namespace WepApp.Controllers
                 {
                     id = teklif.Id,
                     teklifNo = teklif.TeklifNo,
-                    musteriAdi = (teklif.Musteri?.Ad + " " + teklif.Musteri?.Soyad).Trim(),
+                    musteriAdSoyad = teklif.Musteri?.AdSoyad ?? "", // AdSoyad olarak birleştirilmiş
                     musteriTelefon = teklif.Musteri?.Telefon,
                     musteriEmail = teklif.Musteri?.Email,
                     musteriIl = teklif.Musteri?.iller?.sehiradi ?? "",

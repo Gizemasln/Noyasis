@@ -81,6 +81,7 @@
                         <div class="col-12">
                             <h6 class="mb-1">Müşteri</h6>
                             <div class="input-group input-group-sm" style="background-color:#F8F9FC;">
+                                <!-- Müşteri dropdown'ında AdSoyad kullan -->
                                 <select id="musteriSelect" class="form-select form-select-sm" style="font-size:12px;">
                                     <option value="">-- Müşteri Seçiniz --</option>
                                     @foreach (var musteri in ViewBag.Musteriler as List<Musteri>)
@@ -88,7 +89,7 @@
                                         var mevcutTeklif = ViewBag.MevcutTeklif as Teklif;
                                         var selected = mevcutTeklif != null && mevcutTeklif.MusteriId == musteri.Id;
                                         <option value="@musteri.Id" selected="@selected">
-                                            @musteri.Ad @musteri.Soyad
+                                            @musteri.AdSoyad <!-- Ad + Soyad yerine AdSoyad -->
                                         </option>
                                     }
                                 </select>
@@ -282,14 +283,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="yeniAd" name="Ad" required>
-                                        <label>Ad *</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="yeniSoyad" name="Soyad" required>
-                                        <label>Soyad *</label>
+                                        <input type="text" class="form-control" id="yeniAdSoyad" name="AdSoyad" required>
+                                        <label>Ad Soyad *</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -2482,7 +2477,7 @@ function escapeHtml(text) {
                 return;
             }
 
-            const yeniMusteriMi = seciliMusteriId && String(seciliMusteriId).startsWith('yeni-');
+            const yeniMusteriMi = seciliMusteriId && String(seciliMusteriId).startsWith('yeni-') || seciliMusteriId === -1;
 
             if (yeniMusteriMi && !geciciMusteri) {
                 showToast('Hata', 'Yeni müşteri bilgileri eksik!', false);
@@ -2509,10 +2504,44 @@ function escapeHtml(text) {
                 return isNaN(result) ? 0 : result;
             }
 
+            // Yeni müşteri verilerini hazırla
+            let yeniMusteriData = null;
+            if (yeniMusteriMi && geciciMusteri) {
+                yeniMusteriData = {
+                    TicariUnvan: geciciMusteri.TicariUnvan || '',
+                    AdSoyad: geciciMusteri.AdSoyad || '', // AdSoyad olarak gönder
+                    KullaniciAdi: geciciMusteri.KullaniciAdi || '',
+                    Sifre: geciciMusteri.Sifre || '',
+                    Email: geciciMusteri.Email || '',
+                    Telefon: geciciMusteri.Telefon || '',
+                    Adres: geciciMusteri.Adres || '',
+                    illerId: geciciMusteri.illerId || null,
+                    ilcelerId: geciciMusteri.ilcelerId || null,
+                    Belde: geciciMusteri.Belde || '',
+                    Bolge: geciciMusteri.Bolge || '',
+                    TCVNo: geciciMusteri.TCVNo || '',
+                    VergiDairesi: geciciMusteri.VergiDairesi || '',
+                    KepAdresi: geciciMusteri.KepAdresi || '',
+                    WebAdresi: geciciMusteri.WebAdresi || '',
+                    Aciklama: geciciMusteri.Aciklama || '',
+                    AlpemixFirmaAdi: geciciMusteri.AlpemixFirmaAdi || '',
+                    AlpemixGrupAdi: geciciMusteri.AlpemixGrupAdi || '',
+                    AlpemixSifre: geciciMusteri.AlpemixSifre || '',
+                    MusteriTipiId: geciciMusteri.MusteriTipiId || null,
+                    MusteriDurumuId: geciciMusteri.MusteriDurumuId || 1,
+                    BayiId: geciciMusteri.BayiId || null,
+                    Diger: geciciMusteri.Diger || '',
+                    Logo: geciciMusteri.Logo || null,
+                    Imza: geciciMusteri.Imza || null
+                };
+
+                console.log('Gönderilecek yeni müşteri verisi:', yeniMusteriData);
+            }
+
             const data = {
                 TeklifNo: $('#teklifNoInput').val(),
-                MusteriId: yeniMusteriMi ? 0 : seciliMusteriId,
-                YeniMusteri: seciliMusteriId === -1 ? geciciMusteriData : null,
+                MusteriId: yeniMusteriMi ? 0 : seciliMusteriId, // Yeni müşteri için 0 gönder
+                YeniMusteri: yeniMusteriData, // Yeni müşteri varsa bu alanı doldur
                 LisansTipId: seciliLisansTipId,
                 Aciklama: $('#genelAciklama').val().trim(),
                 GrupIndirimOrani: grupIndirimOrani,
@@ -2525,7 +2554,7 @@ function escapeHtml(text) {
                     Miktar: i.miktar || 1,
                     FiyatOrani: i.fiyatOrani || 0,
                     KampanyaBaslik: i.kampanyaBaslik || "",
-                    PaketMi: i.paketMi,
+                    PaketMi: i.paketMi || false,
                     ListeFiyati: i.listeFiyati || 0,
                     BirimFiyatNet: i.birimFiyatNet || 0,
                     SatirToplamNet: i.satirToplamNet || 0,
@@ -2547,6 +2576,8 @@ function escapeHtml(text) {
                     }
                 }
             };
+
+            console.log('Gönderilecek teklif verisi:', data); // Debug için
 
             const btn = $('#teklifOlustur').prop('disabled', true).html('OLUŞTURULUYOR...');
 
@@ -2573,6 +2604,7 @@ function escapeHtml(text) {
                 },
                 error: function(xhr, status, error) {
                     console.error('Hata:', error);
+                    console.error('Response:', xhr.responseText);
                     showToast('Hata', 'Sunucu hatası: ' + error, false);
                     btn.prop('disabled', false).html('TEKLİF OLUŞTUR');
                 }
@@ -2706,11 +2738,11 @@ function escapeHtml(text) {
             // Aday müşteri için özel kontroller
             if (adayMi) {
                 const ticariUnvan = $('#yeniTicariUnvan').val() ? $('#yeniTicariUnvan').val().trim() : '';
-                const ad = $('#yeniAd').val() ? $('#yeniAd').val().trim() : '';
-                const soyad = $('#yeniSoyad').val() ? $('#yeniSoyad').val().trim() : '';
+                                const adSoyad = $('#yeniAdSoyad').val() ? $('#yeniAdSoyad').val().trim() : '';
 
-                if (!ticariUnvan || !ad || !soyad) {
-                    showToast('Hata', 'Aday müşteri için Ticari Unvan, Ad ve Soyad alanları zorunludur!', false);
+
+                if (!ticariUnvan || !adSoyad) {
+                            showToast('Hata', 'Aday müşteri için Ticari Unvan, Ad ve Soyad alanları zorunludur!', false);
                     return;
                 }
             } else {
@@ -2748,8 +2780,8 @@ function escapeHtml(text) {
             const formData = {
                 // Temel Bilgiler
                 TicariUnvan: $('#yeniTicariUnvan').val() ? $('#yeniTicariUnvan').val().trim() : '',
-                Ad: $('#yeniAd').val() ? $('#yeniAd').val().trim() : '',
-                Soyad: $('#yeniSoyad').val() ? $('#yeniSoyad').val().trim() : '',
+                              AdSoyad: $('#yeniAdSoyad').val() ? $('#yeniAdSoyad').val().trim() : '', // AdSoyad olarak birleştir
+
                 KullaniciAdi: adayMi ? '' : ($('#yeniKullaniciAdi').val() ? $('#yeniKullaniciAdi').val().trim() : ''),
                 Sifre: adayMi ? '' : ($('#yeniSifre').val() ? $('#yeniSifre').val().trim() : ''),
 
@@ -2831,8 +2863,8 @@ function escapeHtml(text) {
         }
         function doldurYeniMusteriFormu(data) {
             $('#yeniTicariUnvan').val(data.TicariUnvan || '');
-            $('#yeniAd').val(data.Ad || '');
-            $('#yeniSoyad').val(data.Soyad || '');
+                       $('#yeniAdSoyad').val(data.AdSoyad || ''); // Ad + Soyad yerine AdSoyad
+
             $('#yeniKullaniciAdi').val(data.KullaniciAdi || '');
             $('#yeniSifre').val(data.Sifre || '');
             $('#yeniEmail').val(data.Email || '');

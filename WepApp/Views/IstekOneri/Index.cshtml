@@ -365,7 +365,7 @@
                                     var cevapTarihi = "";
                                     var kisaCevap = "";
                                     var durumBilgi = "";
-                                    var musteriAdi = item.Musteri != null ? item.Musteri.Ad + " " + item.Musteri.Soyad : "Belirtilmemiş";
+                                    var musteriAdi = item.Musteri != null ? item.Musteri.AdSoyad  : "Belirtilmemiş";
 
                                     if (item.DistributorCevapVerdiMi && !string.IsNullOrEmpty(item.DistributorCevap))
                                     {
@@ -634,7 +634,7 @@
                                     var cevapTarihi = "";
                                     var kisaCevap = "";
                                     var durumBilgi = "";
-                                    var musteriAdi = item.Musteri != null ? item.Musteri.Ad + " " + item.Musteri.Soyad : "Belirtilmemiş";
+                                    var musteriAdi = item.Musteri != null ? item.Musteri.AdSoyad : "Belirtilmemiş";
 
                                     if (item.DistributorCevapVerdiMi && !string.IsNullOrEmpty(item.DistributorCevap))
                                     {

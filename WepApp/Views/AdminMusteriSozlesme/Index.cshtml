@@ -197,7 +197,7 @@
                                                 </td>
                                                 <td><span class="dokuman-no">@sozlesme.DokumanNo</span></td>
                                                 <td>
-                                                    <div class="musteri-adi">@(sozlesme.Musteri?.Ad + " " + (sozlesme.Musteri?.Soyad ?? ""))</div>
+                                                    <div class="musteri-adi">@(sozlesme.Musteri?.AdSoyad ?? "-")</div>
                                                     <small class="text-muted">@sozlesme.Email</small>
                                                 </td>
                                                 <td>
@@ -1565,7 +1565,7 @@
                                             <tr><td class="text-muted">Doküman No:</td><td><strong>${s.dokumanNo}</strong></td></tr>
                                             <tr><td class="text-muted">Lisans No:</td><td>${s.lisansNo ? `<span class="badge bg-success">${s.lisansNo}</span>` : '-'}</td></tr>
                                             <tr><td class="text-muted">Müşteri:</td><td>${s.musteriAdi || '-'}</td></tr>
-                                            <tr><td class="text-muted">Telefon:</td><td>${s.musteriTelefon || '-'}</td></tr>
+                                                    <tr><td class="text-muted">Telefon:</td><td>${s.musteriTelefon || '-'}</td></tr>
                                             <tr><td class="text-muted">E-posta:</td><td>${s.musteriEmail || '-'}</td></tr>
                                             <tr><td class="text-muted">Durum:</td><td><span class="badge ${getDurumBadgeCss(s.durumId)}">${s.durumAdi}</span></td></tr>
                                             <tr><td class="text-muted">Yayın Tarihi:</td><td>${s.yayinTarihi || '-'}</td></tr>
@@ -1593,8 +1593,8 @@
                                     <div class="card-body">
                                         <table class="table table-sm table-borderless mb-0">
                                             <tr><td class="text-muted">Ticari Ünvan:</td><td>${s.ticariUnvan || '-'}</td></tr>
-                                            <tr><td class="text-muted">Adı Soyadı:</td><td>${s.adi || '-'} ${s.soyadi || '-'}</td></tr>
-                                            <tr><td class="text-muted">Adres:</td><td>${s.adres1 || '-'} ${s.adres2 || ''}</td></tr>
+        <tr><td class="text-muted">Ad Soyad:</td><td>${s.musteriAdi || '-'}</td></tr>
+                                                    <tr><td class="text-muted">Adres:</td><td>${s.adres1 || '-'} ${s.adres2 || ''}</td></tr>
                                             <tr><td class="text-muted">İl / İlçe:</td><td>${s.il || '-'} / ${s.ilce || '-'}</td></tr>
                                             <tr><td class="text-muted">Vergi Dairesi:</td><td>${s.vergiDairesi || '-'}</td></tr>
                                             <tr><td class="text-muted">Vergi No:</td><td>${s.vergiNo || '-'}</td></tr>
@@ -2353,8 +2353,8 @@
 
                 case 'musteri':
                     siralamaliSatirlar.sort((a, b) => {
-                        const musteriA = $(a).find('.musteri-adi').text().trim();
-                        const musteriB = $(b).find('.musteri-adi').text().trim();
+        const musteriA = $(a).find('.musteri-adi').text().trim();
+                                const musteriB = $(b).find('.musteri-adi').text().trim();
                         return musteriA.localeCompare(musteriB, 'tr');
                     });
                     break;

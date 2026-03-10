@@ -10,9 +10,8 @@ namespace WepApp.Models
         public int? BayiId { get; set; }
 
         // Temel bilgiler
-        public string Ad { get; set; } = string.Empty;
+        public string AdSoyad { get; set; } = string.Empty;
         public string? TicariUnvan { get; set; } = string.Empty;
-        public string Soyad { get; set; } = string.Empty;
         public string KullaniciAdi { get; set; } = string.Empty; // Sisteme giriş için
         public string Sifre { get; set; } = string.Empty; // Sisteme giriş için
 

@@ -64,7 +64,7 @@
                                     !string.IsNullOrWhiteSpace(ViewBag.Bayi?.Unvan)
                                     ? ViewBag.Bayi.Unvan
                                     : !string.IsNullOrWhiteSpace(ViewBag.Musteri?.TicariUnvan ?? ViewBag.Musteri?.Ad)
-                                    ? (ViewBag.Musteri.TicariUnvan ?? ViewBag.Musteri.Ad + " " + ViewBag.Musteri.Soyad)
+                                                                ? (ViewBag.Musteri.TicariUnvan ?? ViewBag.Musteri.AdSoyad)
                                     : "Admin"
                                     )
                             </span>

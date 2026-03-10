@@ -116,8 +116,7 @@ namespace WepApp.Controllers
             // currentBayi == null → filtre yok → admin tüm müşterileri görür
 
             ViewBag.Musteriler = musterilerQuery
-                .OrderBy(m => m.Ad)
-                .ThenBy(m => m.Soyad)
+                .OrderBy(m => m.AdSoyad)
                 .ToList();
 
             // ────────────────────────────────────────────────
@@ -790,8 +789,8 @@ namespace WepApp.Controllers
                 var geciciMusteri = new
                 {
                     TicariUnvan = model.TicariUnvan ?? "",
-                    Ad = model.Ad ?? "",
-                    Soyad = model.Soyad ?? "",
+                    AdSoyad = model.AdSoyad ?? "", // Ad + Soyad yerine AdSoyad
+
                     KullaniciAdi = model.KullaniciAdi ?? "",
                     Sifre = model.Sifre ?? "",
                     Email = model.Email ?? "",
@@ -825,7 +824,7 @@ namespace WepApp.Controllers
                     success = true,
                     message = "Müşteri bilgileri geçici olarak kaydedildi.",
                     geciciMusteriId = -1, // Geçici ID
-                    musteriAdi = $"{model.Ad} {model.Soyad}"
+                    musteriAdi = model.AdSoyad // Ad + Soyad yerine AdSoyad
                 });
             }
             catch (Exception ex)
@@ -853,19 +852,16 @@ namespace WepApp.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-
-        // Model class'ları Controller'ın altına ekleyin
+        // GeciciMusteriModel class'ını güncelle:
         public class GeciciMusteriModel
         {
             public string TicariUnvan { get; set; } = "";
-            public string Ad { get; set; } = "";
-            public string Soyad { get; set; } = "";
+            public string AdSoyad { get; set; } = ""; // Ad ve Soyad birleştirildi
             public string KullaniciAdi { get; set; } = "";
             public string Sifre { get; set; } = "";
             public string Email { get; set; } = "";
             public string Telefon { get; set; } = "";
             public string Adres { get; set; } = "";
-            // İl ve ilçe ID'leri (YENİ)
             public int? illerId { get; set; }
             public int? ilcelerId { get; set; }
             public string Belde { get; set; } = "";
@@ -885,7 +881,7 @@ namespace WepApp.Controllers
             public string Logo { get; set; } = "";
             public string Imza { get; set; } = "";
         }
-        // Controller'a ekleyin
+
         [HttpGet]
         public IActionResult GetirBagliPaketler(int paketId)
         {
@@ -1115,8 +1111,8 @@ namespace WepApp.Controllers
                     Musteri yeniMusteri = new Musteri
                     {
                         TicariUnvan = model.YeniMusteri.TicariUnvan ?? "",
-                        Ad = model.YeniMusteri.Ad ?? "",
-                        Soyad = model.YeniMusteri.Soyad ?? "",
+                        AdSoyad = model.YeniMusteri.AdSoyad ?? "", // Ad + Soyad birleştirildi
+
                         KullaniciAdi = model.YeniMusteri.KullaniciAdi ?? "",
                         Sifre = model.YeniMusteri.Sifre ?? "", // Hash'le! (gerçek projede)
                         Email = model.YeniMusteri.Email ?? "",
@@ -1410,9 +1406,9 @@ namespace WepApp.Controllers
                 Tarih = tarihStr,
                 TeklifVerenFirma = teklif.TeklifVerenFirma ?? "Teklif oluşturan Admin",
                 Tarih15 = tarihStr15,
-                MusteriAdi = $"{musteri?.Ad} {musteri?.Soyad}",
+                MusteriAdi = $"{musteri?.AdSoyad}",
                 MusteriTelefon = bayi?.Telefon ?? "",
-                MusteriYetkili = musteri?.Ad ?? "Müşteri",
+                MusteriYetkili = musteri?.AdSoyad ?? "Müşteri",
                 GecerlilikTarihi = gecerlilik,
                 Aciklama = string.IsNullOrWhiteSpace(teklif.Aciklama) ? "" : "* " + teklif.Aciklama.Trim(),
                 AraToplam = teklif.AraToplam.ToString("N2"),
@@ -1624,8 +1620,7 @@ namespace WepApp.Controllers
     {
         // Temel Bilgiler
         public string TicariUnvan { get; set; } = string.Empty;
-        public string Ad { get; set; } = string.Empty;
-        public string Soyad { get; set; } = string.Empty;
+        public string AdSoyad { get; set; } = string.Empty;
         public string KullaniciAdi { get; set; } = string.Empty;
         public string Sifre { get; set; } = string.Empty;
 

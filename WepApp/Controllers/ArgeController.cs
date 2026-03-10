@@ -33,8 +33,7 @@ namespace WepApp.Controllers
             {
                 bayiMusterileri = _musteriRepository
                     .GetirList(x => x.BayiId == kullaniciId.Value && x.Durum == 1)
-                    .OrderBy(x => x.Ad)
-                    .ThenBy(x => x.Soyad)
+                    .OrderBy(x => x.AdSoyad)
                     .ToList();
                 bayiBilgi = _bayiRepository.Getir(x => x.Id == kullaniciId.Value);
             }
@@ -497,7 +496,7 @@ namespace WepApp.Controllers
                 kayit.DistributorCevapTarihi,
                 kayit.ARGEDurumId,
                 ArgeDurumAdi = kayit.ARGEDurum?.Adi ?? "Beklemede",
-                MusteriAdi = kayit.Musteri != null ? kayit.Musteri.Ad + " " + kayit.Musteri.Soyad : null,
+                MusteriAdi = kayit.Musteri != null ? kayit.Musteri.AdSoyad : null,
                 BayiAdi = kayit.Bayi != null ? kayit.Bayi.Unvan : null,
                 LisansTipleri = lisansTipleri.Select(g => new { g.Id, g.Adi }),
                 LisansNumaralari = lisansNumaralari

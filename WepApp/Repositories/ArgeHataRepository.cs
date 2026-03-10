@@ -57,21 +57,20 @@ namespace WepApp.Repositories
                 throw new Exception($"Listeleme hatası: {ex.Message}", ex);
             }
         }
-        // ArgeHataRepository sınıfınıza ekleyin
-        public IQueryable<ArgeHata> GetirQueryable(Expression<Func<ArgeHata, bool>> filter = null, List<string> includePaths = null)
+        public IQueryable<ArgeHata> GetirQueryable(Expression<Func<ArgeHata, bool>> filter = null, List<string> includeTables = null)
         {
-            IQueryable<ArgeHata> query = _context.ArgeHata.AsQueryable();
+            IQueryable<ArgeHata> query = _context.ArgeHata;
 
             if (filter != null)
             {
                 query = query.Where(filter);
             }
 
-            if (includePaths != null)
+            if (includeTables != null)
             {
-                foreach (var path in includePaths)
+                foreach (var includeTable in includeTables)
                 {
-                    query = query.Include(path);
+                    query = query.Include(includeTable);
                 }
             }
 

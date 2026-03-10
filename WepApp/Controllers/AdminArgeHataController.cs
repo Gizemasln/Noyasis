@@ -18,12 +18,12 @@ namespace WepApp.Controllers
         private readonly BayiRepository _bayiRepository = new BayiRepository();
         private readonly KullanicilarRepository _kullaniciRepository = new KullanicilarRepository();
         private readonly MusteriRepository _musteriRepository = new MusteriRepository();
+
         public IActionResult Index()
         {
             Musteri musteri = SessionHelper.GetObjectFromJson<Musteri>(HttpContext.Session, "Musteri");
             Bayi bayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
             Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
-
 
             // Join listesi
             List<string> join = new List<string>();
@@ -41,36 +41,52 @@ namespace WepApp.Controllers
             // Kullanıcı tipine göre filtreleme yap
             if (kullaniciTipi == "Musteri" && musteri != null)
             {
-                // Müşteri: Sadece kendi kayıtları
                 query = query.Where(x => x.MusteriId == musteri.Id);
             }
             else if (kullaniciTipi == "Bayi" && bayi != null)
             {
-                // Bayi: Kendi kayıtları + alt bayilerin kayıtları + kendi bayisine bağlı müşteri kayıtları
-
-                // Önce bu bayinin tüm alt bayilerini bul (alt bayiler ve onların alt bayileri)
                 var altBayiIdleri = GetAllSubBayiIds(bayi.Id);
-
-                // Bu bayinin kendi Id'sini de listeye ekle
                 var tumBayiIdleri = new List<int> { bayi.Id };
                 tumBayiIdleri.AddRange(altBayiIdleri);
-
-                // Repository'deki yeni metodu kullanarak müşteri ID'lerini bul
                 var musteriIdleri = _musteriRepository.GetMusteriIdleriByBayiIdleri(tumBayiIdleri);
 
-                // Filtrele:
                 query = query.Where(x =>
                     (x.BayiId.HasValue && tumBayiIdleri.Contains(x.BayiId.Value)) ||
                     (x.MusteriId.HasValue && musteriIdleri.Contains(x.MusteriId.Value))
                 );
 
-                // Bayi bilgilerini ViewBag'e ekle
                 ViewBag.BayiInfo = bayi;
             }
 
-            // Listeyi sırala ve çek
-            List<ArgeHata> liste = query
+            // Listeyi sırala ve ViewModel'e dönüştür
+            List<ArgeHataViewModel> liste = query
                 .OrderByDescending(x => x.EklenmeTarihi)
+                .Select(x => new ArgeHataViewModel
+                {
+                    Id = x.Id,
+                    Tipi = x.Tipi,
+                    Adi = x.Adi,
+                    Soyadi = x.Soyadi,
+                    MusteriAdi = x.Musteri != null ? (x.Musteri.AdSoyad ?? x.Musteri.TicariUnvan) : null,
+                    MusteriTelefon = x.Musteri != null ? x.Musteri.Telefon : null,
+                    BayiUnvan = x.Bayi != null ? x.Bayi.Unvan : null,
+                    LisansTipAdi = x.LisansTip != null ? x.LisansTip.Adi : null,
+                    LisansNo = x.LisansNo,
+                    Metni = x.Metni,
+                    DosyaYolu = x.DosyaYolu,
+                    DistributorCevap = x.DistributorCevap,
+                    AdminCevap = x.AdminCevap,
+                    DistributorCevapVerdiMi = x.DistributorCevapVerdiMi,
+                    AdminCevapVerdiMi = x.AdminCevapVerdiMi,
+                    DistributorBayiId = x.DistributorBayiId,
+                    AdminKullaniciId = x.AdminKullaniciId,
+                    ARGEDurumId = x.ARGEDurumId,
+                    ARGEDurumAdi = x.ARGEDurum != null ? x.ARGEDurum.Adi : "Yeni",
+                    BayiId = x.BayiId,
+                    MusteriId = x.MusteriId,
+                    EklenmeTarihi = x.EklenmeTarihi,
+                    GuncellenmeTarihi = x.GuncellenmeTarihi
+                })
                 .ToList();
 
             // Durum listesini al
@@ -103,6 +119,7 @@ namespace WepApp.Controllers
 
             return altBayiIdleri;
         }
+
         [HttpPost]
         public async Task<IActionResult> CevapGuncelle(int id, string aciklama)
         {
@@ -145,7 +162,8 @@ namespace WepApp.Controllers
                         return Json(new { success = false, message = "Bayi bilgileri alınamadı" });
                     }
 
-                    if (bayis.Distributor == true)  // Distributor ise yetkili kabul et (senin mantığına göre)
+                    // Distributor kontrolü - sadece distributor bayiler cevap düzenleyebilir
+                    if (bayis.Distributor == true)
                     {
                         if (kayit.DistributorBayiId == kullaniciId && kayit.DistributorCevapVerdiMi)
                         {
@@ -156,7 +174,6 @@ namespace WepApp.Controllers
                             kayit.DistributorCevapVerdiMi = true;
                         }
                     }
-                    // Distributor olmayan bayi → yetkisiz
                 }
 
                 if (!yetkili)
@@ -166,7 +183,7 @@ namespace WepApp.Controllers
 
                 // Güncelleme
                 kayit.GuncellenmeTarihi = DateTime.Now;
-                 _argeHataRepository.Guncelle(kayit);  // ← await ekledim (async metod)
+                _argeHataRepository.Guncelle(kayit);
 
                 return Json(new
                 {
@@ -183,6 +200,7 @@ namespace WepApp.Controllers
                 return Json(new { success = false, message = "Güncelleme sırasında hata oluştu: " + ex.Message });
             }
         }
+
         [HttpPost]
         public IActionResult Sil(int Id)
         {
@@ -218,8 +236,6 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult DurumGuncelle(int id, int durumId)
         {
-         
-
             try
             {
                 var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
@@ -241,11 +257,7 @@ namespace WepApp.Controllers
                     {
                         return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
                     }
-
-                 
                 }
-
-        
 
                 // Durum güncelleme
                 mevcut.ARGEDurumId = durumId;
@@ -274,8 +286,6 @@ namespace WepApp.Controllers
         [HttpPost]
         public IActionResult CevapVer(int id, string aciklama)
         {
-    
-
             try
             {
                 var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
@@ -364,14 +374,10 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetirCevap(int id)
         {
-          
-     
-        
-
             try
             {
                 var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
-            
+
                 if (string.IsNullOrEmpty(kullaniciTipi))
                 {
                     return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
@@ -382,17 +388,18 @@ namespace WepApp.Controllers
                 {
                     return Json(new { success = false, message = "Kayıt bulunamadı." });
                 }
-            if (kullaniciTipi == "Bayi")
+
+                if (kullaniciTipi == "Bayi")
                 {
                     Bayi bayis = _bayiRepository.Getir(x => x.Id == kullaniciId);
 
                     // Bayi sadece kendi kayıtlarını görebilir
                     if (bayis.Distributor == false)
-                {
-                    return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
+                    {
+                        return Json(new { success = false, message = "Bu işlem için yetkiniz bulunmamaktadır." });
+                    }
                 }
-                   
-                }
+
                 // Cevap veren bilgilerini al
                 string cevapVerenTip = "";
                 string cevapVerenAdi = "";
@@ -438,8 +445,6 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult DetayGetir(int id)
         {
-           
-
             try
             {
                 var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
@@ -497,16 +502,22 @@ namespace WepApp.Controllers
                     dosyaGorunum = $"<a href='/{kayit.DosyaYolu}' target='_blank' class='text-primary'><i class='fas fa-download'></i> {dosyaAdi}</a>";
                 }
 
+                // Müşteri bilgisi - AdSoyad birleşik
+                string musteriAdi = "Belirtilmemiş";
+                if (kayit.Musteri != null)
+                {
+                    musteriAdi = kayit.Musteri.AdSoyad ?? kayit.Musteri.TicariUnvan ?? "Belirtilmemiş";
+                }
+
                 return Json(new
                 {
                     success = true,
                     id = kayit.Id,
                     tipi = kayit.Tipi,
-                    adi = kayit.Adi,
-                    soyadi = kayit.Soyadi,
+                    adSoyad = kayit.Adi + " " + kayit.Soyadi, // Ad ve Soyad'ı birleştir
                     metni = kayit.Metni,
                     dosyaGorunum = dosyaGorunum,
-                    musteriAdi = kayit.Musteri?.Ad ?? "Belirtilmemiş",
+                    musteriAdi = musteriAdi,
                     bayiAdi = kayit.Bayi?.Unvan ?? "Belirtilmemiş",
                     lisansTipAdi = kayit.LisansTip?.Adi ?? "Belirtilmemiş",
                     argeDurumId = kayit.ARGEDurumId,
@@ -529,7 +540,6 @@ namespace WepApp.Controllers
         [HttpGet]
         public IActionResult GetirDurumlar()
         {
-     
             try
             {
                 var durumlar = _argeDurumRepository.GetirList(x => x.Durumu == 1)
@@ -547,6 +557,33 @@ namespace WepApp.Controllers
             {
                 return Json(new { success = false, message = $"Hata: {ex.Message}" });
             }
+        }
+        public class ArgeHataViewModel
+        {
+            public int Id { get; set; }
+            public string Tipi { get; set; }
+            public string Adi { get; set; }
+            public string Soyadi { get; set; }
+            public string MusteriAdi { get; set; }
+            public string MusteriTelefon { get; set; }
+            public string BayiUnvan { get; set; }
+            public string LisansTipAdi { get; set; }
+            public string LisansNo { get; set; }
+            public string Metni { get; set; }
+            public string DosyaYolu { get; set; }
+            public string DistributorCevap { get; set; }
+            public string AdminCevap { get; set; }
+            public bool DistributorCevapVerdiMi { get; set; }
+            public bool AdminCevapVerdiMi { get; set; }
+            public int? DistributorBayiId { get; set; }
+            public int? AdminKullaniciId { get; set; }
+            public int? ARGEDurumId { get; set; }
+            public string ARGEDurumAdi { get; set; }
+            public int? BayiId { get; set; }
+            public int? MusteriId { get; set; }
+            public DateTime EklenmeTarihi { get; set; }
+            public DateTime? GuncellenmeTarihi { get; set; }
+            public LisansTip LisansTip { get; set; }
         }
     }
 }

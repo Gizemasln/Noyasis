@@ -200,7 +200,7 @@
                                 {
                                     foreach (var musteri in bayiMusterileri)
                                     {
-                                        <option value="@musteri.Id">@musteri.Ad @musteri.Soyad (@musteri.KullaniciAdi)</option>
+                                        <option value="@musteri.Id">@musteri.AdSoyad (@musteri.KullaniciAdi)</option>
                                     }
                                 }
                             </select>
@@ -443,7 +443,7 @@
                                     var cevapTarihi = "";
                                     var kisaCevap = "";
                                     var durumBilgi = "";
-                                    var musteriAdi = item.Musteri != null ? item.Musteri.Ad + " " + item.Musteri.Soyad : "Belirtilmemiş";
+                                    var musteriAdi = item.Musteri != null ? item.Musteri.AdSoyad : "Belirtilmemiş";
 
                                     if (item.DistributorCevapVerdiMi && !string.IsNullOrEmpty(item.DistributorCevap))
                                     {
@@ -584,7 +584,7 @@
 
                                     if (item.Musteri != null)
                                     {
-                                        kayitSahibi = $"Müşteri: {item.Musteri.Ad} {item.Musteri.Soyad}";
+                                        kayitSahibi = $"Müşteri: {item.Musteri.AdSoyad} ";
                                     }
                                     else if (item.Bayi != null)
                                     {
@@ -801,7 +801,7 @@
                                         {
                                             foreach (var musteri in bayiMusterileri)
                                             {
-                                                <option value="@musteri.Id">@musteri.Ad @musteri.Soyad (@musteri.KullaniciAdi)</option>
+                                                <option value="@musteri.Id">@musteri.AdSoyad  (@musteri.KullaniciAdi)</option>
                                             }
                                         }
                                     </select>

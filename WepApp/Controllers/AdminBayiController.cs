@@ -277,12 +277,12 @@ namespace WepApp.Controllers
                     .Where(x => bayiIdList.Contains(x.BayiId ?? 0) && x.Durum == 1)
                     .Include(m => m.Bayi)
                     .Include(m => m.MusteriTipi)
-                    .OrderBy(m => m.Ad)
-                    .ThenBy(m => m.Soyad)
+                    .OrderBy(m => m.AdSoyad)
+                   
                     .Select(m => new
                     {
                         m.Id,
-                        AdSoyad = m.Ad + " " + m.Soyad,
+                        AdSoyad = m.AdSoyad ?? m.TicariUnvan ?? "-",  // Değişti: Ad + Soyad birleştirme
                         m.TicariUnvan,
                         m.KullaniciAdi,
                         m.Email,
@@ -343,7 +343,7 @@ namespace WepApp.Controllers
             OnayBadge = t.OnaylandiMi ? "bg-success" : "bg-danger",
             Durum = t.TeklifDurum.Adi ?? "Belirtilmemiş",
             LisansTipi = t.LisansTip.Adi ?? "-",
-            MusteriAdi = (t.Musteri.Ad + " " + (t.Musteri.Soyad ?? "")).Trim(),
+            MusteriAdi = t.Musteri.AdSoyad ?? t.Musteri.TicariUnvan ?? "-",  // Değişti
             MusteriTicariUnvan = t.Musteri.TicariUnvan ?? "-",
             PdfLink = $"/AdminTeklifVer/TeklifPdf?teklifId={t.Id}"   // ← Doğru controller + action
         })
@@ -399,7 +399,7 @@ namespace WepApp.Controllers
                         SozlesmeDurumAdi = s.SozlesmeDurumu != null ? s.SozlesmeDurumu.Adi : "-",
                         EntegratorAdi = s.Entegrator != null ? s.Entegrator.Adi : "-",
                         s.OdemeBekleme,
-                        MusteriAdi = s.Musteri.Ad + " " + (s.Musteri.Soyad ?? ""),
+                        MusteriAdi = s.Musteri.AdSoyad ?? s.Musteri.TicariUnvan ?? "-",  // Değişti
                         MusteriTicariUnvan = s.Musteri.TicariUnvan ?? "",
                         MusteriId = s.Musteri.Id,
                         TeklifNo = s.Teklif != null ? s.Teklif.TeklifNo : "-",
@@ -450,7 +450,7 @@ namespace WepApp.Controllers
                         s.DokumanNo,
                         EklenmeTarihi = s.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm"),
                         s.SozlesmeTipi,
-                        MusteriAdi = s.Musteri.Ad + " " + (s.Musteri.Soyad ?? ""),
+                        MusteriAdi = s.Musteri.AdSoyad ?? s.Musteri.TicariUnvan ?? "-",  // Değişti
                         MusteriTicariUnvan = s.Musteri.TicariUnvan ?? "",
                         VergiKimlikLevhasiVar = !string.IsNullOrEmpty(s.VergiKimlikLevhasıDosyaAdi),
                         TicariSicilGazetesiVar = !string.IsNullOrEmpty(s.TicariSicilGazetesiDosyaAdi),
@@ -1569,7 +1569,7 @@ string TCVNo, string VergiDairesi, string KepAdresi,
                         s.EmailBilgilendirme,
                         s.TelefonBilgilendirme,
                         s.HaberPaylasimi,
-                        MusteriAdi = s.Musteri != null ? $"{s.Musteri.Ad} {s.Musteri.Soyad ?? ""}".Trim() : "Bilinmiyor",
+                        MusteriAdi = s.Musteri != null ? (s.Musteri.AdSoyad ?? s.Musteri.TicariUnvan ?? "Bilinmiyor") : "Bilinmiyor",  // Değişti
                         MusteriTicariUnvan = s.Musteri?.TicariUnvan ?? "",
                         SozlesmeDurumu = s.SozlesmeDurumu?.Adi ?? "Belirtilmemiş",
                         EntegratorAdi = s.Entegrator?.Adi ?? "",
@@ -1624,7 +1624,7 @@ string TCVNo, string VergiDairesi, string KepAdresi,
                     dokuman.EmailBilgilendirme,
                     dokuman.TelefonBilgilendirme,
                     dokuman.HaberPaylasimi,
-                    MusteriAdi = dokuman.Musteri.Ad + " " + (dokuman.Musteri.Soyad ?? ""),
+                    MusteriAdi = dokuman.Musteri.AdSoyad ?? dokuman.Musteri.TicariUnvan ?? "-",  // Değişti
                     SozlesmeDurumu = dokuman.SozlesmeDurumu?.Adi ?? "Belirtilmemiş",
                     EntegratorAdi = dokuman.Entegrator?.Adi ?? "",
                     OlusturmaTarihi = dokuman.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")

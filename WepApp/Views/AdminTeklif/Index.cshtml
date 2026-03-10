@@ -263,7 +263,7 @@
                                                                onclick="musteriDuzenleAc(@teklif.Musteri.Id)"
                                                                class="text-primary text-decoration-none fw-medium"
                                                                style="cursor:pointer;">
-                                                                @(teklif.Musteri.Ad + " " + (teklif.Musteri.Soyad ?? ""))
+                                                                @(teklif.Musteri.AdSoyad ?? ""))
                                                             </a>
                                                         </div>
                                                         <small class="text-muted">@teklif.Musteri.Email</small>
@@ -955,11 +955,11 @@
                                     <div class="card-body">
                                         <table class="table table-sm table-borderless mb-0">
                                             <tr><td class="text-muted">Teklif No:</td><td><strong>${t.teklifNo}</strong></td></tr>
-                                            <tr><td class="text-muted">Müşteri:</td><td>${t.musteriAdi || '-'}</td></tr>
-                                            <tr><td class="text-muted">Telefon:</td><td>${t.musteriTelefon || '-'}</td></tr>
+        <tr><td class="text-muted">Müşteri:</td><td>${t.musteriAdSoyad || '-'}</td></tr> 
+        <tr><td class="text-muted">Telefon:</td><td>${t.musteriTelefon || '-'}</td></tr>
                                             <tr><td class="text-muted">E-posta:</td><td>${t.musteriEmail || '-'}</td></tr>
                                             <tr><td class="text-muted">Lisans Tipi:</td><td>${t.lisansTipi || '-'}</td></tr>
-                                            <tr><td class="text-muted">Durum:</td><td><span class="badge ${getDurumBadgeCss(t.durumId)}">${t.durumAdi}</span></td></tr>
+                                            <tr><td class="text-muted">Durum:</td><td><span class="badge ${getDurumBadgeCss(t.durumId)}" style="background-color: darkblue;">${t.durumAdi}</span></td></tr>
                                             ${t.nedenAdi ? `<tr><td class="text-muted">Kaybedilme Nedeni:</td><td><span class="badge bg-secondary">${t.nedenAdi}</span></td></tr>` : ''}
                                             ${t.ertelenmeNedeni ? `<tr><td class="text-muted">Ertelenme Nedeni:</td><td><span class="badge bg-warning">${t.ertelenmeNedeni}</span></td></tr>` : ''}
                                         </table>
@@ -1409,10 +1409,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="alert alert-info mt-3">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    <small>Dosyalar "WebAdminTheme/MusteriSozlesme" klasörüne kaydedilecektir. İşaretlenen dokümanları yükleyebilirsiniz.</small>
-                                </div>
+                             
                             </div>
 
                             <!-- Sözleşme Tipi ve Durumu -->
@@ -1470,14 +1467,10 @@
                                                 <label class="form-label small fw-medium">Ticari Ünvan <span class="text-danger">*</span></label>
                                                 <input type="text" class="form-control form-control-sm" disabled name="TicariUnvan" value="${data.musteri?.ticariUnvan || ''}">
                                             </div>
-                                            <div class="col-md-3">
-                                                <label class="form-label small fw-medium">Adı <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control form-control-sm" disabled name="Adi" value="${data.musteri?.adi || ''}" required>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label class="form-label small fw-medium">Soyadı <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control form-control-sm" disabled name="Soyadi" value="${data.musteri?.soyadi || ''}" required>
-                                            </div>
+                                           <div class="col-md-6">
+                                <label class="form-label small fw-medium">Ad Soyad <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-sm" disabled name="AdSoyad" value="${data.musteri?.adSoyad || ''}" required>
+                            </div>
                                             <div class="col-md-6">
                                                 <label class="form-label small fw-medium">Telefon <span class="text-danger">*</span></label>
                                                 <input type="tel" class="form-control form-control-sm" disabled name="Telefon" value="${data.musteri?.telefon || ''}" required>
@@ -1583,6 +1576,9 @@
 
                 const m = currentSozlesmeData.musteri;
 
+                // AdSoyad değişkenini TANIMLA
+                const adSoyad = m.adSoyad || '';
+
                 // Formdan alınan değerler
                 const lisansNo = $('[name="LisansNo"]').val()?.trim() || '';
 
@@ -1664,8 +1660,7 @@
 
                 // Müşteri bilgileri
                 formData.append('TicariUnvan', m.ticariUnvan?.trim() || '');
-                formData.append('Adi', m.adi?.trim() || '');
-                formData.append('Soyadi', m.soyadi?.trim() || '');
+                formData.append('AdSoyad', adSoyad); // AdSoyad TEK ALAN - DÜZELTİLDİ
                 formData.append('Telefon', m.telefon?.trim() || '');
                 formData.append('CepTelefon', $('[name="CepTelefon"]').val()?.trim() || '');
                 formData.append('Adres1', m.adres1?.trim() || '');
@@ -1715,8 +1710,7 @@
 
                 // 2. Müşteri tarafı zorunlu alanlar
                 if (!m.ticariUnvan?.trim()) hatalar.push('Ticari Ünvan');
-                if (!m.adi?.trim()) hatalar.push('Adı');
-                if (!m.soyadi?.trim()) hatalar.push('Soyadı');
+                if (!adSoyad?.trim()) hatalar.push('Ad Soyad'); // Ad + Soyad yerine AdSoyad
                 if (!m.telefon?.trim()) hatalar.push('Telefon');
                 if (!m.adres1?.trim()) hatalar.push('Adres - 1');
                 if (!m.il?.trim()) hatalar.push('İl');
@@ -1761,9 +1755,10 @@
                         window.open(`/AdminTeklif/SozlesmePdf?sozlesmeId=${response.sozlesmeId}`, '_blank');
                     }
                     bootstrap.Modal.getInstance('#sozlesmeModal').hide();
-        setTimeout(() => {
-             location.reload();
-         }, 1500);                } else {
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
                     toastr.error(response.message || 'Sözleşme kaydedilemedi.');
                 }
 

@@ -21,8 +21,6 @@ namespace WepApp.Controllers
 
         public IActionResult Index()
         {
-         
-
             List<string> join = new List<string>();
             join.Add("LisansTip");
             join.Add("Musteri");
@@ -373,12 +371,9 @@ namespace WepApp.Controllers
                 return Json(new { success = false, message = $"Durum güncelleme sırasında hata oluştu: {ex.Message}" });
             }
         }
-
         [HttpGet]
         public IActionResult DetayGetir(int id)
         {
-       
-
             try
             {
                 var (kullaniciTipi, kullaniciId) = GetCurrentUserInfo();
@@ -415,13 +410,20 @@ namespace WepApp.Controllers
                     cevapVerenAdi = bayi?.Unvan;
                 }
 
+                // Müşteri adını al - Değişiklik burada
+                string musteriAdi = "Belirtilmemiş";
+                if (kayit.Musteri != null)
+                {
+                    musteriAdi = kayit.Musteri.AdSoyad ?? kayit.Musteri.TicariUnvan ?? "Belirtilmemiş";
+                }
+
                 return Json(new
                 {
                     success = true,
                     id = kayit.Id,
                     konu = kayit.Konu,
                     metni = kayit.Metni,
-                    musteriAdi = kayit.Musteri?.Ad ?? "Belirtilmemiş",
+                    musteriAdi = musteriAdi,  // Değişti
                     bayiAdi = kayit.Bayi?.Unvan ?? "Belirtilmemiş",
                     lisansTipAdi = kayit.LisansTip?.Adi ?? "Belirtilmemiş",
                     istekDurumId = kayit.IstekOneriDurumId,
@@ -433,7 +435,6 @@ namespace WepApp.Controllers
                     cevapVerenAdi = cevapVerenAdi,
                     eklenmeTarihi = kayit.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm"),
                     guncellenmeTarihi = kayit.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm"),
-                    // Kullanıcının bu kaydı düzenleyip düzenleyemeyeceğini kontrol et
                     cevapDuzenleyebilir = (kullaniciTipi == "Admin") ||
                                          (kullaniciTipi == "Bayi" && kayit.BayiId == kullaniciId && !kayit.DistributorCevapVerdiMi && !kayit.AdminCevapVerdiMi),
                     durumDuzenleyebilir = (kullaniciTipi == "Admin") || (kullaniciTipi == "Bayi" && kayit.BayiId == kullaniciId),
@@ -445,7 +446,6 @@ namespace WepApp.Controllers
                 return Json(new { success = false, message = $"Hata: {ex.Message}" });
             }
         }
-
         [HttpGet]
         public IActionResult GetirDurumlar()
         {

@@ -2994,19 +2994,13 @@
           <Paragraph>
             <TextRuns>
               <TextRun>
-                <Value>=Fields!Adi.Value</Value>
+                <Value>=Fields!AdSoyad.Value</Value>
                 <Style>
                   <FontSize>8pt</FontSize>
                 </Style>
               </TextRun>
               <TextRun>
                 <Value xml:space="preserve"> </Value>
-                <Style>
-                  <FontSize>8pt</FontSize>
-                </Style>
-              </TextRun>
-              <TextRun>
-                <Value>=Fields!Soyadi.Value</Value>
                 <Style>
                   <FontSize>8pt</FontSize>
                 </Style>
@@ -3612,12 +3606,12 @@
         <CommandText>/* Local Query */</CommandText>
       </Query>
       <Fields>
-        <Field Name="Adi">
-          <DataField>Adi</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
         <Field Name="Adres">
           <DataField>Adres</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="AdSoyad">
+          <DataField>AdSoyad</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="CepTelefonu">
@@ -3674,10 +3668,6 @@
         </Field>
         <Field Name="Sms">
           <DataField>Sms</DataField>
-          <rd:TypeName>System.String</rd:TypeName>
-        </Field>
-        <Field Name="Soyadi">
-          <DataField>Soyadi</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="Telefon">
