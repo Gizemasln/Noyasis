@@ -31,5 +31,6 @@
         public string IndirimYuzde { get; set; } = "";      // "80%" veya boş
         public string Tutar { get; set; } = "";             // "18.900,00 ₺" veya boş
         public string Girinti { get; set; } = "";
+
     }
 }

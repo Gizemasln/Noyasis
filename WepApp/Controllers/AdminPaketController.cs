@@ -115,7 +115,8 @@ namespace WebApp.Controllers
                     EkleyenKullaniciId = kullanici.Id,
                     GuncelleyenKullaniciId = kullanici.Id,
                     EklenmeTarihi = DateTime.Now,
-                    GuncellenmeTarihi = DateTime.Now
+                    GuncellenmeTarihi = DateTime.Now,
+                    Dahilmi=model.Dahilmi
                 };
 
                 _paketRepository.Ekle(yeniPaket);
@@ -177,6 +178,7 @@ namespace WebApp.Controllers
                 existing.Sira = model.Sira;
                 existing.GuncelleyenKullaniciId = kullanici.Id;
                 existing.GuncellenmeTarihi = DateTime.Now;
+                existing.Dahilmi = model.Dahilmi;
 
                 _paketRepository.Guncelle(existing);
                 TempData["Success"] = "Paket başarıyla güncellendi.";
@@ -258,8 +260,6 @@ namespace WebApp.Controllers
         [HttpGet]
         public IActionResult Getir(int id)
         {
-        
-
             Paket paket = _paketRepository.Getir(id);
             if (paket == null || paket.Durumu == 0) return NotFound();
 
@@ -271,7 +271,8 @@ namespace WebApp.Controllers
                 birimId = paket.BirimId,
                 fiyat = paket.Fiyat,
                 indOran = paket.IndOran,
-                kdvId = paket.KDVId,  // KDVId döndür
+                kdvId = paket.KDVId,
+                dahilmi = paket.Dahilmi,  // Yeni alan
                 aktif = paket.Aktif,
                 modulKodu = paket.ModulKodu,
                 egitimSuresi = paket.EgitimSuresi,

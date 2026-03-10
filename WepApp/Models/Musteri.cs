@@ -55,6 +55,8 @@ namespace WepApp.Models
         // Tarihler
         public DateTime EklenmeTarihi { get; set; } = DateTime.Now;
         public DateTime GuncellenmeTarihi { get; set; } = DateTime.Now;
+        public DateTime? MOlmaTarihi { get; set; } 
+        public DateTime? AOlmaTarihi { get; set; } 
 
         // Navigasyon
         public MusteriTipi MusteriTipi { get; set; }

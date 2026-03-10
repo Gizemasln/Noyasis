@@ -7,6 +7,7 @@
         public int LisansTipId  { get; set; }
         public int? IndOran  { get; set; }
         public int? KDVId  { get; set; }
+        public bool? Dahilmi  { get; set; }
         public int? Aktif  { get; set; }
         public string? ModulKodu  { get; set; }
         public string? Adi { get; set; }

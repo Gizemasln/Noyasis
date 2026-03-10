@@ -1391,7 +1391,7 @@ namespace WepApp.Controllers
             Musteri musteri = teklif.Musteri;
 
             decimal genelToplam = teklif.NetToplam;
-            string yaziIle = SayiyiYaziyaCevir(genelToplam);
+            string yaziIle = SayiyiYaziyaCevir((long)Math.Round(genelToplam));
 
             string tarihStr = DateTime.Now.ToString("dd MMMM yyyy", new CultureInfo("tr-TR"));
             string tarihStr15 = DateTime.Now
@@ -1420,6 +1420,7 @@ namespace WepApp.Controllers
                 Toplam = teklif.ToplamListeFiyat.ToString("N2"),
                 EgitimSuresi = teklif.EgitimSuresi.ToString("N0")
             };
+
             List<TeklifRapor> satirlar = new List<TeklifRapor>();
             List<TeklifDetay> detaylar = teklif.Detaylar.OrderBy(x => x.SiraNo).ToList();
 
@@ -1433,6 +1434,8 @@ namespace WepApp.Controllers
             foreach (TeklifDetay grup in grupSatirlari)
             {
                 string modulListesi = "";
+                List<string> haricModulAdlari = new List<string>();
+                List<string> haricModulMiktarlari = new List<string>();
 
                 // 1. YOL: PaketGrupDetay tablosundan modülleri al
                 List<PaketGrupDetay> paketGrupDetaylari = _paketGrupDetayRepo.GetirList(
@@ -1442,10 +1445,28 @@ namespace WepApp.Controllers
 
                 if (paketGrupDetaylari.Any())
                 {
-                    // Modül isimlerini virgülle birleştir
-                    modulListesi = string.Join(", ", paketGrupDetaylari
-                        .Where(pgd => pgd.Paket != null)
-                        .Select(pgd => pgd.Paket.Adi?.Trim() ?? "Bilinmeyen Modül"));
+                    foreach (var pgd in paketGrupDetaylari)
+                    {
+                        if (pgd.Paket != null)
+                        {
+                            // Dahilmi kontrolü - önce PaketGrupDetay'daki Dahilmi'ye bak, yoksa Paket.Dahilmi'ye bak
+                            bool dahilmi = pgd.Paket.Dahilmi ?? pgd.Paket.Dahilmi ?? false;
+
+                            if (dahilmi)
+                            {
+                                // Dahil olan modül - paket içinde göster
+                                if (!string.IsNullOrEmpty(modulListesi))
+                                    modulListesi += ", ";
+                                modulListesi += pgd.Paket.Adi?.Trim() ?? "Modül";
+                            }
+                            else
+                            {
+                                // Dahil olmayan modül - alt satırda göster
+                                haricModulAdlari.Add(pgd.Paket.Adi?.Trim() ?? "Modül");
+                                haricModulMiktarlari.Add("1"); // Varsayılan miktar
+                            }
+                        }
+                    }
                 }
                 else
                 {
@@ -1467,32 +1488,52 @@ namespace WepApp.Controllers
 
                     if (grupModulleri.Any())
                     {
-                        modulListesi = string.Join(", ", grupModulleri
-                            .Select(m => m.ItemAdi?.Trim() ?? m.Paket?.Adi?.Trim() ?? "Modül"));
+                        foreach (var modul in grupModulleri)
+                        {
+                            // Dahilmi kontrolü - önce modul.Paket?.Dahilmi'ye bak
+                            bool dahilmi = modul.Paket?.Dahilmi ?? false;
+                            string modulAdi = !string.IsNullOrEmpty(modul.ItemAdi) ? modul.ItemAdi.Trim() :
+                                             (modul.Paket != null ? modul.Paket.Adi?.Trim() : "Modül");
+
+                            if (dahilmi)
+                            {
+                                // Dahil olan modül - paket içinde göster
+                                if (!string.IsNullOrEmpty(modulListesi))
+                                    modulListesi += ", ";
+                                modulListesi += modulAdi;
+                            }
+                            else
+                            {
+                                // Dahil olmayan modül - alt satırda göster
+                                haricModulAdlari.Add(modulAdi);
+                                haricModulMiktarlari.Add(modul.Miktar.ToString());
+                            }
+                        }
                     }
                 }
 
                 // Grup toplam fiyatı
                 decimal grupToplam = grup.BirimFiyatNet > 0 ? grup.BirimFiyatNet : grup.ListeFiyati;
 
-                // Grup satırını EKLE (MODÜLLERİ AYRI SATIR EKLEME)
+                // GRUP SATIRINI EKLE (ana paket)
                 satirlar.Add(new TeklifRapor
                 {
                     TeklifNo = baslik.TeklifNo,
                     Tarih = baslik.Tarih,
-                    Ek1=baslik.TeklifVerenFirma,
-                    Ek2=baslik.Tarih15,
+                    Ek1 = baslik.TeklifVerenFirma,
+                    Ek2 = baslik.Tarih15,
                     MusteriAdi = baslik.MusteriAdi,
                     MusteriTelefon = baslik.MusteriTelefon,
                     MusteriYetkili = baslik.MusteriYetkili,
                     GecerlilikTarihi = baslik.GecerlilikTarihi,
                     Aciklama = baslik.Aciklama,
                     AraToplam = baslik.AraToplam,
-                    Toplam=baslik.Toplam,
+                    Toplam = baslik.Toplam,
                     IndirimToplam = baslik.IndirimToplam,
                     KdvTutar = baslik.KdvTutar,
                     GenelToplam = baslik.GenelToplam,
                     YaziIle = baslik.YaziIle,
+                    LisansTipi = baslik.LisansTipi,
                     UrunAdi = !string.IsNullOrEmpty(grup.PaketGrupAdi) ? grup.PaketGrupAdi.Trim() :
                               (!string.IsNullOrEmpty(grup.ItemAdi) ? grup.ItemAdi.Trim() : "Paket Grubu"),
                     Miktar = "1",
@@ -1500,14 +1541,41 @@ namespace WepApp.Controllers
                                   (grup.KampanyaIndirimYuzdesi + grup.BireyselIndirimYuzdesi) + "%" : "",
                     Tutar = grupToplam.ToString("N2") + " ₺",
                     AltSatirMi = false,
-                    LisansTipi=baslik.LisansTipi,
-                    // MODÜLLER SADECE GİRİNTİ ALANINDA
                     Girinti = string.IsNullOrEmpty(modulListesi) ? "" : "(" + modulListesi + ")"
                 });
+
+                // DAHİL OLMAYAN MODÜLLERİ ALT SATIR OLARAK EKLE (çizgisiz, sadece isim ve miktar)
+                for (int i = 0; i < haricModulAdlari.Count; i++)
+                {
+                    satirlar.Add(new TeklifRapor
+                    {
+                        TeklifNo = baslik.TeklifNo,
+                        Tarih = baslik.Tarih,
+                        Ek1 = baslik.TeklifVerenFirma,
+                        Ek2 = baslik.Tarih15,
+                        MusteriAdi = baslik.MusteriAdi,
+                        MusteriTelefon = baslik.MusteriTelefon,
+                        MusteriYetkili = baslik.MusteriYetkili,
+                        GecerlilikTarihi = baslik.GecerlilikTarihi,
+                        Aciklama = baslik.Aciklama,
+                        AraToplam = baslik.AraToplam,
+                        Toplam = baslik.Toplam,
+                        IndirimToplam = baslik.IndirimToplam,
+                        KdvTutar = baslik.KdvTutar,
+                        GenelToplam = baslik.GenelToplam,
+                        YaziIle = baslik.YaziIle,
+                        LisansTipi = baslik.LisansTipi,
+                        UrunAdi = $"    {haricModulAdlari[i]}", // Sadece boşluk ile girinti, çizgi yok
+                        Miktar = haricModulMiktarlari[i],
+                        IndirimYuzde = "", // İndirim boş
+                        Tutar = "", // Tutar boş
+                        AltSatirMi = true,
+                        Girinti = "" // Girinti alanını boş bırak
+                    });
+                }
             }
 
             // 2) BAĞIMSIZ MODÜLLERİ BUL (SADECE BagimsizModulMu = true OLANLAR)
-            // NOT: Normal modülleri AYRI SATIR OLARAK EKLEMEYECEĞİZ
             List<TeklifDetay> bagimsizModuller = detaylar
                 .Where(x => x.Tip == "modul" && x.BagimsizModulMu == true)
                 .OrderBy(x => x.SiraNo)
@@ -1520,6 +1588,8 @@ namespace WepApp.Controllers
                 {
                     TeklifNo = baslik.TeklifNo,
                     Tarih = baslik.Tarih,
+                    Ek1 = baslik.TeklifVerenFirma,
+                    Ek2 = baslik.Tarih15,
                     MusteriAdi = baslik.MusteriAdi,
                     MusteriTelefon = baslik.MusteriTelefon,
                     MusteriYetkili = baslik.MusteriYetkili,
@@ -1539,7 +1609,7 @@ namespace WepApp.Controllers
                                   (detay.KampanyaIndirimYuzdesi + detay.BireyselIndirimYuzdesi) + "%" : "",
                     Tutar = detay.BirimFiyatNet.ToString("N2") + " ₺",
                     AltSatirMi = false,
-                    Girinti = "" // Bağımsız modüllerin girintisi yok
+                    Girinti = ""
                 });
             }
 
@@ -1553,6 +1623,8 @@ namespace WepApp.Controllers
                     {
                         TeklifNo = baslik.TeklifNo,
                         Tarih = baslik.Tarih,
+                        Ek1 = baslik.TeklifVerenFirma,
+                        Ek2 = baslik.Tarih15,
                         MusteriAdi = baslik.MusteriAdi,
                         MusteriTelefon = baslik.MusteriTelefon,
                         MusteriYetkili = baslik.MusteriYetkili,
@@ -1562,7 +1634,6 @@ namespace WepApp.Controllers
                         Toplam = baslik.Toplam,
                         IndirimToplam = baslik.IndirimToplam,
                         LisansTipi = baslik.LisansTipi,
-
                         KdvTutar = baslik.KdvTutar,
                         GenelToplam = baslik.GenelToplam,
                         YaziIle = baslik.YaziIle,
@@ -1581,7 +1652,7 @@ namespace WepApp.Controllers
             // DEBUG: Oluşan satırları logla
             foreach (TeklifRapor satir in satirlar)
             {
-                Console.WriteLine($"Satır: {satir.UrunAdi}, Girinti: {satir.Girinti}");
+                Console.WriteLine($"Satır: {satir.UrunAdi}, AltSatirMi: {satir.AltSatirMi}, Miktar: {satir.Miktar}, Indirim: {satir.IndirimYuzde}, Tutar: {satir.Tutar}");
             }
 
             // RDLC PDF ÜRET

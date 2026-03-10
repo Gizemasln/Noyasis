@@ -84,6 +84,8 @@
                                 <th>Telefon</th>
                                 <th>Bayi</th>
                                 <th>Müşteri Tipi</th>
+                                <th>Müşteri Olma T.</th> <!-- YENİ SÜTUN -->
+                                <th>Aday Olma T.</th> <!-- YENİ SÜTUN -->
                             </tr>
                         </thead>
                         <tbody>
@@ -120,6 +122,30 @@
                                             <span class="table-seviye-badge table-seviye-@(item.MusteriTipiId % 5)">
                                                 @(item.MusteriTipi?.Adi ?? "Tip Yok")
                                             </span>
+                                        </td>
+                                        <td>
+                                            @if (item.MOlmaTarihi.HasValue)
+                                            {
+                                                <span class="badge bg-success" title="@item.MOlmaTarihi.Value.ToString("dd MMMM yyyy HH:mm")">
+                                                    <i class="fas fa-calendar-check me-1"></i>@item.MOlmaTarihi.Value.ToString("dd.MM.yyyy")
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (item.AOlmaTarihi.HasValue)
+                                            {
+                                                <span class="badge bg-warning text-dark" title="@item.AOlmaTarihi.Value.ToString("dd MMMM yyyy HH:mm")">
+                                                    <i class="fas fa-calendar-alt me-1"></i>@item.AOlmaTarihi.Value.ToString("dd.MM.yyyy")
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
                                         </td>
                                         <!-- İşlemler sütunu KALDIRILDI -->
                                     </tr>

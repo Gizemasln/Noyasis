@@ -508,19 +508,20 @@ namespace WepApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ekle(
-            string AdSoyad, string KullaniciAdi, string Sifre,
-            string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,  // Il ve Ilce artık int?
-            string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
-            string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
-            int? MusteriTipiId, int MusteriDurumuId, int? BayiId, string TicariUnvan,
-            string Diger,
-            IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> Yetkililer = null)
+         string AdSoyad, string KullaniciAdi, string Sifre,
+         string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,
+         string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
+         string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
+         int? MusteriTipiId, int MusteriDurumuId, int? BayiId, string TicariUnvan,
+         string Diger,
+         IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> Yetkililer = null)
         {
             try
             {
-                IEnumerable<MusteriTipi> musteriTipleri = ViewBag.MusteriTipleri as IEnumerable<MusteriTipi>;
-                int? digerTipiId = musteriTipleri?
-                    .FirstOrDefault(x => x.Adi.ToLower() == "diğer")
+                // Müşteri tipi kontrolü
+                var musteriTipleri = ViewBag.MusteriTipleri as IEnumerable<MusteriTipi>;
+                var digerTipiId = musteriTipleri?
+                    .FirstOrDefault(x => x.Adi.ToLower() == "diğer" || x.Adi.ToLower() == "diger")
                     ?.Id;
 
                 if (MusteriTipiId == digerTipiId && string.IsNullOrWhiteSpace(Diger))
@@ -529,27 +530,25 @@ namespace WepApp.Controllers
                     return RedirectToAction("Index");
                 }
 
+                // Kullanıcı adı kontrolü
                 if (_musteriRepository.GetirList(x => x.KullaniciAdi == KullaniciAdi && x.Durum == 1).Any())
                 {
                     TempData["Error"] = "Bu kullanıcı adı zaten alınmış.";
                     return RedirectToAction("Index");
                 }
 
-                Musteri model = new Musteri
+                // Müşteri nesnesini oluştur
+                var model = new Musteri
                 {
                     AdSoyad = AdSoyad ?? "",
-                    
                     TicariUnvan = TicariUnvan ?? "",
                     KullaniciAdi = KullaniciAdi ?? "",
                     Sifre = Sifre ?? "",
                     Email = Email ?? "",
                     Telefon = Telefon ?? "",
                     Adres = Adres ?? "",
-
-                    // İl ve ilçe ID'lerini ekle (YENİ)
                     illerId = Il,
                     ilcelerId = Ilce,
-
                     Belde = Belde ?? "",
                     Bolge = Bolge ?? "",
                     TCVNo = TCVNo ?? "",
@@ -571,27 +570,39 @@ namespace WepApp.Controllers
                     GuncelleyenKullaniciId = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici")?.Id ?? 0
                 };
 
-                // Logo ve İmza işlemleri
+                // Müşteri durumuna göre tarihleri set et
+                if (MusteriDurumuId == 1) // Müşteri (M)
+                {
+                    model.MOlmaTarihi = DateTime.Now;
+                }
+                else if (MusteriDurumuId == 2) // Aday Müşteri (A)
+                {
+                    model.AOlmaTarihi = DateTime.Now;
+                }
+
+                // Logo kaydet
                 if (Logo != null && Logo.Length > 0)
                 {
                     string logoDosyaAdi = await DosyaKaydet(Logo, "logo");
                     model.LogoUzanti = logoDosyaAdi;
                 }
 
+                // İmza kaydet
                 if (Imza != null && Imza.Length > 0)
                 {
                     string imzaDosyaAdi = await DosyaKaydet(Imza, "imza");
                     model.ImzaUzanti = imzaDosyaAdi;
                 }
 
+                // Müşteriyi ekle
                 _musteriRepository.Ekle(model);
 
-                // YETKİLİLERİ EKLE
+                // Yetkilileri ekle
                 if (Yetkililer != null && Yetkililer.Any())
                 {
-                    foreach (MusteriYetkiliEkleModel yetkiliModel in Yetkililer)
+                    foreach (var yetkiliModel in Yetkililer)
                     {
-                        MusteriYetkililer yeniYetkili = new MusteriYetkililer
+                        var yeniYetkili = new MusteriYetkililer
                         {
                             MusteriId = model.Id,
                             Adi = yetkiliModel.Adi?.Trim() ?? "",
@@ -618,19 +629,22 @@ namespace WepApp.Controllers
             catch (Exception ex)
             {
                 TempData["Error"] = "Müşteri eklenirken bir hata oluştu: " + ex.Message;
+                // Hata durumunda loglama yapılabilir
+                // _logger.LogError(ex, "Müşteri eklenirken hata oluştu");
             }
+
             return RedirectToAction("Index");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Guncelle(
-            int Id, string AdSoyad, string KullaniciAdi, string Sifre,
-            string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,  // Il ve Ilce artık int?
-            string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
-            string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
-            int? MusteriTipiId, int? MusteriDurumuId, int? BayiId, string TicariUnvan,
-            string Diger,
-            IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> YeniYetkililer = null)
+           int Id, string AdSoyad, string KullaniciAdi, string Sifre,
+           string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,
+           string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
+           string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
+           int? MusteriTipiId, int? MusteriDurumuId, int? BayiId, string TicariUnvan,
+           string Diger,
+           IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> YeniYetkililer = null)
         {
             try
             {
@@ -641,9 +655,12 @@ namespace WepApp.Controllers
                     return RedirectToAction("Index");
                 }
 
+                // Mevcut durumu kaydet (tarih kontrolü için)
+                int? eskiMusteriDurumuId = existing.MusteriDurumuId;
+
                 IEnumerable<MusteriTipi> musteriTipleri = ViewBag.MusteriTipleri as IEnumerable<MusteriTipi>;
                 int? digerTipiId = musteriTipleri?
-                    .FirstOrDefault(x => x.Adi.ToLower() == "diğer")
+                    .FirstOrDefault(x => x.Adi.ToLower() == "diğer" || x.Adi.ToLower() == "diger")
                     ?.Id;
 
                 if (MusteriTipiId == digerTipiId && string.IsNullOrWhiteSpace(Diger))
@@ -668,7 +685,7 @@ namespace WepApp.Controllers
                 existing.Telefon = Telefon ?? "";
                 existing.Adres = Adres ?? "";
 
-                // İl ve ilçe ID'lerini güncelle (YENİ)
+                // İl ve ilçe ID'lerini güncelle
                 existing.illerId = Il;
                 existing.ilcelerId = Ilce;
 
@@ -683,7 +700,54 @@ namespace WepApp.Controllers
                 existing.AlpemixGrupAdi = AlpemixGrupAdi ?? "";
                 existing.AlpemixSifre = AlpemixSifre ?? "";
                 existing.MusteriTipiId = MusteriTipiId;
-                existing.MusteriDurumuId = MusteriDurumuId;
+
+                // Müşteri Durumu ve Tarih Kontrolü
+                if (MusteriDurumuId.HasValue)
+                {
+                    // Eğer durum değiştiyse veya ilk kez atanıyorsa
+                    if (eskiMusteriDurumuId != MusteriDurumuId.Value)
+                    {
+                        // Yeni duruma göre tarihleri güncelle
+                        if (MusteriDurumuId.Value == 1) // Müşteri (M) olduysa
+                        {
+                            // Eğer daha önce müşteri olma tarihi yoksa veya adaydan müşteriye geçiş yapılıyorsa
+                            if (!existing.MOlmaTarihi.HasValue || eskiMusteriDurumuId == 2)
+                            {
+                                existing.MOlmaTarihi = DateTime.Now;
+                            }
+
+                            // Aday müşteri tarihini temizlemeye gerek yok (opsiyonel)
+                            // existing.AOlmaTarihi = null; // İsterseniz temizleyebilirsiniz
+                        }
+                        else if (MusteriDurumuId.Value == 2) // Aday Müşteri (A) olduysa
+                        {
+                            // Eğer daha önce aday olma tarihi yoksa
+                            if (!existing.AOlmaTarihi.HasValue)
+                            {
+                                existing.AOlmaTarihi = DateTime.Now;
+                            }
+
+                            // Müşteri olma tarihini koru (geçmişte müşteri olduysa)
+                            // existing.MOlmaTarihi mevcutsa silme, koru
+                        }
+                        // Not: 3. durum (Pasif vb.) için tarih güncellemesi yapılmaz
+                    }
+                    else
+                    {
+                        // Durum değişmedi, sadece tarihler boşsa doldur
+                        if (MusteriDurumuId.Value == 1 && !existing.MOlmaTarihi.HasValue)
+                        {
+                            existing.MOlmaTarihi = DateTime.Now;
+                        }
+                        else if (MusteriDurumuId.Value == 2 && !existing.AOlmaTarihi.HasValue)
+                        {
+                            existing.AOlmaTarihi = DateTime.Now;
+                        }
+                    }
+
+                    existing.MusteriDurumuId = MusteriDurumuId.Value;
+                }
+
                 existing.BayiId = BayiId;
                 existing.Diger = Diger ?? "";
                 existing.GuncellenmeTarihi = DateTime.Now;
@@ -740,6 +804,7 @@ namespace WepApp.Controllers
             catch (Exception ex)
             {
                 TempData["Error"] = "Müşteri güncellenirken bir hata oluştu: " + ex.Message;
+                // Loglama eklenebilir
             }
             return RedirectToAction("Index");
         }

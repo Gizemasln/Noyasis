@@ -221,6 +221,8 @@
                                 <th>List.F.</th>
                                 <th>İnd. Oranı</th>
                                 <th>KDV</th>
+                                <th>Dahil mi?</th>  <!-- Yeni sütun -->
+
                                 <th>E. Süresi</th>
                                 <th>F. Oran.</th>
                                 <th>Durum</th>
@@ -257,6 +259,20 @@
                                             else
                                             {
                                                 @:-
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            @if (item.Dahilmi == true)
+                                            {
+                                                <span class="badge bg-success"><i class="fas fa-check"></i> Evet</span>
+                                            }
+                                            else if (item.Dahilmi == false)
+                                            {
+                                                <span class="badge bg-secondary"><i class="fas fa-times"></i> Hayır</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning text-dark">Belirtilmemiş</span>
                                             }
                                         </td>
                                         <td>@item.EgitimSuresi gün</td>
@@ -372,17 +388,31 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label>KDV Oranı *</label>
-                            <select class="form-select" name="KDVId" required>
-                                <option value="">Seçiniz</option>
-                                @foreach (var kdv in ViewBag.KDV as List<KDV>)
+                            <select class="form-select" name="KDVId" >
+                                @if (ViewBag.KDV != null && ((List<KDV>)ViewBag.KDV).Any())
                                 {
-                                    <option value="@kdv.Id">%@kdv.Oran</option>
+                                    var firstKDV = ((List<KDV>)ViewBag.KDV).First();
+                                    <option value="@firstKDV.Id" selected>%@firstKDV.Oran</option>
+
+                                    foreach (var kdv in ((List<KDV>)ViewBag.KDV).Skip(1))
+                                    {
+                                        <option value="@kdv.Id">%@kdv.Oran</option>
+                                    }
                                 }
                             </select>
                         </div>
+                        <!-- Ekle Modal - Diğer alanların arasına eklenecek -->
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check mt-4">
+                                <input type="checkbox" class="form-check-input" name="Dahilmi" id="ekleDahilmi" value="true" />
+                                <input type="hidden" name="Dahilmi" value="false" />
+                                <label class="form-check-label" for="ekleDahilmi">Dahil mi?</label>
+                                <small class="form-text text-muted d-block">Modülün dahil olup olmadığını belirtir</small>
+                            </div>
+                        </div>
                         <div class="col-md-4 mb-3">
                             <label>Eğitim Süresi (Gün) *</label>
-                            <input type="number" class="form-control" name="EgitimSuresi" required min="1" />
+                            <input type="number" class="form-control" name="EgitimSuresi" required />
                         </div>
                         <div class="col-md-4 mb-3">
                             <label>Sıra</label>
@@ -457,17 +487,31 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label>KDV Oranı *</label>
-                            <select class="form-select" name="KDVId" id="editKDVId" required>
-                                <option value="">Seçiniz</option>
-                                @foreach (var kdv in ViewBag.KDV as List<KDV>)
+                            <select class="form-select" name="KDVId" id="editKDVId" >
+                                @if (ViewBag.KDV != null && ((List<KDV>)ViewBag.KDV).Any())
                                 {
-                                    <option value="@kdv.Id">%@kdv.Oran</option>
+                                    var firstKDV = ((List<KDV>)ViewBag.KDV).First();
+                                    <option value="@firstKDV.Id" selected>%@firstKDV.Oran</option>
+
+                                    foreach (var kdv in ((List<KDV>)ViewBag.KDV).Skip(1))
+                                    {
+                                        <option value="@kdv.Id">%@kdv.Oran</option>
+                                    }
                                 }
                             </select>
                         </div>
+                        <!-- Düzenle Modal - Diğer alanların arasına eklenecek -->
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check mt-4">
+                                <input type="checkbox" class="form-check-input" name="Dahilmi" id="editDahilmi" value="true" />
+                                <input type="hidden" name="Dahilmi" value="false" />
+                                <label class="form-check-label" for="editDahilmi">Dahil mi?</label>
+                                <small class="form-text text-muted d-block">Modülün dahil olup olmadığını belirtir</small>
+                            </div>
+                        </div>
                         <div class="col-md-4 mb-3">
                             <label>Eğitim Süresi (Gün) *</label>
-                            <input type="number" class="form-control" name="EgitimSuresi" id="editEgitimSuresi" required min="1" />
+                            <input type="number" class="form-control" name="EgitimSuresi" id="editEgitimSuresi" required />
                         </div>
                         <div class="col-md-4 mb-3">
                             <label>Sıra</label>
@@ -929,6 +973,8 @@
                 $('#editFiyat').val(data.fiyat);
                 $('#editIndOran').val(data.indOran);
                 $('#editKDVId').val(data.kdvId);
+                        $('#editDahilmi').prop('checked', data.dahilmi === true);
+
                 $('#editEgitimSuresi').val(data.egitimSuresi);
                 $('#editSira').val(data.sira);
                 $('#editAktif').val(data.aktif);

@@ -31,6 +31,7 @@ namespace WepApp.Controllers
         private readonly EntegratorRepository _entegratorRepo = new EntegratorRepository();
         private readonly MusteriSozlesmeRepository _sozlesmeRepo = new MusteriSozlesmeRepository();
         private readonly UYBRepository _uybRepo = new UYBRepository();
+        private readonly PaketGrupDetayRepository _paketGrupDetayRepo = new PaketGrupDetayRepository();
 
         public AdminTeklifController(IWebHostEnvironment webHostEnvironment)
         {
@@ -298,10 +299,7 @@ namespace WepApp.Controllers
 
                 if (!int.TryParse(form["MusteriId"], out int musteriId))
                     return Json(new { success = false, message = "Geçersiz müşteri ID." });
-                MusteriRepository musteriRepository = new MusteriRepository();
-                Musteri musteri = musteriRepository.Getir(musteriId);
-                musteri.MusteriDurumuId = 1;
-                musteriRepository.Guncelle(musteri);
+            
                 // LisansNo zorunlu değil, null olabilir
                 string lisansNo = form["LisansNo"].ToString()?.Trim() ?? "";
                 decimal yillikBakim;
@@ -1146,30 +1144,258 @@ namespace WepApp.Controllers
             }
         }
         [HttpGet]
-        public IActionResult TeklifDetay(int id)
+        public IActionResult TeklifPdf(int teklifId)
         {
-            try
-            {
-                Teklif teklif = _teklifRepo.Getir(
-                    x => x.Id == id && x.Aktif == true,
-                    new List<string> { "Musteri", "LisansTip", "Detaylar", "TeklifDurum", "Nedenler" });
+            Teklif teklif = _teklifRepo.Getir(x => x.Id == teklifId,
+                new List<string> { "Musteri", "LisansTip", "Detaylar" });
+            if (teklif == null)
+                return NotFound();
+            Bayi bayi = _bayiRepository.Getir(x => x.Unvan == teklif.TeklifVerenFirma);
+            Musteri musteri = teklif.Musteri;
 
-                if (teklif == null)
+            decimal genelToplam = teklif.NetToplam;
+            string yaziIle = SayiyiYaziyaCevir((long)Math.Round(genelToplam));
+
+            string tarihStr = DateTime.Now.ToString("dd MMMM yyyy", new CultureInfo("tr-TR"));
+            string tarihStr15 = DateTime.Now
+                .AddDays(15)
+                .ToString("dd MMMM yyyy", new CultureInfo("tr-TR"));
+
+            string gecerlilik = DateTime.Now.AddDays(15).ToString("dd.MM.yyyy");
+
+            var baslik = new
+            {
+                teklif.TeklifNo,
+                Tarih = tarihStr,
+                TeklifVerenFirma = teklif.TeklifVerenFirma ?? "Teklif oluşturan Admin",
+                Tarih15 = tarihStr15,
+                MusteriAdi = $"{musteri?.AdSoyad}",
+                MusteriTelefon = bayi?.Telefon ?? "",
+                MusteriYetkili = musteri?.AdSoyad ?? "Müşteri",
+                GecerlilikTarihi = gecerlilik,
+                Aciklama = string.IsNullOrWhiteSpace(teklif.Aciklama) ? "" : "* " + teklif.Aciklama.Trim(),
+                AraToplam = teklif.AraToplam.ToString("N2"),
+                IndirimToplam = teklif.ToplamIndirim.ToString("N2"),
+                KdvTutar = teklif.KdvTutari.ToString("N2"),
+                GenelToplam = genelToplam.ToString("N2"),
+                YaziIle = yaziIle,
+                LisansTipi = teklif.LisansTip?.Adi ?? "",
+                Toplam = teklif.ToplamListeFiyat.ToString("N2"),
+                EgitimSuresi = teklif.EgitimSuresi.ToString("N0")
+            };
+
+            List<TeklifRapor> satirlar = new List<TeklifRapor>();
+            List<TeklifDetay> detaylar = teklif.Detaylar.OrderBy(x => x.SiraNo).ToList();
+
+            // 1) GRUP SATIRLARINI İŞLE
+            List<TeklifDetay> grupSatirlari = detaylar
+                .Where(x => x.Tip == "grup" && x.PaketGrupId.HasValue)
+                .OrderBy(x => x.SiraNo)
+                .ToList();
+
+            foreach (TeklifDetay grup in grupSatirlari)
+            {
+                string modulListesi = "";
+                List<PaketGrupDetay> paketGrupDetaylari = new List<PaketGrupDetay>();
+                List<TeklifDetay> grupModulleri = new List<TeklifDetay>();
+
+                // Paket detaylarını al
+                if (grup.PaketGrupId.HasValue)
                 {
-                    TempData["Hata"] = "Teklif bulunamadı.";
-                    return RedirectToAction("Index");
+                    paketGrupDetaylari = _paketGrupDetayRepo.GetirList(
+                        x => x.Durumu == 1 && x.PaketGrupId == grup.PaketGrupId.Value,
+                        new List<string> { "Paket" }
+                    );
                 }
 
-                ViewBag.Teklif = teklif;
-                ViewBag.TeklifDurumlari = _teklifDurumRepo.GetirList(x => x.Durumu == 1).ToList();
-            
-                return View();
+                if (paketGrupDetaylari.Any())
+                {
+                    // PaketGrupDetay üzerinden modülleri işle
+                    foreach (var pgd in paketGrupDetaylari.Where(x => x.Paket != null))
+                    {
+                        bool dahilmi = pgd.Paket.Dahilmi ?? pgd.Paket.Dahilmi ?? true;
+                        string modulAdi = pgd.Paket.Adi?.Trim() ?? "Modül";
+
+                        if (dahilmi)
+                        {
+                            // Dahil olan modül - paket içinde listelenecek
+                            if (!string.IsNullOrEmpty(modulListesi))
+                                modulListesi += ", ";
+                            modulListesi += modulAdi;
+                        }
+                        else
+                        {
+                            // Dahil olmayan modül - ayrı satır (sadece isim ve miktar, diğer alanlar tamamen boş)
+                            satirlar.Add(new TeklifRapor
+                            {
+                                TeklifNo = baslik.TeklifNo,
+                                Tarih = baslik.Tarih,
+                                Ek1 = baslik.TeklifVerenFirma,
+                                Ek2 = baslik.Tarih15,
+                                MusteriAdi = baslik.MusteriAdi,
+                                MusteriTelefon = baslik.MusteriTelefon,
+                                MusteriYetkili = baslik.MusteriYetkili,
+                                GecerlilikTarihi = baslik.GecerlilikTarihi,
+                                Aciklama = baslik.Aciklama,
+                                AraToplam = baslik.AraToplam,
+                                Toplam = baslik.Toplam,
+                                IndirimToplam = baslik.IndirimToplam,
+                                KdvTutar = baslik.KdvTutar,
+                                GenelToplam = baslik.GenelToplam,
+                                YaziIle = baslik.YaziIle,
+                                LisansTipi = baslik.LisansTipi,
+                                UrunAdi = "    → " + modulAdi, // 4 boşluk ve ok işareti
+                                Miktar = "1",
+                                IndirimYuzde = " ", // Boşluk karakteri
+                                Tutar = " ", // Boşluk karakteri
+                                AltSatirMi = true,
+                                Girinti = "",
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    // TeklifDetay üzerinden modülleri bul
+                    int grupSirasi = grup.SiraNo;
+                    int sonrakiGrupSirasi = detaylar
+                        .Where(x => x.Id != grup.Id && x.Tip == "grup" && x.SiraNo > grupSirasi)
+                        .OrderBy(x => x.SiraNo)
+                        .FirstOrDefault()?.SiraNo ?? int.MaxValue;
+
+                    grupModulleri = detaylar
+                        .Where(x => x.Tip == "modul" &&
+                               x.SiraNo > grupSirasi &&
+                               x.SiraNo < sonrakiGrupSirasi)
+                        .OrderBy(x => x.SiraNo)
+                        .ToList();
+
+                    foreach (var modul in grupModulleri)
+                    {
+                        bool dahilmi = modul.Paket?.Dahilmi ?? true;
+                        string modulAdi = !string.IsNullOrEmpty(modul.ItemAdi) ? modul.ItemAdi.Trim() :
+                                         (modul.Paket != null ? modul.Paket.Adi?.Trim() : "Modül");
+
+                        if (dahilmi)
+                        {
+                            if (!string.IsNullOrEmpty(modulListesi))
+                                modulListesi += ", ";
+                            modulListesi += modulAdi;
+                        }
+                        else
+                        {
+                            satirlar.Add(new TeklifRapor
+                            {
+                                TeklifNo = baslik.TeklifNo,
+                                Tarih = baslik.Tarih,
+                                Ek1 = baslik.TeklifVerenFirma,
+                                Ek2 = baslik.Tarih15,
+                                MusteriAdi = baslik.MusteriAdi,
+                                MusteriTelefon = baslik.MusteriTelefon,
+                                MusteriYetkili = baslik.MusteriYetkili,
+                                GecerlilikTarihi = baslik.GecerlilikTarihi,
+                                Aciklama = baslik.Aciklama,
+                                AraToplam = baslik.AraToplam,
+                                Toplam = baslik.Toplam,
+                                IndirimToplam = baslik.IndirimToplam,
+                                KdvTutar = baslik.KdvTutar,
+                                GenelToplam = baslik.GenelToplam,
+                                YaziIle = baslik.YaziIle,
+                                LisansTipi = baslik.LisansTipi,
+                                UrunAdi = "    → " + modulAdi, // 4 boşluk ve ok işareti
+                                Miktar = modul.Miktar.ToString(),
+                                IndirimYuzde = " ", // Boşluk karakteri
+                                Tutar = " ", // Boşluk karakteri
+                                AltSatirMi = true,
+                                Girinti = "",
+                            });
+                        }
+                    }
+                }
+
+                // ANA GRUP SATIRINI EKLE
+                decimal grupToplam = grup.BirimFiyatNet > 0 ? grup.BirimFiyatNet : grup.ListeFiyati;
+
+                satirlar.Add(new TeklifRapor
+                {
+                    TeklifNo = baslik.TeklifNo,
+                    Tarih = baslik.Tarih,
+                    Ek1 = baslik.TeklifVerenFirma,
+                    Ek2 = baslik.Tarih15,
+                    MusteriAdi = baslik.MusteriAdi,
+                    MusteriTelefon = baslik.MusteriTelefon,
+                    MusteriYetkili = baslik.MusteriYetkili,
+                    GecerlilikTarihi = baslik.GecerlilikTarihi,
+                    Aciklama = baslik.Aciklama,
+                    AraToplam = baslik.AraToplam,
+                    Toplam = baslik.Toplam,
+                    IndirimToplam = baslik.IndirimToplam,
+                    KdvTutar = baslik.KdvTutar,
+                    GenelToplam = baslik.GenelToplam,
+                    YaziIle = baslik.YaziIle,
+                    LisansTipi = baslik.LisansTipi,
+                    UrunAdi = !string.IsNullOrEmpty(grup.PaketGrupAdi) ? grup.PaketGrupAdi.Trim() :
+                              (!string.IsNullOrEmpty(grup.ItemAdi) ? grup.ItemAdi.Trim() : "Paket Grubu"),
+                    Miktar = "1",
+                    IndirimYuzde = (grup.KampanyaIndirimYuzdesi + grup.BireyselIndirimYuzdesi) > 0 ?
+                                  (grup.KampanyaIndirimYuzdesi + grup.BireyselIndirimYuzdesi) + "%" : "",
+                    Tutar = grupToplam.ToString("N2") + " ₺",
+                    AltSatirMi = false,
+                    Girinti = string.IsNullOrEmpty(modulListesi) ? "" : "(" + modulListesi + ")",
+                });
             }
-            catch (Exception ex)
+
+            // 2) BAĞIMSIZ MODÜLLERİ EKLE
+            List<TeklifDetay> bagimsizModuller = detaylar
+                .Where(x => x.Tip == "modul" && x.BagimsizModulMu == true)
+                .OrderBy(x => x.SiraNo)
+                .ToList();
+
+            foreach (TeklifDetay detay in bagimsizModuller)
             {
-                TempData["Hata"] = "Teklif detayları yüklenirken hata oluştu: " + ex.Message;
-                return RedirectToAction("Index");
+                satirlar.Add(new TeklifRapor
+                {
+                    TeklifNo = baslik.TeklifNo,
+                    Tarih = baslik.Tarih,
+                    Ek1 = baslik.TeklifVerenFirma,
+                    Ek2 = baslik.Tarih15,
+                    MusteriAdi = baslik.MusteriAdi,
+                    MusteriTelefon = baslik.MusteriTelefon,
+                    MusteriYetkili = baslik.MusteriYetkili,
+                    GecerlilikTarihi = baslik.GecerlilikTarihi,
+                    Aciklama = baslik.Aciklama,
+                    AraToplam = baslik.AraToplam,
+                    Toplam = baslik.Toplam,
+                    IndirimToplam = baslik.IndirimToplam,
+                    LisansTipi = baslik.LisansTipi,
+                    KdvTutar = baslik.KdvTutar,
+                    GenelToplam = baslik.GenelToplam,
+                    YaziIle = baslik.YaziIle,
+                    UrunAdi = !string.IsNullOrEmpty(detay.ItemAdi) ? detay.ItemAdi.Trim() :
+                              (detay.Paket != null ? detay.Paket.Adi?.Trim() : "Modül"),
+                    Miktar = detay.Miktar.ToString(),
+                    IndirimYuzde = (detay.KampanyaIndirimYuzdesi + detay.BireyselIndirimYuzdesi) > 0 ?
+                                  (detay.KampanyaIndirimYuzdesi + detay.BireyselIndirimYuzdesi) + "%" : "",
+                    Tutar = detay.BirimFiyatNet.ToString("N2") + " ₺",
+                    AltSatirMi = false,
+                    Girinti = "",
+                });
             }
+
+            // RDLC PDF ÜRET
+            string rdlcPath = Path.Combine(_webHostEnviroment.WebRootPath, "Raporlar", "Teklif.rdlc");
+
+            if (!System.IO.File.Exists(rdlcPath))
+            {
+                return BadRequest($"RDLC dosyası bulunamadı: {rdlcPath}");
+            }
+
+            LocalReport localReport = new LocalReport(rdlcPath);
+            localReport.AddDataSource("DataSetTeklif", satirlar);
+
+            ReportResult result = localReport.Execute(RenderType.Pdf);
+            Response.Headers["Content-Disposition"] = $"inline; filename={baslik.TeklifNo}.pdf";
+            return File(result.MainStream, "application/pdf");
         }
     }
 }
