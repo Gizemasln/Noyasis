@@ -508,17 +508,35 @@ namespace WepApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Ekle(
-         string AdSoyad, string KullaniciAdi, string Sifre,
-         string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,
-         string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
-         string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
-         int? MusteriTipiId, int MusteriDurumuId, int? BayiId, string TicariUnvan,
-         string Diger,
-         IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> Yetkililer = null)
+     string AdSoyad, string KullaniciAdi, string Sifre,
+     string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,
+     string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
+     string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
+     int? MusteriTipiId, int MusteriDurumuId, int? BayiId, string TicariUnvan,
+     string Diger,
+     IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> Yetkililer = null)
         {
             try
             {
-                // Müşteri tipi kontrolü
+                // ============= 1. KİLİT AYARLARINI KONTROL ET (Madde 21) =============
+                KilitRepository kilitRepo = new KilitRepository();
+                Kilit kilitAyari = kilitRepo.Getir(x => x.Durumu == 1);
+
+                bool registerSistemiAktif = kilitAyari?.Aktif ?? true; // Varsayılan: Aktif
+                int registerGunSayisi = kilitAyari?.Gun ?? 15; // Varsayılan: 15 gün
+
+                // Register sistemi kapalıysa direkt normal ekleme yap
+                if (!registerSistemiAktif)
+                {
+                    return await NormalMusteriEkle(
+                        AdSoyad, KullaniciAdi, Sifre, Email, Telefon, Adres, Il, Ilce, Belde, Bolge,
+                        TCVNo, VergiDairesi, KepAdresi, WebAdresi, Aciklama,
+                        AlpemixFirmaAdi, AlpemixGrupAdi, AlpemixSifre,
+                        MusteriTipiId, MusteriDurumuId, BayiId, TicariUnvan, Diger,
+                        Logo, Imza, Yetkililer);
+                }
+
+                // ============= 2. MÜŞTERİ TİPİ KONTROLÜ =============
                 var musteriTipleri = ViewBag.MusteriTipleri as IEnumerable<MusteriTipi>;
                 var digerTipiId = musteriTipleri?
                     .FirstOrDefault(x => x.Adi.ToLower() == "diğer" || x.Adi.ToLower() == "diger")
@@ -530,14 +548,134 @@ namespace WepApp.Controllers
                     return RedirectToAction("Index");
                 }
 
-                // Kullanıcı adı kontrolü
+                // ============= 3. VKN KONTROLÜ (Madde 22) =============
+                if (!string.IsNullOrEmpty(TCVNo))
+                {
+                    Musteri mevcutMusteri = _musteriRepository.VknIleMusteriBul(TCVNo);
+
+                    if (mevcutMusteri != null)
+                    {
+                        if (mevcutMusteri.Register)
+                        {
+                            string bayiAdi = mevcutMusteri.RegisterYapanBayi?.Unvan ?? "başka bir bayi";
+                            return Json(new
+                            {
+                                success = false,
+                                type = "registerBlocked",
+                                message = $"Bu VKN'ye ({TCVNo}) sahip müşteri {bayiAdi} tarafından kaydedilmiştir. Bu müşteri eklenemez.",
+                                registerTarihi = mevcutMusteri.RegisterTarihi?.ToString("dd.MM.yyyy HH:mm"),
+                                bayiAdi = bayiAdi,
+                                vkn = TCVNo
+                            });
+                        }
+                        else
+                        {
+                            // Register = 0 olan müşteri - bu bayi tarafından tekrar kaydedilebilir
+                            // Mevcut müşteriyi güncelle
+                            mevcutMusteri.AdSoyad = AdSoyad ?? "";
+                            mevcutMusteri.TicariUnvan = TicariUnvan ?? "";
+                            mevcutMusteri.KullaniciAdi = KullaniciAdi ?? "";
+                            if (!string.IsNullOrEmpty(Sifre)) mevcutMusteri.Sifre = Sifre;
+                            mevcutMusteri.Email = Email ?? "";
+                            mevcutMusteri.Telefon = Telefon ?? "";
+                            mevcutMusteri.Adres = Adres ?? "";
+                            mevcutMusteri.illerId = Il;
+                            mevcutMusteri.ilcelerId = Ilce;
+                            mevcutMusteri.Belde = Belde ?? "";
+                            mevcutMusteri.Bolge = Bolge ?? "";
+                            mevcutMusteri.VergiDairesi = VergiDairesi ?? "";
+                            mevcutMusteri.KepAdresi = KepAdresi ?? "";
+                            mevcutMusteri.WebAdresi = WebAdresi ?? "";
+                            mevcutMusteri.Aciklama = Aciklama ?? "";
+                            mevcutMusteri.AlpemixFirmaAdi = AlpemixFirmaAdi ?? "";
+                            mevcutMusteri.AlpemixGrupAdi = AlpemixGrupAdi ?? "";
+                            mevcutMusteri.AlpemixSifre = AlpemixSifre ?? "";
+                            mevcutMusteri.MusteriTipiId = MusteriTipiId;
+                            mevcutMusteri.MusteriDurumuId = MusteriDurumuId;
+                            mevcutMusteri.BayiId = BayiId;
+                            mevcutMusteri.Diger = Diger ?? "";
+
+                            // Müşteri durumuna göre tarihleri set et
+                            if (MusteriDurumuId == 1 && !mevcutMusteri.MOlmaTarihi.HasValue) // Müşteri (M)
+                            {
+                                mevcutMusteri.MOlmaTarihi = DateTime.Now;
+                            }
+                            else if (MusteriDurumuId == 2 && !mevcutMusteri.AOlmaTarihi.HasValue) // Aday Müşteri (A)
+                            {
+                                mevcutMusteri.AOlmaTarihi = DateTime.Now;
+                            }
+
+                            // REGISTER ALANLARINI GÜNCELLE
+                            mevcutMusteri.Register = true;
+                            mevcutMusteri.RegisterYapanBayiId = BayiId;
+                            mevcutMusteri.RegisterTarihi = DateTime.Now;
+                            mevcutMusteri.SonTeklifTarihi = DateTime.Now;
+
+                            mevcutMusteri.GuncellenmeTarihi = DateTime.Now;
+                            mevcutMusteri.GuncelleyenKullaniciId = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici")?.Id ?? 0;
+
+                            // Logo ve İmza işlemleri
+                            if (Logo != null && Logo.Length > 0)
+                            {
+                                if (!string.IsNullOrEmpty(mevcutMusteri.LogoUzanti))
+                                    EskiDosyayiSil(mevcutMusteri.LogoUzanti);
+
+                                string logoDosyaAdi = await DosyaKaydet(Logo, "logo");
+                                mevcutMusteri.LogoUzanti = logoDosyaAdi;
+                            }
+
+                            if (Imza != null && Imza.Length > 0)
+                            {
+                                if (!string.IsNullOrEmpty(mevcutMusteri.ImzaUzanti))
+                                    EskiDosyayiSil(mevcutMusteri.ImzaUzanti);
+
+                                string imzaDosyaAdi = await DosyaKaydet(Imza, "imza");
+                                mevcutMusteri.ImzaUzanti = imzaDosyaAdi;
+                            }
+
+                            _musteriRepository.Guncelle(mevcutMusteri);
+
+                            // Yetkilileri ekle (varsa)
+                            if (Yetkililer != null && Yetkililer.Any())
+                            {
+                                foreach (var yetkiliModel in Yetkililer)
+                                {
+                                    var yeniYetkili = new MusteriYetkililer
+                                    {
+                                        MusteriId = mevcutMusteri.Id,
+                                        Adi = yetkiliModel.Adi?.Trim() ?? "",
+                                        Soyadi = yetkiliModel.Soyadi?.Trim() ?? "",
+                                        Gorevi = yetkiliModel.Gorevi?.Trim() ?? "",
+                                        Email = yetkiliModel.Email?.Trim() ?? "",
+                                        Cep = yetkiliModel.Cep?.Trim() ?? "",
+                                        DahiliNo = yetkiliModel.DahiliNo?.Trim() ?? "",
+                                        DepartmanId = yetkiliModel.DepartmanId,
+                                        Cinsiyet = yetkiliModel.Cinsiyet?.Trim() ?? "",
+                                        Kodu = yetkiliModel.Kodu?.Trim() ?? "",
+                                        Durumu = 1,
+                                        Aktif = 1,
+                                        EklenmeTarihi = DateTime.Now,
+                                        GuncellenmeTarihi = DateTime.Now
+                                    };
+                                    _yetkiliRepo.Ekle(yeniYetkili);
+                                }
+                            }
+
+                            TempData["Success"] = "Müşteri başarıyla yeniden kaydedildi.";
+                            TempData["YeniMusteriId"] = mevcutMusteri.Id;
+                            return RedirectToAction("Index");
+                        }
+                    }
+                }
+
+                // ============= 4. KULLANICI ADI KONTROLÜ =============
                 if (_musteriRepository.GetirList(x => x.KullaniciAdi == KullaniciAdi && x.Durum == 1).Any())
                 {
                     TempData["Error"] = "Bu kullanıcı adı zaten alınmış.";
                     return RedirectToAction("Index");
                 }
 
-                // Müşteri nesnesini oluştur
+                // ============= 5. YENİ MÜŞTERİ OLUŞTUR =============
                 var model = new Musteri
                 {
                     AdSoyad = AdSoyad ?? "",
@@ -563,6 +701,13 @@ namespace WepApp.Controllers
                     MusteriDurumuId = MusteriDurumuId,
                     BayiId = BayiId,
                     Diger = Diger ?? "",
+
+                    // REGISTER ALANLARI - YENİ MÜŞTERİ
+                    Register = true,
+                    RegisterYapanBayiId = BayiId,
+                    RegisterTarihi = DateTime.Now,
+                    SonTeklifTarihi = DateTime.Now,
+
                     Durum = 1,
                     EklenmeTarihi = DateTime.Now,
                     GuncellenmeTarihi = DateTime.Now,
@@ -635,19 +780,161 @@ namespace WepApp.Controllers
 
             return RedirectToAction("Index");
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Guncelle(
-           int Id, string AdSoyad, string KullaniciAdi, string Sifre,
-           string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,
-           string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
-           string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
-           int? MusteriTipiId, int? MusteriDurumuId, int? BayiId, string TicariUnvan,
-           string Diger,
-           IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> YeniYetkililer = null)
+
+        // ============= YARDIMCI METOD - NORMAL MÜŞTERİ EKLE (Register Kontrolü Olmadan) =============
+        private async Task<IActionResult> NormalMusteriEkle(
+            string AdSoyad, string KullaniciAdi, string Sifre,
+            string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,
+            string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
+            string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
+            int? MusteriTipiId, int MusteriDurumuId, int? BayiId, string TicariUnvan,
+            string Diger,
+            IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> Yetkililer)
         {
             try
             {
+                // Müşteri tipi kontrolü
+                var musteriTipleri = ViewBag.MusteriTipleri as IEnumerable<MusteriTipi>;
+                var digerTipiId = musteriTipleri?
+                    .FirstOrDefault(x => x.Adi.ToLower() == "diğer" || x.Adi.ToLower() == "diger")
+                    ?.Id;
+
+                if (MusteriTipiId == digerTipiId && string.IsNullOrWhiteSpace(Diger))
+                {
+                    TempData["Error"] = "Müşteri tipi 'Diğer' seçildiyse, lütfen diğer tipi belirtin.";
+                    return RedirectToAction("Index");
+                }
+
+                // Kullanıcı adı kontrolü
+                if (_musteriRepository.GetirList(x => x.KullaniciAdi == KullaniciAdi && x.Durum == 1).Any())
+                {
+                    TempData["Error"] = "Bu kullanıcı adı zaten alınmış.";
+                    return RedirectToAction("Index");
+                }
+
+                // Müşteri nesnesini oluştur (REGISTER KONTROLÜ YOK)
+                var model = new Musteri
+                {
+                    AdSoyad = AdSoyad ?? "",
+                    TicariUnvan = TicariUnvan ?? "",
+                    KullaniciAdi = KullaniciAdi ?? "",
+                    Sifre = Sifre ?? "",
+                    Email = Email ?? "",
+                    Telefon = Telefon ?? "",
+                    Adres = Adres ?? "",
+                    illerId = Il,
+                    ilcelerId = Ilce,
+                    Belde = Belde ?? "",
+                    Bolge = Bolge ?? "",
+                    TCVNo = TCVNo ?? "",
+                    VergiDairesi = VergiDairesi ?? "",
+                    KepAdresi = KepAdresi ?? "",
+                    WebAdresi = WebAdresi ?? "",
+                    Aciklama = Aciklama ?? "",
+                    AlpemixFirmaAdi = AlpemixFirmaAdi ?? "",
+                    AlpemixGrupAdi = AlpemixGrupAdi ?? "",
+                    AlpemixSifre = AlpemixSifre ?? "",
+                    MusteriTipiId = MusteriTipiId,
+                    MusteriDurumuId = MusteriDurumuId,
+                    BayiId = BayiId,
+                    Diger = Diger ?? "",
+
+                    // REGISTER ALANLARI - Normal müşteri eklemede de doldurulabilir (opsiyonel)
+                    Register = false, // Normal eklemede register kapalı
+                    RegisterYapanBayiId = null,
+                    RegisterTarihi = null,
+                    SonTeklifTarihi = null,
+
+                    Durum = 1,
+                    EklenmeTarihi = DateTime.Now,
+                    GuncellenmeTarihi = DateTime.Now,
+                    EkleyenKullaniciId = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici")?.Id ?? 0,
+                    GuncelleyenKullaniciId = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici")?.Id ?? 0
+                };
+
+                // Müşteri durumuna göre tarihleri set et
+                if (MusteriDurumuId == 1) // Müşteri (M)
+                {
+                    model.MOlmaTarihi = DateTime.Now;
+                }
+                else if (MusteriDurumuId == 2) // Aday Müşteri (A)
+                {
+                    model.AOlmaTarihi = DateTime.Now;
+                }
+
+                // Logo kaydet
+                if (Logo != null && Logo.Length > 0)
+                {
+                    string logoDosyaAdi = await DosyaKaydet(Logo, "logo");
+                    model.LogoUzanti = logoDosyaAdi;
+                }
+
+                // İmza kaydet
+                if (Imza != null && Imza.Length > 0)
+                {
+                    string imzaDosyaAdi = await DosyaKaydet(Imza, "imza");
+                    model.ImzaUzanti = imzaDosyaAdi;
+                }
+
+                // Müşteriyi ekle
+                _musteriRepository.Ekle(model);
+
+                // Yetkilileri ekle
+                if (Yetkililer != null && Yetkililer.Any())
+                {
+                    foreach (var yetkiliModel in Yetkililer)
+                    {
+                        var yeniYetkili = new MusteriYetkililer
+                        {
+                            MusteriId = model.Id,
+                            Adi = yetkiliModel.Adi?.Trim() ?? "",
+                            Soyadi = yetkiliModel.Soyadi?.Trim() ?? "",
+                            Gorevi = yetkiliModel.Gorevi?.Trim() ?? "",
+                            Email = yetkiliModel.Email?.Trim() ?? "",
+                            Cep = yetkiliModel.Cep?.Trim() ?? "",
+                            DahiliNo = yetkiliModel.DahiliNo?.Trim() ?? "",
+                            DepartmanId = yetkiliModel.DepartmanId,
+                            Cinsiyet = yetkiliModel.Cinsiyet?.Trim() ?? "",
+                            Kodu = yetkiliModel.Kodu?.Trim() ?? "",
+                            Durumu = 1,
+                            Aktif = 1,
+                            EklenmeTarihi = DateTime.Now,
+                            GuncellenmeTarihi = DateTime.Now
+                        };
+                        _yetkiliRepo.Ekle(yeniYetkili);
+                    }
+                }
+
+                TempData["Success"] = "Müşteri ve yetkililer başarıyla eklendi. (Register sistemi kapalı)";
+                TempData["YeniMusteriId"] = model.Id;
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Müşteri eklenirken bir hata oluştu: " + ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Guncelle(
+       int Id, string AdSoyad, string KullaniciAdi, string Sifre,
+       string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,
+       string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
+       string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
+       int? MusteriTipiId, int? MusteriDurumuId, int? BayiId, string TicariUnvan,
+       string Diger,
+       IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> YeniYetkililer = null)
+        {
+            try
+            {
+                // ============= 1. KİLİT AYARLARINI KONTROL ET =============
+                KilitRepository kilitRepo = new KilitRepository();
+                Kilit kilitAyari = kilitRepo.Getir(x => x.Durumu == 1);
+                bool registerSistemiAktif = kilitAyari?.Aktif ?? true;
+
+                // ============= 2. MEVCUT MÜŞTERİYİ BUL =============
                 Musteri existing = _musteriRepository.Getir(Id);
                 if (existing == null)
                 {
@@ -657,7 +944,9 @@ namespace WepApp.Controllers
 
                 // Mevcut durumu kaydet (tarih kontrolü için)
                 int? eskiMusteriDurumuId = existing.MusteriDurumuId;
+                string eskiVKN = existing.TCVNo; // Eski VKN'yi sakla
 
+                // ============= 3. MÜŞTERİ TİPİ KONTROLÜ =============
                 IEnumerable<MusteriTipi> musteriTipleri = ViewBag.MusteriTipleri as IEnumerable<MusteriTipi>;
                 int? digerTipiId = musteriTipleri?
                     .FirstOrDefault(x => x.Adi.ToLower() == "diğer" || x.Adi.ToLower() == "diger")
@@ -669,6 +958,7 @@ namespace WepApp.Controllers
                     return RedirectToAction("Index");
                 }
 
+                // ============= 4. KULLANICI ADI KONTROLÜ =============
                 Musteri duplicate = _musteriRepository.GetirList(x => x.KullaniciAdi == KullaniciAdi && x.Id != Id && x.Durum == 1).FirstOrDefault();
                 if (duplicate != null)
                 {
@@ -676,7 +966,34 @@ namespace WepApp.Controllers
                     return RedirectToAction("Index");
                 }
 
-                // Güncelleme işlemleri
+                if (!string.IsNullOrEmpty(TCVNo) && TCVNo != eskiVKN)
+                {
+                    Musteri vknIleMusteri = _musteriRepository.VknIleMusteriBul(TCVNo);
+
+                    if (vknIleMusteri != null && vknIleMusteri.Id != Id)
+                    {
+                        if (registerSistemiAktif && vknIleMusteri.Register)
+                        {
+                            string bayiAdi = vknIleMusteri.RegisterYapanBayi?.Unvan ?? "başka bir bayi";
+                            return Json(new
+                            {
+                                success = false,
+                                type = "registerBlocked",
+                                message = $"Bu VKN'ye ({TCVNo}) sahip müşteri {bayiAdi} tarafından kaydedilmiştir. Bu VKN kullanılamaz.",
+                                registerTarihi = vknIleMusteri.RegisterTarihi?.ToString("dd.MM.yyyy HH:mm"),
+                                bayiAdi = bayiAdi,
+                                vkn = TCVNo
+                            });
+                        }
+                    }
+                }
+
+                // ============= 6. DURUM DEĞİŞİKLİĞİ KONTROLÜ (Aday <-> Normal) =============
+                bool durumDegisti = eskiMusteriDurumuId != MusteriDurumuId;
+                bool adaydanNormaleGecis = durumDegisti && MusteriDurumuId == 1 && eskiMusteriDurumuId == 2;
+                bool normaldenAdayaGecis = durumDegisti && MusteriDurumuId == 2 && eskiMusteriDurumuId == 1;
+
+                // ============= 7. MÜŞTERİ BİLGİLERİNİ GÜNCELLE =============
                 existing.AdSoyad = AdSoyad ?? "";
                 existing.TicariUnvan = TicariUnvan ?? "";
                 existing.KullaniciAdi = KullaniciAdi ?? "";
@@ -684,14 +1001,11 @@ namespace WepApp.Controllers
                 existing.Email = Email ?? "";
                 existing.Telefon = Telefon ?? "";
                 existing.Adres = Adres ?? "";
-
-                // İl ve ilçe ID'lerini güncelle
                 existing.illerId = Il;
                 existing.ilcelerId = Ilce;
-
                 existing.Belde = Belde ?? "";
                 existing.Bolge = Bolge ?? "";
-                existing.TCVNo = TCVNo ?? "";
+                existing.TCVNo = TCVNo ?? ""; // VKN güncelleniyor
                 existing.VergiDairesi = VergiDairesi ?? "";
                 existing.KepAdresi = KepAdresi ?? "";
                 existing.WebAdresi = WebAdresi ?? "";
@@ -701,36 +1015,48 @@ namespace WepApp.Controllers
                 existing.AlpemixSifre = AlpemixSifre ?? "";
                 existing.MusteriTipiId = MusteriTipiId;
 
-                // Müşteri Durumu ve Tarih Kontrolü
+                // ============= 8. MÜŞTERİ DURUMU VE TARİH KONTROLÜ =============
                 if (MusteriDurumuId.HasValue)
                 {
-                    // Eğer durum değiştiyse veya ilk kez atanıyorsa
-                    if (eskiMusteriDurumuId != MusteriDurumuId.Value)
+                    if (durumDegisti)
                     {
-                        // Yeni duruma göre tarihleri güncelle
-                        if (MusteriDurumuId.Value == 1) // Müşteri (M) olduysa
+                        // Adaydan normale geçiş
+                        if (adaydanNormaleGecis)
                         {
-                            // Eğer daha önce müşteri olma tarihi yoksa veya adaydan müşteriye geçiş yapılıyorsa
-                            if (!existing.MOlmaTarihi.HasValue || eskiMusteriDurumuId == 2)
+                            existing.MOlmaTarihi = DateTime.Now;
+
+                            // Register sistemini güncelle (eğer aktifse)
+                            if (registerSistemiAktif)
                             {
-                                existing.MOlmaTarihi = DateTime.Now;
+                                existing.Register = true;
+                                existing.RegisterYapanBayiId = existing.BayiId;
+                                existing.RegisterTarihi = DateTime.Now;
+                                existing.SonTeklifTarihi = DateTime.Now;
                             }
 
-                            // Aday müşteri tarihini temizlemeye gerek yok (opsiyonel)
-                            // existing.AOlmaTarihi = null; // İsterseniz temizleyebilirsiniz
+                            TempData["Info"] = "Müşteri adaydan normale dönüştürüldü. Artık diğer bayiler tarafından görülemez.";
                         }
-                        else if (MusteriDurumuId.Value == 2) // Aday Müşteri (A) olduysa
+                        // Normale adaya geçiş
+                        else if (normaldenAdayaGecis)
                         {
-                            // Eğer daha önce aday olma tarihi yoksa
-                            if (!existing.AOlmaTarihi.HasValue)
-                            {
-                                existing.AOlmaTarihi = DateTime.Now;
-                            }
+                            existing.AOlmaTarihi = DateTime.Now;
 
-                            // Müşteri olma tarihini koru (geçmişte müşteri olduysa)
-                            // existing.MOlmaTarihi mevcutsa silme, koru
+                            // Register'ı temizle (artık aday)
+                            existing.Register = false;
+                            existing.RegisterYapanBayiId = null;
+                            existing.SonTeklifTarihi = null;
+
+                            TempData["Info"] = "Müşteri normalden adaya dönüştürüldü. Register kaydı temizlendi.";
                         }
-                        // Not: 3. durum (Pasif vb.) için tarih güncellemesi yapılmaz
+                        // Diğer durum geçişleri
+                        else if (MusteriDurumuId.Value == 1 && !existing.MOlmaTarihi.HasValue)
+                        {
+                            existing.MOlmaTarihi = DateTime.Now;
+                        }
+                        else if (MusteriDurumuId.Value == 2 && !existing.AOlmaTarihi.HasValue)
+                        {
+                            existing.AOlmaTarihi = DateTime.Now;
+                        }
                     }
                     else
                     {
@@ -748,12 +1074,25 @@ namespace WepApp.Controllers
                     existing.MusteriDurumuId = MusteriDurumuId.Value;
                 }
 
-                existing.BayiId = BayiId;
+                // ============= 9. BAYİ DEĞİŞİKLİĞİ KONTROLÜ =============
+                if (existing.BayiId != BayiId)
+                {
+                    existing.BayiId = BayiId;
+
+                    // Register sistemi aktifse ve müşteri normal müşteriyse, bayi değişikliğini register'a yansıt
+                    if (registerSistemiAktif && existing.MusteriDurumuId == 1)
+                    {
+                        existing.RegisterYapanBayiId = BayiId;
+                        existing.RegisterTarihi = DateTime.Now; // Yeni bayiye kayıt tarihi
+                        TempData["Info"] = "Müşterinin bağlı olduğu bayi değiştirildi.";
+                    }
+                }
+
                 existing.Diger = Diger ?? "";
                 existing.GuncellenmeTarihi = DateTime.Now;
                 existing.GuncelleyenKullaniciId = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici")?.Id ?? 0;
 
-                // Logo ve İmza işlemleri
+                // ============= 10. LOGO VE İMZA İŞLEMLERİ =============
                 if (Logo != null && Logo.Length > 0)
                 {
                     if (!string.IsNullOrEmpty(existing.LogoUzanti))
@@ -772,9 +1111,10 @@ namespace WepApp.Controllers
                     existing.ImzaUzanti = imzaDosyaAdi;
                 }
 
+                // ============= 11. MÜŞTERİYİ GÜNCELLE =============
                 _musteriRepository.Guncelle(existing);
 
-                // YENİ YETKİLİLERİ EKLE
+                // ============= 12. YENİ YETKİLİLERİ EKLE =============
                 if (YeniYetkililer != null && YeniYetkililer.Any())
                 {
                     foreach (MusteriYetkiliEkleModel y in YeniYetkililer)
@@ -804,11 +1144,9 @@ namespace WepApp.Controllers
             catch (Exception ex)
             {
                 TempData["Error"] = "Müşteri güncellenirken bir hata oluştu: " + ex.Message;
-                // Loglama eklenebilir
             }
             return RedirectToAction("Index");
         }
-
         [HttpGet]
         public IActionResult Getir(int id)
         {

@@ -916,8 +916,8 @@ namespace WepApp.Controllers
         public IActionResult OlusturTeklif([FromBody] TeklifOlusturModel model, int? Id = null)
         {
             int kullanilacakMusteriId = model.MusteriId;
-        
-            Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici"); 
+
+            Kullanicilar kullanici = SessionHelper.GetObjectFromJson<Kullanicilar>(HttpContext.Session, "Kullanici");
             Bayi bayi = SessionHelper.GetObjectFromJson<Bayi>(HttpContext.Session, "Bayi");
 
             try
@@ -927,7 +927,14 @@ namespace WepApp.Controllers
                 if (model.SeciliItemler == null || !model.SeciliItemler.Any())
                     return Json(new { success = false, message = "En az bir ürün/paket seçmelisiniz." });
 
-                // BAĞLI PAKETLERİ EKLE
+                // ============= 1. KİLİT AYARLARINI KONTROL ET =============
+                KilitRepository kilitRepo = new KilitRepository();
+                Kilit kilitAyari = kilitRepo.Getir(x => x.Durumu == 1);
+
+                bool registerSistemiAktif = kilitAyari?.Aktif ?? true; // Varsayılan: Aktif
+                int registerGunSayisi = kilitAyari?.Gun ?? 15; // Varsayılan: 15 gün
+
+                // ============= 2. BAĞLI PAKETLERİ EKLE =============
                 var tumSeciliItemler = new List<SeciliItemModel>();
                 var islenmisItemler = new HashSet<int>();
 
@@ -984,7 +991,7 @@ namespace WepApp.Controllers
                 LisansTip lisansTip = _lisansTipRepo.Getir(x => x.Id == model.LisansTipId && x.Durumu == 1);
                 if (lisansTip == null) return Json(new { success = false, message = "Lisans tipi bulunamadı." });
 
-                // TOPLAM EĞİTİM SÜRESİ HESAPLA - PAKET EĞİTİM SÜRESİ + MODÜLLERİN EĞİTİM SÜRESİ
+                // ============= 3. TOPLAM EĞİTİM SÜRESİ HESAPLA =============
                 decimal toplamEgitimSuresi = 0m;
                 HashSet<int> islenmisPaketIdleri = new HashSet<int>();
                 HashSet<int> islenmisModulIdleri = new HashSet<int>();
@@ -1053,7 +1060,6 @@ namespace WepApp.Controllers
                 // SONRA BAĞIMSIZ MODÜLLERİ İŞLE
                 foreach (SeciliItemModel item in model.SeciliItemler.Where(x => x.Tip == "paket"))
                 {
-
                     Paket paket = _paketRepo.Getir(x => x.Id == item.Id && x.Durumu == 1);
                     if (paket != null)
                     {
@@ -1105,14 +1111,15 @@ namespace WepApp.Controllers
                 decimal kdv = araTutar * 0.20m;
                 decimal netToplam = araTutar + kdv;
 
-                // YENİ MÜŞTERİ VAR MI?
+                // ============= 4. YENİ MÜŞTERİ VAR MI? =============
+                int? registerYapanBayiId = null;
+
                 if (model.YeniMusteri != null)
                 {
                     Musteri yeniMusteri = new Musteri
                     {
                         TicariUnvan = model.YeniMusteri.TicariUnvan ?? "",
-                        AdSoyad = model.YeniMusteri.AdSoyad ?? "", // Ad + Soyad birleştirildi
-
+                        AdSoyad = model.YeniMusteri.AdSoyad ?? "",
                         KullaniciAdi = model.YeniMusteri.KullaniciAdi ?? "",
                         Sifre = model.YeniMusteri.Sifre ?? "", // Hash'le! (gerçek projede)
                         Email = model.YeniMusteri.Email ?? "",
@@ -1134,11 +1141,20 @@ namespace WepApp.Controllers
                         AlpemixFirmaAdi = model.YeniMusteri.AlpemixFirmaAdi ?? "",
                         AlpemixGrupAdi = model.YeniMusteri.AlpemixGrupAdi ?? "",
                         AlpemixSifre = model.YeniMusteri.AlpemixSifre ?? "",
+
+                        // REGISTER ALANLARI - Teklifle birlikte eklenen müşteri
+                        Register = registerSistemiAktif, // Sistem açıksa register = 1
+                        RegisterYapanBayiId = model.YeniMusteri.BayiId, // Hangi bayi eklediyse
+                        RegisterTarihi = DateTime.Now,
+                        SonTeklifTarihi = DateTime.Now, // İlk teklif tarihi
+
                         Durum = 1,
                         EklenmeTarihi = DateTime.Now,
                         GuncellenmeTarihi = DateTime.Now,
                         EkleyenKullaniciId = kullanici?.Id ?? 0
                     };
+
+                    registerYapanBayiId = model.YeniMusteri.BayiId;
 
                     _musteriRepo.Ekle(yeniMusteri);
 
@@ -1165,6 +1181,7 @@ namespace WepApp.Controllers
                     kullanilacakMusteriId = yeniMusteri.Id;
                 }
 
+                // ============= 5. TEKLİF OLUŞTUR =============
                 Teklif yeniTeklif = new Teklif
                 {
                     TeklifNo = (Id != null ? model.TeklifNo : yeniTeklifNo),
@@ -1178,12 +1195,7 @@ namespace WepApp.Controllers
                     ToplamIndirim = model.FiyatOzete.Liste.Indirim,
                     KdvTutari = model.FiyatOzete.Liste.KDVToplam,
                     NetToplam = model.FiyatOzete.Liste.NetToplam,
-                    TeklifVerenFirma= bayi != null
-    ? bayi.Unvan
-    : kullanici != null
-        ? kullanici.Adi
-        : "",
-                    // EĞİTİM SÜRESİ KAYDI
+                    TeklifVerenFirma = bayi != null ? bayi.Unvan : (kullanici != null ? kullanici.Adi : ""),
                     EgitimSuresi = toplamEgitimSuresi,
 
                     OlusturanKullaniciId = kullanici?.Id ?? 0,
@@ -1210,18 +1222,42 @@ namespace WepApp.Controllers
                     return Json(new { success = false, message = "Detaylar kaydedilemedi." });
                 }
 
+                // ============= 6. MÜŞTERİNİN SON TEKLİF TARİHİNİ GÜNCELLE (Madde 23) =============
+                if (registerSistemiAktif && yeniTeklif != null && yeniTeklif.Id > 0)
+                {
+                    Musteri musteri = _musteriRepo.Getir(yeniTeklif.MusteriId);
+
+                    if (musteri != null)
+                    {
+                        musteri.SonTeklifTarihi = DateTime.Now;
+                        musteri.GuncellenmeTarihi = DateTime.Now;
+
+                        // Eğer müşteri register = 1 ise ve daha önce register tarihi yoksa veya bayi atanmamışsa
+                        if (musteri.Register && !musteri.RegisterYapanBayiId.HasValue)
+                        {
+                            musteri.RegisterYapanBayiId = registerYapanBayiId ?? bayi?.Id;
+                        }
+
+                        _musteriRepo.Guncelle(musteri);
+
+                        Console.WriteLine($"Müşteri son teklif tarihi güncellendi: Müşteri ID={musteri.Id}, Tarih={DateTime.Now}");
+                    }
+                }
+
                 return Json(new
                 {
                     success = true,
                     message = "Teklif başarıyla oluşturuldu.",
                     teklifId = yeniTeklif.Id,
                     teklifNo = yeniTeklifNo,
-                    toplamEgitimSuresi = toplamEgitimSuresi, // İstemciye de gönder
+                    toplamEgitimSuresi = toplamEgitimSuresi,
                     redirectTo = "AdminTeklif/Index"
                 });
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Teklif oluşturma hatası: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 return Json(new { success = false, message = "Hata: " + ex.Message });
             }
         }

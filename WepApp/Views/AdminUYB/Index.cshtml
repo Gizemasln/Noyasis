@@ -1,6 +1,6 @@
 ﻿@using WepApp.Models
 @{
-    ViewData["Title"] = "UYB ve Arşiv Yönetimi";
+    ViewData["Title"] = "UYB, Arşiv ve Kilit Yönetimi";
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
 
@@ -25,6 +25,31 @@
         border-radius: 25px;
         font-weight: 600;
         font-size: 1.2em;
+    }
+
+    .badge-kilit {
+        background-color: #dc3545;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 1.2em;
+    }
+
+    .badge-aktif {
+        background-color: #28a745;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.9em;
+    }
+
+    .badge-pasif {
+        background-color: #6c757d;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.9em;
     }
 
     .info-text {
@@ -99,7 +124,7 @@
         </div>
 
         <!-- Arşiv Kartı -->
-        <div class="card">
+        <div class="card mb-4">
             <div class="card-header">
                 <div class="card-title d-flex justify-content-between align-items-center">
                     <span>Arşiv Süresi Yönetimi</span>
@@ -141,6 +166,65 @@
                     <p class="text-muted">Henüz arşiv süresi tanımlanmamış.</p>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#arsivEkleModal">
                         İlk Arşiv Süresini Tanımla
+                    </button>
+                }
+            </div>
+        </div>
+
+        <!-- Kilit Kartı -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>Kilit Süresi Yönetimi</span>
+                    @if (ViewBag.Kilit == null)
+                    {
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kilitEkleModal">
+                            <i class="fas fa-plus"></i> Kilit Süresi Ekle
+                        </button>
+                    }
+                    else
+                    {
+                        var kilit = (Kilit)ViewBag.Kilit;
+                        <button type="button" class="btn btn-warning"
+                                data-bs-toggle="modal"
+                                data-bs-target="#kilitDuzenleModal"
+                                data-kilit-id="@kilit.Id"
+                                data-kilit-gun="@kilit.Gun"
+                                data-kilit-aktif="@kilit.Aktif.ToString().ToLower()">
+                            <i class="fas fa-edit"></i> Düzenle
+                        </button>
+                    }
+                </div>
+            </div>
+            <div class="card-body text-center py-4">
+                @if (ViewBag.Kilit != null)
+                {
+                    var kilit = (Kilit)ViewBag.Kilit;
+                    <div class="mb-3">
+                        <h4>Mevcut Kilit Süresi</h4>
+                        <div class="badge-kilit mt-2">@kilit.Gun Gün</div>
+                        <div class="mt-2">
+                            @if (kilit.Aktif)
+                            {
+                                <span class="badge-aktif"><i class="fas fa-check-circle"></i> Aktif</span>
+                            }
+                            else
+                            {
+                                <span class="badge-pasif"><i class="fas fa-times-circle"></i> Pasif</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="info-text">
+                        <i class="fas fa-calendar-alt"></i> Eklenme: @kilit.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")<br />
+                        <i class="fas fa-clock"></i> Son Güncelleme: @kilit.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")
+                    </div>
+                }
+                else
+                {
+                    <i class="fas fa-lock fa-4x text-muted mb-3"></i>
+                    <p class="text-muted">Henüz kilit süresi tanımlanmamış.</p>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kilitEkleModal">
+                        İlk Kilit Süresini Tanımla
                     </button>
                 }
             </div>
@@ -270,6 +354,83 @@
     </div>
 </div>
 
+<!-- Kilit Ekle Modal -->
+<div class="modal fade" id="kilitEkleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("KilitEkle", "AdminUYB", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Kilit Süresi Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Kilit Süresi (Gün) *</label>
+                        <div class="input-group">
+                            <input type="number" min="1" max="365" class="form-control" name="Gun" placeholder="Örn: 30" required />
+                            <span class="input-group-text">Gün</span>
+                        </div>
+                        <div class="form-text">1 ile 365 gün arasında bir değer giriniz.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Durum</label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="Aktif" id="kilitAktifEkle" value="true" checked />
+                            <label class="form-check-label" for="kilitAktifEkle">Aktif</label>
+                        </div>
+                        <div class="form-text">Kilit süresinin aktif olup olmadığını belirleyin.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Kilit Düzenle Modal -->
+<div class="modal fade" id="kilitDuzenleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("KilitGuncelle", "AdminUYB", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="kilitEditId" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Kilit Süresi Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Kilit Süresi (Gün) *</label>
+                        <div class="input-group">
+                            <input type="number" min="1" max="365" class="form-control" name="Gun" id="kilitEditGun" required />
+                            <span class="input-group-text">Gün</span>
+                        </div>
+                        <div class="form-text">1 ile 365 gün arasında bir değer giriniz.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Durum</label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="Aktif" id="kilitEditAktif" value="true" />
+                            <label class="form-check-label" for="kilitEditAktif">Aktif</label>
+                        </div>
+                        <div class="form-text">Kilit süresinin aktif olup olmadığını belirleyin.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
 @section Script {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -295,8 +456,22 @@
                 });
             }
 
+            // Kilit Düzenle butonuna tıklanınca
+            const kilitDuzenleBtn = document.querySelector('[data-bs-target="#kilitDuzenleModal"]');
+            if (kilitDuzenleBtn) {
+                kilitDuzenleBtn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-kilit-id');
+                    const gun = this.getAttribute('data-kilit-gun');
+                    const aktif = this.getAttribute('data-kilit-aktif') === 'true';
+
+                    document.getElementById('kilitEditId').value = id;
+                    document.getElementById('kilitEditGun').value = gun;
+                    document.getElementById('kilitEditAktif').checked = aktif;
+                });
+            }
+
             // Modal kapandığında sıfırla
-            const modals = ['uybEkleModal', 'uybDuzenleModal', 'arsivEkleModal', 'arsivDuzenleModal'];
+            const modals = ['uybEkleModal', 'uybDuzenleModal', 'arsivEkleModal', 'arsivDuzenleModal', 'kilitEkleModal', 'kilitDuzenleModal'];
             modals.forEach(id => {
                 const modal = document.getElementById(id);
                 if (modal) {

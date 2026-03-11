@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WepApp.Models
 {
@@ -56,7 +57,20 @@ namespace WepApp.Models
         public DateTime EklenmeTarihi { get; set; } = DateTime.Now;
         public DateTime GuncellenmeTarihi { get; set; } = DateTime.Now;
         public DateTime? MOlmaTarihi { get; set; } 
-        public DateTime? AOlmaTarihi { get; set; } 
+        public DateTime? AOlmaTarihi { get; set; }
+
+
+
+
+        // YENİ EKLENECEK ALANLAR
+        public bool Register { get; set; } = true; // 1: Kayıtlı, 0: Serbest
+        public DateTime? RegisterTarihi { get; set; } // Kayıt tarihi
+        public DateTime? SonTeklifTarihi { get; set; } // Son teklif tarihi
+        public int? RegisterYapanBayiId { get; set; } // Hangi bayi kaydetti?
+
+        // Navigation property
+        [ForeignKey("RegisterYapanBayiId")]
+        public virtual Bayi RegisterYapanBayi { get; set; }
 
         // Navigasyon
         public MusteriTipi MusteriTipi { get; set; }

@@ -43,7 +43,45 @@ namespace WepApp.Repositories
 
             return query;
         }
+        // MusteriRepository.cs'ye eklenecek metodlar
 
+        public Musteri VknIleMusteriBul(string vkn)
+        {
+            return GetirList(x => x.TCVNo == vkn && x.Durum == 1)
+                   .FirstOrDefault();
+        }
+
+        public List<Musteri> RegisterSuresiGecenMusterileriGetir(int gunSayisi)
+        {
+            var sinirTarih = DateTime.Now.AddDays(-gunSayisi);
+
+            return GetirList(x => x.Register == true &&
+                                 x.RegisterYapanBayiId != null && // Bir bayiye kayıtlı
+                                 (x.SonTeklifTarihi == null || x.SonTeklifTarihi < sinirTarih))
+                   .ToList();
+        }
+
+        public void MusteriRegisterGuncelle(int musteriId, bool registerDurumu, int? bayiId = null)
+        {
+            var musteri = Getir(musteriId);
+            if (musteri != null)
+            {
+                musteri.Register = registerDurumu;
+                if (registerDurumu)
+                {
+                    musteri.RegisterYapanBayiId = bayiId;
+                    musteri.RegisterTarihi = DateTime.Now;
+                    musteri.SonTeklifTarihi = DateTime.Now; // İlk kayıt anı
+                }
+                else
+                {
+                    musteri.RegisterYapanBayiId = null;
+                    // RegisterTarihi'ni silmiyoruz, kayıt olarak kalsın
+                }
+                musteri.GuncellenmeTarihi = DateTime.Now;
+                Guncelle(musteri);
+            }
+        }
         // Musteri için özel GetirQueryable metodu
         public IQueryable<Musteri> GetirQueryable(Expression<Func<Musteri, bool>>? filter = null, List<string> includePaths = null)
         {

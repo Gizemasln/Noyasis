@@ -254,13 +254,13 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="Telefon" name="Telefon" placeholder="Telefon" maxlength="20">
+                                        <input type="text" class="form-control" id="Telefon" name="Telefon" placeholder="Telefon" maxlength="20" data-optional="true">
                                         <label for="Telefon">Telefon</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="Bolge" name="Bolge" placeholder="Bölge" maxlength="50">
+                                        <input type="text" class="form-control" id="Bolge" name="Bolge" placeholder="Bölge" maxlength="50" data-optional="true">
                                         <label for="Bolge">Bölge</label>
                                     </div>
                                 </div>
@@ -292,13 +292,13 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="Belde" name="Belde" placeholder="Belde" maxlength="50">
+                                        <input type="text" class="form-control" id="Belde" name="Belde" placeholder="Belde" maxlength="50" data-optional="true">
                                         <label for="Belde">Belde</label>
                                     </div>
                                 </div>
                                 <div class="col-12 mb-3">
                                     <div class="form-floating">
-                                        <textarea class="form-control" id="Adres" name="Adres" placeholder="Adres" style="height: 100px" maxlength="500"></textarea>
+                                        <textarea class="form-control" id="Adres" name="Adres" placeholder="Adres" style="height: 100px" data-optional="true" maxlength="500"></textarea>
                                         <label for="Adres">Adres</label>
                                     </div>
                                 </div>
@@ -634,8 +634,8 @@
                                             <label for="editEmail">Email</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editTelefon" name="Telefon"><label>Telefon</label></div></div>
-                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editBolge" name="Bolge"><label>Bölge</label></div></div>
+                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editTelefon" data-optional="true" name="Telefon"><label>Telefon</label></div></div>
+                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editBolge" data-optional="true" name="Bolge"><label>Bölge</label></div></div>
                                     <div class="col-md-6 mb-3">
                                         <div class="form-floating">
                                             <select class="form-select" id="editIl" name="Il" onchange="ilSecildi(this.value, 'editIlce', 'duzenle')">
@@ -661,8 +661,8 @@
                                             <label for="editIlce">İlçe</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editBelde" name="Belde"><label>Belde</label></div></div>
-                                    <div class="col-12 mb-3"><div class="form-floating"><textarea class="form-control" id="editAdres" name="Adres" style="height:100px"></textarea><label>Adres</label></div></div>
+                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editBelde"data-optional="true" name="Belde"><label>Belde</label></div></div>
+                                    <div class="col-12 mb-3"><div class="form-floating"><textarea class="form-control" id="editAdres" name="Adres" data-optional="true" style="height:100px"></textarea><label>Adres</label></div></div>
                                 </div>
                             </div>
 
@@ -1099,7 +1099,17 @@
                 }
             });
         }
+                const optionalFields = document.querySelectorAll("[data-optional='true']");
 
+        optionalFields.forEach(field => {
+            const observer = new MutationObserver(() => {
+                if (field.hasAttribute("required")) {
+                    field.removeAttribute("required");
+                }
+            });
+
+            observer.observe(field, { attributes: true });
+        });
         // Şifre yenileme işlemi
         function sifreYenile() {
             // Butonu disable et
@@ -2416,13 +2426,7 @@
 
             // Normal müşteri için zorunlu alanları kontrol et
             const zorunluAlanlar = ['TicariUnvan', 'AdSoyad', 'KullaniciAdi', 'Sifre', 'Telefon', 'Bolge', 'Belde', 'Adres'];
-            for (let alan of zorunluAlanlar) {
-                if (!$('#' + alan).val().trim()) {
-                    e.preventDefault();
-                    alert('Lütfen tüm zorunlu alanları doldurun!');
-                    return false;
-                }
-            }
+         
         });
         // Düzenle formu submit kontrolü
         $('#duzenleForm').on('submit', function(e) {
