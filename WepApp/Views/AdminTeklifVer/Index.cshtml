@@ -2723,7 +2723,7 @@ function escapeHtml(text) {
                 console.error('Kullanıcı adı kontrolü hatası:', err);
             }
         }
-        function kaydetGeciciMusteri() {
+            function kaydetGeciciMusteri() {
             const form = $('#yeniMusteriForm')[0];
             if (!form.checkValidity()) {
                 form.reportValidity();
@@ -2738,11 +2738,10 @@ function escapeHtml(text) {
             // Aday müşteri için özel kontroller
             if (adayMi) {
                 const ticariUnvan = $('#yeniTicariUnvan').val() ? $('#yeniTicariUnvan').val().trim() : '';
-                                const adSoyad = $('#yeniAdSoyad').val() ? $('#yeniAdSoyad').val().trim() : '';
-
+                const adSoyad = $('#yeniAdSoyad').val() ? $('#yeniAdSoyad').val().trim() : '';
 
                 if (!ticariUnvan || !adSoyad) {
-                            showToast('Hata', 'Aday müşteri için Ticari Unvan, Ad ve Soyad alanları zorunludur!', false);
+                    showToast('Hata', 'Aday müşteri için Ticari Unvan, Ad ve Soyad alanları zorunludur!', false);
                     return;
                 }
             } else {
@@ -2776,45 +2775,31 @@ function escapeHtml(text) {
             spinner.removeClass('d-none');
             btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Kaydediliyor...');
 
-            // Form verilerini topla - TÜM ALANLAR İÇİN GÜVENLİ ERİŞİM
+            // Form verilerini topla
             const formData = {
-                // Temel Bilgiler
                 TicariUnvan: $('#yeniTicariUnvan').val() ? $('#yeniTicariUnvan').val().trim() : '',
-                              AdSoyad: $('#yeniAdSoyad').val() ? $('#yeniAdSoyad').val().trim() : '', // AdSoyad olarak birleştir
-
+                AdSoyad: $('#yeniAdSoyad').val() ? $('#yeniAdSoyad').val().trim() : '',
                 KullaniciAdi: adayMi ? '' : ($('#yeniKullaniciAdi').val() ? $('#yeniKullaniciAdi').val().trim() : ''),
                 Sifre: adayMi ? '' : ($('#yeniSifre').val() ? $('#yeniSifre').val().trim() : ''),
-
-                // İletişim Bilgileri
                 Email: $('#yeniEmail').length ? ($('#yeniEmail').val() ? $('#yeniEmail').val().trim() : '') : '',
                 Telefon: $('#yeniTelefon').length ? ($('#yeniTelefon').val() ? $('#yeniTelefon').val().trim() : '') : '',
                 Bolge: $('#yeniBolge').length ? ($('#yeniBolge').val() ? $('#yeniBolge').val().trim() : '') : '',
-
-                // İL VE İLÇE ID'LERİ
                 illerId: parseInt($('#yeniIl').val()) || null,
                 ilcelerId: parseInt($('#yeniIlce').val()) || null,
                 Belde: $('#yeniBelde').length ? ($('#yeniBelde').val() ? $('#yeniBelde').val().trim() : '') : '',
                 Adres: $('#yeniAdres').length ? ($('#yeniAdres').val() ? $('#yeniAdres').val().trim() : '') : '',
-
-                // Vergi Bilgileri
                 TCVNo: $('#yeniTCVNo').length ? ($('#yeniTCVNo').val() ? $('#yeniTCVNo').val().trim() : '') : '',
                 VergiDairesi: $('#yeniVergiDairesi').length ? ($('#yeniVergiDairesi').val() ? $('#yeniVergiDairesi').val().trim() : '') : '',
                 KepAdresi: $('#yeniKepAdresi').length ? ($('#yeniKepAdresi').val() ? $('#yeniKepAdresi').val().trim() : '') : '',
                 WebAdresi: $('#yeniWebAdresi').length ? ($('#yeniWebAdresi').val() ? $('#yeniWebAdresi').val().trim() : '') : '',
                 Aciklama: $('#yeniAciklama').length ? ($('#yeniAciklama').val() ? $('#yeniAciklama').val().trim() : '') : '',
-
-                // Alpemix Bilgileri
                 AlpemixFirmaAdi: $('#yeniAlpemixFirmaAdi').length ? ($('#yeniAlpemixFirmaAdi').val() ? $('#yeniAlpemixFirmaAdi').val().trim() : '') : '',
                 AlpemixGrupAdi: $('#yeniAlpemixGrupAdi').length ? ($('#yeniAlpemixGrupAdi').val() ? $('#yeniAlpemixGrupAdi').val().trim() : '') : '',
                 AlpemixSifre: $('#yeniAlpemixSifre').length ? ($('#yeniAlpemixSifre').val() ? $('#yeniAlpemixSifre').val().trim() : '') : '',
-
-                // İlişkili Alanlar
                 MusteriTipiId: musteriTipiId,
                 MusteriDurumuId: musteriDurumuId,
                 BayiId: parseInt($('#yeniBayiId').val()) || null,
                 Diger: diger,
-
-                // Dosyalar
                 Logo: $('#yeniLogo').length && $('#yeniLogo').val() ? $('#yeniLogo')[0].files[0]?.name : '',
                 Imza: $('#yeniImza').length && $('#yeniImza').val() ? $('#yeniImza')[0].files[0]?.name : ''
             };
@@ -2832,7 +2817,7 @@ function escapeHtml(text) {
                         geciciMusteriData = formData;
                         geciciMusteri = formData;
 
-                        const musteriAdi = res.musteriAdi || `${formData.Ad} ${formData.Soyad}`.trim() || formData.TicariUnvan;
+                        const musteriAdi = res.musteriAdi || formData.AdSoyad || formData.TicariUnvan;
                         const durumText = adayMi ? ' (Aday)' : ' (Yeni)';
 
                         const newOption = new Option(musteriAdi + durumText, -1, true, true);
@@ -2847,7 +2832,51 @@ function escapeHtml(text) {
                         $('#yeniIlce').html('<option value="">Önce il seçiniz</option>');
                         $('#yeniKullaniciAdiKontrol').html('<i class="fas fa-info-circle me-1"></i> Kullanıcı adı otomatik oluşturulur.');
                     } else {
-                        showToast('Hata', res.message || 'Müşteri kaydedilemedi.', false);
+                        // VKN çakışması durumunda özel mesaj
+                        if (res.type === 'registerBlocked') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'VKN Çakışması!',
+                                html: `
+                                    <div class="text-center">
+                                        <i class="fas fa-exclamation-triangle text-danger fa-4x mb-3"></i>
+                                        <p class="mb-2"><strong>${res.message}</strong></p>
+                                        <div class="alert alert-secondary text-start mt-3 p-2 small">
+                                            <div><strong>VKN:</strong> ${res.vkn}</div>
+                                            <div><strong>Kayıt Tarihi:</strong> ${res.registerTarihi || '-'}</div>
+                                            <div><strong>Kaydeden Bayi:</strong> ${res.bayiAdi}</div>
+                                        </div>
+                                        <p class="text-muted mt-2 small">
+                                            Bu VKN başka bir bayi tarafından kaydedildiği için kullanılamaz.
+                                        </p>
+                                    </div>
+                                `,
+                                confirmButtonText: 'Tamam'
+                            });
+                        } else if (res.type === 'vknExists') {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'VKN Zaten Mevcut!',
+                                html: `
+                                    <div class="text-center">
+                                        <i class="fas fa-exclamation-circle text-warning fa-4x mb-3"></i>
+                                        <p class="mb-2"><strong>${res.message}</strong></p>
+                                        <div class="alert alert-secondary text-start mt-3 p-2 small">
+                                            <div><strong>VKN:</strong> ${res.vkn}</div>
+                                            <div><strong>Müşteri ID:</strong> ${res.mevcutMusteriId}</div>
+                                            <div><strong>Müşteri Adı:</strong> ${res.mevcutMusteriAdi || '-'}</div>
+                                            <div><strong>Unvan:</strong> ${res.mevcutMusteriUnvan || '-'}</div>
+                                        </div>
+                                        <p class="text-muted mt-2 small">
+                                            Bu VKN ile kayıtlı bir müşteri zaten var. Lütfen farklı bir VKN kullanın.
+                                        </p>
+                                    </div>
+                                `,
+                                confirmButtonText: 'Tamam'
+                            });
+                        } else {
+                            showToast('Hata', res.message || 'Müşteri kaydedilemedi.', false);
+                        }
                     }
                 },
                 error: function (xhr, status, error) {
@@ -2861,6 +2890,9 @@ function escapeHtml(text) {
                 }
             });
         }
+
+
+
         function doldurYeniMusteriFormu(data) {
             $('#yeniTicariUnvan').val(data.TicariUnvan || '');
                        $('#yeniAdSoyad').val(data.AdSoyad || ''); // Ad + Soyad yerine AdSoyad

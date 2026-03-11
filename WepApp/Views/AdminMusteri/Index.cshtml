@@ -2382,93 +2382,149 @@
                         }
                     }
                 }
-        // Ekle formu submit kontrolü
+              // Ekle formu submit
         $('#ekleForm').on('submit', function(e) {
-            const durumId = $('#MusteriDurumuId').val();
-            const tcvNo = $('#TCVNo').val().trim();
+            e.preventDefault();
 
-            // Aday müşteri için özel kontroller
-            if (durumId == 2) {
-                const ticariUnvan = $('#TicariUnvan').val().trim();
-                const adSoyad = $('#AdSoyad').val().trim();
+            const formData = new FormData(this);
+            const submitBtn = $(this).find('button[type="submit"]');
+            submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Kaydediliyor...');
 
-                if (!ticariUnvan || !adSoyad) {
-                    e.preventDefault();
-                    alert('Aday müşteri için Ticari Unvan ve Ad Soyad alanları zorunludur!');
-                    return false;
-                }
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    console.log('Ekle response:', response); // Debug için
 
-                // Email opsiyonel ama varsa formatını kontrol et
-                const email = $('#Email').val().trim();
-                if (email && !isValidEmail(email)) {
-                    e.preventDefault();
-                    alert('Geçerli bir email adresi giriniz!');
-                    return false;
-                }
-
-                // Aday müşteri için required olan ama görünmeyen alanları geçici olarak devre dışı bırak
-                $('#Telefon, #Bolge, #Belde, #Adres, #Il, #Ilce, #KullaniciAdi, #Sifre').each(function() {
-                    if ($(this).prop('readOnly')) {
-                        $(this).removeAttr('required');
+                    // Response bir string mi kontrol et (bazen redirect dönebilir)
+                    if (typeof response === 'string') {
+                        // HTML sayfası döndüyse, sayfayı yenile
+                        if (response.includes('<!DOCTYPE html>')) {
+                            window.location.reload();
+                            return;
+                        }
                     }
-                });
 
-                return true; // Aday müşteri için diğer kontrolleri atla
-            }
+                    // JSON response kontrolü
+                    if (response && typeof response === 'object') {
+                        if (response.success) {
+                            if (response.redirectUrl) {
+                                window.location.href = response.redirectUrl;
+                            } else {
+                                window.location.reload();
+                            }
+                        } else {
+                            // Hata mesajını göster - modal kapanmaz
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata!',
+                                text: response.message || 'Bilinmeyen bir hata oluştu.',
+                                confirmButtonText: 'Tamam'
+                            });
+                            submitBtn.prop('disabled', false).html('Kaydet');
+                        }
+                    } else {
+                        // Beklenmeyen response, sayfayı yenile
+                        window.location.reload();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', xhr.responseText);
 
-            // Normal müşteri kontrolleri
-            // VKN/TCKN kontrolü (eğer doluysa)
-            if (tcvNo && tcvNo.length !== 10 && tcvNo.length !== 11) {
-                e.preventDefault();
-                alert('Vergi No 10, TC Kimlik No 11 karakter olmalıdır!');
-                return false;
-            }
+                    let errorMessage = 'Bir hata oluştu: ' + error;
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.message) {
+                            errorMessage = response.message;
+                        }
+                    } catch(e) {}
 
-            // Normal müşteri için zorunlu alanları kontrol et
-            const zorunluAlanlar = ['TicariUnvan', 'AdSoyad', 'KullaniciAdi', 'Sifre', 'Telefon', 'Bolge', 'Belde', 'Adres'];
-         
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata!',
+                        text: errorMessage,
+                        confirmButtonText: 'Tamam'
+                    });
+                    submitBtn.prop('disabled', false).html('Kaydet');
+                }
+            });
         });
-        // Düzenle formu submit kontrolü
+
+        // Düzenle formu submit
         $('#duzenleForm').on('submit', function(e) {
-            const durumId = $('#editMusteriDurumuId').val();
-            const tcvNo = $('#editTCVNo').val().trim();
+            e.preventDefault();
 
-            // Aday müşteri için özel kontroller
-            if (durumId == 2) {
-                const ticariUnvan = $('#editTicariUnvan').val().trim();
-                const adSoyad = $('#editAdSoyad').val().trim();
+            const formData = new FormData(this);
+            const submitBtn = $(this).find('button[type="submit"]');
+            submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Güncelleniyor...');
 
-                if (!ticariUnvan || !adSoyad) {
-                    e.preventDefault();
-                    alert('Aday müşteri için Ticari Unvan ve Ad Soyad alanları zorunludur!');
-                    return false;
-                }
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    console.log('Düzenle response:', response); // Debug için
 
-                // Email opsiyonel ama varsa formatını kontrol et
-                const email = $('#editEmail').val().trim();
-                if (email && !isValidEmail(email)) {
-                    e.preventDefault();
-                    alert('Geçerli bir email adresi giriniz!');
-                    return false;
-                }
-
-                // Aday müşteri için required olan ama görünmeyen alanları geçici olarak devre dışı bırak
-                $('#editTelefon, #editBolge, #editBelde, #editAdres, #editIl, #editIlce, #editKullaniciAdi, #editSifre').each(function() {
-                    if ($(this).prop('readOnly')) {
-                        $(this).removeAttr('required');
+                    // Response bir string mi kontrol et (bazen redirect dönebilir)
+                    if (typeof response === 'string') {
+                        // HTML sayfası döndüyse, sayfayı yenile
+                        if (response.includes('<!DOCTYPE html>')) {
+                            window.location.reload();
+                            return;
+                        }
                     }
-                });
 
-                return true; // Aday müşteri için diğer kontrolleri atla
-            }
+                    // JSON response kontrolü
+                    if (response && typeof response === 'object') {
+                        if (response.success) {
+                            if (response.redirectUrl) {
+                                window.location.href = response.redirectUrl;
+                            } else {
+                                window.location.reload();
+                            }
+                        } else {
+                            // Hata mesajını göster - modal kapanmaz
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata!',
+                                text: response.message || 'Bilinmeyen bir hata oluştu.',
+                                confirmButtonText: 'Tamam'
+                            });
+                            submitBtn.prop('disabled', false).html('Güncelle');
+                        }
+                    } else {
+                        // Beklenmeyen response, sayfayı yenile
+                        window.location.reload();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', xhr.responseText);
 
-            // Normal müşteri kontrolleri
-            if (tcvNo && tcvNo.length !== 10 && tcvNo.length !== 11) {
-                e.preventDefault();
-                alert('Vergi No 10, TC Kimlik No 11 karakter olmalıdır!');
-                return false;
-            }
+                    let errorMessage = 'Bir hata oluştu: ' + error;
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.message) {
+                            errorMessage = response.message;
+                        }
+                    } catch(e) {}
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata!',
+                        text: errorMessage,
+                        confirmButtonText: 'Tamam'
+                    });
+                    submitBtn.prop('disabled', false).html('Güncelle');
+                }
+            });
         });
+
+
               // Müşteri durumuna göre alanları aktif/pasif yap
         function toggleAdayMusteriAlanları(durumId, modalTipi = 'ekle') {
             const prefix = modalTipi === 'ekle' ? '' : 'edit';

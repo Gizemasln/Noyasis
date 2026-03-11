@@ -785,12 +785,48 @@ namespace WepApp.Controllers
         {
             try
             {
+                // ============= VKN KONTROLÜ =============
+                if (!string.IsNullOrEmpty(model.TCVNo))
+                {
+                    Musteri mevcutMusteri = _musteriRepo.VknIleMusteriBul(model.TCVNo);
+
+                    if (mevcutMusteri != null)
+                    {
+                        if (mevcutMusteri.Register)
+                        {
+                            string bayiAdi = mevcutMusteri.RegisterYapanBayi?.Unvan ?? "başka bir bayi";
+                            return Json(new
+                            {
+                                success = false,
+                                type = "registerBlocked",
+                                message = $"Bu VKN'ye ({model.TCVNo}) sahip müşteri {bayiAdi} tarafından kaydedilmiştir. Bu müşteri eklenemez.",
+                                registerTarihi = mevcutMusteri.RegisterTarihi?.ToString("dd.MM.yyyy HH:mm"),
+                                bayiAdi = bayiAdi,
+                                vkn = model.TCVNo
+                            });
+                        }
+                        else
+                        {
+                            // Register = 0 olan müşteri - uyarı göster
+                            return Json(new
+                            {
+                                success = false,
+                                type = "vknExists",
+                                message = $"Bu VKN'ye ({model.TCVNo}) sahip bir müşteri zaten mevcut. (Müşteri ID: {mevcutMusteri.Id})",
+                                mevcutMusteriId = mevcutMusteri.Id,
+                                mevcutMusteriAdi = mevcutMusteri.AdSoyad,
+                                mevcutMusteriUnvan = mevcutMusteri.TicariUnvan,
+                                vkn = model.TCVNo
+                            });
+                        }
+                    }
+                }
+
                 // Session'a geçici müşteri kaydet
                 var geciciMusteri = new
                 {
                     TicariUnvan = model.TicariUnvan ?? "",
-                    AdSoyad = model.AdSoyad ?? "", // Ad + Soyad yerine AdSoyad
-
+                    AdSoyad = model.AdSoyad ?? "",
                     KullaniciAdi = model.KullaniciAdi ?? "",
                     Sifre = model.Sifre ?? "",
                     Email = model.Email ?? "",
@@ -823,8 +859,8 @@ namespace WepApp.Controllers
                 {
                     success = true,
                     message = "Müşteri bilgileri geçici olarak kaydedildi.",
-                    geciciMusteriId = -1, // Geçici ID
-                    musteriAdi = model.AdSoyad // Ad + Soyad yerine AdSoyad
+                    geciciMusteriId = -1,
+                    musteriAdi = model.AdSoyad
                 });
             }
             catch (Exception ex)

@@ -768,17 +768,21 @@ namespace WepApp.Controllers
                     }
                 }
 
+                // Ekle metodunda başarılı durum
                 TempData["Success"] = "Müşteri ve yetkililer başarıyla eklendi.";
                 TempData["YeniMusteriId"] = model.Id;
+                return Json(new { success = true, redirectUrl = Url.Action("Index") });
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Müşteri eklenirken bir hata oluştu: " + ex.Message;
-                // Hata durumunda loglama yapılabilir
-                // _logger.LogError(ex, "Müşteri eklenirken hata oluştu");
+                return Json(new
+                {
+                    success = false,
+                    message = "Müşteri eklenirken bir hata oluştu: " + ex.Message
+                });
             }
 
-            return RedirectToAction("Index");
+        
         }
 
         // ============= YARDIMCI METOD - NORMAL MÜŞTERİ EKLE (Register Kontrolü Olmadan) =============
@@ -1140,12 +1144,16 @@ namespace WepApp.Controllers
                 }
 
                 TempData["Success"] = "Müşteri ve yeni yetkililer başarıyla güncellendi.";
+                return Json(new { success = true, redirectUrl = Url.Action("Index") });
             }
             catch (Exception ex)
             {
-                TempData["Error"] = "Müşteri güncellenirken bir hata oluştu: " + ex.Message;
+                return Json(new
+                {
+                    success = false,
+                    message = "Müşteri güncellenirken bir hata oluştu: " + ex.Message
+                });
             }
-            return RedirectToAction("Index");
         }
         [HttpGet]
         public IActionResult Getir(int id)
