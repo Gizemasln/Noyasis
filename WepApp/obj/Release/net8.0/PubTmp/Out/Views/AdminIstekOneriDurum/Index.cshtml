@@ -4,6 +4,209 @@
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
 
+<style>
+    /* Filtreleme stilleri - Diğer sayfalarla uyumlu */
+    .card-header .flex-wrap {
+        gap: 15px;
+    }
+
+    .card-header .gap-2 {
+        gap: 0.5rem !important;
+    }
+
+    .search-box {
+        position: relative;
+    }
+
+        .search-box .input-group {
+            transition: all 0.3s ease;
+            width: 200px;
+        }
+
+            .search-box .input-group:focus-within {
+                width: 250px;
+            }
+
+        .search-box .form-control:focus {
+            background-color: #fff !important;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+        }
+
+    #durumAramaTemizle {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: transparent;
+        z-index: 5;
+        color: #6c757d;
+        padding: 0.25rem 0.5rem;
+    }
+
+        #durumAramaTemizle:hover {
+            color: #dc3545;
+        }
+
+    .dropdown-menu {
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+        border: none;
+    }
+
+        .dropdown-menu .form-control-sm,
+        .dropdown-menu .form-select-sm {
+            border: 1px solid #dee2e6;
+        }
+
+            .dropdown-menu .form-control-sm:focus,
+            .dropdown-menu .form-select-sm:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+            }
+
+    #durumFiltreTemizleBtn {
+        transition: all 0.3s ease;
+    }
+
+        #durumFiltreTemizleBtn:hover {
+            transform: scale(1.1);
+        }
+
+    /* Aktif filtre butonu stilleri */
+    .btn-primary .fas {
+        color: white;
+    }
+
+    /* Filtre etiketleri */
+    #aktifFiltreler {
+        background-color: #f8f9fa;
+        border-radius: 0.35rem;
+        padding: 10px;
+        border: 1px solid #e3e6f0;
+        margin-top: 15px !important;
+    }
+
+        #aktifFiltreler .badge {
+            font-size: 0.85rem;
+            padding: 0.5rem 0.75rem;
+        }
+
+    /* Tablo satırları için geçiş efekti */
+    #istekOneriDurumTablosu tr {
+        transition: all 0.3s ease;
+    }
+
+        #istekOneriDurumTablosu tr[style*="display: none"] {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+    /* Responsive düzenlemeler */
+    media (max-width: 768px) {
+        .card-header .d-flex
+
+    {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+
+    .card-header .gap-2 {
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .search-box {
+        width: 100% !important;
+        margin-bottom: 5px;
+    }
+
+        .search-box .input-group {
+            width: 100% !important;
+        }
+
+            .search-box .input-group:focus-within {
+                width: 100% !important;
+            }
+
+    .card-header .dropdown {
+        flex: 1;
+    }
+
+    .islem-butonlari-alani {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    #aktifFiltreler .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 10px;
+    }
+
+    #filtreEtiketleri {
+        flex-wrap: wrap;
+    }
+
+    }
+    .table-actions {
+        white-space: nowrap;
+        width: 120px;
+    }
+
+    .card {
+        margin-top: 70px;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    /* Seçim satırı için cursor pointer */
+    tr[data-durum-id] {
+        cursor: pointer;
+    }
+
+    /* Seçili satır efekti */
+    tr.table-active {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+
+    /* İşlem butonları alanı */
+    .islem-butonlari-alani {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .secili-bilgi {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+
+        .secili-bilgi i {
+            font-size: 1rem;
+        }
+
+    /* Buton stilleri */
+    .aksiyon-btn {
+        transition: all 0.2s;
+    }
+
+        .aksiyon-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .aksiyon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+</style>
+
 <div class="row">
     <div class="col-md-12">
         @if (TempData["Success"] != null)
@@ -21,49 +224,170 @@
             </div>
         }
         <div class="card" style="margin-top: 70px;">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span>İstek/Öneri Durumları</span>
-                <button class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                    <i class="fas fa-plus"></i> Yeni Durum Ekle
-                </button>
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+                <h5 class="mb-0">İstek/Öneri Durumları</h5>
+
+                <!-- FİLTRELEME ALANI - Diğer sayfalarla uyumlu -->
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Arama Kutusu -->
+                    <div class="search-box">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" id="durumArama" class="form-control form-control-sm border-0 bg-light"
+                                   placeholder="Durum ara..." style="box-shadow: none;">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" id="durumAramaTemizle" style="display:none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sıra Filtresi -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="siraFiltreBtn">
+                            <i class="fas fa-sort-numeric-down me-1"></i> Sıra
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
+                            <div class="mb-2">
+                                <label class="form-label small">Min Sıra</label>
+                                <input type="number" id="filtreMinSira" class="form-control form-control-sm" min="1">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label small">Max Sıra</label>
+                                <input type="number" id="filtreMaxSira" class="form-control form-control-sm" min="1">
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="durumSiraFiltreTemizle()">Temizle</button>
+                                <button class="btn btn-sm btn-primary" onclick="durumSiraFiltreUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tarih Filtreleri -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="tarihFiltreBtn">
+                            <i class="fas fa-calendar-alt me-1"></i> Tarih
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 300px;">
+                            <div class="mb-2">
+                                <label class="form-label small">Eklenme Tarihi Aralığı</label>
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label small">Başlangıç</label>
+                                <input type="date" id="filtreBaslangicTarih" class="form-control form-control-sm">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label small">Bitiş</label>
+                                <input type="date" id="filtreBitisTarih" class="form-control form-control-sm">
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="durumTarihFiltreTemizle()">Temizle</button>
+                                <button class="btn btn-sm btn-primary" onclick="durumTarihFiltreUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sıralama -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="siralamaFiltreBtn">
+                            <i class="fas fa-sort-amount-down me-1"></i> Sıralama
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 200px;">
+                            <div class="mb-2">
+                                <select class="form-select form-select-sm" id="siralamaFiltre">
+                                    <option value="sira_artan">Sıra (Artan)</option>
+                                    <option value="sira_azalan">Sıra (Azalan)</option>
+                                    <option value="yeni">En Yeni → En Eski</option>
+                                    <option value="eski">En Eski → En Yeni</option>
+                                    <option value="adi_az">İsim (A-Z)</option>
+                                    <option value="adi_za">İsim (Z-A)</option>
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-primary" onclick="durumSiralamaUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtre Temizleme Butonu -->
+                    <button class="btn btn-sm btn-outline-danger" onclick="durumTumFiltreleriTemizle()"
+                            title="Tüm filtreleri temizle" id="durumFiltreTemizleBtn" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Seçili Kayıt Bilgisi ve İşlem Butonları (mevcut kod) -->
+                <div class="d-flex align-items-center gap-3">
+                    <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                        <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                            <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-warning aksiyon-btn" id="seciliDuzenleBtn" data-button-permission="duzenle" title="Seçili Durumu Düzenle" disabled>
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger aksiyon-btn" id="seciliSilBtn" data-button-permission="sil" title="Seçili Durumu Sil" disabled>
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Yeni Ekle Butonu -->
+                    <button class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni Durum Ekle
+                    </button>
+                </div>
             </div>
-            <div class="card-body">
+
+            <!-- Aktif Filtreler -->
+            <div class="row mt-3" id="aktifFiltreler" style="display: none;">
+                <div class="col-12">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-light text-dark me-2 p-2">
+                            <i class="fas fa-filter me-1"></i>Aktif Filtreler:
+                        </span>
+                        <div id="filtreEtiketleri" class="d-flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+            </div>            <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover" id="durumTablosu">
                         <thead>
                             <tr>
+                                <th width="40">Seç</th>
                                 <th style="width: 60px;">Sıra</th>
                                 <th>Durum Adı</th>
                                 <th>Eklenme Tarihi</th>
-                                <th style="width: 150px;">İşlemler</th>
+                                <!-- İşlemler sütunu kaldırıldı -->
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="istekOneriDurumTablosu">
                             @if (ViewBag.IstekOneriDurumlar != null && ViewBag.IstekOneriDurumlar.Count > 0)
                             {
                                 foreach (var item in ViewBag.IstekOneriDurumlar)
                                 {
-                                    <tr data-id="@item.Id">
+                                    <tr data-durum-id="@item.Id" data-durum-adi="@item.Adi" data-durum-sira="@item.Sira" class="durum-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input durum-sec-radio" type="radio" name="seciliDurumRadio" value="@item.Id" id="secim_@item.Id">
+                                            </div>
+                                        </td>
                                         <td class="text-center">
                                             <span class="badge bg-secondary">@item.Sira</span>
                                         </td>
                                         <td><strong>@item.Adi</strong></td>
                                         <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
-                                        <td>
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id, '@item.Adi.Replace("'", "\\'")', @item.Sira)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.Adi.Replace("'", "\\'")')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
                                     </tr>
                                 }
                             }
                             else
                             {
                                 <tr>
-                                    <td colspan="4" class="text-center py-4">
+                                    <td colspan="5" class="text-center py-4">
                                         <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                         <p>Henüz istek/öneri durumu eklenmemiş.</p>
                                         <button class="btn btn-primary" data-bs-toggle="modal" data-button-permission="ekle" data-bs-target="#ekleModal">
@@ -85,7 +409,7 @@
 <div class="modal fade" id="ekleModal">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Ekle","AdminIstekOneriDurum")" method="post" id="ekleForm">
+            <form action="@Url.Action("Ekle", "AdminIstekOneriDurum")" method="post" id="ekleForm">
                 @Html.AntiForgeryToken()
                 <div class="modal-header">
                     <h5 class="modal-title">Yeni İstek/Öneri Durumu Ekle</h5>
@@ -101,7 +425,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Sıra Numarası</label>
-                        <input type="number" class="form-control" name="Sira" id="Sira"
+                        <input  class="form-control" name="Sira" id="Sira"
                                min="1" value="" oninput="kontrolEtSira()">
                         <div id="siraMesaj" class="form-text">
                             <small class="text-muted">Boş bırakırsanız otomatik sıralanacaktır.</small>
@@ -121,7 +445,7 @@
 <div class="modal fade" id="duzenleModal">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Guncelle","AdminIstekOneriDurum")" method="post" id="duzenleForm">
+            <form action="@Url.Action("Guncelle", "AdminIstekOneriDurum")" method="post" id="duzenleForm">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="Id" id="editId">
                 <div class="modal-header">
@@ -136,7 +460,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Sıra Numarası *</label>
-                        <input type="number" class="form-control" name="Sira" id="editSira" min="1" required oninput="kontrolEtSira(true)">
+                        <input  class="form-control" name="Sira" id="editSira" min="1" required oninput="kontrolEtSira(true)">
                         <div id="editSiraMesaj" class="form-text"></div>
                     </div>
                 </div>
@@ -153,7 +477,7 @@
 <div class="modal fade" id="silModal">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Sil","AdminIstekOneriDurum")" method="post">
+            <form action="@Url.Action("Sil", "AdminIstekOneriDurum")" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="Id" id="silId">
                 <div class="modal-header">
@@ -172,95 +496,565 @@
         </div>
     </div>
 </div>
-
 @section Script {
-    <!-- jQuery UI sortable tamamen kaldırıldı -->
+    <!-- Toastr için gerekli script ve CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        // Global değişkenler
+        let adiGecerli = false;
+        let siraGecerli = true;
+        let duzenleme = false;
 
-            let adiGecerli = false;
-            let siraGecerli = true;
-            let duzenleme = false;
+        // ============= GLOBAL FONKSİYONLAR (oninput için) =============
+        window.kontrolEtAdi = function (duzenle = false) {
+            const input = duzenle ? $('#editAdi') : $('#Adi');
+            const mesaj = duzenle ? $('#editAdiMesaj') : $('#adiMesaj');
+            const val = input.val().trim();
+            const istekOneriDurumId = duzenle ? $('#editId').val() : null;
 
-            window.kontrolEtAdi = function (duzenle = false) {
-                const input = duzenle ? $('#editAdi') : $('#Adi');
-                const mesaj = duzenle ? $('#editAdiMesaj') : $('#adiMesaj');
-                const val = input.val().trim();
-                const istekOneriDurumId = duzenle ? $('#editId').val() : null;
+            if (val === '') {
+                mesaj.html('<small class="text-muted">Durum adı giriniz.</small>');
+                adiGecerli = false;
+            } else if (val.length < 2) {
+                mesaj.html('<small class="text-warning">En az 2 karakter.</small>');
+                adiGecerli = false;
+            } else {
+                fetch('@Url.Action("AdiKontrol", "AdminIstekOneriDurum")?adi=' + encodeURIComponent(val) + '&istekOneriDurumId=' + (istekOneriDurumId || ''))
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d.success) {
+                            mesaj.html('<small class="text-success">' + d.message + '</small>');
+                            adiGecerli = true;
+                        } else {
+                            mesaj.html('<small class="text-danger">' + d.message + '</small>');
+                            adiGecerli = false;
+                        }
+                        guncelleButon();
+                    })
+                    .catch(() => {
+                        mesaj.html('<small class="text-danger">Kontrol hatası.</small>');
+                        adiGecerli = false;
+                        guncelleButon();
+                    });
+                return;
+            }
+            guncelleButon();
+        };
 
-                if (val === '') {
-                    mesaj.html('<small class="text-muted">Durum adı giriniz.</small>');
-                    adiGecerli = false;
-                } else if (val.length < 2) {
-                    mesaj.html('<small class="text-warning">En az 2 karakter.</small>');
-                    adiGecerli = false;
+        window.kontrolEtSira = function (duzenle = false) {
+            const input = duzenle ? $('#editSira') : $('#Sira');
+            const mesaj = duzenle ? $('#editSiraMesaj') : $('#siraMesaj');
+            const val = parseInt(input.val());
+            const istekOneriDurumId = duzenle ? $('#editId').val() : null;
+
+            if (duzenle) {
+                if (isNaN(val) || val < 1) {
+                    mesaj.html('<small class="text-danger">Geçerli bir sıra numarası giriniz.</small>');
+                    siraGecerli = false;
                 } else {
-                    fetch(`@Url.Action("AdiKontrol", "AdminIstekOneriDurum")?adi=${encodeURIComponent(val)}&istekOneriDurumId=${istekOneriDurumId || ''}`)
+                    fetch('@Url.Action("SiraKontrol", "AdminIstekOneriDurum")?sira=' + val + '&istekOneriDurumId=' + (istekOneriDurumId || ''))
                         .then(r => r.json())
                         .then(d => {
                             if (d.success) {
-                                mesaj.html(`<small class="text-success">${d.message}</small>`);
-                                adiGecerli = true;
+                                mesaj.html('<small class="text-success">' + d.message + '</small>');
+                                siraGecerli = true;
                             } else {
-                                mesaj.html(`<small class="text-danger">${d.message}</small>`);
-                                adiGecerli = false;
+                                mesaj.html('<small class="text-danger">' + d.message + '</small>');
+                                siraGecerli = false;
                             }
-                            guncelleButon();
-                        })
-                        .catch(() => {
-                            mesaj.html('<small class="text-danger">Kontrol hatası.</small>');
-                            adiGecerli = false;
                             guncelleButon();
                         });
                     return;
                 }
-                guncelleButon();
-            };
-
-            window.kontrolEtSira = function (duzenle = false) {
-                const input = duzenle ? $('#editSira') : $('#Sira');
-                const mesaj = duzenle ? $('#editSiraMesaj') : $('#siraMesaj');
-                const val = parseInt(input.val());
-                const istekOneriDurumId = duzenle ? $('#editId').val() : null;
-
-                if (duzenle) {
-                    if (isNaN(val) || val < 1) {
-                        mesaj.html('<small class="text-danger">Geçerli bir sıra numarası giriniz.</small>');
-                        siraGecerli = false;
-                    } else {
-                        fetch(`@Url.Action("SiraKontrol", "AdminIstekOneriDurum")?sira=${val}&istekOneriDurumId=${istekOneriDurumId || ''}`)
-                            .then(r => r.json())
-                            .then(d => {
-                                if (d.success) {
-                                    mesaj.html(`<small class="text-success">${d.message}</small>`);
-                                    siraGecerli = true;
-                                } else {
-                                    mesaj.html(`<small class="text-danger">${d.message}</small>`);
-                                    siraGecerli = false;
-                                }
-                                guncelleButon();
-                            });
-                        return;
-                    }
+            } else {
+                if (val && val < 1) {
+                    mesaj.html('<small class="text-danger">Sıra numarası 1 veya daha büyük olmalıdır.</small>');
+                    siraGecerli = false;
                 } else {
-                    if (val && val < 1) {
-                        mesaj.html('<small class="text-danger">Sıra numarası 1 veya daha büyük olmalıdır.</small>');
-                        siraGecerli = false;
-                    } else {
-                        siraGecerli = true;
-                    }
-                }
-                guncelleButon();
-            };
-
-            function guncelleButon() {
-                const modal = duzenleme ? '#duzenleModal' : '#ekleModal';
-                if (duzenleme) {
-                    $(modal).find('button[type="submit"]').prop('disabled', !(adiGecerli && siraGecerli));
-                } else {
-                    $(modal).find('button[type="submit"]').prop('disabled', !adiGecerli);
+                    siraGecerli = true;
                 }
             }
+            guncelleButon();
+        };
+
+        function guncelleButon() {
+            const modal = duzenleme ? '#duzenleModal' : '#ekleModal';
+            if (duzenleme) {
+                $(modal).find('button[type="submit"]').prop('disabled', !(adiGecerli && siraGecerli));
+            } else {
+                $(modal).find('button[type="submit"]').prop('disabled', !adiGecerli);
+            }
+        }
+
+        // DOM yüklendiğinde çalışacak kodlar
+        $(document).ready(function() {
+            // ============= FİLTRELEME SİSTEMİ =============
+            let durumAktifFiltreler = {
+                arama: '',
+                minSira: null,
+                maxSira: null,
+                baslangicTarih: null,
+                bitisTarih: null,
+                siralama: 'sira_artan'
+            };
+
+            // Toastr ayarları
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            let suAnSeciliDurumId = null;
+
+            // ============= FİLTRELEME FONKSİYONLARI =============
+
+            // Arama fonksiyonu
+            function durumAramaFiltrele() {
+                const aramaInput = document.getElementById('durumArama');
+                const temizleBtn = document.getElementById('durumAramaTemizle');
+
+                if (aramaInput && temizleBtn) {
+                    const kelime = aramaInput.value.trim().toLowerCase();
+
+                    // Temizle butonunu göster/gizle
+                    temizleBtn.style.display = kelime ? 'block' : 'none';
+
+                    durumAktifFiltreler.arama = kelime;
+                    filtreEtiketleriniGoster();
+                    filtreleVeSirala();
+                }
+            }
+
+            // Arama inputuna event listener ekle
+            const aramaInput = document.getElementById('durumArama');
+            const temizleBtn = document.getElementById('durumAramaTemizle');
+
+            if (aramaInput) {
+                aramaInput.addEventListener('input', durumAramaFiltrele);
+                aramaInput.addEventListener('keyup', durumAramaFiltrele);
+            }
+
+            if (temizleBtn) {
+                temizleBtn.addEventListener('click', function () {
+                    aramaInput.value = '';
+                    durumAramaFiltrele();
+                    aramaInput.focus();
+                });
+            }
+
+            // Sıra Filtresi Uygula
+            window.durumSiraFiltreUygula = function() {
+                const minInput = document.getElementById('filtreMinSira');
+                const maxInput = document.getElementById('filtreMaxSira');
+
+                durumAktifFiltreler.minSira = minInput.value ? parseInt(minInput.value) : null;
+                durumAktifFiltreler.maxSira = maxInput.value ? parseInt(maxInput.value) : null;
+
+                // Dropdown'u kapat
+                const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('siraFiltreBtn'));
+                if (dropdown) dropdown.hide();
+
+                filtreEtiketleriniGoster();
+                filtreleVeSirala();
+            };
+
+            // Sıra Filtresi Temizle
+            window.durumSiraFiltreTemizle = function() {
+                document.getElementById('filtreMinSira').value = '';
+                document.getElementById('filtreMaxSira').value = '';
+                durumAktifFiltreler.minSira = null;
+                durumAktifFiltreler.maxSira = null;
+                filtreEtiketleriniGoster();
+                filtreleVeSirala();
+            };
+
+            // Tarih Filtresi Uygula
+            window.durumTarihFiltreUygula = function() {
+                const baslangicInput = document.getElementById('filtreBaslangicTarih');
+                const bitisInput = document.getElementById('filtreBitisTarih');
+
+                durumAktifFiltreler.baslangicTarih = baslangicInput.value || null;
+                durumAktifFiltreler.bitisTarih = bitisInput.value || null;
+
+                // Dropdown'u kapat
+                const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('tarihFiltreBtn'));
+                if (dropdown) dropdown.hide();
+
+                filtreEtiketleriniGoster();
+                filtreleVeSirala();
+            };
+
+            // Tarih Filtresi Temizle
+            window.durumTarihFiltreTemizle = function() {
+                document.getElementById('filtreBaslangicTarih').value = '';
+                document.getElementById('filtreBitisTarih').value = '';
+                durumAktifFiltreler.baslangicTarih = null;
+                durumAktifFiltreler.bitisTarih = null;
+                filtreEtiketleriniGoster();
+                filtreleVeSirala();
+            };
+
+            // Sıralama Uygula
+            window.durumSiralamaUygula = function() {
+                const siralama = document.getElementById('siralamaFiltre').value;
+                durumAktifFiltreler.siralama = siralama;
+
+                // Dropdown'u kapat
+                const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('siralamaFiltreBtn'));
+                if (dropdown) dropdown.hide();
+
+                filtreEtiketleriniGoster();
+                filtreleVeSirala();
+            };
+
+            // Tüm Filtreleri Temizle
+            window.durumTumFiltreleriTemizle = function() {
+                // Arama kutusunu temizle
+                document.getElementById('durumArama').value = '';
+                document.getElementById('durumAramaTemizle').style.display = 'none';
+
+                // Sıra filtrelerini temizle
+                document.getElementById('filtreMinSira').value = '';
+                document.getElementById('filtreMaxSira').value = '';
+
+                // Tarih filtrelerini temizle
+                document.getElementById('filtreBaslangicTarih').value = '';
+                document.getElementById('filtreBitisTarih').value = '';
+
+                // Sıralamayı varsayılana getir
+                document.getElementById('siralamaFiltre').value = 'sira_artan';
+
+                // Buton stillerini sıfırla
+                document.getElementById('siraFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+                document.getElementById('tarihFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+                document.getElementById('siralamaFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+                // Filtre değişkenlerini sıfırla
+                durumAktifFiltreler = {
+                    arama: '',
+                    minSira: null,
+                    maxSira: null,
+                    baslangicTarih: null,
+                    bitisTarih: null,
+                    siralama: 'sira_artan'
+                };
+
+                // Filtre etiketlerini gizle
+                document.getElementById('aktifFiltreler').style.display = 'none';
+                document.getElementById('durumFiltreTemizleBtn').style.display = 'none';
+
+                // Filtrelemeyi yeniden uygula
+                filtreleVeSirala();
+            };
+
+            // Filtre etiketlerini göster
+            function filtreEtiketleriniGoster() {
+                const etiketler = [];
+                const filtreTemizleBtn = document.getElementById('durumFiltreTemizleBtn');
+
+                if (durumAktifFiltreler.arama) {
+                    etiketler.push('<span class="badge bg-primary">Arama: ' + durumAktifFiltreler.arama + '</span>');
+                }
+
+                if (durumAktifFiltreler.minSira !== null && durumAktifFiltreler.maxSira !== null) {
+                    etiketler.push('<span class="badge bg-primary">Sıra: ' + durumAktifFiltreler.minSira + ' - ' + durumAktifFiltreler.maxSira + '</span>');
+                } else if (durumAktifFiltreler.minSira !== null) {
+                    etiketler.push('<span class="badge bg-primary">Min Sıra: ' + durumAktifFiltreler.minSira + '</span>');
+                } else if (durumAktifFiltreler.maxSira !== null) {
+                    etiketler.push('<span class="badge bg-primary">Max Sıra: ' + durumAktifFiltreler.maxSira + '</span>');
+                }
+
+                if (durumAktifFiltreler.baslangicTarih) {
+                    etiketler.push('<span class="badge bg-primary">Başlangıç: ' + formatDate(durumAktifFiltreler.baslangicTarih) + '</span>');
+                }
+                if (durumAktifFiltreler.bitisTarih) {
+                    etiketler.push('<span class="badge bg-primary">Bitiş: ' + formatDate(durumAktifFiltreler.bitisTarih) + '</span>');
+                }
+
+                if (durumAktifFiltreler.siralama !== 'sira_artan') {
+                    const siralamaMetin = {
+                        'sira_azalan': 'Sıra (Azalan)',
+                        'yeni': 'En Yeni',
+                        'eski': 'En Eski',
+                        'adi_az': 'İsim (A-Z)',
+                        'adi_za': 'İsim (Z-A)'
+                    };
+                    etiketler.push('<span class="badge bg-info">Sıralama: ' + siralamaMetin[durumAktifFiltreler.siralama] + '</span>');
+                }
+
+                if (etiketler.length > 0) {
+                    document.getElementById('filtreEtiketleri').innerHTML = etiketler.join(' ');
+                    document.getElementById('aktifFiltreler').style.display = 'block';
+                    filtreTemizleBtn.style.display = 'inline-block';
+
+                    // Buton stillerini güncelle
+                    document.getElementById('siraFiltreBtn').className = durumAktifFiltreler.minSira !== null || durumAktifFiltreler.maxSira !== null
+                        ? 'btn btn-sm btn-primary dropdown-toggle'
+                        : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+                    document.getElementById('tarihFiltreBtn').className = durumAktifFiltreler.baslangicTarih || durumAktifFiltreler.bitisTarih
+                        ? 'btn btn-sm btn-primary dropdown-toggle'
+                        : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+                } else {
+                    document.getElementById('aktifFiltreler').style.display = 'none';
+                    filtreTemizleBtn.style.display = 'none';
+                }
+            }
+
+            // Tarih formatlama
+            function formatDate(dateStr) {
+                if (!dateStr) return '';
+                const [yil, ay, gun] = dateStr.split('-');
+                return gun + '.' + ay + '.' + yil;
+            }
+
+            // Tarih parse (dd.MM.yyyy HH:mm formatı)
+            function parseDate(dateStr) {
+                if (!dateStr) return null;
+                const [gun, ay, yilSaat] = dateStr.split('.');
+                const [yil, saat] = yilSaat.split(' ');
+                return new Date(yil + '-' + ay + '-' + gun + 'T' + saat);
+            }
+
+            // Ana filtreleme ve sıralama fonksiyonu
+            function filtreleVeSirala() {
+                const tbody = document.getElementById('istekOneriDurumTablosu');
+                if (!tbody) return;
+
+                const satirlar = Array.from(tbody.querySelectorAll('tr.durum-satiri'));
+
+                if (satirlar.length === 0) return;
+
+                // Filtreleme
+                let filtrelenmisSatirlar = satirlar.filter(satir => {
+                    let goster = true;
+
+                    // Arama filtresi (Durum Adı - 3. sütun)
+                    if (durumAktifFiltreler.arama) {
+                        const adi = satir.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
+                        if (!adi.includes(durumAktifFiltreler.arama.toLowerCase())) {
+                            goster = false;
+                        }
+                    }
+
+                    // Sıra filtresi (2. sütun)
+                    if (goster && (durumAktifFiltreler.minSira !== null || durumAktifFiltreler.maxSira !== null)) {
+                        const siraSpan = satir.querySelector('td:nth-child(2) .badge');
+                        if (siraSpan) {
+                            const sira = parseInt(siraSpan.textContent);
+
+                            if (durumAktifFiltreler.minSira !== null && sira < durumAktifFiltreler.minSira) {
+                                goster = false;
+                            }
+
+                            if (goster && durumAktifFiltreler.maxSira !== null && sira > durumAktifFiltreler.maxSira) {
+                                goster = false;
+                            }
+                        }
+                    }
+
+                    // Tarih filtresi (4. sütun - Eklenme Tarihi)
+                    if (goster && (durumAktifFiltreler.baslangicTarih || durumAktifFiltreler.bitisTarih)) {
+                        const tarihTd = satir.querySelector('td:nth-child(4)')?.textContent.trim();
+                        if (tarihTd) {
+                            const tarih = parseDate(tarihTd);
+
+                            if (durumAktifFiltreler.baslangicTarih) {
+                                const filtreBaslangic = new Date(durumAktifFiltreler.baslangicTarih + 'T00:00:00');
+                                if (tarih < filtreBaslangic) {
+                                    goster = false;
+                                }
+                            }
+
+                            if (goster && durumAktifFiltreler.bitisTarih) {
+                                const filtreBitis = new Date(durumAktifFiltreler.bitisTarih + 'T23:59:59');
+                                if (tarih > filtreBitis) {
+                                    goster = false;
+                                }
+                            }
+                        }
+                    }
+
+                    return goster;
+                });
+
+                // Sıralama
+                switch(durumAktifFiltreler.siralama) {
+                    case 'sira_artan':
+                        filtrelenmisSatirlar.sort((a, b) => {
+                            const siraA = parseInt(a.querySelector('td:nth-child(2) .badge')?.textContent || '0');
+                            const siraB = parseInt(b.querySelector('td:nth-child(2) .badge')?.textContent || '0');
+                            return siraA - siraB;
+                        });
+                        break;
+
+                    case 'sira_azalan':
+                        filtrelenmisSatirlar.sort((a, b) => {
+                            const siraA = parseInt(a.querySelector('td:nth-child(2) .badge')?.textContent || '0');
+                            const siraB = parseInt(b.querySelector('td:nth-child(2) .badge')?.textContent || '0');
+                            return siraB - siraA;
+                        });
+                        break;
+
+                    case 'yeni':
+                        filtrelenmisSatirlar.sort((a, b) => {
+                            const tarihA = parseDate(a.querySelector('td:nth-child(4)')?.textContent.trim() || '');
+                            const tarihB = parseDate(b.querySelector('td:nth-child(4)')?.textContent.trim() || '');
+                            return (tarihB || 0) - (tarihA || 0);
+                        });
+                        break;
+
+                    case 'eski':
+                        filtrelenmisSatirlar.sort((a, b) => {
+                            const tarihA = parseDate(a.querySelector('td:nth-child(4)')?.textContent.trim() || '');
+                            const tarihB = parseDate(b.querySelector('td:nth-child(4)')?.textContent.trim() || '');
+                            return (tarihA || 0) - (tarihB || 0);
+                        });
+                        break;
+
+                    case 'adi_az':
+                        filtrelenmisSatirlar.sort((a, b) => {
+                            const adiA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                            const adiB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                            return adiA.localeCompare(adiB, 'tr');
+                        });
+                        break;
+
+                    case 'adi_za':
+                        filtrelenmisSatirlar.sort((a, b) => {
+                            const adiA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                            const adiB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                            return adiB.localeCompare(adiA, 'tr');
+                        });
+                        break;
+                }
+
+                // Tüm satırları gizle
+                satirlar.forEach(satir => {
+                    satir.style.display = 'none';
+                });
+
+                // Filtrelenmiş satırları göster ve tbody'ye yeniden ekle (sıralama için)
+                filtrelenmisSatirlar.forEach((satir, index) => {
+                    satir.style.display = '';
+                    // Sıra numarasını değiştirme - badge içindeki değer veritabanındaki gerçek sıradır
+                    tbody.appendChild(satir);
+                });
+
+                // "Gösterilecek kayıt yok" mesajı
+                let bosSatir = tbody.querySelector('.filtre-bos-satir');
+
+                if (filtrelenmisSatirlar.length === 0) {
+                    if (!bosSatir) {
+                        bosSatir = document.createElement('tr');
+                        bosSatir.className = 'filtre-bos-satir';
+                        bosSatir.innerHTML = '<td colspan="5" class="text-center py-5"><i class="fas fa-filter fa-3x text-muted mb-3"></i><p class="text-muted">Filtreleme kriterlerine uygun durum bulunamadı.</p><button class="btn btn-sm btn-outline-secondary" onclick="durumTumFiltreleriTemizle()">Filtreleri Temizle</button></td>';
+                        tbody.appendChild(bosSatir);
+                    }
+                } else if (bosSatir) {
+                    bosSatir.remove();
+                }
+            }
+
+            // Enter tuşu ile filtreleme
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const aktifElement = document.activeElement;
+                    if (aktifElement.id === 'durumArama' ||
+                        aktifElement.id === 'filtreMinSira' ||
+                        aktifElement.id === 'filtreMaxSira' ||
+                        aktifElement.id === 'filtreBaslangicTarih' ||
+                        aktifElement.id === 'filtreBitisTarih') {
+                        e.preventDefault();
+                        filtreleVeSirala();
+                    }
+                }
+            });
+
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
+
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#istekOneriDurumTablosu tr[data-durum-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button')) {
+                    const $radio = $(this).find('.durum-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
+                }
+            });
+
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.durum-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliDurumId = $(this).val();
+                    const $seciliSatir = $(this).closest('tr');
+                    const durumAdi = $seciliSatir.data('durum-adi');
+
+                    // Tüm satırlardan active class'ı kaldır
+                    $('#istekOneriDurumTablosu tr').removeClass('table-active');
+                    // Seçili satıra active class ekle
+                    $seciliSatir.addClass('table-active');
+
+                    // Bilgiyi güncelle
+                    $('#seciliKayitBilgi').html('<i class="fas fa-check-circle text-success me-1"></i> Seçili: ' + durumAdi);
+
+                    // Butonları aktif et
+                    $('#seciliDuzenleBtn').prop('disabled', false);
+                    $('#seciliSilBtn').prop('disabled', false);
+                }
+            });
+
+            // Üstteki "Düzenle" butonu
+            $('#seciliDuzenleBtn').click(function() {
+                if (suAnSeciliDurumId) {
+                    const $seciliSatir = $('tr[data-durum-id="' + suAnSeciliDurumId + '"]');
+                    const adi = $seciliSatir.data('durum-adi');
+                    const sira = $seciliSatir.data('durum-sira');
+
+                    duzenleGetir(suAnSeciliDurumId, adi, sira);
+                } else {
+                    toastr.warning('Lütfen önce bir durum seçin.');
+                }
+            });
+
+            // Üstteki "Sil" butonu
+            $('#seciliSilBtn').click(function() {
+                if (suAnSeciliDurumId) {
+                    const $seciliSatir = $('tr[data-durum-id="' + suAnSeciliDurumId + '"]');
+                    const durumAdi = $seciliSatir.data('durum-adi');
+
+                    $('#silId').val(suAnSeciliDurumId);
+                    $('#silAdiGoster').text(durumAdi);
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    toastr.warning('Lütfen önce bir durum seçin.');
+                }
+            });
+
+            // Silme modalı kapandıktan sonra seçimi temizleme
+            $('#silModal').on('hidden.bs.modal', function() {
+                if (suAnSeciliDurumId) {
+                    const $satir = $('tr[data-durum-id="' + suAnSeciliDurumId + '"]');
+                    if ($satir.length === 0) {
+                        // Satır silinmiş, seçimi temizle
+                        suAnSeciliDurumId = null;
+                        $('#seciliKayitBilgi').html('<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi');
+                        $('#seciliDuzenleBtn').prop('disabled', true);
+                        $('#seciliSilBtn').prop('disabled', true);
+                    } else {
+                        // İptal edildi, radio'yu temizle
+                        $('.durum-sec-radio[value="' + suAnSeciliDurumId + '"]').prop('checked', false);
+                        $('#istekOneriDurumTablosu tr').removeClass('table-active');
+                        suAnSeciliDurumId = null;
+                        $('#seciliKayitBilgi').html('<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi');
+                        $('#seciliDuzenleBtn').prop('disabled', true);
+                        $('#seciliSilBtn').prop('disabled', true);
+                    }
+                }
+            });
 
             window.duzenleGetir = function (id, adi, sira) {
                 $('#editId').val(id);
@@ -282,15 +1076,6 @@
                 const modal = new bootstrap.Modal(document.getElementById('silModal'));
                 modal.show();
             };
-
-            function showAlert(type, message) {
-                const alert = `<div class="alert alert-${type} alert-dismissible fade show position-fixed" style="top: 20px; right: 20px; z-index: 9999;">
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>`;
-                $('body').append(alert);
-                setTimeout(() => $('.alert').last().alert('close'), 5000);
-            }
 
             // Modal sıfırlama
             $('#ekleModal').on('show.bs.modal', function () {

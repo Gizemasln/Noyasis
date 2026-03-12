@@ -2,6 +2,65 @@
     ViewData["Title"] = "Sertifika Yönetimi";
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
+
+<style>
+    /* Seçim satırı için cursor pointer */
+    tr[data-sertifika-id] {
+        cursor: pointer;
+    }
+
+    /* Seçili satır efekti */
+    tr.table-active {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+
+    /* İşlem butonları alanı */
+    .islem-butonlari-alani {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .secili-bilgi {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+
+        .secili-bilgi i {
+            font-size: 1rem;
+        }
+
+    /* Buton stilleri */
+    .aksiyon-btn {
+        transition: all 0.2s;
+    }
+
+        .aksiyon-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .aksiyon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    /* Buton grupları için */
+    .btn-group .btn {
+        margin: 0 2px;
+    }
+
+        .btn-group .btn:first-child {
+            margin-left: 0;
+        }
+
+        .btn-group .btn:last-child {
+            margin-right: 0;
+        }
+</style>
+
 <div class="row">
     <div class="col-md-12">
         <!-- Mesajlar -->
@@ -34,15 +93,33 @@
                 Bayi olarak giriş yaptınız. Sadece kendi sertifikalarınızı görüntülüyorsunuz.
             </div>
         }
+
         <div class="card" style="margin-top: 70px;">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span>Sertifikalar</span>
+                <h5 class="mb-0">Sertifikalar</h5>
                 @if (ViewBag.Kullanici != null)
                 {
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Seçili Kayıt Bilgisi ve İşlem Butonları -->
+                        <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                            <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                                <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                            </div>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-warning btn-sm" id="seciliDuzenleBtn" data-button-permission="duzenle" title="Seçili Sertifikayı Düzenle" disabled style="margin-right:5px;">
+                                    <i class="fas fa-edit"></i> 
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm" id="seciliSilBtn" data-button-permission="sil" title="Seçili Sertifikayı Sil" disabled>
+                                    <i class="fas fa-trash"></i> 
+                                </button>
+                            </div>
+                        </div>
 
-                    <button class="btn btn-secondary" data-button-permission="ekle"  data-bs-toggle="modal" data-bs-target="#ekleModal">
-                        <i class="fas fa-plus"></i> Yeni Sertifika Ekle
-                    </button>
+                        <!-- Yeni Ekle Butonu -->
+                        <button class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                            <i class="fas fa-plus"></i> Yeni Sertifika Ekle
+                        </button>
+                    </div>
                 }
             </div>
             <div class="card-body">
@@ -50,6 +127,7 @@
                     <table class="table table-bordered table-hover">
                         <thead class="table-head-bg-primary">
                             <tr>
+                                <th width="40">Seç</th>
                                 <th>#</th>
                                 @if (ViewBag.CurrentUserType != "Bayi")
                                 {
@@ -60,45 +138,39 @@
                                 <th>Veriliş Tarihi</th>
                                 <th>Geçerlilik Tarihi</th>
                                 <th>Dosya</th>
-                                   @if (ViewBag.Kullanici != null)
-                                        {
-                                          
-                                <th>İşlemler</th>
-                                        }
+                                @if (ViewBag.Kullanici != null)
+                                {
+                                    <!-- İşlemler sütunu kaldırıldı -->
+                                }
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="sertifikaTablosu">
                             @if (ViewBag.Sertifikalar != null && ViewBag.Sertifikalar.Count > 0)
                             {
                                 var counter = 1;
                                 foreach (var s in ViewBag.Sertifikalar)
                                 {
-                                    <tr>
+                                    <tr data-sertifika-id="@s.Id" data-sertifika-adi="@s.SertifikaAdi" class="sertifika-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input sertifika-sec-radio" type="radio" name="seciliSertifikaRadio" value="@s.Id" id="secim_@s.Id">
+                                            </div>
+                                        </td>
                                         <td>@counter</td>
                                         @if (ViewBag.CurrentUserType != "Bayi")
                                         {
                                             <td>@(s.Bayi?.Unvan ?? "Silinmiş Bayi")</td>
                                         }
-                                        <td>@s.SertifikaAdi</td>
+                                        <td><strong>@s.SertifikaAdi</strong></td>
                                         <td>@s.Aciklama</td>
                                         <td>@s.VerilisTarihi.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>@(s.GecerlilikTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "-")</td>
                                         <td>
-                                            <a href="@Url.Action("ViewSertifika", new { path = s.DosyaYolu })" target="_blank" class="btn btn-info btn-sm" data-button-permission="goruntule">
-                                                <i class="fas fa-file-pdf"></i> Görüntüle
+                                            <a href="@Url.Action("ViewSertifika", new { path = s.DosyaYolu })" target="_blank" class="btn btn-info btn-sm" data-button-permission="goruntule" title="Sertifikayı Görüntüle">
+                                                <i class="fas fa-file-pdf"></i>
                                             </a>
                                         </td>
-                                        @if (ViewBag.Kullanici != null)
-                                        {
-                                            <td>
-                                                <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@s.Id)">
-                                                    <i class="fas fa-edit"></i> 
-                                                </button>
-                                                <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@s.Id, '@s.SertifikaAdi')">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        }
+                                        <!-- İşlemler sütunundaki butonlar KALDIRILDI -->
                                     </tr>
                                     counter++;
                                 }
@@ -106,7 +178,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan='@(ViewBag.CurrentUserType != "Bayi" ? "8" : "7")' class="text-center">
+                                    <td colspan='@(ViewBag.CurrentUserType != "Bayi" ? "9" : "8")' class="text-center">
                                         Henüz sertifika eklenmemiş.
                                         @if (ViewBag.CurrentUserType != "Bayi")
                                         {
@@ -124,6 +196,7 @@
         </div>
     </div>
 </div>
+
 @if (ViewBag.CurrentUserType != "Bayi")
 {
     <!-- Ekle Modal -->
@@ -192,6 +265,7 @@
         </div>
     </div>
 }
+
 <!-- Düzenle Modal -->
 <div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -235,6 +309,7 @@
         </div>
     </div>
 </div>
+
 <!-- Sil Onay Modal -->
 <div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -258,14 +333,121 @@
         </div>
     </div>
 </div>
+
 @section Script {
+    <!-- Toastr için gerekli script ve CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
-        // Sayfa yüklendiğinde müşteri ise bayileri yükle
-        document.addEventListener('DOMContentLoaded', function() {
+        $(document).ready(function () {
+            // Toastr ayarları
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
+            let suAnSeciliSertifikaId = null;
+            let suAnSeciliSertifikaAdi = null;
+            let suAnSeciliSatir = null;
+
+            const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
+            const $seciliSilBtn = $('#seciliSilBtn');
+            const $seciliBilgiDiv = $('#seciliKayitBilgi');
+
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#sertifikaTablosu tr[data-sertifika-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button') && !$(e.target).is('a') && !$(e.target).is('span')) {
+                    const $radio = $(this).find('.sertifika-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
+                }
+            });
+
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.sertifika-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliSertifikaId = $(this).val();
+                    suAnSeciliSatir = $(this).closest('tr');
+                    suAnSeciliSertifikaAdi = suAnSeciliSatir.data('sertifika-adi');
+
+                    // Tüm satırlardan active class'ı kaldır
+                    $('#sertifikaTablosu tr').removeClass('table-active');
+                    // Seçili satıra active class ekle
+                    suAnSeciliSatir.addClass('table-active');
+
+                    // Bilgiyi güncelle
+                    $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${suAnSeciliSertifikaAdi}`);
+
+                    // Butonları aktif et
+                    $seciliDuzenleBtn.prop('disabled', false);
+                    $seciliSilBtn.prop('disabled', false);
+                }
+            });
+
+            // Üstteki "Düzenle" butonu
+            $seciliDuzenleBtn.click(function() {
+                if (suAnSeciliSertifikaId) {
+                    duzenleGetir(suAnSeciliSertifikaId);
+                } else {
+                    toastr.warning('Lütfen önce bir sertifika seçin.');
+                }
+            });
+
+            // Üstteki "Sil" butonu
+            $seciliSilBtn.click(function() {
+                if (suAnSeciliSertifikaId) {
+                    $('#silId').val(suAnSeciliSertifikaId);
+                    $('#silSertifikaAdi').text(suAnSeciliSertifikaAdi);
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    toastr.warning('Lütfen önce bir sertifika seçin.');
+                }
+            });
+
+            // Silme modalı kapandıktan sonra seçimi temizleme
+            $('#silModal').on('hidden.bs.modal', function() {
+                if (suAnSeciliSertifikaId) {
+                    const $satir = $(`tr[data-sertifika-id="${suAnSeciliSertifikaId}"]`);
+                    if ($satir.length === 0) {
+                        // Satır silinmiş, seçimi temizle
+                        clearSelection();
+                    } else {
+                        // İptal edildi, radio'yu temizle
+                        $(`.sertifika-sec-radio[value="${suAnSeciliSertifikaId}"]`).prop('checked', false);
+                        clearSelection();
+                    }
+                }
+            });
+
+            // Seçimi temizleme yardımcı fonksiyonu
+            function clearSelection() {
+                $('#sertifikaTablosu tr').removeClass('table-active');
+                suAnSeciliSertifikaId = null;
+                suAnSeciliSertifikaAdi = null;
+                suAnSeciliSatir = null;
+                $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+
+                // Tüm butonları devre dışı bırak
+                $seciliDuzenleBtn.prop('disabled', true);
+                $seciliSilBtn.prop('disabled', true);
+            }
+
+            // Sayfa yüklendiğinde müşteri ise bayileri yükle
         @if (ViewBag.CurrentUserType == "Musteri")
         {
-            @:loadBayiler();
+                @:loadBayiler();
         }
+
+            // Mesajları 5 saniye sonra kapat
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(a => {
+                    new bootstrap.Alert(a).close();
+                });
+            }, 5000);
         });
 
         function loadBayiler() {
@@ -294,16 +476,16 @@
                             });
                         } else {
                             console.warn('No bayiler returned or invalid data format');
-                            alert('Bayiler yüklenemedi: Veri formatı hatalı.');
+                            toastr.error('Bayiler yüklenemedi: Veri formatı hatalı.');
                         }
                     })
                     .catch(error => {
                         console.error('Error fetching bayiler:', error);
-                        alert('Bayiler yüklenemedi: ' + error.message);
+                        toastr.error('Bayiler yüklenemedi: ' + error.message);
                     });
             } else {
                 console.warn('No musteriId selected');
-                alert('Lütfen bir müşteri seçiniz.');
+                toastr.error('Lütfen bir müşteri seçiniz.');
             }
         }
 
@@ -325,7 +507,7 @@
                 })
                 .catch(error => {
                     console.error('Error fetching sertifika:', error);
-                    alert('Sertifika bilgileri alınamadı: ' + error.message);
+                    toastr.error('Sertifika bilgileri alınamadı: ' + error.message);
                 });
         }
 
@@ -334,12 +516,5 @@
             document.getElementById('silSertifikaAdi').textContent = sertifikaAdi;
             new bootstrap.Modal(document.getElementById('silModal')).show();
         }
-
-        // Mesajları 5 saniye sonra kapat
-        setTimeout(() => {
-            document.querySelectorAll('.alert').forEach(a => {
-                new bootstrap.Alert(a).close();
-            });
-        }, 5000);
     </script>
 }

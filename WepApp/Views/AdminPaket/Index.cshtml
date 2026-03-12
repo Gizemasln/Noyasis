@@ -11,6 +11,150 @@
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
 <style>
+    /* Filtreleme stilleri - Diğer sayfalarla uyumlu */
+    .card-header .flex-wrap {
+        gap: 15px;
+    }
+
+    .card-header .gap-2 {
+        gap: 0.5rem !important;
+    }
+
+    .search-box {
+        position: relative;
+    }
+
+        .search-box .input-group {
+            transition: all 0.3s ease;
+            width: 200px;
+        }
+
+            .search-box .input-group:focus-within {
+                width: 250px;
+            }
+
+        .search-box .form-control:focus {
+            background-color: #fff !important;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+        }
+
+    #modulAramaTemizle {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: transparent;
+        z-index: 5;
+        color: #6c757d;
+        padding: 0.25rem 0.5rem;
+    }
+
+        #modulAramaTemizle:hover {
+            color: #dc3545;
+        }
+
+    .dropdown-menu {
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+        border: none;
+    }
+
+        .dropdown-menu .form-control-sm,
+        .dropdown-menu .form-select-sm {
+            border: 1px solid #dee2e6;
+        }
+
+            .dropdown-menu .form-control-sm:focus,
+            .dropdown-menu .form-select-sm:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+            }
+
+    #modulFiltreTemizleBtn {
+        transition: all 0.3s ease;
+    }
+
+        #modulFiltreTemizleBtn:hover {
+            transform: scale(1.1);
+        }
+
+    /* Aktif filtre butonu stilleri */
+    .btn-primary .fas {
+        color: white;
+    }
+
+    /* Filtre etiketleri */
+    #aktifFiltreler {
+        background-color: #f8f9fa;
+        border-radius: 0.35rem;
+        padding: 10px;
+        border: 1px solid #e3e6f0;
+        margin-top: 15px !important;
+    }
+
+        #aktifFiltreler .badge {
+            font-size: 0.85rem;
+            padding: 0.5rem 0.75rem;
+        }
+
+    /* Tablo satırları için geçiş efekti */
+    #paketTable tbody tr {
+        transition: all 0.3s ease;
+    }
+
+        #paketTable tbody tr[style*="display: none"] {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+    /* Responsive düzenlemeler */
+    media (max-width: 768px) {
+        .card-header .d-flex
+
+    {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+
+    .card-header .gap-2 {
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .search-box {
+        width: 100% !important;
+        margin-bottom: 5px;
+    }
+
+        .search-box .input-group {
+            width: 100% !important;
+        }
+
+            .search-box .input-group:focus-within {
+                width: 100% !important;
+            }
+
+    .card-header .dropdown {
+        flex: 1;
+    }
+
+    .islem-butonlari-alani {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    #aktifFiltreler .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 10px;
+    }
+
+    #filtreEtiketleri {
+        flex-wrap: wrap;
+    }
+
+    }
     .table-actions {
         white-space: nowrap;
         width: 180px;
@@ -164,16 +308,215 @@
         }
 
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
                 <h5 class="mb-0">Modül Yönetimi</h5>
+
+                <!-- FİLTRELEME ALANI - Diğer sayfalarla uyumlu -->
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Arama Kutusu (Mevcut arama kutusu burada kalacak) -->
+                    <div class="search-box">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" id="modulArama" class="form-control form-control-sm border-0 bg-light"
+                                   placeholder="Modül ara..." style="box-shadow: none;">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" id="modulAramaTemizle" style="display:none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Lisans Tipi Filtresi -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="lisansTipFiltreBtn">
+                            <i class="fas fa-tag me-1"></i> Lisans Tipi
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
+                            <div class="mb-2">
+                                <select class="form-select form-select-sm" id="lisansTipFiltre">
+                                    <option value="">Tüm Lisans Tipleri</option>
+                                    @foreach (var tip in ViewBag.LisansTipleri as List<LisansTip>)
+                                    {
+                                        <option value="@tip.Id">@tip.Adi</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-primary" onclick="modulLisansTipFiltreUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Birim Filtresi -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="birimFiltreBtn">
+                            <i class="fas fa-scale-balanced me-1"></i> Birim
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
+                            <div class="mb-2">
+                                <select class="form-select form-select-sm" id="birimFiltre">
+                                    <option value="">Tüm Birimler</option>
+                                    @foreach (var birim in ViewBag.Birimler as List<Birim>)
+                                    {
+                                        <option value="@birim.Id">@birim.Adi</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-primary" onclick="modulBirimFiltreUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fiyat Filtresi -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="fiyatFiltreBtn">
+                            <i class="fas fa-lira-sign me-1"></i> Fiyat
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
+                            <div class="mb-2">
+                                <label class="form-label small">Min Fiyat (₺)</label>
+                                <input type="number" id="filtreMinFiyat" class="form-control form-control-sm" min="0" step="0.01">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label small">Max Fiyat (₺)</label>
+                                <input type="number" id="filtreMaxFiyat" class="form-control form-control-sm" min="0" step="0.01">
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="modulFiyatFiltreTemizle()">Temizle</button>
+                                <button class="btn btn-sm btn-primary" onclick="modulFiyatFiltreUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- İndirim Filtresi -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="indirimFiltreBtn">
+                            <i class="fas fa-percent me-1"></i> İndirim
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
+                            <div class="mb-2">
+                                <label class="form-label small">Min İndirim (%)</label>
+                                <input type="number" id="filtreMinIndirim" class="form-control form-control-sm" min="0" max="100">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label small">Max İndirim (%)</label>
+                                <input type="number" id="filtreMaxIndirim" class="form-control form-control-sm" min="0" max="100">
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="modulIndirimFiltreTemizle()">Temizle</button>
+                                <button class="btn btn-sm btn-primary" onclick="modulIndirimFiltreUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Durum Filtresi -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="durumFiltreBtn">
+                            <i class="fas fa-toggle-on me-1"></i> Durum
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 200px;">
+                            <div class="mb-2">
+                                <select class="form-select form-select-sm" id="durumFiltre">
+                                    <option value="">Tümü</option>
+                                    <option value="1">Aktif</option>
+                                    <option value="0">Pasif</option>
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-primary" onclick="modulDurumFiltreUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dahil mi Filtresi -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="dahilFiltreBtn">
+                            <i class="fas fa-check-circle me-1"></i> Dahil mi?
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 200px;">
+                            <div class="mb-2">
+                                <select class="form-select form-select-sm" id="dahilFiltre">
+                                    <option value="">Tümü</option>
+                                    <option value="true">Evet</option>
+                                    <option value="false">Hayır</option>
+                                    <option value="null">Belirtilmemiş</option>
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-primary" onclick="modulDahilFiltreUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Süre Filtresi -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="sureFiltreBtn">
+                            <i class="fas fa-clock me-1"></i> Süre
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
+                            <div class="mb-2">
+                                <label class="form-label small">Min Süre (gün)</label>
+                                <input type="number" id="filtreMinSure" class="form-control form-control-sm" min="0" step="0.1">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label small">Max Süre (gün)</label>
+                                <input type="number" id="filtreMaxSure" class="form-control form-control-sm" min="0" step="0.1">
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="modulSureFiltreTemizle()">Temizle</button>
+                                <button class="btn btn-sm btn-primary" onclick="modulSureFiltreUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sıralama -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="siralamaFiltreBtn">
+                            <i class="fas fa-sort-amount-down me-1"></i> Sıralama
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 200px;">
+                            <div class="mb-2">
+                                <select class="form-select form-select-sm" id="siralamaFiltre">
+                                    <option value="adi_az">İsim (A-Z)</option>
+                                    <option value="adi_za">İsim (Z-A)</option>
+                                    <option value="fiyat_azalan">Fiyat (Azalan)</option>
+                                    <option value="fiyat_artan">Fiyat (Artan)</option>
+                                    <option value="indirim_azalan">İndirim (Azalan)</option>
+                                    <option value="indirim_artan">İndirim (Artan)</option>
+                                    <option value="sure_azalan">Süre (Azalan)</option>
+                                    <option value="sure_artan">Süre (Artan)</option>
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-primary" onclick="modulSiralamaUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtre Temizleme Butonu -->
+                    <button class="btn btn-sm btn-outline-danger" onclick="modulTumFiltreleriTemizle()"
+                            title="Tüm filtreleri temizle" id="modulFiltreTemizleBtn" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Seçili Kayıt Bilgisi ve İşlem Butonları (mevcut kod) -->
                 <div class="d-flex align-items-center gap-3">
-                    <!-- Seçili Kayıt Bilgisi ve İşlem Butonları - Teklif listesiyle aynı -->
                     <div class="islem-butonlari-alani d-flex align-items-center gap-2">
                         <div id="seciliKayitBilgi" class="secili-bilgi me-2">
                             <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
                         </div>
                         <div class="btn-group btn-group-sm" role="group">
-                         
                             <!-- Oran Ekle (Açık Mavi - teklifteki PDF gibi) -->
                             <button type="button" class="btn btn-secondary aksiyon-btn btn-icon" id="oranEkleBtn" disabled title="Oran Ekle" data-button-permission="oranekle">
                                 <i class="fas fa-percentage"></i>
@@ -186,23 +529,26 @@
                             <button type="button" class="btn btn-danger btn-sm" id="silBtn" disabled title=" Sil" data-button-permission="sil">
                                 <i class="fas fa-trash"></i>
                             </button>
-                        
                         </div>
                     </div>
                     <!-- Yeni Ekle (Yeşil - tıpkı teklifteki Yeni Teklif Oluştur gibi) -->
                     <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal" title="Yeni Modül Ekle">
-                        <i class="fas fa-plus">Yeni Modül Ekle</i>
+                        <i class="fas fa-plus"></i> Yeni Modül Ekle
                     </button>
-                    <!-- Arama kutusu -->
-                    <div class="search-box">
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-text"><i class="fas fa-search"></i></span>
-                            <input type="text" id="tableSearch" class="form-control" placeholder="Modül adı, kod, lisans tipi...">
-                        </div>
-                    </div>
                 </div>
             </div>
-            <div class="card-body">
+
+            <!-- Aktif Filtreler -->
+            <div class="row mt-3" id="aktifFiltreler" style="display: none;">
+                <div class="col-12">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-light text-dark me-2 p-2">
+                            <i class="fas fa-filter me-1"></i>Aktif Filtreler:
+                        </span>
+                        <div id="filtreEtiketleri" class="d-flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+            </div>            <div class="card-body">
                 <!-- Arama Bilgisi -->
                 <div class="search-info mb-3">
                     <span id="searchResultCount"></span>
@@ -696,6 +1042,22 @@
         let suAnSeciliSabitCarpimId = 0;
         let suAnSeciliSatir = null;
 
+        // ============= FİLTRELEME DEĞİŞKENLERİ =============
+        let modulAktifFiltreler = {
+            arama: '',
+            lisansTipId: null,
+            birimId: null,
+            minFiyat: null,
+            maxFiyat: null,
+            minIndirim: null,
+            maxIndirim: null,
+            durum: null,
+            dahilmi: null,
+            minSure: null,
+            maxSure: null,
+            siralama: 'adi_az'
+        };
+
         // ============= ÜST BUTONLAR =============
         const $seciliOranEkleBtn = $('#oranEkleBtn');
         const $seciliDuzenleBtn = $('#duzenleBtn');
@@ -831,134 +1193,620 @@
             new bootstrap.Modal('#sabitCarpimUyariModal').show();
         }
 
-        // ============= ARAMA SİSTEMİ =============
-        function initTableSearch() {
-            const searchInput = $('#tableSearch');
-            const tableBody = $('#tableBody');
-            const searchResultCount = $('#searchResultCount');
+        // ============= ARAMA VE FİLTRELEME SİSTEMİ =============
 
-            // Tüm satırları sakla
-            const allRows = tableBody.find('tr:not(#noDataRow)').toArray();
-            const noDataRow = $('#noDataRow');
+        // Arama fonksiyonu
+        function modulAramaFiltrele() {
+            const aramaInput = document.getElementById('modulArama');
+            const temizleBtn = document.getElementById('modulAramaTemizle');
 
-            // Arama fonksiyonu
-            function performSearch() {
-                const searchTerm = searchInput.val().toLowerCase().trim();
+            if (aramaInput && temizleBtn) {
+                const kelime = aramaInput.value.trim().toLowerCase();
 
-                if (searchTerm === '') {
-                    // Tüm satırları göster
-                    allRows.forEach(row => $(row).show());
+                // Temizle butonunu göster/gizle
+                temizleBtn.style.display = kelime ? 'block' : 'none';
 
-                    // Sıra numaralarını düzelt
-                    updateRowNumbers();
+                modulAktifFiltreler.arama = kelime;
+                modulFiltreEtiketleriniGoster();
+                modulFiltreleVeSirala();
+            }
+        }
 
-                    // Eğer hiç veri yoksa noDataRow'u göster
-                    if (allRows.length === 0) {
-                        noDataRow.show();
-                    } else {
-                        noDataRow.hide();
+        // Arama inputuna event listener ekle
+        const modulAramaInput = document.getElementById('modulArama');
+        const modulTemizleBtn = document.getElementById('modulAramaTemizle');
+
+        if (modulAramaInput) {
+            modulAramaInput.addEventListener('input', modulAramaFiltrele);
+            modulAramaInput.addEventListener('keyup', modulAramaFiltrele);
+        }
+
+        if (modulTemizleBtn) {
+            modulTemizleBtn.addEventListener('click', function () {
+                modulAramaInput.value = '';
+                modulAramaFiltrele();
+                modulAramaInput.focus();
+            });
+        }
+
+        // Lisans Tipi Filtresi Uygula
+        window.modulLisansTipFiltreUygula = function() {
+            const lisansTipId = document.getElementById('lisansTipFiltre').value;
+            modulAktifFiltreler.lisansTipId = lisansTipId || null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('lisansTipFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            modulFiltreEtiketleriniGoster();
+            modulFiltreleVeSirala();
+        };
+
+        // Birim Filtresi Uygula
+        window.modulBirimFiltreUygula = function() {
+            const birimId = document.getElementById('birimFiltre').value;
+            modulAktifFiltreler.birimId = birimId || null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('birimFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            modulFiltreEtiketleriniGoster();
+            modulFiltreleVeSirala();
+        };
+
+        // Fiyat Filtresi Uygula
+        window.modulFiyatFiltreUygula = function() {
+            const minInput = document.getElementById('filtreMinFiyat');
+            const maxInput = document.getElementById('filtreMaxFiyat');
+
+            modulAktifFiltreler.minFiyat = minInput.value ? parseFloat(minInput.value) : null;
+            modulAktifFiltreler.maxFiyat = maxInput.value ? parseFloat(maxInput.value) : null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('fiyatFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            modulFiltreEtiketleriniGoster();
+            modulFiltreleVeSirala();
+        };
+
+        // Fiyat Filtresi Temizle
+        window.modulFiyatFiltreTemizle = function() {
+            document.getElementById('filtreMinFiyat').value = '';
+            document.getElementById('filtreMaxFiyat').value = '';
+            modulAktifFiltreler.minFiyat = null;
+            modulAktifFiltreler.maxFiyat = null;
+            modulFiltreEtiketleriniGoster();
+            modulFiltreleVeSirala();
+        };
+
+        // İndirim Filtresi Uygula
+        window.modulIndirimFiltreUygula = function() {
+            const minInput = document.getElementById('filtreMinIndirim');
+            const maxInput = document.getElementById('filtreMaxIndirim');
+
+            modulAktifFiltreler.minIndirim = minInput.value ? parseFloat(minInput.value) : null;
+            modulAktifFiltreler.maxIndirim = maxInput.value ? parseFloat(maxInput.value) : null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('indirimFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            modulFiltreEtiketleriniGoster();
+            modulFiltreleVeSirala();
+        };
+
+        // İndirim Filtresi Temizle
+        window.modulIndirimFiltreTemizle = function() {
+            document.getElementById('filtreMinIndirim').value = '';
+            document.getElementById('filtreMaxIndirim').value = '';
+            modulAktifFiltreler.minIndirim = null;
+            modulAktifFiltreler.maxIndirim = null;
+            modulFiltreEtiketleriniGoster();
+            modulFiltreleVeSirala();
+        };
+
+        // Durum Filtresi Uygula
+        window.modulDurumFiltreUygula = function() {
+            const durum = document.getElementById('durumFiltre').value;
+            modulAktifFiltreler.durum = durum !== '' ? parseInt(durum) : null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('durumFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            modulFiltreEtiketleriniGoster();
+            modulFiltreleVeSirala();
+        };
+
+        // Dahil mi Filtresi Uygula
+        window.modulDahilFiltreUygula = function() {
+            const dahil = document.getElementById('dahilFiltre').value;
+            if (dahil === 'true') modulAktifFiltreler.dahilmi = true;
+            else if (dahil === 'false') modulAktifFiltreler.dahilmi = false;
+            else modulAktifFiltreler.dahilmi = null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('dahilFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            modulFiltreEtiketleriniGoster();
+            modulFiltreleVeSirala();
+        };
+
+        // Süre Filtresi Uygula
+        window.modulSureFiltreUygula = function() {
+            const minInput = document.getElementById('filtreMinSure');
+            const maxInput = document.getElementById('filtreMaxSure');
+
+            modulAktifFiltreler.minSure = minInput.value ? parseFloat(minInput.value) : null;
+            modulAktifFiltreler.maxSure = maxInput.value ? parseFloat(maxInput.value) : null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('sureFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            modulFiltreEtiketleriniGoster();
+            modulFiltreleVeSirala();
+        };
+
+        // Süre Filtresi Temizle
+        window.modulSureFiltreTemizle = function() {
+            document.getElementById('filtreMinSure').value = '';
+            document.getElementById('filtreMaxSure').value = '';
+            modulAktifFiltreler.minSure = null;
+            modulAktifFiltreler.maxSure = null;
+            modulFiltreEtiketleriniGoster();
+            modulFiltreleVeSirala();
+        };
+
+        // Sıralama Uygula
+        window.modulSiralamaUygula = function() {
+            const siralama = document.getElementById('siralamaFiltre').value;
+            modulAktifFiltreler.siralama = siralama;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('siralamaFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            modulFiltreEtiketleriniGoster();
+            modulFiltreleVeSirala();
+        };
+
+        // Tüm Filtreleri Temizle
+        window.modulTumFiltreleriTemizle = function() {
+            // Arama kutusunu temizle
+            document.getElementById('modulArama').value = '';
+            document.getElementById('modulAramaTemizle').style.display = 'none';
+
+            // Lisans tipi filtresini temizle
+            document.getElementById('lisansTipFiltre').value = '';
+
+            // Birim filtresini temizle
+            document.getElementById('birimFiltre').value = '';
+
+            // Fiyat filtrelerini temizle
+            document.getElementById('filtreMinFiyat').value = '';
+            document.getElementById('filtreMaxFiyat').value = '';
+
+            // İndirim filtrelerini temizle
+            document.getElementById('filtreMinIndirim').value = '';
+            document.getElementById('filtreMaxIndirim').value = '';
+
+            // Durum filtresini temizle
+            document.getElementById('durumFiltre').value = '';
+
+            // Dahil mi filtresini temizle
+            document.getElementById('dahilFiltre').value = '';
+
+            // Süre filtrelerini temizle
+            document.getElementById('filtreMinSure').value = '';
+            document.getElementById('filtreMaxSure').value = '';
+
+            // Sıralamayı varsayılana getir
+            document.getElementById('siralamaFiltre').value = 'adi_az';
+
+            // Buton stillerini sıfırla
+            document.getElementById('lisansTipFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('birimFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('fiyatFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('indirimFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('durumFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('dahilFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('sureFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('siralamaFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+            // Filtre değişkenlerini sıfırla
+            modulAktifFiltreler = {
+                arama: '',
+                lisansTipId: null,
+                birimId: null,
+                minFiyat: null,
+                maxFiyat: null,
+                minIndirim: null,
+                maxIndirim: null,
+                durum: null,
+                dahilmi: null,
+                minSure: null,
+                maxSure: null,
+                siralama: 'adi_az'
+            };
+
+            // Filtre etiketlerini gizle
+            document.getElementById('aktifFiltreler').style.display = 'none';
+            document.getElementById('modulFiltreTemizleBtn').style.display = 'none';
+
+            // Filtrelemeyi yeniden uygula
+            modulFiltreleVeSirala();
+        };
+
+        // Filtre etiketlerini göster
+        function modulFiltreEtiketleriniGoster() {
+            const etiketler = [];
+            const filtreTemizleBtn = document.getElementById('modulFiltreTemizleBtn');
+
+            if (modulAktifFiltreler.arama) {
+                etiketler.push(`<span class="badge bg-primary">Arama: ${modulAktifFiltreler.arama}</span>`);
+            }
+
+            if (modulAktifFiltreler.lisansTipId) {
+                const lisansTipAdi = document.getElementById('lisansTipFiltre').options[document.getElementById('lisansTipFiltre').selectedIndex]?.text || 'Seçili';
+                etiketler.push(`<span class="badge bg-primary">Lisans: ${lisansTipAdi}</span>`);
+            }
+
+            if (modulAktifFiltreler.birimId) {
+                const birimAdi = document.getElementById('birimFiltre').options[document.getElementById('birimFiltre').selectedIndex]?.text || 'Seçili';
+                etiketler.push(`<span class="badge bg-primary">Birim: ${birimAdi}</span>`);
+            }
+
+            if (modulAktifFiltreler.minFiyat !== null && modulAktifFiltreler.maxFiyat !== null) {
+                etiketler.push(`<span class="badge bg-success">Fiyat: ${modulAktifFiltreler.minFiyat} ₺ - ${modulAktifFiltreler.maxFiyat} ₺</span>`);
+            } else if (modulAktifFiltreler.minFiyat !== null) {
+                etiketler.push(`<span class="badge bg-success">Min Fiyat: ${modulAktifFiltreler.minFiyat} ₺</span>`);
+            } else if (modulAktifFiltreler.maxFiyat !== null) {
+                etiketler.push(`<span class="badge bg-success">Max Fiyat: ${modulAktifFiltreler.maxFiyat} ₺</span>`);
+            }
+
+            if (modulAktifFiltreler.minIndirim !== null && modulAktifFiltreler.maxIndirim !== null) {
+                etiketler.push(`<span class="badge bg-warning text-dark">İndirim: %${modulAktifFiltreler.minIndirim} - %${modulAktifFiltreler.maxIndirim}</span>`);
+            } else if (modulAktifFiltreler.minIndirim !== null) {
+                etiketler.push(`<span class="badge bg-warning text-dark">Min İndirim: %${modulAktifFiltreler.minIndirim}</span>`);
+            } else if (modulAktifFiltreler.maxIndirim !== null) {
+                etiketler.push(`<span class="badge bg-warning text-dark">Max İndirim: %${modulAktifFiltreler.maxIndirim}</span>`);
+            }
+
+            if (modulAktifFiltreler.durum !== null) {
+                const durumMetin = modulAktifFiltreler.durum === 1 ? 'Aktif' : 'Pasif';
+                etiketler.push(`<span class="badge bg-info">Durum: ${durumMetin}</span>`);
+            }
+
+            if (modulAktifFiltreler.dahilmi !== null) {
+                const dahilMetin = modulAktifFiltreler.dahilmi === true ? 'Evet' : 'Hayır';
+                etiketler.push(`<span class="badge bg-secondary">Dahil: ${dahilMetin}</span>`);
+            }
+
+            if (modulAktifFiltreler.minSure !== null && modulAktifFiltreler.maxSure !== null) {
+                etiketler.push(`<span class="badge bg-info">Süre: ${modulAktifFiltreler.minSure} - ${modulAktifFiltreler.maxSure} gün</span>`);
+            } else if (modulAktifFiltreler.minSure !== null) {
+                etiketler.push(`<span class="badge bg-info">Min Süre: ${modulAktifFiltreler.minSure} gün</span>`);
+            } else if (modulAktifFiltreler.maxSure !== null) {
+                etiketler.push(`<span class="badge bg-info">Max Süre: ${modulAktifFiltreler.maxSure} gün</span>`);
+            }
+
+            if (modulAktifFiltreler.siralama !== 'adi_az') {
+                const siralamaMetin = {
+                    'adi_za': 'İsim (Z-A)',
+                    'fiyat_azalan': 'Fiyat (Azalan)',
+                    'fiyat_artan': 'Fiyat (Artan)',
+                    'indirim_azalan': 'İndirim (Azalan)',
+                    'indirim_artan': 'İndirim (Artan)',
+                    'sure_azalan': 'Süre (Azalan)',
+                    'sure_artan': 'Süre (Artan)'
+                };
+                etiketler.push(`<span class="badge bg-secondary">Sıralama: ${siralamaMetin[modulAktifFiltreler.siralama]}</span>`);
+            }
+
+            if (etiketler.length > 0) {
+                document.getElementById('filtreEtiketleri').innerHTML = etiketler.join(' ');
+                document.getElementById('aktifFiltreler').style.display = 'block';
+                filtreTemizleBtn.style.display = 'inline-block';
+
+                // Buton stillerini güncelle
+                document.getElementById('lisansTipFiltreBtn').className = modulAktifFiltreler.lisansTipId
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+                document.getElementById('birimFiltreBtn').className = modulAktifFiltreler.birimId
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+                document.getElementById('fiyatFiltreBtn').className = modulAktifFiltreler.minFiyat !== null || modulAktifFiltreler.maxFiyat !== null
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+                document.getElementById('indirimFiltreBtn').className = modulAktifFiltreler.minIndirim !== null || modulAktifFiltreler.maxIndirim !== null
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+                document.getElementById('durumFiltreBtn').className = modulAktifFiltreler.durum !== null
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+                document.getElementById('dahilFiltreBtn').className = modulAktifFiltreler.dahilmi !== null
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+                document.getElementById('sureFiltreBtn').className = modulAktifFiltreler.minSure !== null || modulAktifFiltreler.maxSure !== null
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            } else {
+                document.getElementById('aktifFiltreler').style.display = 'none';
+                filtreTemizleBtn.style.display = 'none';
+            }
+        }
+
+        // Tarih formatlama (filtreler için gerekli değil ama uyumluluk için)
+        function formatModulDate(dateStr) {
+            if (!dateStr) return '';
+            const [yil, ay, gun] = dateStr.split('-');
+            return `${gun}.${ay}.${yil}`;
+        }
+
+        // Ana filtreleme ve sıralama fonksiyonu
+        function modulFiltreleVeSirala() {
+            const tbody = document.getElementById('tableBody');
+            if (!tbody) return;
+
+            const satirlar = Array.from(tbody.querySelectorAll('tr[data-id]'));
+            const noDataRow = document.getElementById('noDataRow');
+
+            if (satirlar.length === 0) return;
+
+            // Filtreleme
+            let filtrelenmisSatirlar = satirlar.filter(satir => {
+                let goster = true;
+                const $satir = $(satir);
+
+                // Arama filtresi
+                if (modulAktifFiltreler.arama) {
+                    const searchData = $satir.data('search') || '';
+                    const rowText = satir.textContent.toLowerCase();
+                    const aramaKelime = modulAktifFiltreler.arama.toLowerCase();
+
+                    if (!searchData.includes(aramaKelime) && !rowText.includes(aramaKelime)) {
+                        goster = false;
                     }
-
-                    searchResultCount.text('');
-
-                    // Arama sırasında seçimi temizle
-                    secimiTemizle();
-                    return;
                 }
 
-                let visibleCount = 0;
+                // Lisans Tipi filtresi (5. sütun)
+                if (goster && modulAktifFiltreler.lisansTipId) {
+                    const lisansTip = satir.querySelector('td:nth-child(5)')?.textContent.trim() || '';
+                    const seciliLisansTipAdi = document.getElementById('lisansTipFiltre').options[document.getElementById('lisansTipFiltre').selectedIndex]?.text;
 
-                // Her satırı kontrol et
-                allRows.forEach(row => {
-                    const $row = $(row);
-                    const searchData = $row.data('search') || '';
-                    const rowText = $row.text().toLowerCase();
-
-                    // Arama terimini kontrol et
-                    if (searchData.includes(searchTerm) || rowText.includes(searchTerm)) {
-                        $row.show();
-                        visibleCount++;
-
-                        // Eşleşen metni vurgula
-                        highlightText($row, searchTerm);
-                    } else {
-                        $row.hide();
+                    if (lisansTip !== seciliLisansTipAdi) {
+                        goster = false;
                     }
-                });
-
-                // Sonuç sayısını göster
-                searchResultCount.text(`${visibleCount} sonuç bulundu`);
-
-                // Eğer hiç sonuç yoksa mesaj göster
-                if (visibleCount === 0) {
-                    $('#noResultsRow').remove();
-                    tableBody.append(`
-                        <tr id="noResultsRow">
-                            <td colspan="12" class="text-center">
-                                <div class="py-4">
-                                    <i class="fas fa-search fa-2x text-muted mb-3"></i>
-                                    <p class="text-muted">Arama kriterine uygun modül bulunamadı.</p>
-                                </div>
-                            </td>
-                        </tr>
-                    `);
-                } else {
-                    $('#noResultsRow').remove();
-                    // Sıra numaralarını güncelle
-                    updateRowNumbers();
                 }
 
-                // Orijinal noDataRow'u gizle
-                noDataRow.hide();
+                // Birim filtresi (6. sütun)
+                if (goster && modulAktifFiltreler.birimId) {
+                    const birim = satir.querySelector('td:nth-child(6)')?.textContent.trim() || '';
+                    const seciliBirimAdi = document.getElementById('birimFiltre').options[document.getElementById('birimFiltre').selectedIndex]?.text;
 
-                // Arama sırasında seçimi temizle
-                secimiTemizle();
-            }
-
-            // Metin vurgulama fonksiyonu
-            function highlightText($row, searchTerm) {
-                // Önceki vurgulamaları temizle
-                $row.find('.highlight').each(function() {
-                    $(this).replaceWith($(this).text());
-                });
-
-                // Her hücrede arama yap (radio sütunu hariç)
-                $row.find('td:not(:first-child)').each(function() {
-                    const $cell = $(this);
-                    const cellText = $cell.text();
-                    const lowerText = cellText.toLowerCase();
-                    const termIndex = lowerText.indexOf(searchTerm);
-
-                    if (termIndex !== -1) {
-                        const before = cellText.substring(0, termIndex);
-                        const match = cellText.substring(termIndex, termIndex + searchTerm.length);
-                        const after = cellText.substring(termIndex + searchTerm.length);
-
-                        $cell.html(`${before}<span class="highlight">${match}</span>${after}`);
+                    if (birim !== seciliBirimAdi) {
+                        goster = false;
                     }
-                });
-            }
+                }
 
-            // Sıra numaralarını güncelle
-            function updateRowNumbers() {
-                let counter = 1;
-                tableBody.find('tr:visible').each(function() {
-                    const $row = $(this);
-                    if (!$row.is('#noResultsRow') && !$row.is('#noDataRow')) {
-                        $row.find('td:eq(1)').text(counter);
-                        counter++;
+                // Fiyat filtresi (7. sütun)
+                if (goster && (modulAktifFiltreler.minFiyat !== null || modulAktifFiltreler.maxFiyat !== null)) {
+                    const fiyatTd = satir.querySelector('td:nth-child(7)')?.textContent.trim();
+                    if (fiyatTd) {
+                        const fiyat = parseFloat(fiyatTd.replace(' ₺', '').replace(',', '.'));
+
+                        if (modulAktifFiltreler.minFiyat !== null && fiyat < modulAktifFiltreler.minFiyat) {
+                            goster = false;
+                        }
+
+                        if (goster && modulAktifFiltreler.maxFiyat !== null && fiyat > modulAktifFiltreler.maxFiyat) {
+                            goster = false;
+                        }
                     }
-                });
-            }
+                }
 
-            // Arama kutusu input event
-            searchInput.on('input', function() {
-                performSearch();
+                // İndirim filtresi (8. sütun)
+                if (goster && (modulAktifFiltreler.minIndirim !== null || modulAktifFiltreler.maxIndirim !== null)) {
+                    const indirimTd = satir.querySelector('td:nth-child(8)')?.textContent.trim();
+                    if (indirimTd) {
+                        const indirim = parseFloat(indirimTd.replace('%', ''));
+
+                        if (modulAktifFiltreler.minIndirim !== null && indirim < modulAktifFiltreler.minIndirim) {
+                            goster = false;
+                        }
+
+                        if (goster && modulAktifFiltreler.maxIndirim !== null && indirim > modulAktifFiltreler.maxIndirim) {
+                            goster = false;
+                        }
+                    }
+                }
+
+                // Durum filtresi (son sütun - 13. sütun)
+                if (goster && modulAktifFiltreler.durum !== null) {
+                    const durumSpan = satir.querySelector('td:last-child .badge');
+                    if (durumSpan) {
+                        const durumText = durumSpan.textContent.trim();
+                        const aktif = durumText === 'Aktif' ? 1 : 0;
+
+                        if (aktif !== modulAktifFiltreler.durum) {
+                            goster = false;
+                        }
+                    }
+                }
+
+                // Dahil mi filtresi (10. sütun)
+                if (goster && modulAktifFiltreler.dahilmi !== null) {
+                    const dahilSpan = satir.querySelector('td:nth-child(10) .badge');
+                    if (dahilSpan) {
+                        const dahilText = dahilSpan.textContent.trim();
+                        let dahilmi;
+
+                        if (dahilText.includes('Evet')) dahilmi = true;
+                        else if (dahilText.includes('Hayır')) dahilmi = false;
+                        else dahilmi = null;
+
+                        if (dahilmi !== modulAktifFiltreler.dahilmi) {
+                            goster = false;
+                        }
+                    }
+                }
+
+                // Süre filtresi (11. sütun)
+                if (goster && (modulAktifFiltreler.minSure !== null || modulAktifFiltreler.maxSure !== null)) {
+                    const sureTd = satir.querySelector('td:nth-child(11)')?.textContent.trim();
+                    if (sureTd) {
+                        const sure = parseFloat(sureTd.replace(' gün', ''));
+
+                        if (modulAktifFiltreler.minSure !== null && sure < modulAktifFiltreler.minSure) {
+                            goster = false;
+                        }
+
+                        if (goster && modulAktifFiltreler.maxSure !== null && sure > modulAktifFiltreler.maxSure) {
+                            goster = false;
+                        }
+                    }
+                }
+
+                return goster;
             });
 
-            // Sayfa yüklendiğinde başlangıç durumunu ayarla
-            performSearch();
+            // Sıralama
+            switch(modulAktifFiltreler.siralama) {
+                case 'adi_az':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const adiA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        const adiB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        return adiA.localeCompare(adiB, 'tr');
+                    });
+                    break;
+
+                case 'adi_za':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const adiA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        const adiB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        return adiB.localeCompare(adiA, 'tr');
+                    });
+                    break;
+
+                case 'fiyat_azalan':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const fiyatA = parseFloat(a.querySelector('td:nth-child(7)')?.textContent.replace(' ₺', '').replace(',', '.')) || 0;
+                        const fiyatB = parseFloat(b.querySelector('td:nth-child(7)')?.textContent.replace(' ₺', '').replace(',', '.')) || 0;
+                        return fiyatB - fiyatA;
+                    });
+                    break;
+
+                case 'fiyat_artan':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const fiyatA = parseFloat(a.querySelector('td:nth-child(7)')?.textContent.replace(' ₺', '').replace(',', '.')) || 0;
+                        const fiyatB = parseFloat(b.querySelector('td:nth-child(7)')?.textContent.replace(' ₺', '').replace(',', '.')) || 0;
+                        return fiyatA - fiyatB;
+                    });
+                    break;
+
+                case 'indirim_azalan':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const indirimA = parseFloat(a.querySelector('td:nth-child(8)')?.textContent.replace('%', '')) || 0;
+                        const indirimB = parseFloat(b.querySelector('td:nth-child(8)')?.textContent.replace('%', '')) || 0;
+                        return indirimB - indirimA;
+                    });
+                    break;
+
+                case 'indirim_artan':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const indirimA = parseFloat(a.querySelector('td:nth-child(8)')?.textContent.replace('%', '')) || 0;
+                        const indirimB = parseFloat(b.querySelector('td:nth-child(8)')?.textContent.replace('%', '')) || 0;
+                        return indirimA - indirimB;
+                    });
+                    break;
+
+                case 'sure_azalan':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const sureA = parseFloat(a.querySelector('td:nth-child(11)')?.textContent.replace(' gün', '')) || 0;
+                        const sureB = parseFloat(b.querySelector('td:nth-child(11)')?.textContent.replace(' gün', '')) || 0;
+                        return sureB - sureA;
+                    });
+                    break;
+
+                case 'sure_artan':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const sureA = parseFloat(a.querySelector('td:nth-child(11)')?.textContent.replace(' gün', '')) || 0;
+                        const sureB = parseFloat(b.querySelector('td:nth-child(11)')?.textContent.replace(' gün', '')) || 0;
+                        return sureA - sureB;
+                    });
+                    break;
+            }
+
+            // Tüm satırları gizle
+            satirlar.forEach(satir => {
+                satir.style.display = 'none';
+            });
+
+            // Filtrelenmiş satırları göster
+            filtrelenmisSatirlar.forEach((satir, index) => {
+                satir.style.display = '';
+                // Sıra numarasını güncelle (2. sütun)
+                const siraHucresi = satir.querySelector('td:nth-child(2)');
+                if (siraHucresi) {
+                    siraHucresi.textContent = index + 1;
+                }
+            });
+
+            // "Gösterilecek kayıt yok" mesajı
+            let bosSatir = tbody.querySelector('.filtre-bos-satir');
+
+            if (filtrelenmisSatirlar.length === 0) {
+                if (!bosSatir) {
+                    bosSatir = document.createElement('tr');
+                    bosSatir.className = 'filtre-bos-satir';
+                    bosSatir.innerHTML = '<td colspan="13" class="text-center py-5"><i class="fas fa-filter fa-3x text-muted mb-3"></i><p class="text-muted">Filtreleme kriterlerine uygun modül bulunamadı.</p><button class="btn btn-sm btn-outline-secondary" onclick="modulTumFiltreleriTemizle()">Filtreleri Temizle</button></td>';
+                    tbody.appendChild(bosSatir);
+                }
+
+                // noDataRow varsa gizle
+                if (noDataRow) noDataRow.style.display = 'none';
+            } else {
+                if (bosSatir) bosSatir.remove();
+                if (noDataRow) noDataRow.style.display = 'none';
+            }
+
+            // Arama sonuç sayısını güncelle
+            const searchResultCount = document.getElementById('searchResultCount');
+            if (searchResultCount) {
+                if (modulAktifFiltreler.arama) {
+                    searchResultCount.textContent = `${filtrelenmisSatirlar.length} sonuç bulundu`;
+                } else {
+                    searchResultCount.textContent = '';
+                }
+            }
         }
+
+        // Enter tuşu ile filtreleme
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const aktifElement = document.activeElement;
+                if (aktifElement.id === 'modulArama' ||
+                    aktifElement.id === 'filtreMinFiyat' ||
+                    aktifElement.id === 'filtreMaxFiyat' ||
+                    aktifElement.id === 'filtreMinIndirim' ||
+                    aktifElement.id === 'filtreMaxIndirim' ||
+                    aktifElement.id === 'filtreMinSure' ||
+                    aktifElement.id === 'filtreMaxSure') {
+                    e.preventDefault();
+                    modulFiltreleVeSirala();
+                }
+            }
+        });
 
         // ============= MODAL İŞLEMLERİ =============
 
@@ -973,8 +1821,7 @@
                 $('#editFiyat').val(data.fiyat);
                 $('#editIndOran').val(data.indOran);
                 $('#editKDVId').val(data.kdvId);
-                        $('#editDahilmi').prop('checked', data.dahilmi === true);
-
+                $('#editDahilmi').prop('checked', data.dahilmi === true);
                 $('#editEgitimSuresi').val(data.egitimSuresi);
                 $('#editSira').val(data.sira);
                 $('#editAktif').val(data.aktif);
@@ -1264,8 +2111,8 @@
 
         // ============= SAYFA YÜKLENDİĞİNDE =============
         $(function () {
-            // Arama sistemini başlat
-            initTableSearch();
+            // Filtreleme sistemini başlat
+            modulFiltreleVeSirala();
 
             // Alert 5 saniye sonra kapansın
             setTimeout(() => {

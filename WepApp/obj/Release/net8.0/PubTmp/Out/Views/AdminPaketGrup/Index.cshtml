@@ -5,6 +5,150 @@
 }
 
 <style>
+    /* Filtreleme stilleri - Diğer sayfalarla uyumlu */
+    .card-header .flex-wrap {
+        gap: 15px;
+    }
+
+    .card-header .gap-2 {
+        gap: 0.5rem !important;
+    }
+
+    .search-box {
+        position: relative;
+    }
+
+        .search-box .input-group {
+            transition: all 0.3s ease;
+            width: 200px;
+        }
+
+            .search-box .input-group:focus-within {
+                width: 250px;
+            }
+
+        .search-box .form-control:focus {
+            background-color: #fff !important;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+        }
+
+    #paketGrupAramaTemizle {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: transparent;
+        z-index: 5;
+        color: #6c757d;
+        padding: 0.25rem 0.5rem;
+    }
+
+        #paketGrupAramaTemizle:hover {
+            color: #dc3545;
+        }
+
+    .dropdown-menu {
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+        border: none;
+    }
+
+        .dropdown-menu .form-control-sm,
+        .dropdown-menu .form-select-sm {
+            border: 1px solid #dee2e6;
+        }
+
+            .dropdown-menu .form-control-sm:focus,
+            .dropdown-menu .form-select-sm:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+            }
+
+    #paketGrupFiltreTemizleBtn {
+        transition: all 0.3s ease;
+    }
+
+        #paketGrupFiltreTemizleBtn:hover {
+            transform: scale(1.1);
+        }
+
+    /* Aktif filtre butonu stilleri */
+    .btn-primary .fas {
+        color: white;
+    }
+
+    /* Filtre etiketleri */
+    #aktifFiltreler {
+        background-color: #f8f9fa;
+        border-radius: 0.35rem;
+        padding: 10px;
+        border: 1px solid #e3e6f0;
+        margin-top: 15px !important;
+    }
+
+        #aktifFiltreler .badge {
+            font-size: 0.85rem;
+            padding: 0.5rem 0.75rem;
+        }
+
+    /* Tablo satırları için geçiş efekti */
+    #paketGrupTablosu tr {
+        transition: all 0.3s ease;
+    }
+
+        #paketGrupTablosu tr[style*="display: none"] {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+    /* Responsive düzenlemeler */
+    media (max-width: 768px) {
+        .card-header .d-flex
+
+    {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+
+    .card-header .gap-2 {
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .search-box {
+        width: 100% !important;
+        margin-bottom: 5px;
+    }
+
+        .search-box .input-group {
+            width: 100% !important;
+        }
+
+            .search-box .input-group:focus-within {
+                width: 100% !important;
+            }
+
+    .card-header .dropdown {
+        flex: 1;
+    }
+
+    .islem-butonlari-alani {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    #aktifFiltreler .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 10px;
+    }
+
+    #filtreEtiketleri {
+        flex-wrap: wrap;
+    }
+
+    }
     .table-actions {
         white-space: nowrap;
         width: 120px;
@@ -18,6 +162,49 @@
         background-color: #f8f9fa;
         border-bottom: 2px solid #dee2e6;
     }
+
+    /* Seçim satırı için cursor pointer */
+    tr[data-paket-grup-id] {
+        cursor: pointer;
+    }
+
+    /* Seçili satır efekti */
+    tr.table-active {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+
+    /* İşlem butonları alanı */
+    .islem-butonlari-alani {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .secili-bilgi {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+
+        .secili-bilgi i {
+            font-size: 1rem;
+        }
+
+    /* Buton stilleri */
+    .aksiyon-btn {
+        transition: all 0.2s;
+    }
+
+        .aksiyon-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .aksiyon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 
     /* Tablo + Scrollbar */
     .paket-table-container {
@@ -96,11 +283,178 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="card-title d-flex justify-content-between align-items-center">
-                    <span>Paket Grupları</span>
-                    <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                        <i class="fas fa-plus"></i> Yeni Grup Ekle
-                    </button>
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <h5 class="mb-0">Paket Grupları</h5>
+
+                    <!-- FİLTRELEME ALANI - Diğer sayfalarla uyumlu -->
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Arama Kutusu -->
+                        <div class="search-box">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-light border-0">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" id="paketGrupArama" class="form-control form-control-sm border-0 bg-light"
+                                       placeholder="Grup ara..." style="box-shadow: none;">
+                                <button class="btn btn-outline-secondary btn-sm" type="button" id="paketGrupAramaTemizle" style="display:none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Lisans Tipi Filtresi -->
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" id="lisansTipFiltreBtn">
+                                <i class="fas fa-tag me-1"></i> Lisans Tipi
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
+                                <div class="mb-2">
+                                    <select class="form-select form-select-sm" id="lisansTipFiltre">
+                                        <option value="">Tüm Lisans Tipleri</option>
+                                        @foreach (var tip in ViewBag.LisansTipleri as List<LisansTip>)
+                                        {
+                                            <option value="@tip.Id">@tip.Adi</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <button class="btn btn-sm btn-primary" onclick="paketGrupLisansTipFiltreUygula()">Uygula</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fiyat Filtresi -->
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" id="fiyatFiltreBtn">
+                                <i class="fas fa-lira-sign me-1"></i> Fiyat
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
+                                <div class="mb-2">
+                                    <label class="form-label small">Min Fiyat (₺)</label>
+                                    <input type="number" id="filtreMinFiyat" class="form-control form-control-sm" min="0" step="0.01">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small">Max Fiyat (₺)</label>
+                                    <input type="number" id="filtreMaxFiyat" class="form-control form-control-sm" min="0" step="0.01">
+                                </div>
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="paketGrupFiyatFiltreTemizle()">Temizle</button>
+                                    <button class="btn btn-sm btn-primary" onclick="paketGrupFiyatFiltreUygula()">Uygula</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Süre Filtresi -->
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" id="sureFiltreBtn">
+                                <i class="fas fa-clock me-1"></i> Süre
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
+                                <div class="mb-2">
+                                    <label class="form-label small">Min Süre (gün)</label>
+                                    <input type="number" id="filtreMinSure" class="form-control form-control-sm" min="0" step="0.1">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small">Max Süre (gün)</label>
+                                    <input type="number" id="filtreMaxSure" class="form-control form-control-sm" min="0" step="0.1">
+                                </div>
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="paketGrupSureFiltreTemizle()">Temizle</button>
+                                    <button class="btn btn-sm btn-primary" onclick="paketGrupSureFiltreUygula()">Uygula</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- İndirim Filtresi -->
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" id="indirimFiltreBtn">
+                                <i class="fas fa-percent me-1"></i> İndirim
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
+                                <div class="mb-2">
+                                    <label class="form-label small">Min İndirim (%)</label>
+                                    <input type="number" id="filtreMinIndirim" class="form-control form-control-sm" min="0" max="100">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small">Max İndirim (%)</label>
+                                    <input type="number" id="filtreMaxIndirim" class="form-control form-control-sm" min="0" max="100">
+                                </div>
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="paketGrupIndirimFiltreTemizle()">Temizle</button>
+                                    <button class="btn btn-sm btn-primary" onclick="paketGrupIndirimFiltreUygula()">Uygula</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sıralama -->
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" id="siralamaFiltreBtn">
+                                <i class="fas fa-sort-amount-down me-1"></i> Sıralama
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 200px;">
+                                <div class="mb-2">
+                                    <select class="form-select form-select-sm" id="siralamaFiltre">
+                                        <option value="adi_az">İsim (A-Z)</option>
+                                        <option value="adi_za">İsim (Z-A)</option>
+                                        <option value="fiyat_azalan">Fiyat (Azalan)</option>
+                                        <option value="fiyat_artan">Fiyat (Artan)</option>
+                                        <option value="sure_azalan">Süre (Azalan)</option>
+                                        <option value="sure_artan">Süre (Artan)</option>
+                                        <option value="indirim_azalan">İndirim (Azalan)</option>
+                                        <option value="indirim_artan">İndirim (Artan)</option>
+                                    </select>
+                                </div>
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <button class="btn btn-sm btn-primary" onclick="paketGrupSiralamaUygula()">Uygula</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filtre Temizleme Butonu -->
+                        <button class="btn btn-sm btn-outline-danger" onclick="paketGrupTumFiltreleriTemizle()"
+                                title="Tüm filtreleri temizle" id="paketGrupFiltreTemizleBtn" style="display: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <!-- Seçili Kayıt Bilgisi ve İşlem Butonları (mevcut kod) -->
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                            <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                                <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                            </div>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-warning aksiyon-btn" id="seciliDuzenleBtn" title="Seçili Paket Grubunu Düzenle" disabled data-button-permission="duzenle">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger aksiyon-btn" id="seciliSilBtn" title="Seçili Paket Grubunu Sil" disabled data-button-permission="sil">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Yeni Ekle Butonu -->
+                        <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                            <i class="fas fa-plus"></i> Yeni Grup Ekle
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Aktif Filtreler -->
+                <div class="row mt-3" id="aktifFiltreler" style="display: none;">
+                    <div class="col-12">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-light text-dark me-2 p-2">
+                                <i class="fas fa-filter me-1"></i>Aktif Filtreler:
+                            </span>
+                            <div id="filtreEtiketleri" class="d-flex flex-wrap gap-2"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -108,37 +462,34 @@
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
+                                <th width="40">Seç</th>
                                 <th width="50">#</th>
                                 <th>Grup Adı</th>
                                 <th>Lisans Tipi</th>
                                 <th>Paket Grup Fiyatı</th>
                                 <th>Eğitim Süresi</th>
                                 <th>İndirim (%)</th>
-                                <th width="120" class="text-center">İşlemler</th>
+                                <!-- İşlemler sütunu kaldırıldı -->
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="paketGrupTablosu">
                             @if (ViewBag.PaketGruplari != null && ((List<PaketGrup>)ViewBag.PaketGruplari).Count > 0)
                             {
                                 var counter = 1;
                                 foreach (var item in (List<PaketGrup>)ViewBag.PaketGruplari)
                                 {
-                                    <tr>
+                                    <tr data-paket-grup-id="@item.Id" data-paket-grup-adi="@item.Adi" class="paket-grup-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input paket-grup-sec-radio" type="radio" name="seciliPaketGrupRadio" value="@item.Id" id="secim_@item.Id">
+                                            </div>
+                                        </td>
                                         <td>@counter</td>
                                         <td><strong>@item.Adi</strong></td>
                                         <td>@(item.LisansTip?.Adi ?? "-")</td>
                                         <td>@item.Fiyat.ToString("N2") ₺</td>
                                         <td>@item.EgitimSuresi gün</td>
                                         <td>%@item.IndOran</td>
-                                        <td class="table-actions text-center">
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.Adi')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
                                     </tr>
                                     counter++;
                                 }
@@ -146,7 +497,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="7" class="text-center">
+                                    <td colspan="8" class="text-center">
                                         <div class="py-4">
                                             <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                             <p class="text-muted">Henüz paket grubu eklenmemiş.</p>
@@ -280,7 +631,7 @@
 <div class="modal fade" id="duzenleModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
-            <form action="@Url.Action("Guncelle","AdminPaketGrup")" method="post" id="duzenleForm">
+            <form action="@Url.Action("Guncelle", "AdminPaketGrup")" method="post" id="duzenleForm">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="Id" id="editId" />
                 <div class="modal-header">
@@ -391,7 +742,7 @@
 <div class="modal fade" id="silModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Sil","AdminPaketGrup")" method="post">
+            <form action="@Url.Action("Sil", "AdminPaketGrup")" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="Id" id="silId" />
                 <div class="modal-header">
@@ -412,172 +763,736 @@
 </div>
 
 @section Script {
+    <!-- Toastr için gerekli script ve CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
-        let eklePaketler = [];
-        let editPaketler = [];
+                $(document).ready(function () {// ============= PAKET GRUBU FİLTRELEME SİSTEMİ =============
+        let paketGrupAktifFiltreler = {
+            arama: '',
+            lisansTipId: null,
+            minFiyat: null,
+            maxFiyat: null,
+            minSure: null,
+            maxSure: null,
+            minIndirim: null,
+            maxIndirim: null,
+            siralama: 'adi_az'
+        };
 
-        function lisansTipDegisti(modalType) {
-            const lisansTipId = $(`#${modalType}LisansTipId`).val();
-            if (!lisansTipId) {
-                $(`#${modalType}PaketTableBody`).html(`<tr><td colspan="6" class="text-center text-muted py-4"><i class="fas fa-box-open fa-2x mb-2"></i><br>Lütfen lisans tipi seçin</td></tr>`);
-                return;
+        // Arama fonksiyonu
+        function paketGrupAramaFiltrele() {
+            const aramaInput = document.getElementById('paketGrupArama');
+            const temizleBtn = document.getElementById('paketGrupAramaTemizle');
+
+            if (aramaInput && temizleBtn) {
+                const kelime = aramaInput.value.trim().toLowerCase();
+
+                // Temizle butonunu göster/gizle
+                temizleBtn.style.display = kelime ? 'block' : 'none';
+
+                paketGrupAktifFiltreler.arama = kelime;
+                paketGrupFiltreEtiketleriniGoster();
+                paketGrupFiltreleVeSirala();
+            }
+        }
+
+        // Arama inputuna event listener ekle
+        const aramaInput = document.getElementById('paketGrupArama');
+        const temizleBtn = document.getElementById('paketGrupAramaTemizle');
+
+        if (aramaInput) {
+            aramaInput.addEventListener('input', paketGrupAramaFiltrele);
+            aramaInput.addEventListener('keyup', paketGrupAramaFiltrele);
+        }
+
+        if (temizleBtn) {
+            temizleBtn.addEventListener('click', function () {
+                aramaInput.value = '';
+                paketGrupAramaFiltrele();
+                aramaInput.focus();
+            });
+        }
+
+        // Lisans Tipi Filtresi Uygula
+        window.paketGrupLisansTipFiltreUygula = function() {
+            const lisansTipId = document.getElementById('lisansTipFiltre').value;
+            paketGrupAktifFiltreler.lisansTipId = lisansTipId || null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('lisansTipFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            paketGrupFiltreEtiketleriniGoster();
+            paketGrupFiltreleVeSirala();
+        };
+
+        // Fiyat Filtresi Uygula
+        window.paketGrupFiyatFiltreUygula = function() {
+            const minInput = document.getElementById('filtreMinFiyat');
+            const maxInput = document.getElementById('filtreMaxFiyat');
+
+            paketGrupAktifFiltreler.minFiyat = minInput.value ? parseFloat(minInput.value) : null;
+            paketGrupAktifFiltreler.maxFiyat = maxInput.value ? parseFloat(maxInput.value) : null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('fiyatFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            paketGrupFiltreEtiketleriniGoster();
+            paketGrupFiltreleVeSirala();
+        };
+
+        // Fiyat Filtresi Temizle
+        window.paketGrupFiyatFiltreTemizle = function() {
+            document.getElementById('filtreMinFiyat').value = '';
+            document.getElementById('filtreMaxFiyat').value = '';
+            paketGrupAktifFiltreler.minFiyat = null;
+            paketGrupAktifFiltreler.maxFiyat = null;
+            paketGrupFiltreEtiketleriniGoster();
+            paketGrupFiltreleVeSirala();
+        };
+
+        // Süre Filtresi Uygula
+        window.paketGrupSureFiltreUygula = function() {
+            const minInput = document.getElementById('filtreMinSure');
+            const maxInput = document.getElementById('filtreMaxSure');
+
+            paketGrupAktifFiltreler.minSure = minInput.value ? parseFloat(minInput.value) : null;
+            paketGrupAktifFiltreler.maxSure = maxInput.value ? parseFloat(maxInput.value) : null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('sureFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            paketGrupFiltreEtiketleriniGoster();
+            paketGrupFiltreleVeSirala();
+        };
+
+        // Süre Filtresi Temizle
+        window.paketGrupSureFiltreTemizle = function() {
+            document.getElementById('filtreMinSure').value = '';
+            document.getElementById('filtreMaxSure').value = '';
+            paketGrupAktifFiltreler.minSure = null;
+            paketGrupAktifFiltreler.maxSure = null;
+            paketGrupFiltreEtiketleriniGoster();
+            paketGrupFiltreleVeSirala();
+        };
+
+        // İndirim Filtresi Uygula
+        window.paketGrupIndirimFiltreUygula = function() {
+            const minInput = document.getElementById('filtreMinIndirim');
+            const maxInput = document.getElementById('filtreMaxIndirim');
+
+            paketGrupAktifFiltreler.minIndirim = minInput.value ? parseFloat(minInput.value) : null;
+            paketGrupAktifFiltreler.maxIndirim = maxInput.value ? parseFloat(maxInput.value) : null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('indirimFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            paketGrupFiltreEtiketleriniGoster();
+            paketGrupFiltreleVeSirala();
+        };
+
+        // İndirim Filtresi Temizle
+        window.paketGrupIndirimFiltreTemizle = function() {
+            document.getElementById('filtreMinIndirim').value = '';
+            document.getElementById('filtreMaxIndirim').value = '';
+            paketGrupAktifFiltreler.minIndirim = null;
+            paketGrupAktifFiltreler.maxIndirim = null;
+            paketGrupFiltreEtiketleriniGoster();
+            paketGrupFiltreleVeSirala();
+        };
+
+        // Sıralama Uygula
+        window.paketGrupSiralamaUygula = function() {
+            const siralama = document.getElementById('siralamaFiltre').value;
+            paketGrupAktifFiltreler.siralama = siralama;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('siralamaFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            paketGrupFiltreEtiketleriniGoster();
+            paketGrupFiltreleVeSirala();
+        };
+
+        // Tüm Filtreleri Temizle
+        window.paketGrupTumFiltreleriTemizle = function() {
+            // Arama kutusunu temizle
+            document.getElementById('paketGrupArama').value = '';
+            document.getElementById('paketGrupAramaTemizle').style.display = 'none';
+
+            // Lisans tipi filtresini temizle
+            document.getElementById('lisansTipFiltre').value = '';
+
+            // Fiyat filtrelerini temizle
+            document.getElementById('filtreMinFiyat').value = '';
+            document.getElementById('filtreMaxFiyat').value = '';
+
+            // Süre filtrelerini temizle
+            document.getElementById('filtreMinSure').value = '';
+            document.getElementById('filtreMaxSure').value = '';
+
+            // İndirim filtrelerini temizle
+            document.getElementById('filtreMinIndirim').value = '';
+            document.getElementById('filtreMaxIndirim').value = '';
+
+            // Sıralamayı varsayılana getir
+            document.getElementById('siralamaFiltre').value = 'adi_az';
+
+            // Buton stillerini sıfırla
+            document.getElementById('lisansTipFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('fiyatFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('sureFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('indirimFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('siralamaFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+            // Filtre değişkenlerini sıfırla
+            paketGrupAktifFiltreler = {
+                arama: '',
+                lisansTipId: null,
+                minFiyat: null,
+                maxFiyat: null,
+                minSure: null,
+                maxSure: null,
+                minIndirim: null,
+                maxIndirim: null,
+                siralama: 'adi_az'
+            };
+
+            // Filtre etiketlerini gizle
+            document.getElementById('aktifFiltreler').style.display = 'none';
+            document.getElementById('paketGrupFiltreTemizleBtn').style.display = 'none';
+
+            // Filtrelemeyi yeniden uygula
+            paketGrupFiltreleVeSirala();
+        };
+
+        // Filtre etiketlerini göster
+        function paketGrupFiltreEtiketleriniGoster() {
+            const etiketler = [];
+            const filtreTemizleBtn = document.getElementById('paketGrupFiltreTemizleBtn');
+
+            if (paketGrupAktifFiltreler.arama) {
+                etiketler.push(`<span class="badge bg-primary">Arama: ${paketGrupAktifFiltreler.arama}</span>`);
             }
 
-            $(`#${modalType}PaketTableBody`).html(`
-                <tr><td colspan="6" class="text-center text-muted py-4">
-                    <i class="fas fa-spinner fa-spin fa-2x mb-2"></i><br>Paketler yükleniyor...
-                </td></tr>
-            `);
-
-            $.get(`/AdminPaketGrup/GetirPaketler?lisansTipId=${lisansTipId}`)
-                .done(function (response) {
-                    if (response.success) {
-                        if (modalType === 'ekle') eklePaketler = response.data;
-                        else editPaketler = response.data;
-                        renderPaketListesi(modalType, modalType === 'ekle' ? eklePaketler : editPaketler);
-                    } else {
-                        $(`#${modalType}PaketTableBody`).html(`<tr><td colspan="6" class="text-center text-danger">${response.message}</td></tr>`);
-                    }
-                })
-                .fail(function () {
-                    $(`#${modalType}PaketTableBody`).html(`<tr><td colspan="6" class="text-center text-danger">Paketler yüklenirken hata oluştu.</td></tr>`);
-                });
-        }
-
-        function renderPaketListesi(modalType, paketler) {
-            const tbody = $(`#${modalType}PaketTableBody`);
-            if (paketler.length === 0) {
-                tbody.html(`<tr><td colspan="6" class="text-center text-muted py-4"><i class="fas fa-box-open fa-2x mb-2"></i><br>Bu lisans tipine ait paket bulunamadı</td></tr>`);
-                $(`#${modalType}SelectAll`).prop('checked', false);
-                return;
+            if (paketGrupAktifFiltreler.lisansTipId) {
+                const lisansTipAdi = document.getElementById('lisansTipFiltre').options[document.getElementById('lisansTipFiltre').selectedIndex]?.text || 'Seçili';
+                etiketler.push(`<span class="badge bg-primary">Lisans: ${lisansTipAdi}</span>`);
             }
 
-            let html = '';
-            paketler.forEach(p => {
-                const checked = (modalType === 'edit' && p.secili) ? 'checked' : '';
-                const egitimSuresi = formatDecimal(p.egitimSuresi);
-                html += `
-                    <tr>
-                        <td>
-                            <div class="form-check">
-                                <input class="form-check-input paket-checkbox" type="checkbox" name="seciliPaketler" value="${p.id}" ${checked} onchange="paketSecildi('${modalType}')">
-                            </div>
-                        </td>
-                        <td><strong>${p.adi}</strong></td>
-                        <td>${p.lisansTipAdi || '-'}</td>
-                        <td>${p.birimAdi || '-'}</td>
-                        <td>${egitimSuresi} gün</td>
-                        <td class="text-end text-success fw-bold">${formatPrice(p.fiyat)} ₺</td>
-                    </tr>`;
-            });
-            tbody.html(html);
-            paketSecildi(modalType);
+            if (paketGrupAktifFiltreler.minFiyat !== null && paketGrupAktifFiltreler.maxFiyat !== null) {
+                etiketler.push(`<span class="badge bg-success">Fiyat: ${paketGrupAktifFiltreler.minFiyat} ₺ - ${paketGrupAktifFiltreler.maxFiyat} ₺</span>`);
+            } else if (paketGrupAktifFiltreler.minFiyat !== null) {
+                etiketler.push(`<span class="badge bg-success">Min Fiyat: ${paketGrupAktifFiltreler.minFiyat} ₺</span>`);
+            } else if (paketGrupAktifFiltreler.maxFiyat !== null) {
+                etiketler.push(`<span class="badge bg-success">Max Fiyat: ${paketGrupAktifFiltreler.maxFiyat} ₺</span>`);
+            }
+
+            if (paketGrupAktifFiltreler.minSure !== null && paketGrupAktifFiltreler.maxSure !== null) {
+                etiketler.push(`<span class="badge bg-info">Süre: ${paketGrupAktifFiltreler.minSure} - ${paketGrupAktifFiltreler.maxSure} gün</span>`);
+            } else if (paketGrupAktifFiltreler.minSure !== null) {
+                etiketler.push(`<span class="badge bg-info">Min Süre: ${paketGrupAktifFiltreler.minSure} gün</span>`);
+            } else if (paketGrupAktifFiltreler.maxSure !== null) {
+                etiketler.push(`<span class="badge bg-info">Max Süre: ${paketGrupAktifFiltreler.maxSure} gün</span>`);
+            }
+
+            if (paketGrupAktifFiltreler.minIndirim !== null && paketGrupAktifFiltreler.maxIndirim !== null) {
+                etiketler.push(`<span class="badge bg-warning text-dark">İndirim: %${paketGrupAktifFiltreler.minIndirim} - %${paketGrupAktifFiltreler.maxIndirim}</span>`);
+            } else if (paketGrupAktifFiltreler.minIndirim !== null) {
+                etiketler.push(`<span class="badge bg-warning text-dark">Min İndirim: %${paketGrupAktifFiltreler.minIndirim}</span>`);
+            } else if (paketGrupAktifFiltreler.maxIndirim !== null) {
+                etiketler.push(`<span class="badge bg-warning text-dark">Max İndirim: %${paketGrupAktifFiltreler.maxIndirim}</span>`);
+            }
+
+            if (paketGrupAktifFiltreler.siralama !== 'adi_az') {
+                const siralamaMetin = {
+                    'adi_za': 'İsim (Z-A)',
+                    'fiyat_azalan': 'Fiyat (Azalan)',
+                    'fiyat_artan': 'Fiyat (Artan)',
+                    'sure_azalan': 'Süre (Azalan)',
+                    'sure_artan': 'Süre (Artan)',
+                    'indirim_azalan': 'İndirim (Azalan)',
+                    'indirim_artan': 'İndirim (Artan)'
+                };
+                etiketler.push(`<span class="badge bg-secondary">Sıralama: ${siralamaMetin[paketGrupAktifFiltreler.siralama]}</span>`);
+            }
+
+            if (etiketler.length > 0) {
+                document.getElementById('filtreEtiketleri').innerHTML = etiketler.join(' ');
+                document.getElementById('aktifFiltreler').style.display = 'block';
+                filtreTemizleBtn.style.display = 'inline-block';
+
+                // Buton stillerini güncelle
+                document.getElementById('lisansTipFiltreBtn').className = paketGrupAktifFiltreler.lisansTipId
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+                document.getElementById('fiyatFiltreBtn').className = paketGrupAktifFiltreler.minFiyat !== null || paketGrupAktifFiltreler.maxFiyat !== null
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+                document.getElementById('sureFiltreBtn').className = paketGrupAktifFiltreler.minSure !== null || paketGrupAktifFiltreler.maxSure !== null
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+                document.getElementById('indirimFiltreBtn').className = paketGrupAktifFiltreler.minIndirim !== null || paketGrupAktifFiltreler.maxIndirim !== null
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            } else {
+                document.getElementById('aktifFiltreler').style.display = 'none';
+                filtreTemizleBtn.style.display = 'none';
+            }
         }
 
-        function paketSecildi(modalType) {
-            const secili = $(`#${modalType}PaketTableBody input:checked`).map(function () { return this.value; }).get();
-            $(`#${modalType}SeciliPaketSayisi`).text(secili.length);
+        // Ana filtreleme ve sıralama fonksiyonu
+        function paketGrupFiltreleVeSirala() {
+            const tbody = document.getElementById('paketGrupTablosu');
+            if (!tbody) return;
 
-            $.post('/AdminPaketGrup/HesaplaFiyat', { paketIds: secili })
-                .done(function (res) {
-                    if (res.success) {
-                        $(`#${modalType}ToplamFiyat`).text(formatPrice(res.toplamFiyat) + ' ₺');
-                        fiyatlariHesapla(modalType);
+            const satirlar = Array.from(tbody.querySelectorAll('tr.paket-grup-satiri'));
+
+            if (satirlar.length === 0) return;
+
+            // Filtreleme
+            let filtrelenmisSatirlar = satirlar.filter(satir => {
+                let goster = true;
+
+                // Arama filtresi (Grup Adı - 3. sütun)
+                if (paketGrupAktifFiltreler.arama) {
+                    const adi = satir.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
+                    if (!adi.includes(paketGrupAktifFiltreler.arama.toLowerCase())) {
+                        goster = false;
                     }
-                });
-
-            const toplam = $(`#${modalType}PaketTableBody .paket-checkbox`).length;
-            $(`#${modalType}SelectAll`).prop('checked', secili.length === toplam && toplam > 0);
-        }
-
-        function selectAllPaket(modalType) {
-            const checked = $(`#${modalType}SelectAll`).is(':checked');
-            $(`#${modalType}PaketTableBody .paket-checkbox`).prop('checked', checked);
-            paketSecildi(modalType);
-        }
-
-        function paketAra(modalType) {
-            const query = $(`#${modalType}PaketArama`).val().toLowerCase();
-            $(`#${modalType}PaketTableBody tr`).each(function () {
-                const text = $(this).text().toLowerCase();
-                $(this).toggle(text.includes(query));
-            });
-        }
-
-        function fiyatlariHesapla(modalType) {
-            const toplamText = $(`#${modalType}ToplamFiyat`).text();
-            const toplam = parseFloat(toplamText.replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
-            const oran = parseFloat($(`#${modalType}IndOran`).val()) || 0;
-            const grupFiyati = parseFloat($(`#${modalType}Fiyat`).val()) || 0;
-
-            // Grup fiyatını göster
-            $(`#${modalType}GrupFiyati`).text(formatPrice(grupFiyati) + ' ₺');
-        }
-
-        function formatPrice(price) {
-            return new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(price);
-        }
-
-        function formatDecimal(value) {
-            return new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 1, maximumFractionDigits: 2 }).format(value);
-        }
-
-        // Decimal mask için input event listener
-        function applyDecimalMask() {
-            $('.decimal-mask').on('input', function() {
-                let value = $(this).val().replace(/[^\d,]/g, '');
-
-                // Sadece bir virgül olmasını sağla
-                const parts = value.split(',');
-                if (parts.length > 2) {
-                    value = parts[0] + ',' + parts.slice(1).join('');
                 }
 
-                // Ondalık kısmı 2 basamakla sınırla
-                if (parts.length === 2 && parts[1].length > 2) {
-                    value = parts[0] + ',' + parts[1].substring(0, 2);
+                // Lisans Tipi filtresi (4. sütun)
+                if (goster && paketGrupAktifFiltreler.lisansTipId) {
+                    const lisansTipAdi = satir.querySelector('td:nth-child(4)')?.textContent.trim() || '';
+                    const seciliLisansTipAdi = document.getElementById('lisansTipFiltre').options[document.getElementById('lisansTipFiltre').selectedIndex]?.text;
+
+                    if (lisansTipAdi !== seciliLisansTipAdi) {
+                        goster = false;
+                    }
                 }
 
-                $(this).val(value);
-            });
-        }
+                // Fiyat filtresi (5. sütun)
+                if (goster && (paketGrupAktifFiltreler.minFiyat !== null || paketGrupAktifFiltreler.maxFiyat !== null)) {
+                    const fiyatTd = satir.querySelector('td:nth-child(5)')?.textContent.trim();
+                    if (fiyatTd) {
+                        const fiyat = parseFloat(fiyatTd.replace(/[^\d,]/g, '').replace(',', '.'));
 
-        function duzenleGetir(id) {
-            $.get('/AdminPaketGrup/Getir/' + id)
-                .done(function (data) {
-                    $('#editId').val(data.id);
-                    $('#editAdi').val(data.adi);
-                    $('#editLisansTipId').val(data.lisansTipId);
-                    $('#editFiyat').val(data.fiyat);
-
-                    // Eğitim süresini virgüllü formatla
-                    $('#editEgitimSuresi').val(formatDecimal(data.egitimSuresi));
-
-                    $('#editIndOran').val(data.indOran);
-                    $('#editSira').val(data.sira);
-
-                    lisansTipDegisti('edit');
-
-                    setTimeout(() => {
-                        if (data.seciliPaketler && data.seciliPaketler.length > 0) {
-                            data.seciliPaketler.forEach(pid => {
-                                $(`#editPaketTableBody input[value="${pid}"]`).prop('checked', true);
-                            });
-                            paketSecildi('edit');
+                        if (paketGrupAktifFiltreler.minFiyat !== null && fiyat < paketGrupAktifFiltreler.minFiyat) {
+                            goster = false;
                         }
-                    }, 600);
 
-                    new bootstrap.Modal('#duzenleModal').show();
+                        if (goster && paketGrupAktifFiltreler.maxFiyat !== null && fiyat > paketGrupAktifFiltreler.maxFiyat) {
+                            goster = false;
+                        }
+                    }
+                }
+
+                // Süre filtresi (6. sütun)
+                if (goster && (paketGrupAktifFiltreler.minSure !== null || paketGrupAktifFiltreler.maxSure !== null)) {
+                    const sureTd = satir.querySelector('td:nth-child(6)')?.textContent.trim();
+                    if (sureTd) {
+                        const sure = parseFloat(sureTd.replace(' gün', '').replace(',', '.'));
+
+                        if (paketGrupAktifFiltreler.minSure !== null && sure < paketGrupAktifFiltreler.minSure) {
+                            goster = false;
+                        }
+
+                        if (goster && paketGrupAktifFiltreler.maxSure !== null && sure > paketGrupAktifFiltreler.maxSure) {
+                            goster = false;
+                        }
+                    }
+                }
+
+                // İndirim filtresi (7. sütun)
+                if (goster && (paketGrupAktifFiltreler.minIndirim !== null || paketGrupAktifFiltreler.maxIndirim !== null)) {
+                    const indirimTd = satir.querySelector('td:nth-child(7)')?.textContent.trim();
+                    if (indirimTd) {
+                        const indirim = parseFloat(indirimTd.replace('%', '').replace(',', '.'));
+
+                        if (paketGrupAktifFiltreler.minIndirim !== null && indirim < paketGrupAktifFiltreler.minIndirim) {
+                            goster = false;
+                        }
+
+                        if (goster && paketGrupAktifFiltreler.maxIndirim !== null && indirim > paketGrupAktifFiltreler.maxIndirim) {
+                            goster = false;
+                        }
+                    }
+                }
+
+                return goster;
+            });
+
+            // Sıralama
+            switch(paketGrupAktifFiltreler.siralama) {
+                case 'adi_az':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const adiA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        const adiB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        return adiA.localeCompare(adiB, 'tr');
+                    });
+                    break;
+
+                case 'adi_za':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const adiA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        const adiB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        return adiB.localeCompare(adiA, 'tr');
+                    });
+                    break;
+
+                case 'fiyat_azalan':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const fiyatA = parseFloat(a.querySelector('td:nth-child(5)')?.textContent.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+                        const fiyatB = parseFloat(b.querySelector('td:nth-child(5)')?.textContent.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+                        return fiyatB - fiyatA;
+                    });
+                    break;
+
+                case 'fiyat_artan':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const fiyatA = parseFloat(a.querySelector('td:nth-child(5)')?.textContent.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+                        const fiyatB = parseFloat(b.querySelector('td:nth-child(5)')?.textContent.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+                        return fiyatA - fiyatB;
+                    });
+                    break;
+
+                case 'sure_azalan':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const sureA = parseFloat(a.querySelector('td:nth-child(6)')?.textContent.replace(' gün', '').replace(',', '.')) || 0;
+                        const sureB = parseFloat(b.querySelector('td:nth-child(6)')?.textContent.replace(' gün', '').replace(',', '.')) || 0;
+                        return sureB - sureA;
+                    });
+                    break;
+
+                case 'sure_artan':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const sureA = parseFloat(a.querySelector('td:nth-child(6)')?.textContent.replace(' gün', '').replace(',', '.')) || 0;
+                        const sureB = parseFloat(b.querySelector('td:nth-child(6)')?.textContent.replace(' gün', '').replace(',', '.')) || 0;
+                        return sureA - sureB;
+                    });
+                    break;
+
+                case 'indirim_azalan':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const indirimA = parseFloat(a.querySelector('td:nth-child(7)')?.textContent.replace('%', '').replace(',', '.')) || 0;
+                        const indirimB = parseFloat(b.querySelector('td:nth-child(7)')?.textContent.replace('%', '').replace(',', '.')) || 0;
+                        return indirimB - indirimA;
+                    });
+                    break;
+
+                case 'indirim_artan':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const indirimA = parseFloat(a.querySelector('td:nth-child(7)')?.textContent.replace('%', '').replace(',', '.')) || 0;
+                        const indirimB = parseFloat(b.querySelector('td:nth-child(7)')?.textContent.replace('%', '').replace(',', '.')) || 0;
+                        return indirimA - indirimB;
+                    });
+                    break;
+            }
+
+            // Tüm satırları gizle
+            satirlar.forEach(satir => {
+                satir.style.display = 'none';
+            });
+
+            // Filtrelenmiş satırları göster ve tbody'ye yeniden ekle (sıralama için)
+            filtrelenmisSatirlar.forEach((satir, index) => {
+                satir.style.display = '';
+                // Sıra numarasını güncelle (2. sütun)
+                const siraHucresi = satir.querySelector('td:nth-child(2)');
+                if (siraHucresi) {
+                    siraHucresi.textContent = index + 1;
+                }
+                tbody.appendChild(satir);
+            });
+
+            // "Gösterilecek kayıt yok" mesajı
+            let bosSatir = tbody.querySelector('.filtre-bos-satir');
+
+            if (filtrelenmisSatirlar.length === 0) {
+                if (!bosSatir) {
+                    bosSatir = document.createElement('tr');
+                    bosSatir.className = 'filtre-bos-satir';
+                    bosSatir.innerHTML = '<td colspan="8" class="text-center py-5"><i class="fas fa-filter fa-3x text-muted mb-3"></i><p class="text-muted">Filtreleme kriterlerine uygun paket grubu bulunamadı.</p><button class="btn btn-sm btn-outline-secondary" onclick="paketGrupTumFiltreleriTemizle()">Filtreleri Temizle</button></td>';
+                    tbody.appendChild(bosSatir);
+                }
+            } else if (bosSatir) {
+                bosSatir.remove();
+            }
+        }
+
+        // Enter tuşu ile filtreleme
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const aktifElement = document.activeElement;
+                if (aktifElement.id === 'paketGrupArama' ||
+                    aktifElement.id === 'filtreMinFiyat' ||
+                    aktifElement.id === 'filtreMaxFiyat' ||
+                    aktifElement.id === 'filtreMinSure' ||
+                    aktifElement.id === 'filtreMaxSure' ||
+                    aktifElement.id === 'filtreMinIndirim' ||
+                    aktifElement.id === 'filtreMaxIndirim') {
+                    e.preventDefault();
+                    paketGrupFiltreleVeSirala();
+                }
+            }
+        });
+            let suAnSeciliPaketGrupId = null;
+            const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
+            const $seciliSilBtn = $('#seciliSilBtn');
+            const $seciliBilgiDiv = $('#seciliKayitBilgi');
+
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
+
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#paketGrupTablosu tr[data-paket-grup-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button')) {
+                    const $radio = $(this).find('.paket-grup-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
+                }
+            });
+
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.paket-grup-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliPaketGrupId = $(this).val();
+                    const $seciliSatir = $(this).closest('tr');
+                    const paketGrupAdi = $seciliSatir.data('paket-grup-adi');
+
+                    // Tüm satırlardan active class'ı kaldır
+                    $('#paketGrupTablosu tr').removeClass('table-active');
+                    // Seçili satıra active class ekle
+                    $seciliSatir.addClass('table-active');
+
+                    // Bilgiyi güncelle
+                    $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${paketGrupAdi}`);
+
+                    // Butonları aktif et
+                    $seciliDuzenleBtn.prop('disabled', false);
+                    $seciliSilBtn.prop('disabled', false);
+                }
+            });
+
+            // Üstteki "Düzenle" butonu
+            $seciliDuzenleBtn.click(function() {
+                if (suAnSeciliPaketGrupId) {
+                    duzenleGetir(suAnSeciliPaketGrupId);
+                } else {
+                    toastr.warning('Lütfen önce bir paket grubu seçin.');
+                }
+            });
+
+            // Üstteki "Sil" butonu
+            $seciliSilBtn.click(function() {
+                if (suAnSeciliPaketGrupId) {
+                    const $seciliSatir = $(`tr[data-paket-grup-id="${suAnSeciliPaketGrupId}"]`);
+                    const paketGrupAdi = $seciliSatir.data('paket-grup-adi');
+
+                    $('#silId').val(suAnSeciliPaketGrupId);
+                    $('#silAdi').text(paketGrupAdi);
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    toastr.warning('Lütfen önce bir paket grubu seçin.');
+                }
+            });
+
+            // Silme modalı kapandıktan sonra seçimi temizleme
+            $('#silModal').on('hidden.bs.modal', function() {
+                if (suAnSeciliPaketGrupId) {
+                    const $satir = $(`tr[data-paket-grup-id="${suAnSeciliPaketGrupId}"]`);
+                    if ($satir.length === 0) {
+                        // Satır silinmiş, seçimi temizle
+                        suAnSeciliPaketGrupId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    } else {
+                        // İptal edildi, radio'yu temizle
+                        $(`.paket-grup-sec-radio[value="${suAnSeciliPaketGrupId}"]`).prop('checked', false);
+                        $('#paketGrupTablosu tr').removeClass('table-active');
+                        suAnSeciliPaketGrupId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    }
+                }
+            });
+
+            // ============= MEVCUT FONKSİYONLAR (AYNEN KORUNDU) =============
+
+            let eklePaketler = [];
+            let editPaketler = [];
+
+            window.lisansTipDegisti = function(modalType) {
+                const lisansTipId = $(`#${modalType}LisansTipId`).val();
+                if (!lisansTipId) {
+                    $(`#${modalType}PaketTableBody`).html(`<tr><td colspan="6" class="text-center text-muted py-4"><i class="fas fa-box-open fa-2x mb-2"></i><br>Lütfen lisans tipi seçin</td></tr>`);
+                    return;
+                }
+
+                $(`#${modalType}PaketTableBody`).html(`
+                    <tr><td colspan="6" class="text-center text-muted py-4">
+                        <i class="fas fa-spinner fa-spin fa-2x mb-2"></i><br>Paketler yükleniyor...
+                    </td></tr>
+                `);
+
+                $.get(`/AdminPaketGrup/GetirPaketler?lisansTipId=${lisansTipId}`)
+                    .done(function (response) {
+                        if (response.success) {
+                            if (modalType === 'ekle') eklePaketler = response.data;
+                            else editPaketler = response.data;
+                            renderPaketListesi(modalType, modalType === 'ekle' ? eklePaketler : editPaketler);
+                        } else {
+                            $(`#${modalType}PaketTableBody`).html(`<tr><td colspan="6" class="text-center text-danger">${response.message}</td></tr>`);
+                        }
+                    })
+                    .fail(function () {
+                        $(`#${modalType}PaketTableBody`).html(`<tr><td colspan="6" class="text-center text-danger">Paketler yüklenirken hata oluştu.</td></tr>`);
+                    });
+            };
+
+            window.renderPaketListesi = function(modalType, paketler) {
+                const tbody = $(`#${modalType}PaketTableBody`);
+                if (paketler.length === 0) {
+                    tbody.html(`<tr><td colspan="6" class="text-center text-muted py-4"><i class="fas fa-box-open fa-2x mb-2"></i><br>Bu lisans tipine ait paket bulunamadı</td></tr>`);
+                    $(`#${modalType}SelectAll`).prop('checked', false);
+                    return;
+                }
+
+                let html = '';
+                paketler.forEach(p => {
+                    const checked = (modalType === 'edit' && p.secili) ? 'checked' : '';
+                    const egitimSuresi = window.formatDecimal(p.egitimSuresi);
+                    html += `
+                        <tr>
+                            <td>
+                                <div class="form-check">
+                                    <input class="form-check-input paket-checkbox" type="checkbox" name="seciliPaketler" value="${p.id}" ${checked} onchange="paketSecildi('${modalType}')">
+                                </div>
+                            </td>
+                            <td><strong>${p.adi}</strong></td>
+                            <td>${p.lisansTipAdi || '-'}</td>
+                            <td>${p.birimAdi || '-'}</td>
+                            <td>${egitimSuresi} gün</td>
+                            <td class="text-end text-success fw-bold">${window.formatPrice(p.fiyat)} ₺</td>
+                        </tr>`;
                 });
-        }
+                tbody.html(html);
+                window.paketSecildi(modalType);
+            };
 
-        function silOnay(id, adi) {
-            $('#silId').val(id);
-            $('#silAdi').text(adi);
-            new bootstrap.Modal('#silModal').show();
-        }
+            window.paketSecildi = function(modalType) {
+                const secili = $(`#${modalType}PaketTableBody input:checked`).map(function () { return this.value; }).get();
+                $(`#${modalType}SeciliPaketSayisi`).text(secili.length);
 
-        $(document).ready(function () {
+                $.post('/AdminPaketGrup/HesaplaFiyat', { paketIds: secili })
+                    .done(function (res) {
+                        if (res.success) {
+                            $(`#${modalType}ToplamFiyat`).text(window.formatPrice(res.toplamFiyat) + ' ₺');
+                            window.fiyatlariHesapla(modalType);
+                        }
+                    });
+
+                const toplam = $(`#${modalType}PaketTableBody .paket-checkbox`).length;
+                $(`#${modalType}SelectAll`).prop('checked', secili.length === toplam && toplam > 0);
+            };
+
+            window.selectAllPaket = function(modalType) {
+                const checked = $(`#${modalType}SelectAll`).is(':checked');
+                $(`#${modalType}PaketTableBody .paket-checkbox`).prop('checked', checked);
+                window.paketSecildi(modalType);
+            };
+
+            window.paketAra = function(modalType) {
+                const query = $(`#${modalType}PaketArama`).val().toLowerCase();
+                $(`#${modalType}PaketTableBody tr`).each(function () {
+                    const text = $(this).text().toLowerCase();
+                    $(this).toggle(text.includes(query));
+                });
+            };
+
+            window.fiyatlariHesapla = function(modalType) {
+                const toplamText = $(`#${modalType}ToplamFiyat`).text();
+                const toplam = parseFloat(toplamText.replace(/[^\d.,]/g, '').replace(',', '.')) || 0;
+                const oran = parseFloat($(`#${modalType}IndOran`).val()) || 0;
+                const grupFiyati = parseFloat($(`#${modalType}Fiyat`).val()) || 0;
+
+                // Grup fiyatını göster
+                $(`#${modalType}GrupFiyati`).text(window.formatPrice(grupFiyati) + ' ₺');
+            };
+
+            window.formatPrice = function(price) {
+                return new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(price);
+            };
+
+            window.formatDecimal = function(value) {
+                return new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 1, maximumFractionDigits: 2 }).format(value);
+            };
+
+            // Decimal mask için input event listener
+            function applyDecimalMask() {
+                $('.decimal-mask').on('input', function() {
+                    let value = $(this).val().replace(/[^\d,]/g, '');
+
+                    // Sadece bir virgül olmasını sağla
+                    const parts = value.split(',');
+                    if (parts.length > 2) {
+                        value = parts[0] + ',' + parts.slice(1).join('');
+                    }
+
+                    // Ondalık kısmı 2 basamakla sınırla
+                    if (parts.length === 2 && parts[1].length > 2) {
+                        value = parts[0] + ',' + parts[1].substring(0, 2);
+                    }
+
+                    $(this).val(value);
+                });
+            }
+
+            window.duzenleGetir = function(id) {
+                $.get('/AdminPaketGrup/Getir/' + id)
+                    .done(function (data) {
+                        $('#editId').val(data.id);
+                        $('#editAdi').val(data.adi);
+                        $('#editLisansTipId').val(data.lisansTipId);
+                        $('#editFiyat').val(data.fiyat);
+
+                        // Eğitim süresini virgüllü formatla
+                        $('#editEgitimSuresi').val(window.formatDecimal(data.egitimSuresi));
+
+                        $('#editIndOran').val(data.indOran);
+                        $('#editSira').val(data.sira);
+
+                        window.lisansTipDegisti('edit');
+
+                        setTimeout(() => {
+                            if (data.seciliPaketler && data.seciliPaketler.length > 0) {
+                                data.seciliPaketler.forEach(pid => {
+                                    $(`#editPaketTableBody input[value="${pid}"]`).prop('checked', true);
+                                });
+                                window.paketSecildi('edit');
+                            }
+                        }, 600);
+
+                        new bootstrap.Modal(document.getElementById('duzenleModal')).show();
+                    });
+            };
+
+            window.silOnay = function(id, adi) {
+                $('#silId').val(id);
+                $('#silAdi').text(adi);
+                new bootstrap.Modal(document.getElementById('silModal')).show();
+            };
+
             setTimeout(() => $('.alert').fadeOut(), 5000);
 
             // Decimal mask uygula
@@ -585,8 +1500,6 @@
 
             // Form submit öncesi decimal değerleri düzelt
             $('#ekleForm, #duzenleForm').submit(function() {
-                // Eğitim süresi alanlarını düzelt (virgülü noktaya çevirme artık gerekmiyor)
-                // Controller'da Türkçe kültürde parse ediliyor
                 return true;
             });
         });

@@ -1,6 +1,6 @@
 ﻿@using WepApp.Models
 @{
-    ViewData["Title"] = "UYB Oranı Yönetimi";
+    ViewData["Title"] = "UYB, Arşiv ve Kilit Yönetimi";
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
 
@@ -16,6 +16,45 @@
         border-radius: 25px;
         font-weight: 600;
         font-size: 1.2em;
+    }
+
+    .badge-arsiv {
+        background-color: #198754;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 1.2em;
+    }
+
+    .badge-kilit {
+        background-color: #dc3545;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 1.2em;
+    }
+
+    .badge-aktif {
+        background-color: #28a745;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.9em;
+    }
+
+    .badge-pasif {
+        background-color: #6c757d;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.9em;
+    }
+
+    .info-text {
+        font-size: 0.85rem;
+        color: #6c757d;
     }
 </style>
 
@@ -36,50 +75,156 @@
             </div>
         }
 
-        <div class="card">
+        <!-- UYB Kartı -->
+        <div class="card mb-4">
             <div class="card-header">
                 <div class="card-title d-flex justify-content-between align-items-center">
                     <span>UYB Oranı Yönetimi</span>
                     @if (ViewBag.UYB == null)
                     {
-                        <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uybEkleModal">
                             <i class="fas fa-plus"></i> UYB Oranı Ekle
                         </button>
                     }
                     else
                     {
                         var uyb = (UYB)ViewBag.UYB;
-                        <button type="button" data-button-permission="duzenle"
-                                class="btn btn-warning"
-                                data-button-permission="duzenle"
+                        <button type="button" class="btn btn-warning"
                                 data-bs-toggle="modal"
-                                data-bs-target="#duzenleModal"
+                                data-bs-target="#uybDuzenleModal"
                                 data-uyb-id="@uyb.Id"
                                 data-uyb-oran="@uyb.Oran.ToString("N2")">
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit"></i> Düzenle
                         </button>
                     }
                 </div>
             </div>
-            <div class="card-body text-center py-5">
+            <div class="card-body text-center py-4">
                 @if (ViewBag.UYB != null)
                 {
                     var uyb = (UYB)ViewBag.UYB;
-                    <div class="mb-4">
-                        <h3>Mevcut UYB Oranı</h3>
-                        <div class="badge-uyb">%@uyb.Oran.ToString("N2")</div>
+                    <div class="mb-3">
+                        <h4>Mevcut UYB Oranı</h4>
+                        <div class="badge-uyb mt-2">%@uyb.Oran.ToString("N2")</div>
                     </div>
-                    <div class="text-muted small">
-                        Eklenme: @uyb.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")<br />
-                        Son Güncelleme: @uyb.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")
+                    <div class="info-text">
+                        <i class="fas fa-calendar-alt"></i> Eklenme: @uyb.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")<br />
+                        <i class="fas fa-clock"></i> Son Güncelleme: @uyb.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")
                     </div>
                 }
                 else
                 {
-                    <i class="fas fa-percentage fa-5x text-muted mb-4"></i>
+                    <i class="fas fa-percentage fa-4x text-muted mb-3"></i>
                     <p class="text-muted">Henüz UYB oranı tanımlanmamış.</p>
-                    <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uybEkleModal">
                         İlk UYB Oranını Tanımla
+                    </button>
+                }
+            </div>
+        </div>
+
+        <!-- Arşiv Kartı -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>Arşiv Süresi Yönetimi</span>
+                    @if (ViewBag.Arsiv == null)
+                    {
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#arsivEkleModal">
+                            <i class="fas fa-plus"></i> Arşiv Süresi Ekle
+                        </button>
+                    }
+                    else
+                    {
+                        var arsiv = (Arsiv)ViewBag.Arsiv;
+                        <button type="button" class="btn btn-warning"
+                                data-bs-toggle="modal"
+                                data-bs-target="#arsivDuzenleModal"
+                                data-arsiv-id="@arsiv.Id"
+                                data-arsiv-gun="@arsiv.Gun">
+                            <i class="fas fa-edit"></i> Düzenle
+                        </button>
+                    }
+                </div>
+            </div>
+            <div class="card-body text-center py-4">
+                @if (ViewBag.Arsiv != null)
+                {
+                    var arsiv = (Arsiv)ViewBag.Arsiv;
+                    <div class="mb-3">
+                        <h4>Mevcut Arşiv Süresi</h4>
+                        <div class="badge-arsiv mt-2">@arsiv.Gun Gün</div>
+                    </div>
+                    <div class="info-text">
+                        <i class="fas fa-calendar-alt"></i> Eklenme: @arsiv.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")<br />
+                        <i class="fas fa-clock"></i> Son Güncelleme: @arsiv.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")
+                    </div>
+                }
+                else
+                {
+                    <i class="fas fa-archive fa-4x text-muted mb-3"></i>
+                    <p class="text-muted">Henüz arşiv süresi tanımlanmamış.</p>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#arsivEkleModal">
+                        İlk Arşiv Süresini Tanımla
+                    </button>
+                }
+            </div>
+        </div>
+
+        <!-- Kilit Kartı -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title d-flex justify-content-between align-items-center">
+                    <span>Kilit Süresi Yönetimi</span>
+                    @if (ViewBag.Kilit == null)
+                    {
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kilitEkleModal">
+                            <i class="fas fa-plus"></i> Kilit Süresi Ekle
+                        </button>
+                    }
+                    else
+                    {
+                        var kilit = (Kilit)ViewBag.Kilit;
+                        <button type="button" class="btn btn-warning"
+                                data-bs-toggle="modal"
+                                data-bs-target="#kilitDuzenleModal"
+                                data-kilit-id="@kilit.Id"
+                                data-kilit-gun="@kilit.Gun"
+                                data-kilit-aktif="@kilit.Aktif.ToString().ToLower()">
+                            <i class="fas fa-edit"></i> Düzenle
+                        </button>
+                    }
+                </div>
+            </div>
+            <div class="card-body text-center py-4">
+                @if (ViewBag.Kilit != null)
+                {
+                    var kilit = (Kilit)ViewBag.Kilit;
+                    <div class="mb-3">
+                        <h4>Mevcut Kilit Süresi</h4>
+                        <div class="badge-kilit mt-2">@kilit.Gun Gün</div>
+                        <div class="mt-2">
+                            @if (kilit.Aktif)
+                            {
+                                <span class="badge-aktif"><i class="fas fa-check-circle"></i> Aktif</span>
+                            }
+                            else
+                            {
+                                <span class="badge-pasif"><i class="fas fa-times-circle"></i> Pasif</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="info-text">
+                        <i class="fas fa-calendar-alt"></i> Eklenme: @kilit.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")<br />
+                        <i class="fas fa-clock"></i> Son Güncelleme: @kilit.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")
+                    </div>
+                }
+                else
+                {
+                    <i class="fas fa-lock fa-4x text-muted mb-3"></i>
+                    <p class="text-muted">Henüz kilit süresi tanımlanmamış.</p>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kilitEkleModal">
+                        İlk Kilit Süresini Tanımla
                     </button>
                 }
             </div>
@@ -87,11 +232,11 @@
     </div>
 </div>
 
-<!-- Ekle Modal -->
-<div class="modal fade" id="ekleModal" tabindex="-1" aria-labelledby="ekleModalLabel" aria-hidden="true">
+<!-- UYB Ekle Modal -->
+<div class="modal fade" id="uybEkleModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            @using (Html.BeginForm("Ekle", "AdminUYB", FormMethod.Post, new { id = "ekleForm" }))
+            @using (Html.BeginForm("UYBEkle", "AdminUYB", FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
                 <div class="modal-header">
@@ -102,7 +247,7 @@
                     <div class="mb-3">
                         <label class="form-label">UYB Oranı (%) *</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" name="Oran" placeholder="Örn: 1.5" required />
+                            <input type="number" step="0.01" min="0" max="100" class="form-control" name="Oran" placeholder="Örn: 1.5" required />
                             <span class="input-group-text">%</span>
                         </div>
                         <div class="form-text">0 ile 100 arasında bir değer giriniz.</div>
@@ -117,13 +262,14 @@
     </div>
 </div>
 
-<!-- Düzenle Modal -->
-<div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
+<!-- UYB Düzenle Modal -->
+<div class="modal fade" id="uybDuzenleModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Guncelle", "AdminUYB")" method="post" id="duzenleForm">
+            @using (Html.BeginForm("UYBGuncelle", "AdminUYB", FormMethod.Post))
+            {
                 @Html.AntiForgeryToken()
-                <input type="hidden" id="editId" name="Id" />
+                <input type="hidden" name="Id" id="uybEditId" />
                 <div class="modal-header">
                     <h5 class="modal-title">UYB Oranı Düzenle</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -132,7 +278,7 @@
                     <div class="mb-3">
                         <label class="form-label">UYB Oranı (%) *</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="editOran" name="Oran" required />
+                            <input type="number" step="0.01" min="0" max="100" class="form-control" name="Oran" id="uybEditOran" required />
                             <span class="input-group-text">%</span>
                         </div>
                         <div class="form-text">0 ile 100 arasında bir değer giriniz.</div>
@@ -142,7 +288,145 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
                     <button type="submit" class="btn btn-primary">Güncelle</button>
                 </div>
-            </form>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Arşiv Ekle Modal -->
+<div class="modal fade" id="arsivEkleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("ArsivEkle", "AdminUYB", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Arşiv Süresi Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Arşiv Süresi (Gün) *</label>
+                        <div class="input-group">
+                            <input type="number" min="1" max="365" class="form-control" name="Gun" placeholder="Örn: 30" required />
+                            <span class="input-group-text">Gün</span>
+                        </div>
+                        <div class="form-text">1 ile 365 gün arasında bir değer giriniz.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Arşiv Düzenle Modal -->
+<div class="modal fade" id="arsivDuzenleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("ArsivGuncelle", "AdminUYB", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="arsivEditId" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Arşiv Süresi Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Arşiv Süresi (Gün) *</label>
+                        <div class="input-group">
+                            <input type="number" min="1" max="365" class="form-control" name="Gun" id="arsivEditGun" required />
+                            <span class="input-group-text">Gün</span>
+                        </div>
+                        <div class="form-text">1 ile 365 gün arasında bir değer giriniz.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Kilit Ekle Modal -->
+<div class="modal fade" id="kilitEkleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("KilitEkle", "AdminUYB", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Kilit Süresi Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Kilit Süresi (Gün) *</label>
+                        <div class="input-group">
+                            <input type="number" min="1" max="365" class="form-control" name="Gun" placeholder="Örn: 30" required />
+                            <span class="input-group-text">Gün</span>
+                        </div>
+                        <div class="form-text">1 ile 365 gün arasında bir değer giriniz.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Durum</label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="Aktif" id="kilitAktifEkle" value="true" checked />
+                            <label class="form-check-label" for="kilitAktifEkle">Aktif</label>
+                        </div>
+                        <div class="form-text">Kilit süresinin aktif olup olmadığını belirleyin.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Kilit Düzenle Modal -->
+<div class="modal fade" id="kilitDuzenleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("KilitGuncelle", "AdminUYB", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="kilitEditId" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Kilit Süresi Düzenle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Kilit Süresi (Gün) *</label>
+                        <div class="input-group">
+                            <input type="number" min="1" max="365" class="form-control" name="Gun" id="kilitEditGun" required />
+                            <span class="input-group-text">Gün</span>
+                        </div>
+                        <div class="form-text">1 ile 365 gün arasında bir değer giriniz.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Durum</label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="Aktif" id="kilitEditAktif" value="true" />
+                            <label class="form-check-label" for="kilitEditAktif">Aktif</label>
+                        </div>
+                        <div class="form-text">Kilit süresinin aktif olup olmadığını belirleyin.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -150,51 +434,49 @@
 @section Script {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Düzenle butonuna tıklanınca modalı doldur
-            document.querySelectorAll('[data-uyb-id]').forEach(button => {
-                button.addEventListener('click', function() {
+            // UYB Düzenle butonuna tıklanınca
+            const uybDuzenleBtn = document.querySelector('[data-bs-target="#uybDuzenleModal"]');
+            if (uybDuzenleBtn) {
+                uybDuzenleBtn.addEventListener('click', function() {
                     const id = this.getAttribute('data-uyb-id');
                     const oran = this.getAttribute('data-uyb-oran');
-
-                    $('#editId').val(id);
-                    $('#editOran').val(oran);
+                    document.getElementById('uybEditId').value = id;
+                    document.getElementById('uybEditOran').value = oran.replace(',', '.');
                 });
-            });
-
-            function validateOran(input) {
-                const val = parseFloat(input.value);
-                if (isNaN(val) || val < 0 || val > 100) {
-                    input.setCustomValidity('UYB oranı 0-100 arası olmalıdır.');
-                    return false;
-                } else {
-                    input.setCustomValidity('');
-                    return true;
-                }
             }
 
-            const oranInputs = document.querySelectorAll('input[name="Oran"]');
-            oranInputs.forEach(input => {
-                input.addEventListener('input', () => validateOran(input));
-            });
-
-            const forms = document.querySelectorAll('form');
-            forms.forEach(form => {
-                form.addEventListener('submit', function (e) {
-                    const oranInput = this.querySelector('input[name="Oran"]');
-                    if (oranInput && !validateOran(oranInput)) {
-                        e.preventDefault();
-                        alert('Lütfen 0-100 arası geçerli bir oran giriniz.');
-                    }
+            // Arşiv Düzenle butonuna tıklanınca
+            const arsivDuzenleBtn = document.querySelector('[data-bs-target="#arsivDuzenleModal"]');
+            if (arsivDuzenleBtn) {
+                arsivDuzenleBtn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-arsiv-id');
+                    const gun = this.getAttribute('data-arsiv-gun');
+                    document.getElementById('arsivEditId').value = id;
+                    document.getElementById('arsivEditGun').value = gun;
                 });
-            });
+            }
+
+            // Kilit Düzenle butonuna tıklanınca
+            const kilitDuzenleBtn = document.querySelector('[data-bs-target="#kilitDuzenleModal"]');
+            if (kilitDuzenleBtn) {
+                kilitDuzenleBtn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-kilit-id');
+                    const gun = this.getAttribute('data-kilit-gun');
+                    const aktif = this.getAttribute('data-kilit-aktif') === 'true';
+
+                    document.getElementById('kilitEditId').value = id;
+                    document.getElementById('kilitEditGun').value = gun;
+                    document.getElementById('kilitEditAktif').checked = aktif;
+                });
+            }
 
             // Modal kapandığında sıfırla
-            ['ekleModal', 'duzenleModal'].forEach(id => {
+            const modals = ['uybEkleModal', 'uybDuzenleModal', 'arsivEkleModal', 'arsivDuzenleModal', 'kilitEkleModal', 'kilitDuzenleModal'];
+            modals.forEach(id => {
                 const modal = document.getElementById(id);
                 if (modal) {
                     modal.addEventListener('hidden.bs.modal', () => {
                         modal.querySelector('form')?.reset();
-                        modal.querySelectorAll('input').forEach(i => i.setCustomValidity(''));
                     });
                 }
             });
@@ -202,7 +484,9 @@
             // Alert'leri 5 sn sonra kapat
             setTimeout(() => {
                 document.querySelectorAll('.alert').forEach(alert => {
-                    bootstrap.Alert.getOrCreateInstance(alert).close();
+                    if (typeof bootstrap !== 'undefined' && bootstrap.Alert) {
+                        bootstrap.Alert.getOrCreateInstance(alert).close();
+                    }
                 });
             }, 5000);
         });

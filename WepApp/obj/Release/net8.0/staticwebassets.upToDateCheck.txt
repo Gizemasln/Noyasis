@@ -2,6 +2,13 @@ wwwroot\WebAdminTheme\AnaSayfaBanner\Buyuk\ea5c35a7-9e57-43fe-b30e-965b40a0ec88.
 wwwroot\WebAdminTheme\AnaSayfaBanner\Kucuk\ea5c35a7-9e57-43fe-b30e-965b40a0ec88.jpg
 wwwroot\WebAdminTheme\Arge\1fbb19bc-8f8c-423d-8376-88656f6dfb96.jpg
 wwwroot\WebAdminTheme\Arge\fcb75103-5ba9-4872-b873-56f66ff27bbc.png
+wwwroot\WebAdminTheme\assets\css\adminanasayfaslider.css
+wwwroot\WebAdminTheme\assets\css\adminargehata.css
+wwwroot\WebAdminTheme\assets\css\adminbayi.css
+wwwroot\WebAdminTheme\assets\css\administekoneri.css
+wwwroot\WebAdminTheme\assets\css\adminmusteri.css
+wwwroot\WebAdminTheme\assets\css\adminmusterisozlesme.css
+wwwroot\WebAdminTheme\assets\css\adminteklif.css
 wwwroot\WebAdminTheme\assets\css\bootstrap.min.css
 wwwroot\WebAdminTheme\assets\css\demo.css
 wwwroot\WebAdminTheme\assets\css\demo.css.map
@@ -13,6 +20,7 @@ wwwroot\WebAdminTheme\assets\css\kaiadmin.min.css
 wwwroot\WebAdminTheme\assets\css\plugins.css
 wwwroot\WebAdminTheme\assets\css\plugins.css.map
 wwwroot\WebAdminTheme\assets\css\plugins.min.css
+wwwroot\WebAdminTheme\assets\css\teklif-olustur.css
 wwwroot\WebAdminTheme\assets\fonts\fontawesome\fa-brands-400.eot
 wwwroot\WebAdminTheme\assets\fonts\fontawesome\fa-brands-400.svg
 wwwroot\WebAdminTheme\assets\fonts\fontawesome\fa-brands-400.ttf
@@ -649,7 +657,6 @@ wwwroot\WebAdminTheme\Hakkimizda\Buyuk\fd1031a5-e283-4a34-bce3-ba3ea5accb34.jpg
 wwwroot\WebAdminTheme\Hakkimizda\Kucuk\fd1031a5-e283-4a34-bce3-ba3ea5accb34.jpg
 wwwroot\WebAdminTheme\IK\129c313f-6a83-44e5-9dd7-7eea9c8a9ee3_fatura_ABC2025143425354 (1).pdf
 wwwroot\WebAdminTheme\IK\18977fd2-166d-4b27-b68e-a6ae8682dfbb_98bf36s02en2_kospdf.pdf
-wwwroot\WebAdminTheme\IK\27e3eaff-2c07-4cf7-a301-05f6be5c05e2_43d78e21-9e07-4948-bf33-e9537adb5bff.pdf
 wwwroot\WebAdminTheme\IK\2be7005e-1593-483f-8b8d-2589e00032d3_98bf36s02en2_kospdf.pdf
 wwwroot\WebAdminTheme\IK\37fe5865-aee2-4955-bc7d-365f06b6eb93_43d78e21-9e07-4948-bf33-e9537adb5bff.pdf
 wwwroot\WebAdminTheme\IK\4d7b5e31-31fc-4afa-8a98-103647cd9823_fatura_ABC2025143425354 (1).pdf
@@ -693,6 +700,11 @@ wwwroot\WebAdminTheme\MusteriSozlesme\1020_ImzaSirkusu_20260108105303_907bc48f20
 wwwroot\WebAdminTheme\MusteriSozlesme\1020_KimlikOnYuzu_20260108105257_264d78a5e354455d949a5a09342f1b4b.png
 wwwroot\WebAdminTheme\MusteriSozlesme\1020_TicariSicilGazetesi_20260108105251_cbe61eac48be44c4b066642d9af931d5.png
 wwwroot\WebAdminTheme\MusteriSozlesme\5743d990c9db4a3dab8e1f18b4efea5c.png
+wwwroot\WebAdminTheme\MusteriSozlesme\6_ImzaliSozlesme_20260310225515_e72381bfd48645a3a6f203ee080ddf79.pdf
+wwwroot\WebAdminTheme\MusteriSozlesme\6_ImzaSirkusu_20260310225509_25e3a050d2d84107bd736ad2589e7fc6.pdf
+wwwroot\WebAdminTheme\MusteriSozlesme\6_KimlikOnYuzu_20260310225504_63070e2a07ef42e1bb7d8c6cb84a5509.pdf
+wwwroot\WebAdminTheme\MusteriSozlesme\6_TicariSicilGazetesi_20260310225500_c09b0e4414f84573a9ed3d2bc0897b22.pdf
+wwwroot\WebAdminTheme\MusteriSozlesme\6_VergiKimlikLevhası_20260310225455_1827b4c52e8d4d4a89e1316b770b665e.pdf
 wwwroot\WebAdminTheme\MusteriSozlesme\857c8161-dbad-4962-a3df-230e0d06ca58.png
 wwwroot\WebAdminTheme\MusteriSozlesme\b0f1a3c4-599e-4a5f-a849-7fbacc488f6e_SPD0001.pdf
 wwwroot\WebAdminTheme\MusteriSozlesme\ticarisicilgazetesi_SOZ_1047_20251229092624.jpg
@@ -700,6 +712,7 @@ wwwroot\WebAdminTheme\MusteriSozlesme\ticarisicilgazetesi_SOZ_38_20251217133506.
 wwwroot\WebAdminTheme\MusteriSozlesme\ticarisicilgazetesi_SOZ_41_20251219142645.png
 wwwroot\WebAdminTheme\MusteriSozlesme\ticarisicilgazetesi_SOZ_42_20251219164300.png
 wwwroot\WebAdminTheme\MusteriSozlesme\ticarisicilgazetesi_SOZ_43_20251219173333.png
+wwwroot\WebAdminTheme\MusteriSozlesme\vergikimliklevhası_SOZ_29_20260309131934.png
 wwwroot\WebAdminTheme\MusteriSozlesme\vergikimliklevhası_SOZ_38_20251217133506.png
 wwwroot\WebAdminTheme\README.md
 wwwroot\WebAdminTheme\Sertifika\4e32a6d9-ec25-4a45-8c3f-364bf17219e4.pdf

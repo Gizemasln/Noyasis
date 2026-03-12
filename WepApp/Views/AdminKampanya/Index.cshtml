@@ -6,6 +6,147 @@
 }
 
 <style>
+    /* Filtreleme stilleri - Sözleşmeler sayfası ile uyumlu */
+    .card-header {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+        .card-header .gap-2 {
+            gap: 0.5rem !important;
+        }
+
+    .search-box {
+        position: relative;
+    }
+
+        .search-box .input-group {
+            transition: all 0.3s ease;
+        }
+
+            .search-box .input-group:focus-within {
+                width: 250px;
+            }
+
+        .search-box .form-control:focus {
+            background-color: #fff !important;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+        }
+
+    #kampanyaAramaTemizle {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: transparent;
+        z-index: 5;
+        color: #6c757d;
+    }
+
+        #kampanyaAramaTemizle:hover {
+            color: #dc3545;
+        }
+
+    .dropdown-menu {
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+        border: none;
+    }
+
+        .dropdown-menu .form-control-sm,
+        .dropdown-menu .form-select-sm {
+            border: 1px solid #dee2e6;
+        }
+
+            .dropdown-menu .form-control-sm:focus,
+            .dropdown-menu .form-select-sm:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+            }
+
+    #kampanyaFiltreTemizleBtn {
+        transition: all 0.3s ease;
+    }
+
+        #kampanyaFiltreTemizleBtn:hover {
+            transform: scale(1.1);
+        }
+
+    /* Aktif filtre butonu stilleri */
+    .btn-primary .fas {
+        color: white;
+    }
+
+    /* Filtre etiketleri */
+    #aktifFiltreler {
+        background-color: #f8f9fa;
+        border-radius: 0.35rem;
+        padding: 10px;
+        border: 1px solid #e3e6f0;
+    }
+
+        #aktifFiltreler .badge {
+            font-size: 0.85rem;
+            padding: 0.5rem 0.75rem;
+        }
+
+    /* Tablo satırları için geçiş efekti */
+    #kampanyaTablosu tbody tr {
+        transition: all 0.3s ease;
+    }
+
+        #kampanyaTablosu tbody tr[style*="display: none"] {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+    /* Responsive düzenlemeler */
+    media (max-width: 768px) {
+        .card-header
+
+    {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+
+    .card-header .d-flex {
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .search-box {
+        width: 100% !important;
+        margin-bottom: 5px;
+    }
+
+        .search-box .input-group {
+            width: 100% !important;
+        }
+
+            .search-box .input-group:focus-within {
+                width: 100% !important;
+            }
+
+    .card-header .dropdown {
+        flex: 1;
+    }
+
+    .card-header .btn-group {
+        margin: 5px 0;
+    }
+
+    #aktifFiltreler .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 10px;
+    }
+
+    #filtreEtiketleri {
+        flex-wrap: wrap;
+    }
+
+    }
     .table-actions {
         white-space: nowrap;
         width: 150px;
@@ -169,36 +310,130 @@
         }
 
         <div class="card" style="margin-top: 70px;">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
                 <span>Kampanyalar</span>
 
+                <!-- FİLTRELEME ALANI - Sözleşmeler sayfasındaki gibi -->
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Arama Kutusu -->
+                    <div class="search-box">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" id="kampanyaArama" class="form-control form-control-sm border-0 bg-light"
+                                   placeholder="Başlık ara..." style="box-shadow: none;">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" id="kampanyaAramaTemizle" style="display:none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tarih Filtreleri -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="tarihFiltreBtn">
+                            <i class="fas fa-calendar-alt me-1"></i> Tarih
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 300px;">
+                            <div class="mb-2">
+                                <label class="form-label small">Başlangıç Tarihi</label>
+                                <input type="date" id="filtreBaslangicTarih" class="form-control form-control-sm">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label small">Bitiş Tarihi</label>
+                                <input type="date" id="filtreBitisTarih" class="form-control form-control-sm">
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="kampanyaTarihFiltreTemizle()">Temizle</button>
+                                <button class="btn btn-sm btn-primary" onclick="kampanyaTarihFiltreUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- İndirim Filtresi -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="indirimFiltreBtn">
+                            <i class="fas fa-percent me-1"></i> İndirim
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
+                            <div class="mb-2">
+                                <label class="form-label small">Min İndirim (%)</label>
+                                <input type="number" id="filtreMinIndirim" class="form-control form-control-sm" min="0" max="100">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label small">Max İndirim (%)</label>
+                                <input type="number" id="filtreMaxIndirim" class="form-control form-control-sm" min="0" max="100">
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="kampanyaIndirimFiltreTemizle()">Temizle</button>
+                                <button class="btn btn-sm btn-primary" onclick="kampanyaIndirimFiltreUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sıralama -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="siralamaFiltreBtn">
+                            <i class="fas fa-sort-amount-down me-1"></i> Sıralama
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 200px;">
+                            <div class="mb-2">
+                                <select class="form-select form-select-sm" id="siralamaFiltre">
+                                    <option value="yeni">En Yeni → En Eski</option>
+                                    <option value="eski">En Eski → En Yeni</option>
+                                    <option value="baslik">Başlık (A-Z)</option>
+                                    <option value="indirim">İndirim % (Azalan)</option>
+                                    <option value="indirim_artan">İndirim % (Artan)</option>
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-primary" onclick="kampanyaSiralamaUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtre Temizleme Butonu -->
+                    <button class="btn btn-sm btn-outline-danger" onclick="kampanyaTumFiltreleriTemizle()"
+                            title="Tüm filtreleri temizle" id="kampanyaFiltreTemizleBtn" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Seçili kampanya ve butonlar (mevcut kod) -->
                 <div class="d-flex align-items-center" style="gap: 15px;">
-                    <!-- gap: 15px yaptık -->
-                    <!-- Seçili kampanya göstergesi -->
                     <span id="seciliKampanyaGosterge" class="badge bg-primary d-none">
                         <span id="seciliKampanyaMetin">0 kampanya seçili</span>
                     </span>
 
-                    <!-- İşlem butonları -->
                     <div class="btn-group" role="group" id="topluKampanyaIslemButonlari" style="gap: 8px;">
-                        <!-- butonlar arası 8px -->
                         <button type="button" class="btn btn-warning btn-sm" id="topluKampanyaDuzenleBtn" disabled data-button-permission="duzenle" title="Düzenle"
                                 onclick="seciliKampanyaIslem('duzenle')">
-                            <i class="fas fa-edit"></i> 
+                            <i class="fas fa-edit"></i>
                         </button>
                         <button type="button" class="btn btn-danger btn-sm" id="topluKampanyaSilBtn" disabled data-button-permission="sil" title="Sil"
                                 onclick="seciliKampanyaIslem('sil')">
-                            <i class="fas fa-trash"></i> 
+                            <i class="fas fa-trash"></i>
                         </button>
                     </div>
 
-                    <!-- Yeni Ekle butonu (her zaman aktif) -->
                     <button class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
                         <i class="fas fa-plus"></i> Yeni Kampanya Ekle
                     </button>
                 </div>
             </div>
-            <div class="card-body">
+
+            <!-- Aktif Filtreler (Sözleşmeler sayfasındaki gibi) -->
+            <div class="col-12 mt-3" id="aktifFiltreler" style="display: none;">
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-light text-dark me-2 p-2">
+                        <i class="fas fa-filter me-1"></i>Aktif Filtreler:
+                    </span>
+                    <div id="filtreEtiketleri" class="d-flex flex-wrap gap-2"></div>
+                </div>
+            </div>            <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover" id="kampanyaTablosu">
                         <thead class="table-light">
@@ -612,7 +847,373 @@
         let silinecekGorselId = null;
         let seciliKampanyaId = 0;
         let seciliKampanyaBaslik = '';
+                // ============= KAMPANYA FİLTRELEME SİSTEMİ (Sözleşmeler sayfasından uyarlandı) =============
+        let kampanyaAktifFiltreler = {
+            arama: '',
+            baslangicTarih: null,
+            bitisTarih: null,
+            minIndirim: null,
+            maxIndirim: null,
+            siralama: 'yeni'
+        };
 
+        // Kampanya arama fonksiyonu
+        document.addEventListener('DOMContentLoaded', function () {
+            const aramaInput = document.getElementById('kampanyaArama');
+            const temizleBtn = document.getElementById('kampanyaAramaTemizle');
+
+            if (aramaInput && temizleBtn) {
+                function kampanyaAramaFiltrele() {
+                    const kelime = aramaInput.value.trim().toLowerCase();
+
+                    // Temizle butonunu göster/gizle
+                    temizleBtn.style.display = kelime ? 'block' : 'none';
+
+                    kampanyaAktifFiltreler.arama = kelime;
+                    kampanyaFiltreleVeSirala();
+                }
+
+                aramaInput.addEventListener('input', kampanyaAramaFiltrele);
+                aramaInput.addEventListener('keyup', kampanyaAramaFiltrele);
+
+                temizleBtn.addEventListener('click', function () {
+                    aramaInput.value = '';
+                    kampanyaAramaFiltrele();
+                    aramaInput.focus();
+                });
+            }
+        });
+
+        // Tarih Filtresi Uygula
+        function kampanyaTarihFiltreUygula() {
+            const baslangicInput = document.getElementById('filtreBaslangicTarih');
+            const bitisInput = document.getElementById('filtreBitisTarih');
+
+            kampanyaAktifFiltreler.baslangicTarih = baslangicInput.value || null;
+            kampanyaAktifFiltreler.bitisTarih = bitisInput.value || null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('tarihFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            kampanyaFiltreEtiketleriniGoster();
+            kampanyaFiltreleVeSirala();
+        }
+
+        // Tarih Filtresi Temizle
+        function kampanyaTarihFiltreTemizle() {
+            document.getElementById('filtreBaslangicTarih').value = '';
+            document.getElementById('filtreBitisTarih').value = '';
+            kampanyaAktifFiltreler.baslangicTarih = null;
+            kampanyaAktifFiltreler.bitisTarih = null;
+            kampanyaFiltreEtiketleriniGoster();
+            kampanyaFiltreleVeSirala();
+        }
+
+        // İndirim Filtresi Uygula
+        function kampanyaIndirimFiltreUygula() {
+            const minInput = document.getElementById('filtreMinIndirim');
+            const maxInput = document.getElementById('filtreMaxIndirim');
+
+            kampanyaAktifFiltreler.minIndirim = minInput.value ? parseFloat(minInput.value) : null;
+            kampanyaAktifFiltreler.maxIndirim = maxInput.value ? parseFloat(maxInput.value) : null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('indirimFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            kampanyaFiltreEtiketleriniGoster();
+            kampanyaFiltreleVeSirala();
+        }
+
+        // İndirim Filtresi Temizle
+        function kampanyaIndirimFiltreTemizle() {
+            document.getElementById('filtreMinIndirim').value = '';
+            document.getElementById('filtreMaxIndirim').value = '';
+            kampanyaAktifFiltreler.minIndirim = null;
+            kampanyaAktifFiltreler.maxIndirim = null;
+            kampanyaFiltreEtiketleriniGoster();
+            kampanyaFiltreleVeSirala();
+        }
+
+        // Sıralama Uygula
+        function kampanyaSiralamaUygula() {
+            const siralama = document.getElementById('siralamaFiltre').value;
+            kampanyaAktifFiltreler.siralama = siralama;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('siralamaFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            kampanyaFiltreEtiketleriniGoster();
+            kampanyaFiltreleVeSirala();
+        }
+
+        // Tüm Filtreleri Temizle
+        function kampanyaTumFiltreleriTemizle() {
+            // Arama kutusunu temizle
+            document.getElementById('kampanyaArama').value = '';
+            document.getElementById('kampanyaAramaTemizle').style.display = 'none';
+
+            // Tarih filtrelerini temizle
+            document.getElementById('filtreBaslangicTarih').value = '';
+            document.getElementById('filtreBitisTarih').value = '';
+
+            // İndirim filtrelerini temizle
+            document.getElementById('filtreMinIndirim').value = '';
+            document.getElementById('filtreMaxIndirim').value = '';
+
+            // Sıralamayı varsayılana getir
+            document.getElementById('siralamaFiltre').value = 'yeni';
+
+            // Buton stillerini sıfırla
+            document.getElementById('tarihFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('indirimFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('siralamaFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+            // Filtre değişkenlerini sıfırla
+            kampanyaAktifFiltreler = {
+                arama: '',
+                baslangicTarih: null,
+                bitisTarih: null,
+                minIndirim: null,
+                maxIndirim: null,
+                siralama: 'yeni'
+            };
+
+            // Filtre etiketlerini gizle
+            document.getElementById('aktifFiltreler').style.display = 'none';
+            document.getElementById('kampanyaFiltreTemizleBtn').style.display = 'none';
+
+            // Filtrelemeyi yeniden uygula
+            kampanyaFiltreleVeSirala();
+        }
+
+        // Filtre etiketlerini göster
+        function kampanyaFiltreEtiketleriniGoster() {
+            const etiketler = [];
+            const filtreTemizleBtn = document.getElementById('kampanyaFiltreTemizleBtn');
+
+            if (kampanyaAktifFiltreler.arama) {
+                etiketler.push(`<span class="badge bg-primary">Arama: ${kampanyaAktifFiltreler.arama}</span>`);
+            }
+
+            if (kampanyaAktifFiltreler.baslangicTarih) {
+                etiketler.push(`<span class="badge bg-primary">Başlangıç: ${formatKampanyaDate(kampanyaAktifFiltreler.baslangicTarih)}</span>`);
+            }
+            if (kampanyaAktifFiltreler.bitisTarih) {
+                etiketler.push(`<span class="badge bg-primary">Bitiş: ${formatKampanyaDate(kampanyaAktifFiltreler.bitisTarih)}</span>`);
+            }
+
+            if (kampanyaAktifFiltreler.minIndirim !== null && kampanyaAktifFiltreler.maxIndirim !== null) {
+                etiketler.push(`<span class="badge bg-success">İndirim: %${kampanyaAktifFiltreler.minIndirim} - %${kampanyaAktifFiltreler.maxIndirim}</span>`);
+            } else if (kampanyaAktifFiltreler.minIndirim !== null) {
+                etiketler.push(`<span class="badge bg-success">Min İndirim: %${kampanyaAktifFiltreler.minIndirim}</span>`);
+            } else if (kampanyaAktifFiltreler.maxIndirim !== null) {
+                etiketler.push(`<span class="badge bg-success">Max İndirim: %${kampanyaAktifFiltreler.maxIndirim}</span>`);
+            }
+
+            if (kampanyaAktifFiltreler.siralama !== 'yeni') {
+                const siralamaMetin = {
+                    'eski': 'En Eski',
+                    'baslik': 'Başlık (A-Z)',
+                    'indirim': 'İndirim % (Azalan)',
+                    'indirim_artan': 'İndirim % (Artan)'
+                };
+                etiketler.push(`<span class="badge bg-info">Sıralama: ${siralamaMetin[kampanyaAktifFiltreler.siralama]}</span>`);
+            }
+
+            if (etiketler.length > 0) {
+                document.getElementById('filtreEtiketleri').innerHTML = etiketler.join(' ');
+                document.getElementById('aktifFiltreler').style.display = 'block';
+                filtreTemizleBtn.style.display = 'inline-block';
+
+                // Buton stillerini güncelle
+                document.getElementById('tarihFiltreBtn').className = kampanyaAktifFiltreler.baslangicTarih || kampanyaAktifFiltreler.bitisTarih
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+                document.getElementById('indirimFiltreBtn').className = kampanyaAktifFiltreler.minIndirim !== null || kampanyaAktifFiltreler.maxIndirim !== null
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            } else {
+                document.getElementById('aktifFiltreler').style.display = 'none';
+                filtreTemizleBtn.style.display = 'none';
+            }
+        }
+
+        // Tarih formatlama
+        function formatKampanyaDate(dateStr) {
+            if (!dateStr) return '';
+            const [yil, ay, gun] = dateStr.split('-');
+            return `${gun}.${ay}.${yil}`;
+        }
+
+        // Kampanya tarih parse
+        function kampanyaParseDate(dateStr) {
+            if (!dateStr) return null;
+            // Format: dd.MM.yyyy HH:mm
+            const [gun, ay, yilSaat] = dateStr.split('.');
+            const [yil, saat] = yilSaat.split(' ');
+            return new Date(`${yil}-${ay}-${gun}T${saat}`);
+        }
+
+        // Ana filtreleme ve sıralama fonksiyonu
+        function kampanyaFiltreleVeSirala() {
+            const tablo = document.getElementById('kampanyaTablosu');
+            if (!tablo) return;
+
+            const tbody = tablo.querySelector('tbody');
+            if (!tbody) return;
+
+            const satirlar = Array.from(tbody.querySelectorAll('tr.kampanya-satiri'));
+
+            if (satirlar.length === 0) return;
+
+            // Filtreleme
+            let filtrelenmisSatirlar = satirlar.filter(satir => {
+                let goster = true;
+
+                // Arama filtresi (Başlık)
+                if (kampanyaAktifFiltreler.arama) {
+                    const baslik = satir.querySelector('td:nth-child(4)')?.textContent.toLowerCase() || '';
+                    if (!baslik.includes(kampanyaAktifFiltreler.arama.toLowerCase())) {
+                        goster = false;
+                    }
+                }
+
+                // Tarih filtresi
+                if (goster && (kampanyaAktifFiltreler.baslangicTarih || kampanyaAktifFiltreler.bitisTarih)) {
+                    const baslangicTd = satir.querySelector('td:nth-child(7)')?.textContent.trim();
+                    const bitisTd = satir.querySelector('td:nth-child(8)')?.textContent.trim();
+
+                    if (baslangicTd && bitisTd) {
+                        const baslangicTarih = kampanyaParseDate(baslangicTd);
+                        const bitisTarih = kampanyaParseDate(bitisTd);
+
+                        if (kampanyaAktifFiltreler.baslangicTarih) {
+                            const filtreBaslangic = new Date(kampanyaAktifFiltreler.baslangicTarih + 'T00:00:00');
+                            if (bitisTarih < filtreBaslangic) {
+                                goster = false;
+                            }
+                        }
+
+                        if (goster && kampanyaAktifFiltreler.bitisTarih) {
+                            const filtreBitis = new Date(kampanyaAktifFiltreler.bitisTarih + 'T23:59:59');
+                            if (baslangicTarih > filtreBitis) {
+                                goster = false;
+                            }
+                        }
+                    }
+                }
+
+                // İndirim filtresi
+                if (goster && (kampanyaAktifFiltreler.minIndirim !== null || kampanyaAktifFiltreler.maxIndirim !== null)) {
+                    const indirimTd = satir.querySelector('td:nth-child(6)')?.textContent.trim();
+                    if (indirimTd) {
+                        const indirim = parseFloat(indirimTd.replace('%', ''));
+
+                        if (kampanyaAktifFiltreler.minIndirim !== null && indirim < kampanyaAktifFiltreler.minIndirim) {
+                            goster = false;
+                        }
+
+                        if (goster && kampanyaAktifFiltreler.maxIndirim !== null && indirim > kampanyaAktifFiltreler.maxIndirim) {
+                            goster = false;
+                        }
+                    }
+                }
+
+                return goster;
+            });
+
+            // Sıralama
+            switch(kampanyaAktifFiltreler.siralama) {
+                case 'yeni':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const tarihA = kampanyaParseDate(a.querySelector('td:nth-child(7)')?.textContent.trim() || '');
+                        const tarihB = kampanyaParseDate(b.querySelector('td:nth-child(7)')?.textContent.trim() || '');
+                        return (tarihB || 0) - (tarihA || 0);
+                    });
+                    break;
+
+                case 'eski':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const tarihA = kampanyaParseDate(a.querySelector('td:nth-child(7)')?.textContent.trim() || '');
+                        const tarihB = kampanyaParseDate(b.querySelector('td:nth-child(7)')?.textContent.trim() || '');
+                        return (tarihA || 0) - (tarihB || 0);
+                    });
+                    break;
+
+                case 'baslik':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const baslikA = a.querySelector('td:nth-child(4)')?.textContent.trim() || '';
+                        const baslikB = b.querySelector('td:nth-child(4)')?.textContent.trim() || '';
+                        return baslikA.localeCompare(baslikB, 'tr');
+                    });
+                    break;
+
+                case 'indirim':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const indirimA = parseFloat(a.querySelector('td:nth-child(6)')?.textContent.replace('%', '') || '0');
+                        const indirimB = parseFloat(b.querySelector('td:nth-child(6)')?.textContent.replace('%', '') || '0');
+                        return indirimB - indirimA;
+                    });
+                    break;
+
+                case 'indirim_artan':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const indirimA = parseFloat(a.querySelector('td:nth-child(6)')?.textContent.replace('%', '') || '0');
+                        const indirimB = parseFloat(b.querySelector('td:nth-child(6)')?.textContent.replace('%', '') || '0');
+                        return indirimA - indirimB;
+                    });
+                    break;
+            }
+
+            // Tüm satırları gizle
+            satirlar.forEach(satir => {
+                satir.style.display = 'none';
+            });
+
+            // Filtrelenmiş satırları göster ve tbody'ye yeniden ekle (sıralama için)
+            filtrelenmisSatirlar.forEach((satir, index) => {
+                satir.style.display = '';
+                // Sıra numarasını güncelle
+                const siraHucresi = satir.querySelector('td:first-child');
+                if (siraHucresi) {
+                    siraHucresi.textContent = index + 1;
+                }
+                tbody.appendChild(satir);
+            });
+
+            // "Gösterilecek kayıt yok" mesajı
+            let bosSatir = tbody.querySelector('.filtre-bos-satir');
+
+            if (filtrelenmisSatirlar.length === 0) {
+                if (!bosSatir) {
+                    bosSatir = document.createElement('tr');
+                    bosSatir.className = 'filtre-bos-satir';
+                    bosSatir.innerHTML = '<td colspan="10" class="text-center py-5"><i class="fas fa-filter fa-3x text-muted mb-3"></i><p class="text-muted">Filtreleme kriterlerine uygun kampanya bulunamadı.</p><button class="btn btn-sm btn-outline-secondary" onclick="kampanyaTumFiltreleriTemizle()">Filtreleri Temizle</button></td>';
+                    tbody.appendChild(bosSatir);
+                }
+            } else if (bosSatir) {
+                bosSatir.remove();
+            }
+        }
+
+        // Enter tuşu ile filtreleme
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const aktifElement = document.activeElement;
+                if (aktifElement.id === 'kampanyaArama' ||
+                    aktifElement.id === 'filtreBaslangicTarih' ||
+                    aktifElement.id === 'filtreBitisTarih' ||
+                    aktifElement.id === 'filtreMinIndirim' ||
+                    aktifElement.id === 'filtreMaxIndirim') {
+                    e.preventDefault();
+                    kampanyaFiltreleVeSirala();
+                }
+            }
+        });
         // Görsel önizleme fonksiyonu
         function previewImage(input, previewId) {
             const preview = document.getElementById(previewId);

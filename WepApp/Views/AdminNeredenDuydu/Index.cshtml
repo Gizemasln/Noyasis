@@ -7,6 +7,150 @@
 }
 
 <style>
+    /* Filtreleme stilleri - Diğer sayfalarla uyumlu */
+    .card-header .flex-wrap {
+        gap: 15px;
+    }
+
+    .card-header .gap-2 {
+        gap: 0.5rem !important;
+    }
+
+    .search-box {
+        position: relative;
+    }
+
+        .search-box .input-group {
+            transition: all 0.3s ease;
+            width: 200px;
+        }
+
+            .search-box .input-group:focus-within {
+                width: 250px;
+            }
+
+        .search-box .form-control:focus {
+            background-color: #fff !important;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+        }
+
+    #neredenduyduAramaTemizle {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: transparent;
+        z-index: 5;
+        color: #6c757d;
+        padding: 0.25rem 0.5rem;
+    }
+
+        #neredenduyduAramaTemizle:hover {
+            color: #dc3545;
+        }
+
+    .dropdown-menu {
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+        border: none;
+    }
+
+        .dropdown-menu .form-control-sm,
+        .dropdown-menu .form-select-sm {
+            border: 1px solid #dee2e6;
+        }
+
+            .dropdown-menu .form-control-sm:focus,
+            .dropdown-menu .form-select-sm:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+            }
+
+    #neredenduyduFiltreTemizleBtn {
+        transition: all 0.3s ease;
+    }
+
+        #neredenduyduFiltreTemizleBtn:hover {
+            transform: scale(1.1);
+        }
+
+    /* Aktif filtre butonu stilleri */
+    .btn-primary .fas {
+        color: white;
+    }
+
+    /* Filtre etiketleri */
+    #aktifFiltreler {
+        background-color: #f8f9fa;
+        border-radius: 0.35rem;
+        padding: 10px;
+        border: 1px solid #e3e6f0;
+        margin-top: 15px !important;
+    }
+
+        #aktifFiltreler .badge {
+            font-size: 0.85rem;
+            padding: 0.5rem 0.75rem;
+        }
+
+    /* Tablo satırları için geçiş efekti */
+    #neredenduyduTablosu tr {
+        transition: all 0.3s ease;
+    }
+
+        #neredenduyduTablosu tr[style*="display: none"] {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+    /* Responsive düzenlemeler */
+    media (max-width: 768px) {
+        .card-header .d-flex
+
+    {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+
+    .card-header .gap-2 {
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .search-box {
+        width: 100% !important;
+        margin-bottom: 5px;
+    }
+
+        .search-box .input-group {
+            width: 100% !important;
+        }
+
+            .search-box .input-group:focus-within {
+                width: 100% !important;
+            }
+
+    .card-header .dropdown {
+        flex: 1;
+    }
+
+    .islem-butonlari-alani {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    #aktifFiltreler .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 10px;
+    }
+
+    #filtreEtiketleri {
+        flex-wrap: wrap;
+    }
+
+    }
     .table-actions {
         white-space: nowrap;
         width: 120px;
@@ -84,10 +228,80 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
                     <h5 class="mb-0">Nereden Duydu Kayıtları</h5>
+
+                    <!-- FİLTRELEME ALANI - Diğer sayfalarla uyumlu -->
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Arama Kutusu -->
+                        <div class="search-box">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-light border-0">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" id="neredenduyduArama" class="form-control form-control-sm border-0 bg-light"
+                                       placeholder="Kayıt ara..." style="box-shadow: none;">
+                                <button class="btn btn-outline-secondary btn-sm" type="button" id="neredenduyduAramaTemizle" style="display:none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tarih Filtreleri -->
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" id="tarihFiltreBtn">
+                                <i class="fas fa-calendar-alt me-1"></i> Tarih
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 300px;">
+                                <div class="mb-2">
+                                    <label class="form-label small">Eklenme Tarihi Aralığı</label>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small">Başlangıç</label>
+                                    <input type="date" id="filtreBaslangicTarih" class="form-control form-control-sm">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small">Bitiş</label>
+                                    <input type="date" id="filtreBitisTarih" class="form-control form-control-sm">
+                                </div>
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="neredenduyduTarihFiltreTemizle()">Temizle</button>
+                                    <button class="btn btn-sm btn-primary" onclick="neredenduyduTarihFiltreUygula()">Uygula</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sıralama -->
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" id="siralamaFiltreBtn">
+                                <i class="fas fa-sort-amount-down me-1"></i> Sıralama
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 200px;">
+                                <div class="mb-2">
+                                    <select class="form-select form-select-sm" id="siralamaFiltre">
+                                        <option value="yeni">En Yeni → En Eski</option>
+                                        <option value="eski">En Eski → En Yeni</option>
+                                        <option value="adi_az">İsim (A-Z)</option>
+                                        <option value="adi_za">İsim (Z-A)</option>
+                                    </select>
+                                </div>
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <button class="btn btn-sm btn-primary" onclick="neredenduyduSiralamaUygula()">Uygula</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filtre Temizleme Butonu -->
+                        <button class="btn btn-sm btn-outline-danger" onclick="neredenduyduTumFiltreleriTemizle()"
+                                title="Tüm filtreleri temizle" id="neredenduyduFiltreTemizleBtn" style="display: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <!-- Seçili Kayıt Bilgisi ve İşlem Butonları (mevcut kod) -->
                     <div class="d-flex align-items-center gap-3">
-                        <!-- Seçili Kayıt Bilgisi ve İşlem Butonları -->
                         <div class="islem-butonlari-alani d-flex align-items-center gap-2">
                             <div id="seciliKayitBilgi" class="secili-bilgi me-2">
                                 <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
@@ -106,6 +320,18 @@
                         <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
                             <i class="fas fa-plus"></i> Yeni Kayıt Ekle
                         </button>
+                    </div>
+                </div>
+
+                <!-- Aktif Filtreler -->
+                <div class="row mt-3" id="aktifFiltreler" style="display: none;">
+                    <div class="col-12">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-light text-dark me-2 p-2">
+                                <i class="fas fa-filter me-1"></i>Aktif Filtreler:
+                            </span>
+                            <div id="filtreEtiketleri" class="d-flex flex-wrap gap-2"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -248,6 +474,299 @@
 
     <script>
         $(document).ready(function() {
+                    // ============= NEREDEN DUYDU FİLTRELEME SİSTEMİ =============
+        let neredenduyduAktifFiltreler = {
+            arama: '',
+            baslangicTarih: null,
+            bitisTarih: null,
+            siralama: 'yeni'
+        };
+
+        // Arama fonksiyonu
+        function neredenduyduAramaFiltrele() {
+            const aramaInput = document.getElementById('neredenduyduArama');
+            const temizleBtn = document.getElementById('neredenduyduAramaTemizle');
+
+            if (aramaInput && temizleBtn) {
+                const kelime = aramaInput.value.trim().toLowerCase();
+
+                // Temizle butonunu göster/gizle
+                temizleBtn.style.display = kelime ? 'block' : 'none';
+
+                neredenduyduAktifFiltreler.arama = kelime;
+                neredenduyduFiltreEtiketleriniGoster();
+                neredenduyduFiltreleVeSirala();
+            }
+        }
+
+        // Arama inputuna event listener ekle
+        const aramaInput = document.getElementById('neredenduyduArama');
+        const temizleBtn = document.getElementById('neredenduyduAramaTemizle');
+
+        if (aramaInput) {
+            aramaInput.addEventListener('input', neredenduyduAramaFiltrele);
+            aramaInput.addEventListener('keyup', neredenduyduAramaFiltrele);
+        }
+
+        if (temizleBtn) {
+            temizleBtn.addEventListener('click', function () {
+                aramaInput.value = '';
+                neredenduyduAramaFiltrele();
+                aramaInput.focus();
+            });
+        }
+
+        // Tarih Filtresi Uygula
+        window.neredenduyduTarihFiltreUygula = function() {
+            const baslangicInput = document.getElementById('filtreBaslangicTarih');
+            const bitisInput = document.getElementById('filtreBitisTarih');
+
+            neredenduyduAktifFiltreler.baslangicTarih = baslangicInput.value || null;
+            neredenduyduAktifFiltreler.bitisTarih = bitisInput.value || null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('tarihFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            neredenduyduFiltreEtiketleriniGoster();
+            neredenduyduFiltreleVeSirala();
+        };
+
+        // Tarih Filtresi Temizle
+        window.neredenduyduTarihFiltreTemizle = function() {
+            document.getElementById('filtreBaslangicTarih').value = '';
+            document.getElementById('filtreBitisTarih').value = '';
+            neredenduyduAktifFiltreler.baslangicTarih = null;
+            neredenduyduAktifFiltreler.bitisTarih = null;
+            neredenduyduFiltreEtiketleriniGoster();
+            neredenduyduFiltreleVeSirala();
+        };
+
+        // Sıralama Uygula
+        window.neredenduyduSiralamaUygula = function() {
+            const siralama = document.getElementById('siralamaFiltre').value;
+            neredenduyduAktifFiltreler.siralama = siralama;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('siralamaFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            neredenduyduFiltreEtiketleriniGoster();
+            neredenduyduFiltreleVeSirala();
+        };
+
+        // Tüm Filtreleri Temizle
+        window.neredenduyduTumFiltreleriTemizle = function() {
+            // Arama kutusunu temizle
+            document.getElementById('neredenduyduArama').value = '';
+            document.getElementById('neredenduyduAramaTemizle').style.display = 'none';
+
+            // Tarih filtrelerini temizle
+            document.getElementById('filtreBaslangicTarih').value = '';
+            document.getElementById('filtreBitisTarih').value = '';
+
+            // Sıralamayı varsayılana getir
+            document.getElementById('siralamaFiltre').value = 'yeni';
+
+            // Buton stillerini sıfırla
+            document.getElementById('tarihFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('siralamaFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+            // Filtre değişkenlerini sıfırla
+            neredenduyduAktifFiltreler = {
+                arama: '',
+                baslangicTarih: null,
+                bitisTarih: null,
+                siralama: 'yeni'
+            };
+
+            // Filtre etiketlerini gizle
+            document.getElementById('aktifFiltreler').style.display = 'none';
+            document.getElementById('neredenduyduFiltreTemizleBtn').style.display = 'none';
+
+            // Filtrelemeyi yeniden uygula
+            neredenduyduFiltreleVeSirala();
+        };
+
+        // Filtre etiketlerini göster
+        function neredenduyduFiltreEtiketleriniGoster() {
+            const etiketler = [];
+            const filtreTemizleBtn = document.getElementById('neredenduyduFiltreTemizleBtn');
+
+            if (neredenduyduAktifFiltreler.arama) {
+                etiketler.push(`<span class="badge bg-primary">Arama: ${neredenduyduAktifFiltreler.arama}</span>`);
+            }
+
+            if (neredenduyduAktifFiltreler.baslangicTarih) {
+                etiketler.push(`<span class="badge bg-primary">Başlangıç: ${formatNeredenduyduDate(neredenduyduAktifFiltreler.baslangicTarih)}</span>`);
+            }
+            if (neredenduyduAktifFiltreler.bitisTarih) {
+                etiketler.push(`<span class="badge bg-primary">Bitiş: ${formatNeredenduyduDate(neredenduyduAktifFiltreler.bitisTarih)}</span>`);
+            }
+
+            if (neredenduyduAktifFiltreler.siralama !== 'yeni') {
+                const siralamaMetin = {
+                    'eski': 'En Eski',
+                    'adi_az': 'İsim (A-Z)',
+                    'adi_za': 'İsim (Z-A)'
+                };
+                etiketler.push(`<span class="badge bg-info">Sıralama: ${siralamaMetin[neredenduyduAktifFiltreler.siralama]}</span>`);
+            }
+
+            if (etiketler.length > 0) {
+                document.getElementById('filtreEtiketleri').innerHTML = etiketler.join(' ');
+                document.getElementById('aktifFiltreler').style.display = 'block';
+                filtreTemizleBtn.style.display = 'inline-block';
+
+                // Buton stillerini güncelle
+                document.getElementById('tarihFiltreBtn').className = neredenduyduAktifFiltreler.baslangicTarih || neredenduyduAktifFiltreler.bitisTarih
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            } else {
+                document.getElementById('aktifFiltreler').style.display = 'none';
+                filtreTemizleBtn.style.display = 'none';
+            }
+        }
+
+        // Tarih formatlama
+        function formatNeredenduyduDate(dateStr) {
+            if (!dateStr) return '';
+            const [yil, ay, gun] = dateStr.split('-');
+            return `${gun}.${ay}.${yil}`;
+        }
+
+        // Tarih parse (dd.MM.yyyy HH:mm formatı)
+        function neredenduyduParseDate(dateStr) {
+            if (!dateStr) return null;
+            const [gun, ay, yilSaat] = dateStr.split('.');
+            const [yil, saat] = yilSaat.split(' ');
+            return new Date(`${yil}-${ay}-${gun}T${saat}`);
+        }
+
+        // Ana filtreleme ve sıralama fonksiyonu
+        function neredenduyduFiltreleVeSirala() {
+            const tbody = document.getElementById('neredenduyduTablosu');
+            if (!tbody) return;
+
+            const satirlar = Array.from(tbody.querySelectorAll('tr.neredenduydu-satiri'));
+
+            if (satirlar.length === 0) return;
+
+            // Filtreleme
+            let filtrelenmisSatirlar = satirlar.filter(satir => {
+                let goster = true;
+
+                // Arama filtresi (Nereden Duydu Adı - 3. sütun)
+                if (neredenduyduAktifFiltreler.arama) {
+                    const adi = satir.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
+                    if (!adi.includes(neredenduyduAktifFiltreler.arama.toLowerCase())) {
+                        goster = false;
+                    }
+                }
+
+                // Tarih filtresi (4. sütun - Eklenme Tarihi)
+                if (goster && (neredenduyduAktifFiltreler.baslangicTarih || neredenduyduAktifFiltreler.bitisTarih)) {
+                    const tarihTd = satir.querySelector('td:nth-child(4)')?.textContent.trim();
+                    if (tarihTd) {
+                        const tarih = neredenduyduParseDate(tarihTd);
+
+                        if (neredenduyduAktifFiltreler.baslangicTarih) {
+                            const filtreBaslangic = new Date(neredenduyduAktifFiltreler.baslangicTarih + 'T00:00:00');
+                            if (tarih < filtreBaslangic) {
+                                goster = false;
+                            }
+                        }
+
+                        if (goster && neredenduyduAktifFiltreler.bitisTarih) {
+                            const filtreBitis = new Date(neredenduyduAktifFiltreler.bitisTarih + 'T23:59:59');
+                            if (tarih > filtreBitis) {
+                                goster = false;
+                            }
+                        }
+                    }
+                }
+
+                return goster;
+            });
+
+            // Sıralama
+            switch(neredenduyduAktifFiltreler.siralama) {
+                case 'yeni':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const tarihA = neredenduyduParseDate(a.querySelector('td:nth-child(4)')?.textContent.trim() || '');
+                        const tarihB = neredenduyduParseDate(b.querySelector('td:nth-child(4)')?.textContent.trim() || '');
+                        return (tarihB || 0) - (tarihA || 0);
+                    });
+                    break;
+
+                case 'eski':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const tarihA = neredenduyduParseDate(a.querySelector('td:nth-child(4)')?.textContent.trim() || '');
+                        const tarihB = neredenduyduParseDate(b.querySelector('td:nth-child(4)')?.textContent.trim() || '');
+                        return (tarihA || 0) - (tarihB || 0);
+                    });
+                    break;
+
+                case 'adi_az':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const adiA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        const adiB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        return adiA.localeCompare(adiB, 'tr');
+                    });
+                    break;
+
+                case 'adi_za':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const adiA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        const adiB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        return adiB.localeCompare(adiA, 'tr');
+                    });
+                    break;
+            }
+
+            // Tüm satırları gizle
+            satirlar.forEach(satir => {
+                satir.style.display = 'none';
+            });
+
+            // Filtrelenmiş satırları göster ve tbody'ye yeniden ekle (sıralama için)
+            filtrelenmisSatirlar.forEach((satir, index) => {
+                satir.style.display = '';
+                // Sıra numarasını güncelle (2. sütun)
+                const siraHucresi = satir.querySelector('td:nth-child(2)');
+                if (siraHucresi) {
+                    siraHucresi.textContent = index + 1;
+                }
+                tbody.appendChild(satir);
+            });
+
+            // "Gösterilecek kayıt yok" mesajı
+            let bosSatir = tbody.querySelector('.filtre-bos-satir');
+
+            if (filtrelenmisSatirlar.length === 0) {
+                if (!bosSatir) {
+                    bosSatir = document.createElement('tr');
+                    bosSatir.className = 'filtre-bos-satir';
+                    bosSatir.innerHTML = '<td colspan="6" class="text-center py-5"><i class="fas fa-filter fa-3x text-muted mb-3"></i><p class="text-muted">Filtreleme kriterlerine uygun kayıt bulunamadı.</p><button class="btn btn-sm btn-outline-secondary" onclick="neredenduyduTumFiltreleriTemizle()">Filtreleri Temizle</button></td>';
+                    tbody.appendChild(bosSatir);
+                }
+            } else if (bosSatir) {
+                bosSatir.remove();
+            }
+        }
+
+        // Enter tuşu ile filtreleme
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const aktifElement = document.activeElement;
+                if (aktifElement.id === 'neredenduyduArama' ||
+                    aktifElement.id === 'filtreBaslangicTarih' ||
+                    aktifElement.id === 'filtreBitisTarih') {
+                    e.preventDefault();
+                    neredenduyduFiltreleVeSirala();
+                }
+            }
+        });
             let suAnSeciliNeredenDuyduId = null;
             const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
             const $seciliSilBtn = $('#seciliSilBtn');

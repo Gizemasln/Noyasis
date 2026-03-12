@@ -3,142 +3,8 @@
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
 
-<style>
-    .slider-gorsel-preview {
-        width: 80px;
-        height: 60px;
-        object-fit: cover;
-        border-radius: 6px;
-        border: 2px solid #e9ecef;
-        cursor: pointer;
-        transition: transform 0.2s;
-    }
+<link href="/WebAdminTheme/assets/css/adminanasayfaslider.css" rel="stylesheet">
 
-        .slider-gorsel-preview:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-    .slider-video-preview {
-        width: 80px;
-        height: 60px;
-        object-fit: cover;
-        border-radius: 6px;
-        border: 2px solid #e9ecef;
-        cursor: pointer;
-        position: relative;
-    }
-
-    .video-play-icon {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: white;
-        font-size: 24px;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    }
-
-    .modal-gorsel-preview {
-        max-width: 100%;
-        max-height: 300px;
-        object-fit: contain;
-        border-radius: 8px;
-        border: 2px solid #dee2e6;
-        margin-top: 10px;
-    }
-
-    .modal-video-preview {
-        width: 100%;
-        max-height: 400px;
-        border-radius: 8px;
-    }
-
-    .gorsel-upload-area, .video-upload-area {
-        border: 2px dashed #dee2e6;
-        border-radius: 10px;
-        padding: 20px;
-        text-align: center;
-        background-color: #f8f9fa;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-        .gorsel-upload-area:hover, .video-upload-area:hover {
-            border-color: #0d6efd;
-            background-color: #e7f1ff;
-        }
-
-        .gorsel-upload-area i, .video-upload-area i {
-            font-size: 48px;
-            color: #6c757d;
-        }
-
-    .current-image-container, .current-video-container {
-        position: relative;
-        display: inline-block;
-        margin: 10px 0;
-    }
-
-    .remove-image-btn, .remove-video-btn {
-        position: absolute;
-        top: -10px;
-        right: -10px;
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-        background-color: #dc3545;
-        color: white;
-        border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        font-size: 14px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-
-        .remove-image-btn:hover, .remove-video-btn:hover {
-            background-color: #bb2d3b;
-        }
-
-    .sira-badge {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        background-color: #3498db;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 16px;
-    }
-
-    .video-badge {
-        background-color: #e74c3c;
-        color: white;
-        padding: 3px 8px;
-        border-radius: 4px;
-        font-size: 11px;
-        display: inline-flex;
-        align-items: center;
-        gap: 3px;
-    }
-
-        .video-badge i {
-            font-size: 12px;
-        }
-
-    .file-type-badge {
-        font-size: 10px;
-        padding: 2px 6px;
-        border-radius: 4px;
-        background-color: #6c757d;
-        color: white;
-        margin-left: 5px;
-    }
-</style>
 
 <!-- Görsel Modal -->
 <div class="modal fade" id="gorselModal" tabindex="-1" aria-hidden="true">
@@ -192,9 +58,25 @@
 
         <div class="card" style="margin-top:70px;">
             <div class="card-header">
-                <div class="card-title d-flex justify-content-between align-items-center">
-                    <span><i class="fas fa-sliders-h me-2"></i>Slider Yönetimi</span>
-                    <div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-sliders-h me-2"></i>Slider Yönetimi</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Seçili Kayıt Bilgisi ve İşlem Butonları -->
+                        <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                            <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                                <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                            </div>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-warning aksiyon-btn" id="seciliDuzenleBtn" title="Seçili Slider'ı Düzenle" data-button-permission="duzenle" disabled>
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger aksiyon-btn" id="seciliSilBtn" title="Seçili Slider'ı Sil" data-button-permission="sil" disabled>
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Yeni Ekle Butonu -->
                         <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
                             <i class="fas fa-plus"></i> Yeni Slider Ekle
                         </button>
@@ -206,21 +88,27 @@
                     <table class="table table-bordered table-hover">
                         <thead class="table-head-bg-primary">
                             <tr>
+                                <th width="40">Seç</th>
                                 <th width="50">Sıra</th>
                                 <th width="80">Görsel</th>
                                 <th width="80">Video</th>
                                 <th>Başlık</th>
                                 <th>URL/Buton</th>
                                 <th width="100">Yayın</th>
-                                <th width="120">İşlemler</th>
+                                <!-- İşlemler sütunu kaldırıldı -->
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="sliderTablosu">
                             @if (ViewBag.SliderList != null && ViewBag.SliderList.Count > 0)
                             {
                                 foreach (var item in ViewBag.SliderList)
                                 {
-                                    <tr>
+                                    <tr data-slider-id="@item.Id" data-slider-baslik="@item.SlaytBaslik" class="slider-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input slider-sec-radio" type="radio" name="seciliSliderRadio" value="@item.Id" id="secim_@item.Id">
+                                            </div>
+                                        </td>
                                         <td class="text-center">
                                             <div class="sira-badge mx-auto">@item.SlaytSiraNo</div>
                                         </td>
@@ -295,21 +183,13 @@
                                                 <span class="badge bg-secondary">Pasif</span>
                                             }
                                         </td>
-                                        <td class="text-center">
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id)" title="Düzenle">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.SlaytBaslik')" title="Sil">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
                                     </tr>
                                 }
                             }
                             else
                             {
                                 <tr>
-                                    <td colspan="7" class="text-center py-4">
+                                    <td colspan="8" class="text-center py-4">
                                         <i class="fas fa-sliders-h fa-3x text-muted mb-3"></i>
                                         <p class="text-muted">Henüz slider eklenmemiş.</p>
                                         <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
@@ -430,7 +310,7 @@
 <div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form action="@Url.Action("Guncelle","AdminAnaSayfaSlider")" method="post" id="duzenleForm" enctype="multipart/form-data">
+            <form action="@Url.Action("Guncelle", "AdminAnaSayfaSlider")" method="post" id="duzenleForm" enctype="multipart/form-data">
                 <input type="hidden" id="editId" name="Id">
                 <input type="hidden" id="editMevcutGorsel" name="MevcutGorsel">
                 <input type="hidden" id="editMevcutVideo" name="MevcutVideo">
@@ -558,7 +438,7 @@
 <div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Sil","AdminAnaSayfaSlider")" method="post">
+            <form action="@Url.Action("Sil", "AdminAnaSayfaSlider")" method="post">
                 <input type="hidden" id="silId" name="Id">
                 <div class="modal-header">
                     <h5 class="modal-title" id="silModalLabel">
@@ -587,254 +467,329 @@
 </div>
 
 @section Script {
+    <!-- Toastr için gerekli script ve CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
-        let silinecekGorselId = null;
-        let silinecekVideoId = null;
+        $(document).ready(function() {
+            let suAnSeciliSliderId = null;
+            const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
+            const $seciliSilBtn = $('#seciliSilBtn');
+            const $seciliBilgiDiv = $('#seciliKayitBilgi');
 
-        // Görsel önizleme
-        function previewImage(input, previewId) {
-            const preview = document.getElementById(previewId);
-            preview.innerHTML = '';
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
 
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.className = 'modal-gorsel-preview';
-                    img.alt = 'Görsel önizleme';
-                    preview.appendChild(img);
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#sliderTablosu tr[data-slider-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button')) {
+                    const $radio = $(this).find('.slider-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
                 }
+            });
 
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.slider-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliSliderId = $(this).val();
+                    const $seciliSatir = $(this).closest('tr');
+                    const sliderBaslik = $seciliSatir.data('slider-baslik');
 
-        // Video önizleme
-        function previewVideo(input, previewId) {
-            const preview = document.getElementById(previewId);
-            preview.innerHTML = '';
+                    // Tüm satırlardan active class'ı kaldır
+                    $('#sliderTablosu tr').removeClass('table-active');
+                    // Seçili satıra active class ekle
+                    $seciliSatir.addClass('table-active');
 
-            if (input.files && input.files[0]) {
-                const file = input.files[0];
-                const video = document.createElement('video');
-                video.className = 'modal-video-preview';
-                video.controls = true;
-                video.style.maxHeight = '150px';
+                    // Bilgiyi güncelle
+                    $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${sliderBaslik ? sliderBaslik.substring(0, 30) + '...' : 'Slider'}`);
 
-                const source = document.createElement('source');
-                source.src = URL.createObjectURL(file);
-                source.type = file.type;
+                    // Butonları aktif et
+                    $seciliDuzenleBtn.prop('disabled', false);
+                    $seciliSilBtn.prop('disabled', false);
+                }
+            });
 
-                video.appendChild(source);
-                preview.appendChild(video);
-            }
-        }
+            // Üstteki "Düzenle" butonu
+            $seciliDuzenleBtn.click(function() {
+                if (suAnSeciliSliderId) {
+                    duzenleGetir(suAnSeciliSliderId);
+                } else {
+                    toastr.warning('Lütfen önce bir slider seçin.');
+                }
+            });
 
-        // Görsel gösterme
-        function gorselGoster(gorselYolu) {
-            document.getElementById('modalGorsel').src = gorselYolu;
-            var gorselModal = new bootstrap.Modal(document.getElementById('gorselModal'));
-            gorselModal.show();
-        }
+            // Üstteki "Sil" butonu
+            $seciliSilBtn.click(function() {
+                if (suAnSeciliSliderId) {
+                    const $seciliSatir = $(`tr[data-slider-id="${suAnSeciliSliderId}"]`);
+                    const sliderBaslik = $seciliSatir.data('slider-baslik') || 'Slider';
 
-        // Video gösterme
-        function videoGoster(videoYolu) {
-            const video = document.getElementById('modalVideo');
-            const source = video.querySelector('source');
-            source.src = videoYolu;
-            video.load();
+                    $('#silId').val(suAnSeciliSliderId);
+                    $('#silBaslik').text(sliderBaslik);
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    toastr.warning('Lütfen önce bir slider seçin.');
+                }
+            });
 
-            var videoModal = new bootstrap.Modal(document.getElementById('videoModal'));
-            videoModal.show();
-        }
-
-        function duzenleGetir(id) {
-            fetch('@Url.Action("Getir", "AdminAnaSayfaSlider")' + '?id=' + id)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('editId').value = data.id;
-                    document.getElementById('editSlaytSiraNo').value = data.slaytSiraNo;
-                    document.getElementById('editSlaytBaslik').value = data.slaytBaslik || '';
-                    document.getElementById('editSlaytUrl').value = data.slaytUrl || '';
-                    document.getElementById('editSlaytButonAdi').value = data.slaytButonAdi || '';
-                    document.getElementById('editAciklama').value = data.aciklama || '';
-                    document.getElementById('editYayindaMi').checked = data.yayindaMi;
-                    document.getElementById('editYeniSekmeMi').checked = data.yeniSekmeMi;
-
-                    // Mevcut Görsel
-                    const mevcutGorselAlani = document.getElementById('mevcutGorselAlani');
-                    const mevcutGorselImg = document.getElementById('mevcutGorselImg');
-                    const editMevcutGorsel = document.getElementById('editMevcutGorsel');
-
-                    if (data.gorselyolu) {
-                        mevcutGorselImg.src = data.gorselyolu;
-                        mevcutGorselAlani.style.display = 'block';
-                        editMevcutGorsel.value = data.gorselyolu;
-                        silinecekGorselId = data.id;
+            // Silme modalı kapandıktan sonra seçimi temizleme
+            $('#silModal').on('hidden.bs.modal', function() {
+                if (suAnSeciliSliderId) {
+                    const $satir = $(`tr[data-slider-id="${suAnSeciliSliderId}"]`);
+                    if ($satir.length === 0) {
+                        // Satır silinmiş, seçimi temizle
+                        suAnSeciliSliderId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
                     } else {
-                        mevcutGorselAlani.style.display = 'none';
-                        editMevcutGorsel.value = '';
-                        silinecekGorselId = null;
+                        // İptal edildi, radio'yu temizle
+                        $(`.slider-sec-radio[value="${suAnSeciliSliderId}"]`).prop('checked', false);
+                        $('#sliderTablosu tr').removeClass('table-active');
+                        suAnSeciliSliderId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    }
+                }
+            });
+
+            // ============= MEVCUT FONKSİYONLAR (AYNEN KORUNDU) =============
+
+            let silinecekGorselId = null;
+            let silinecekVideoId = null;
+
+            // Görsel önizleme
+            window.previewImage = function(input, previewId) {
+                const preview = document.getElementById(previewId);
+                preview.innerHTML = '';
+
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'modal-gorsel-preview';
+                        img.alt = 'Görsel önizleme';
+                        preview.appendChild(img);
                     }
 
-                    // Mevcut Video
-                    const mevcutVideoAlani = document.getElementById('mevcutVideoAlani');
-                    const mevcutVideoSrc = document.getElementById('mevcutVideoSrc');
-                    const editMevcutVideo = document.getElementById('editMevcutVideo');
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
 
-                    if (data.videoyolu) {
-                        mevcutVideoSrc.src = data.videoyolu;
-                        mevcutVideoAlani.style.display = 'block';
-                        editMevcutVideo.value = data.videoyolu;
-                        silinecekVideoId = data.id;
+            // Video önizleme
+            window.previewVideo = function(input, previewId) {
+                const preview = document.getElementById(previewId);
+                preview.innerHTML = '';
 
-                        // Video elementini reload et
-                        const video = mevcutVideoAlani.querySelector('video');
-                        video.load();
-                    } else {
-                        mevcutVideoAlani.style.display = 'none';
-                        editMevcutVideo.value = '';
-                        silinecekVideoId = null;
-                    }
+                if (input.files && input.files[0]) {
+                    const file = input.files[0];
+                    const video = document.createElement('video');
+                    video.className = 'modal-video-preview';
+                    video.controls = true;
+                    video.style.maxHeight = '150px';
 
-                    // Önizleme alanlarını temizle
-                    document.getElementById('editPreview').innerHTML = '';
-                    document.getElementById('editVideoPreview').innerHTML = '';
-                    document.getElementById('editGorsel').value = '';
-                    document.getElementById('editVideo').value = '';
+                    const source = document.createElement('source');
+                    source.src = URL.createObjectURL(file);
+                    source.type = file.type;
 
-                    var duzenleModal = new bootstrap.Modal(document.getElementById('duzenleModal'));
-                    duzenleModal.show();
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Slider bilgileri getirilirken hata oluştu.');
-                });
-        }
+                    video.appendChild(source);
+                    preview.appendChild(video);
+                }
+            }
 
-        function mevcutGorselSil() {
-            if (silinecekGorselId) {
-                if (confirm('Görseli silmek istediğinizden emin misiniz?')) {
-                    fetch('@Url.Action("GorselSilAjax", "AdminAnaSayfaSlider")', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: 'id=' + silinecekGorselId
-                    })
+            // Görsel gösterme
+            window.gorselGoster = function(gorselYolu) {
+                document.getElementById('modalGorsel').src = gorselYolu;
+                var gorselModal = new bootstrap.Modal(document.getElementById('gorselModal'));
+                gorselModal.show();
+            }
+
+            // Video gösterme
+            window.videoGoster = function(videoYolu) {
+                const video = document.getElementById('modalVideo');
+                const source = video.querySelector('source');
+                source.src = videoYolu;
+                video.load();
+
+                var videoModal = new bootstrap.Modal(document.getElementById('videoModal'));
+                videoModal.show();
+            }
+
+            window.duzenleGetir = function(id) {
+                fetch('@Url.Action("Getir", "AdminAnaSayfaSlider")' + '?id=' + id)
                     .then(response => response.json())
                     .then(data => {
-                        if (data.success) {
-                            document.getElementById('mevcutGorselAlani').style.display = 'none';
-                            document.getElementById('editMevcutGorsel').value = '';
+                        document.getElementById('editId').value = data.id;
+                        document.getElementById('editSlaytSiraNo').value = data.slaytSiraNo;
+                        document.getElementById('editSlaytBaslik').value = data.slaytBaslik || '';
+                        document.getElementById('editSlaytUrl').value = data.slaytUrl || '';
+                        document.getElementById('editSlaytButonAdi').value = data.slaytButonAdi || '';
+                        document.getElementById('editAciklama').value = data.aciklama || '';
+                        document.getElementById('editYayindaMi').checked = data.yayindaMi;
+                        document.getElementById('editYeniSekmeMi').checked = data.yeniSekmeMi;
+
+                        // Mevcut Görsel
+                        const mevcutGorselAlani = document.getElementById('mevcutGorselAlani');
+                        const mevcutGorselImg = document.getElementById('mevcutGorselImg');
+                        const editMevcutGorsel = document.getElementById('editMevcutGorsel');
+
+                        if (data.gorselyolu) {
+                            mevcutGorselImg.src = data.gorselyolu;
+                            mevcutGorselAlani.style.display = 'block';
+                            editMevcutGorsel.value = data.gorselyolu;
+                            silinecekGorselId = data.id;
+                        } else {
+                            mevcutGorselAlani.style.display = 'none';
+                            editMevcutGorsel.value = '';
                             silinecekGorselId = null;
-                            showSuccessMessage(data.message);
-                        } else {
-                            alert('Hata: ' + data.message);
                         }
-                    });
-                }
-            }
-        }
 
-        function mevcutVideoSil() {
-            if (silinecekVideoId) {
-                if (confirm('Videoyu silmek istediğinizden emin misiniz?')) {
-                    fetch('@Url.Action("VideoSilAjax", "AdminAnaSayfaSlider")', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: 'id=' + silinecekVideoId
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            document.getElementById('mevcutVideoAlani').style.display = 'none';
-                            document.getElementById('editMevcutVideo').value = '';
+                        // Mevcut Video
+                        const mevcutVideoAlani = document.getElementById('mevcutVideoAlani');
+                        const mevcutVideoSrc = document.getElementById('mevcutVideoSrc');
+                        const editMevcutVideo = document.getElementById('editMevcutVideo');
+
+                        if (data.videoyolu) {
+                            mevcutVideoSrc.src = data.videoyolu;
+                            mevcutVideoAlani.style.display = 'block';
+                            editMevcutVideo.value = data.videoyolu;
+                            silinecekVideoId = data.id;
+
+                            // Video elementini reload et
+                            const video = mevcutVideoAlani.querySelector('video');
+                            video.load();
+                        } else {
+                            mevcutVideoAlani.style.display = 'none';
+                            editMevcutVideo.value = '';
                             silinecekVideoId = null;
-                            showSuccessMessage(data.message);
-                        } else {
-                            alert('Hata: ' + data.message);
                         }
+
+                        // Önizleme alanlarını temizle
+                        document.getElementById('editPreview').innerHTML = '';
+                        document.getElementById('editVideoPreview').innerHTML = '';
+                        document.getElementById('editGorsel').value = '';
+                        document.getElementById('editVideo').value = '';
+
+                        var duzenleModal = new bootstrap.Modal(document.getElementById('duzenleModal'));
+                        duzenleModal.show();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        toastr.error('Slider bilgileri getirilirken hata oluştu.');
                     });
-                }
             }
-        }
 
-        function silOnay(id, baslik) {
-            document.getElementById('silId').value = id;
-            document.getElementById('silBaslik').textContent = baslik;
-            var silModal = new bootstrap.Modal(document.getElementById('silModal'));
-            silModal.show();
-        }
-
-        function showSuccessMessage(message) {
-            var alertHtml = '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
-                message +
-                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-                '</div>';
-            document.querySelector('.modal-body').insertAdjacentHTML('afterbegin', alertHtml);
-
-            setTimeout(function() {
-                var alerts = document.querySelectorAll('.alert');
-                alerts.forEach(function(alert) {
-                    alert.remove();
-                });
-            }, 3000);
-        }
-
-        // Modal kapandığında formları temizle
-        document.getElementById('ekleModal').addEventListener('hidden.bs.modal', function () {
-            this.querySelector('form').reset();
-            document.getElementById('eklePreview').innerHTML = '';
-            document.getElementById('ekleVideoPreview').innerHTML = '';
-        });
-
-        document.getElementById('duzenleModal').addEventListener('hidden.bs.modal', function () {
-            this.querySelector('form').reset();
-            document.getElementById('mevcutGorselAlani').style.display = 'none';
-            document.getElementById('mevcutVideoAlani').style.display = 'none';
-            document.getElementById('editPreview').innerHTML = '';
-            document.getElementById('editVideoPreview').innerHTML = '';
-            silinecekGorselId = null;
-            silinecekVideoId = null;
-        });
-
-        // Sürükle-bırak desteği
-        document.querySelectorAll('.gorsel-upload-area, .video-upload-area').forEach(area => {
-            area.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                area.style.borderColor = '#0d6efd';
-                area.style.backgroundColor = '#e7f1ff';
-            });
-
-            area.addEventListener('dragleave', (e) => {
-                e.preventDefault();
-                area.style.borderColor = '#dee2e6';
-                area.style.backgroundColor = '#f8f9fa';
-            });
-
-            area.addEventListener('drop', (e) => {
-                e.preventDefault();
-                area.style.borderColor = '#dee2e6';
-                area.style.backgroundColor = '#f8f9fa';
-
-                const files = e.dataTransfer.files;
-                const input = area.nextElementSibling;
-                if (files.length > 0 && input) {
-                    input.files = files;
-
-                    if (area.classList.contains('gorsel-upload-area')) {
-                        const previewId = input.id === 'Gorsel' ? 'eklePreview' : 'editPreview';
-                        previewImage(input, previewId);
-                    } else {
-                        const previewId = input.id === 'Video' ? 'ekleVideoPreview' : 'editVideoPreview';
-                        previewVideo(input, previewId);
+            window.mevcutGorselSil = function() {
+                if (silinecekGorselId) {
+                    if (confirm('Görseli silmek istediğinizden emin misiniz?')) {
+                        fetch('@Url.Action("GorselSilAjax", "AdminAnaSayfaSlider")', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: 'id=' + silinecekGorselId
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                document.getElementById('mevcutGorselAlani').style.display = 'none';
+                                document.getElementById('editMevcutGorsel').value = '';
+                                silinecekGorselId = null;
+                                toastr.success(data.message);
+                            } else {
+                                toastr.error('Hata: ' + data.message);
+                            }
+                        });
                     }
                 }
+            }
+
+            window.mevcutVideoSil = function() {
+                if (silinecekVideoId) {
+                    if (confirm('Videoyu silmek istediğinizden emin misiniz?')) {
+                        fetch('@Url.Action("VideoSilAjax", "AdminAnaSayfaSlider")', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: 'id=' + silinecekVideoId
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                document.getElementById('mevcutVideoAlani').style.display = 'none';
+                                document.getElementById('editMevcutVideo').value = '';
+                                silinecekVideoId = null;
+                                toastr.success(data.message);
+                            } else {
+                                toastr.error('Hata: ' + data.message);
+                            }
+                        });
+                    }
+                }
+            }
+
+            window.silOnay = function(id, baslik) {
+                document.getElementById('silId').value = id;
+                document.getElementById('silBaslik').textContent = baslik;
+                var silModal = new bootstrap.Modal(document.getElementById('silModal'));
+                silModal.show();
+            }
+
+            // Modal kapandığında formları temizle
+            document.getElementById('ekleModal').addEventListener('hidden.bs.modal', function () {
+                this.querySelector('form').reset();
+                document.getElementById('eklePreview').innerHTML = '';
+                document.getElementById('ekleVideoPreview').innerHTML = '';
+            });
+
+            document.getElementById('duzenleModal').addEventListener('hidden.bs.modal', function () {
+                this.querySelector('form').reset();
+                document.getElementById('mevcutGorselAlani').style.display = 'none';
+                document.getElementById('mevcutVideoAlani').style.display = 'none';
+                document.getElementById('editPreview').innerHTML = '';
+                document.getElementById('editVideoPreview').innerHTML = '';
+                silinecekGorselId = null;
+                silinecekVideoId = null;
+            });
+
+            // Sürükle-bırak desteği
+            document.querySelectorAll('.gorsel-upload-area, .video-upload-area').forEach(area => {
+                area.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    area.style.borderColor = '#0d6efd';
+                    area.style.backgroundColor = '#e7f1ff';
+                });
+
+                area.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    area.style.borderColor = '#dee2e6';
+                    area.style.backgroundColor = '#f8f9fa';
+                });
+
+                area.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    area.style.borderColor = '#dee2e6';
+                    area.style.backgroundColor = '#f8f9fa';
+
+                    const files = e.dataTransfer.files;
+                    const input = area.nextElementSibling;
+                    if (files.length > 0 && input) {
+                        input.files = files;
+
+                        if (area.classList.contains('gorsel-upload-area')) {
+                            const previewId = input.id === 'Gorsel' ? 'eklePreview' : 'editPreview';
+                            previewImage(input, previewId);
+                        } else {
+                            const previewId = input.id === 'Video' ? 'ekleVideoPreview' : 'editVideoPreview';
+                            previewVideo(input, previewId);
+                        }
+                    }
+                });
             });
         });
     </script>

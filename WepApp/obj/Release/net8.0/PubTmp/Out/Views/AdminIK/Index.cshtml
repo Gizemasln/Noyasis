@@ -3,6 +3,64 @@
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
 
+<style>
+    /* Seçim satırı için cursor pointer */
+    tr[data-ik-id] {
+        cursor: pointer;
+    }
+
+    /* Seçili satır efekti */
+    tr.table-active {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+
+    /* İşlem butonları alanı */
+    .islem-butonlari-alani {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .secili-bilgi {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+
+        .secili-bilgi i {
+            font-size: 1rem;
+        }
+
+    /* Buton stilleri */
+    .aksiyon-btn {
+        transition: all 0.2s;
+    }
+
+        .aksiyon-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .aksiyon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    /* Buton grupları için */
+    .btn-group .btn {
+        margin: 0 2px;
+    }
+
+        .btn-group .btn:first-child {
+            margin-left: 0;
+        }
+
+        .btn-group .btn:last-child {
+            margin-right: 0;
+        }
+</style>
+
 <div class="row">
     <div class="col-md-12">
         <!-- Başarı/Hata Mesajları -->
@@ -21,17 +79,29 @@
             </div>
         }
 
-        <!-- EKLE BUTONU HER ZAMAN GÖRÜNÜR OLMASI İÇİN BAĞIMSIZ YERLEŞTİRİLDİ -->
-        <div class="mb-3">
-            <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                <i class="fas fa-plus"></i> Yeni IK Formu Ekle
-            </button>
-        </div>
-
         <div class="card">
-            <div class="card-header">
-                <div class="card-title d-flex justify-content-between align-items-center">
-                    <span>IK Formu Bilgileri</span>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">IK Formu Bilgileri</h5>
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Seçili Kayıt Bilgisi ve İşlem Butonları -->
+                    <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                        <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                            <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-warning btn-sm" id="seciliDuzenleBtn" data-button-permission="duzenle" title="Seçili IK Formunu Düzenle" disabled style="margin-right:5px;">
+                                <i class="fas fa-edit"></i> Düzenle
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" id="seciliSilBtn" data-button-permission="sil" title="Seçili IK Formunu Sil" disabled>
+                                <i class="fas fa-trash"></i> Sil
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Yeni Ekle Butonu -->
+                    <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni IK Formu Ekle
+                    </button>
                 </div>
             </div>
             <div class="card-body">
@@ -39,6 +109,7 @@
                     <table class="table table-bordered table-hover">
                         <thead class="table-head-bg-primary">
                             <tr>
+                                <th width="40">Seç</th>
                                 <th scope="col">#</th>
                                 <th scope="col">Adı Soyadı</th>
                                 <th scope="col">Telefon</th>
@@ -47,43 +118,41 @@
                                 <th scope="col">Dosya</th>
                                 <th scope="col">Mesaj</th>
                                 <th scope="col">Eklenme Tarihi</th>
-                                <th scope="col">İşlemler</th>
+                                <!-- İşlemler sütunu kaldırıldı -->
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="ikTablosu">
                             @if (ViewBag.IKList != null && ViewBag.IKList.Count > 0)
                             {
                                 var counter = 1;
                                 foreach (var item in ViewBag.IKList)
                                 {
-                                    <tr>
+                                    <tr data-ik-id="@item.Id" data-ik-ad="@item.AdiSoyadi" class="ik-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input ik-sec-radio" type="radio" name="seciliIKRadio" value="@item.Id" id="secim_@item.Id">
+                                            </div>
+                                        </td>
                                         <td>@counter</td>
-                                        <td>@item.AdiSoyadi</td>
+                                        <td><strong>@item.AdiSoyadi</strong></td>
                                         <td>@item.Telefon</td>
                                         <td>@item.Eposta</td>
                                         <td>@item.TC</td>
                                         <td>
                                             @if (!string.IsNullOrEmpty(item.DosyaYolu))
                                             {
-                                                <a href="@item.DosyaYolu" target="_blank" class="btn btn-info btn-sm" data-button-permission="detay-goster">
-                                                    <i class="fas fa-eye"></i> Dosyayı Görüntüle
+                                                <a href="@item.DosyaYolu" target="_blank" class="btn btn-info btn-sm" data-button-permission="detay-goster" title="Dosyayı Görüntüle">
+                                                    <i class="fas fa-eye"></i>
                                                 </a>
                                             }
                                             else
                                             {
-                                                <span>Henüz dosya yok</span>
+                                                <span class="badge bg-secondary">Yok</span>
                                             }
                                         </td>
                                         <td>@(item.Mesaj != null && item.Mesaj.Length > 50 ? item.Mesaj.Substring(0, 50) + "..." : item.Mesaj)</td>
                                         <td>@item.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</td>
-                                        <td>
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.AdiSoyadi')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
+                                        <!-- İşlemler sütunundaki butonlar KALDIRILDI -->
                                     </tr>
                                     counter++;
                                 }
@@ -91,7 +160,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="9" class="text-center">Henüz bilgi eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Bilgi Ekle</a></td>
+                                    <td colspan="10" class="text-center">Henüz bilgi eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Bilgi Ekle</a></td>
                                 </tr>
                             }
                         </tbody>
@@ -163,7 +232,7 @@
 <div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form action="@Url.Action("Guncelle","AdminIK")" method="post" id="duzenleForm" enctype="multipart/form-data">
+            <form action="@Url.Action("Guncelle", "AdminIK")" method="post" id="duzenleForm" enctype="multipart/form-data">
                 <input type="hidden" id="editId" name="Id">
                 <div class="modal-header">
                     <h5 class="modal-title" id="duzenleModalLabel">IK Formu Düzenle</h5>
@@ -221,7 +290,7 @@
 <div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Sil","AdminIK")" method="post">
+            <form action="@Url.Action("Sil", "AdminIK")" method="post">
                 <input type="hidden" id="silId" name="Id">
                 <div class="modal-header">
                     <h5 class="modal-title" id="silModalLabel">Silme Onayı</h5>
@@ -241,7 +310,126 @@
 </div>
 
 @section Script {
+    <!-- Toastr için gerekli script ve CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
+        $(document).ready(function () {
+            // Toastr ayarları
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
+            let suAnSeciliIKId = null;
+            let suAnSeciliIKAd = null;
+            let suAnSeciliSatir = null;
+
+            const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
+            const $seciliSilBtn = $('#seciliSilBtn');
+            const $seciliBilgiDiv = $('#seciliKayitBilgi');
+
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#ikTablosu tr[data-ik-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button') && !$(e.target).is('a') && !$(e.target).is('span')) {
+                    const $radio = $(this).find('.ik-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
+                }
+            });
+
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.ik-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliIKId = $(this).val();
+                    suAnSeciliSatir = $(this).closest('tr');
+                    suAnSeciliIKAd = suAnSeciliSatir.data('ik-ad');
+
+                    // Tüm satırlardan active class'ı kaldır
+                    $('#ikTablosu tr').removeClass('table-active');
+                    // Seçili satıra active class ekle
+                    suAnSeciliSatir.addClass('table-active');
+
+                    // Bilgiyi güncelle
+                    $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${suAnSeciliIKAd}`);
+
+                    // Butonları aktif et
+                    $seciliDuzenleBtn.prop('disabled', false);
+                    $seciliSilBtn.prop('disabled', false);
+                }
+            });
+
+            // Üstteki "Düzenle" butonu
+            $seciliDuzenleBtn.click(function() {
+                if (suAnSeciliIKId) {
+                    duzenleGetir(suAnSeciliIKId);
+                } else {
+                    toastr.warning('Lütfen önce bir IK kaydı seçin.');
+                }
+            });
+
+            // Üstteki "Sil" butonu
+            $seciliSilBtn.click(function() {
+                if (suAnSeciliIKId) {
+                    $('#silId').val(suAnSeciliIKId);
+                    $('#silBaslik').text(suAnSeciliIKAd);
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    toastr.warning('Lütfen önce bir IK kaydı seçin.');
+                }
+            });
+
+            // Silme modalı kapandıktan sonra seçimi temizleme
+            $('#silModal').on('hidden.bs.modal', function() {
+                if (suAnSeciliIKId) {
+                    const $satir = $(`tr[data-ik-id="${suAnSeciliIKId}"]`);
+                    if ($satir.length === 0) {
+                        // Satır silinmiş, seçimi temizle
+                        clearSelection();
+                    } else {
+                        // İptal edildi, radio'yu temizle
+                        $(`.ik-sec-radio[value="${suAnSeciliIKId}"]`).prop('checked', false);
+                        clearSelection();
+                    }
+                }
+            });
+
+            // Seçimi temizleme yardımcı fonksiyonu
+            function clearSelection() {
+                $('#ikTablosu tr').removeClass('table-active');
+                suAnSeciliIKId = null;
+                suAnSeciliIKAd = null;
+                suAnSeciliSatir = null;
+                $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+
+                // Tüm butonları devre dışı bırak
+                $seciliDuzenleBtn.prop('disabled', true);
+                $seciliSilBtn.prop('disabled', true);
+            }
+
+            // Modal kapandığında formları temizle
+            document.getElementById('ekleModal').addEventListener('hidden.bs.modal', function () {
+                this.querySelector('form').reset();
+            });
+            document.getElementById('duzenleModal').addEventListener('hidden.bs.modal', function () {
+                this.querySelector('form').reset();
+                document.getElementById('mevcutDosya').textContent = '';
+            });
+
+            // Başarı mesajlarını 5 saniye sonra otomatik kapat
+            setTimeout(function() {
+                var alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function(alert) {
+                    var bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+
         function duzenleGetir(id) {
             fetch('@Url.Action("Getir", "AdminIK")' + '?id=' + id)
                 .then(response => {
@@ -257,6 +445,8 @@
                     document.getElementById('editEposta').value = data.eposta || '';
                     document.getElementById('editTC').value = data.tc || '';
                     document.getElementById('editMesaj').value = data.mesaj || '';
+
+                    // HATA DÜZELTİLDİ: mevcutDosja -> mevcutDosya
                     document.getElementById('mevcutDosya').textContent = data.dosyaYolu ? 'Mevcut dosya: ' + data.dosyaYolu : 'Henüz dosya yok';
 
                     var duzenleModal = new bootstrap.Modal(document.getElementById('duzenleModal'));
@@ -264,7 +454,7 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Kayıt getirilirken bir hata oluştu.');
+                    toastr.error('Kayıt getirilirken bir hata oluştu.');
                 });
         }
 
@@ -275,23 +465,5 @@
             var silModal = new bootstrap.Modal(document.getElementById('silModal'));
             silModal.show();
         }
-
-        // Modal kapandığında formları temizle
-        document.getElementById('ekleModal').addEventListener('hidden.bs.modal', function () {
-            this.querySelector('form').reset();
-        });
-        document.getElementById('duzenleModal').addEventListener('hidden.bs.modal', function () {
-            this.querySelector('form').reset();
-            document.getElementById('mevcutDosya').textContent = '';
-        });
-
-        // Başarı mesajlarını 5 saniye sonra otomatik kapat
-        setTimeout(function() {
-            var alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
-                var bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            });
-        }, 5000);
     </script>
 }

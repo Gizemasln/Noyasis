@@ -3,6 +3,64 @@
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
 
+<style>
+    /* Seçim satırı için cursor pointer */
+    tr[data-iletisim-id] {
+        cursor: pointer;
+    }
+
+    /* Seçili satır efekti */
+    tr.table-active {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+
+    /* İşlem butonları alanı */
+    .islem-butonlari-alani {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .secili-bilgi {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+
+        .secili-bilgi i {
+            font-size: 1rem;
+        }
+
+    /* Buton stilleri */
+    .aksiyon-btn {
+        transition: all 0.2s;
+    }
+
+        .aksiyon-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .aksiyon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    /* Buton grupları için */
+    .btn-group .btn {
+        margin: 0 2px;
+    }
+
+        .btn-group .btn:first-child {
+            margin-left: 0;
+        }
+
+        .btn-group .btn:last-child {
+            margin-right: 0;
+        }
+</style>
+
 <div class="row">
     <div class="col-md-12">
         <!-- Başarı/Hata Mesajları -->
@@ -21,17 +79,29 @@
             </div>
         }
 
-        <!-- EKLE BUTONU HER ZAMAN GÖRÜNÜR OLMASI İÇİN BAĞIMSIZ YERLEŞTİRİLDİ -->
-        <div class="mb-3">
-            <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                <i class="fas fa-plus"></i> Yeni İletişim Bilgisi Ekle
-            </button>
-        </div>
-
         <div class="card">
-            <div class="card-header">
-                <div class="card-title d-flex justify-content-between align-items-center">
-                    <span>İletişim Bilgileri</span>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">İletişim Bilgileri</h5>
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Seçili Kayıt Bilgisi ve İşlem Butonları -->
+                    <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                        <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                            <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-warning btn-sm" id="seciliDuzenleBtn" data-button-permission="duzenle" title="Seçili İletişim Bilgisini Düzenle" disabled style="margin-right:5px;">
+                                <i class="fas fa-edit"></i> 
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" id="seciliSilBtn" data-button-permission="sil" title="Seçili İletişim Bilgisini Sil" disabled>
+                                <i class="fas fa-trash"></i> 
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Yeni Ekle Butonu -->
+                    <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni İletişim Bilgisi Ekle
+                    </button>
                 </div>
             </div>
             <div class="card-body">
@@ -39,36 +109,35 @@
                     <table class="table table-bordered table-hover">
                         <thead class="table-head-bg-primary">
                             <tr>
+                                <th width="40">Seç</th>
                                 <th scope="col">#</th>
                                 <th scope="col">Firma Adı</th>
                                 <th scope="col">Adres</th>
                                 <th scope="col">Telefon 1</th>
                                 <th scope="col">Email 1</th>
                                 <th scope="col">Eklenme Tarihi</th>
-                                <th scope="col">İşlemler</th>
+                                <!-- İşlemler sütunu kaldırıldı -->
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="iletisimTablosu">
                             @if (ViewBag.IletisimList != null && ViewBag.IletisimList.Count > 0)
                             {
                                 var counter = 1;
                                 foreach (var item in ViewBag.IletisimList)
                                 {
-                                    <tr>
+                                    <tr data-iletisim-id="@item.Id" data-iletisim-adi="@item.Adi" class="iletisim-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input iletisim-sec-radio" type="radio" name="seciliIletisimRadio" value="@item.Id" id="secim_@item.Id">
+                                            </div>
+                                        </td>
                                         <td>@counter</td>
-                                        <td>@item.Adi</td>
+                                        <td><strong>@item.Adi</strong></td>
                                         <td>@(item.Adres != null && item.Adres.Length > 30 ? item.Adres.Substring(0, 30) + "..." : item.Adres)</td>
                                         <td>@item.Telefon1</td>
                                         <td>@item.Email1</td>
                                         <td>@item.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm")</td>
-                                        <td>
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id)">
-                                                <i class="fas fa-edit"></i> 
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.Adi')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
+                                        <!-- İşlemler sütunundaki butonlar KALDIRILDI -->
                                     </tr>
                                     counter++;
                                 }
@@ -76,7 +145,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="7" class="text-center">Henüz iletişim bilgisi eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Bilgi Ekle</a></td>
+                                    <td colspan="8" class="text-center">Henüz iletişim bilgisi eklenmemiş. <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Bilgi Ekle</a></td>
                                 </tr>
                             }
                         </tbody>
@@ -222,7 +291,7 @@
 <div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
-            <form action ="@Url.Action("Guncelle", "AdminIletisimBilgileri")" method="post" id="duzenleForm">
+            <form action="@Url.Action("Guncelle", "AdminIletisimBilgileri")" method="post" id="duzenleForm">
                 <input type="hidden" id="editId" name="Id">
                 <div class="modal-header">
                     <h5 class="modal-title" id="duzenleModalLabel">İletişim Bilgisi Düzenle</h5>
@@ -373,7 +442,125 @@
 </div>
 
 @section Script {
+    <!-- Toastr için gerekli script ve CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
+        $(document).ready(function () {
+            // Toastr ayarları
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
+            let suAnSeciliIletisimId = null;
+            let suAnSeciliIletisimAdi = null;
+            let suAnSeciliSatir = null;
+
+            const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
+            const $seciliSilBtn = $('#seciliSilBtn');
+            const $seciliBilgiDiv = $('#seciliKayitBilgi');
+
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#iletisimTablosu tr[data-iletisim-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button') && !$(e.target).is('a')) {
+                    const $radio = $(this).find('.iletisim-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
+                }
+            });
+
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.iletisim-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliIletisimId = $(this).val();
+                    suAnSeciliSatir = $(this).closest('tr');
+                    suAnSeciliIletisimAdi = suAnSeciliSatir.data('iletisim-adi');
+
+                    // Tüm satırlardan active class'ı kaldır
+                    $('#iletisimTablosu tr').removeClass('table-active');
+                    // Seçili satıra active class ekle
+                    suAnSeciliSatir.addClass('table-active');
+
+                    // Bilgiyi güncelle
+                    $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${suAnSeciliIletisimAdi}`);
+
+                    // Butonları aktif et
+                    $seciliDuzenleBtn.prop('disabled', false);
+                    $seciliSilBtn.prop('disabled', false);
+                }
+            });
+
+            // Üstteki "Düzenle" butonu
+            $seciliDuzenleBtn.click(function() {
+                if (suAnSeciliIletisimId) {
+                    duzenleGetir(suAnSeciliIletisimId);
+                } else {
+                    toastr.warning('Lütfen önce bir iletişim bilgisi seçin.');
+                }
+            });
+
+            // Üstteki "Sil" butonu
+            $seciliSilBtn.click(function() {
+                if (suAnSeciliIletisimId) {
+                    $('#silId').val(suAnSeciliIletisimId);
+                    $('#silAdi').text(suAnSeciliIletisimAdi);
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    toastr.warning('Lütfen önce bir iletişim bilgisi seçin.');
+                }
+            });
+
+            // Silme modalı kapandıktan sonra seçimi temizleme
+            $('#silModal').on('hidden.bs.modal', function() {
+                if (suAnSeciliIletisimId) {
+                    const $satir = $(`tr[data-iletisim-id="${suAnSeciliIletisimId}"]`);
+                    if ($satir.length === 0) {
+                        // Satır silinmiş, seçimi temizle
+                        clearSelection();
+                    } else {
+                        // İptal edildi, radio'yu temizle
+                        $(`.iletisim-sec-radio[value="${suAnSeciliIletisimId}"]`).prop('checked', false);
+                        clearSelection();
+                    }
+                }
+            });
+
+            // Seçimi temizleme yardımcı fonksiyonu
+            function clearSelection() {
+                $('#iletisimTablosu tr').removeClass('table-active');
+                suAnSeciliIletisimId = null;
+                suAnSeciliIletisimAdi = null;
+                suAnSeciliSatir = null;
+                $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+
+                // Tüm butonları devre dışı bırak
+                $seciliDuzenleBtn.prop('disabled', true);
+                $seciliSilBtn.prop('disabled', true);
+            }
+
+            // Modal kapandığında formları temizle
+            document.getElementById('ekleModal').addEventListener('hidden.bs.modal', function () {
+                this.querySelector('form').reset();
+            });
+            document.getElementById('duzenleModal').addEventListener('hidden.bs.modal', function () {
+                this.querySelector('form').reset();
+            });
+
+            // Başarı mesajlarını 5 saniye sonra otomatik kapat
+            setTimeout(function() {
+                var alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function(alert) {
+                    var bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+
         function duzenleGetir(id) {
             fetch('@Url.Action("Getir", "AdminIletisimBilgileri")' + '?id=' + id)
                 .then(response => {
@@ -408,7 +595,7 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Kayıt getirilirken bir hata oluştu.');
+                    toastr.error('Kayıt getirilirken bir hata oluştu.');
                 });
         }
 
@@ -419,22 +606,5 @@
             var silModal = new bootstrap.Modal(document.getElementById('silModal'));
             silModal.show();
         }
-
-        // Modal kapandığında formları temizle
-        document.getElementById('ekleModal').addEventListener('hidden.bs.modal', function () {
-            this.querySelector('form').reset();
-        });
-        document.getElementById('duzenleModal').addEventListener('hidden.bs.modal', function () {
-            this.querySelector('form').reset();
-        });
-
-        // Başarı mesajlarını 5 saniye sonra otomatik kapat
-        setTimeout(function() {
-            var alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
-                var bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            });
-        }, 5000);
     </script>
 }

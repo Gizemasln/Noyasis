@@ -6,6 +6,150 @@
 }
 
 <style>
+    /* Filtreleme stilleri - Diğer sayfalarla uyumlu */
+    .card-header .flex-wrap {
+        gap: 15px;
+    }
+
+    .card-header .gap-2 {
+        gap: 0.5rem !important;
+    }
+
+    .search-box {
+        position: relative;
+    }
+
+        .search-box .input-group {
+            transition: all 0.3s ease;
+            width: 200px;
+        }
+
+            .search-box .input-group:focus-within {
+                width: 250px;
+            }
+
+        .search-box .form-control:focus {
+            background-color: #fff !important;
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+        }
+
+    #nedenAramaTemizle {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: transparent;
+        z-index: 5;
+        color: #6c757d;
+        padding: 0.25rem 0.5rem;
+    }
+
+        #nedenAramaTemizle:hover {
+            color: #dc3545;
+        }
+
+    .dropdown-menu {
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+        border: none;
+    }
+
+        .dropdown-menu .form-control-sm,
+        .dropdown-menu .form-select-sm {
+            border: 1px solid #dee2e6;
+        }
+
+            .dropdown-menu .form-control-sm:focus,
+            .dropdown-menu .form-select-sm:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+            }
+
+    #nedenFiltreTemizleBtn {
+        transition: all 0.3s ease;
+    }
+
+        #nedenFiltreTemizleBtn:hover {
+            transform: scale(1.1);
+        }
+
+    /* Aktif filtre butonu stilleri */
+    .btn-primary .fas {
+        color: white;
+    }
+
+    /* Filtre etiketleri */
+    #aktifFiltreler {
+        background-color: #f8f9fa;
+        border-radius: 0.35rem;
+        padding: 10px;
+        border: 1px solid #e3e6f0;
+        margin-top: 15px !important;
+    }
+
+        #aktifFiltreler .badge {
+            font-size: 0.85rem;
+            padding: 0.5rem 0.75rem;
+        }
+
+    /* Tablo satırları için geçiş efekti */
+    #nedenTablosu tr {
+        transition: all 0.3s ease;
+    }
+
+        #nedenTablosu tr[style*="display: none"] {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+    /* Responsive düzenlemeler */
+    media (max-width: 768px) {
+        .card-header .d-flex
+
+    {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+
+    .card-header .gap-2 {
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .search-box {
+        width: 100% !important;
+        margin-bottom: 5px;
+    }
+
+        .search-box .input-group {
+            width: 100% !important;
+        }
+
+            .search-box .input-group:focus-within {
+                width: 100% !important;
+            }
+
+    .card-header .dropdown {
+        flex: 1;
+    }
+
+    .islem-butonlari-alani {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    #aktifFiltreler .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 10px;
+    }
+
+    #filtreEtiketleri {
+        flex-wrap: wrap;
+    }
+
+    }
     .table-actions {
         white-space: nowrap;
         width: 120px;
@@ -19,6 +163,49 @@
         background-color: #f8f9fa;
         border-bottom: 2px solid #dee2e6;
     }
+
+    /* Seçim satırı için cursor pointer */
+    tr[data-neden-id] {
+        cursor: pointer;
+    }
+
+    /* Seçili satır efekti */
+    tr.table-active {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+
+    /* İşlem butonları alanı */
+    .islem-butonlari-alani {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .secili-bilgi {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+
+        .secili-bilgi i {
+            font-size: 1rem;
+        }
+
+    /* Buton stilleri */
+    .aksiyon-btn {
+        transition: all 0.2s;
+    }
+
+        .aksiyon-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .aksiyon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 </style>
 
 <div class="row">
@@ -40,11 +227,111 @@
 
         <div class="card">
             <div class="card-header">
-                <div class="card-title d-flex justify-content-between align-items-center">
-                    <span>Nedenler</span>
-                    <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                        <i class="fas fa-plus"></i> Yeni Neden Ekle
-                    </button>
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <h5 class="mb-0">Nedenler</h5>
+
+                    <!-- FİLTRELEME ALANI - Diğer sayfalarla uyumlu -->
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Arama Kutusu -->
+                        <div class="search-box">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-light border-0">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" id="nedenArama" class="form-control form-control-sm border-0 bg-light"
+                                       placeholder="Neden ara..." style="box-shadow: none;">
+                                <button class="btn btn-outline-secondary btn-sm" type="button" id="nedenAramaTemizle" style="display:none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tarih Filtreleri -->
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" id="tarihFiltreBtn">
+                                <i class="fas fa-calendar-alt me-1"></i> Tarih
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 300px;">
+                                <div class="mb-2">
+                                    <label class="form-label small">Eklenme Tarihi Aralığı</label>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small">Başlangıç</label>
+                                    <input type="date" id="filtreBaslangicTarih" class="form-control form-control-sm">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small">Bitiş</label>
+                                    <input type="date" id="filtreBitisTarih" class="form-control form-control-sm">
+                                </div>
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="nedenTarihFiltreTemizle()">Temizle</button>
+                                    <button class="btn btn-sm btn-primary" onclick="nedenTarihFiltreUygula()">Uygula</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sıralama -->
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" id="siralamaFiltreBtn">
+                                <i class="fas fa-sort-amount-down me-1"></i> Sıralama
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 200px;">
+                                <div class="mb-2">
+                                    <select class="form-select form-select-sm" id="siralamaFiltre">
+                                        <option value="yeni">En Yeni → En Eski</option>
+                                        <option value="eski">En Eski → En Yeni</option>
+                                        <option value="adi_az">İsim (A-Z)</option>
+                                        <option value="adi_za">İsim (Z-A)</option>
+                                    </select>
+                                </div>
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <button class="btn btn-sm btn-primary" onclick="nedenSiralamaUygula()">Uygula</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filtre Temizleme Butonu -->
+                        <button class="btn btn-sm btn-outline-danger" onclick="nedenTumFiltreleriTemizle()"
+                                title="Tüm filtreleri temizle" id="nedenFiltreTemizleBtn" style="display: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <!-- Seçili Kayıt Bilgisi ve İşlem Butonları (mevcut kod) -->
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                            <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                                <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                            </div>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-warning aksiyon-btn" id="seciliDuzenleBtn" title="Seçili Nedeni Düzenle" data-button-permission="duzenle" disabled>
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger aksiyon-btn" id="seciliSilBtn" title="Seçili Nedeni Sil" data-button-permission="sil" disabled>
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Yeni Ekle Butonu -->
+                        <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                            <i class="fas fa-plus"></i> Yeni Neden Ekle
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Aktif Filtreler -->
+                <div class="row mt-3" id="aktifFiltreler" style="display: none;">
+                    <div class="col-12">
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-light text-dark me-2 p-2">
+                                <i class="fas fa-filter me-1"></i>Aktif Filtreler:
+                            </span>
+                            <div id="filtreEtiketleri" class="d-flex flex-wrap gap-2"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
@@ -52,32 +339,30 @@
                     <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
+                                <th width="40">Seç</th>
                                 <th width="50">#</th>
                                 <th>Neden Adı</th>
                                 <th>Eklenme Tarihi</th>
                                 <th>Son Güncelleme</th>
-                                <th width="120" class="text-center">İşlemler</th>
+                                <!-- İşlemler sütunu kaldırıldı -->
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="nedenTablosu">
                             @if (ViewBag.Nedenler != null && ((List<Nedenler>)ViewBag.Nedenler).Count > 0)
                             {
                                 var counter = 1;
                                 foreach (var item in (List<Nedenler>)ViewBag.Nedenler)
                                 {
-                                    <tr>
+                                    <tr data-neden-id="@item.Id" data-neden-adi="@item.Adi" class="neden-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input neden-sec-radio" type="radio" name="seciliNedenRadio" value="@item.Id" id="secim_@item.Id">
+                                            </div>
+                                        </td>
                                         <td>@counter</td>
                                         <td><strong>@item.Adi</strong></td>
                                         <td>@item.EklenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>@item.GuncellenmeTarihi.ToString("dd.MM.yyyy HH:mm")</td>
-                                        <td class="table-actions text-center">
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id)">
-                                                <i class="fas fa-edit"></i> 
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.Adi.Replace("'", "\\'")')">
-                                                <i class="fas fa-trash"></i> 
-                                            </button>
-                                        </td>
                                     </tr>
                                     counter++;
                                 }
@@ -85,7 +370,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="5" class="text-center">
+                                    <td colspan="6" class="text-center">
                                         <div class="py-4">
                                             <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                             <p class="text-muted">Henüz neden eklenmemiş.</p>
@@ -135,7 +420,7 @@
 <div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Guncelle","AdminNedenler")" method="post" id="duzenleForm">
+            <form action="@Url.Action("Guncelle", "AdminNedenler")" method="post" id="duzenleForm">
                 @Html.AntiForgeryToken()
                 <input type="hidden" id="editId" name="Id">
                 <div class="modal-header">
@@ -161,7 +446,7 @@
 <div class="modal fade" id="silModal" tabindex="-1" aria-labelledby="silModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="@Url.Action("Sil","AdminNedenler")" method="post">
+            <form action="@Url.Action("Sil", "AdminNedenler")" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" id="silId" name="Id">
                 <div class="modal-header">
@@ -182,82 +467,465 @@
 </div>
 
 @section Script {
+    <!-- Toastr için gerekli script ve CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
-        // Silme onay fonksiyonu
-        function silOnay(id, adi) {
-            $('#silId').val(id);
-            $('#silAdi').text(adi);
-            new bootstrap.Modal(document.getElementById('silModal')).show();
-        }
+        $(document).ready(function() {
+                    // ============= NEDEN FİLTRELEME SİSTEMİ =============
+        let nedenAktifFiltreler = {
+            arama: '',
+            baslangicTarih: null,
+            bitisTarih: null,
+            siralama: 'yeni'
+        };
 
-        // Düzenleme fonksiyonu (API'den veri çeken)
-        async function duzenleGetir(id) {
-            try {
-                const btn = event.target;
-                const originalHtml = btn.innerHTML;
+        // Arama fonksiyonu
+        function nedenAramaFiltrele() {
+            const aramaInput = document.getElementById('nedenArama');
+            const temizleBtn = document.getElementById('nedenAramaTemizle');
 
-                // Loading state
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Yükleniyor...';
-                btn.disabled = true;
+            if (aramaInput && temizleBtn) {
+                const kelime = aramaInput.value.trim().toLowerCase();
 
-                const response = await fetch('@Url.Action("Getir", "AdminNedenler")?id=' + id);
+                // Temizle butonunu göster/gizle
+                temizleBtn.style.display = kelime ? 'block' : 'none';
 
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => null);
-                    throw new Error(errorData?.error || `HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-
-                // Modalı doldur
-                document.getElementById('editId').value = data.id;
-                document.getElementById('editAdi').value = data.adi;
-
-                // Modalı göster
-                new bootstrap.Modal(document.getElementById('duzenleModal')).show();
-
-            } catch (error) {
-                console.error('Hata:', error);
-                alert('Neden bilgileri yüklenirken hata oluştu: ' + error.message);
-            } finally {
-                // Butonu eski haline getir
-                btn.innerHTML = originalHtml;
-                btn.disabled = false;
+                nedenAktifFiltreler.arama = kelime;
+                nedenFiltreEtiketleriniGoster();
+                nedenFiltreleVeSirala();
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            // Form validasyonları
-            const forms = document.querySelectorAll('#ekleForm, #duzenleForm');
-            forms.forEach(form => {
-                form.addEventListener('submit', function (e) {
-                    const adiInput = this.querySelector('input[name="Adi"]');
-                    if (!adiInput.value.trim()) {
-                        e.preventDefault();
-                        alert('Neden adı gereklidir.');
-                        adiInput.focus();
+        // Arama inputuna event listener ekle
+        const aramaInput = document.getElementById('nedenArama');
+        const temizleBtn = document.getElementById('nedenAramaTemizle');
+
+        if (aramaInput) {
+            aramaInput.addEventListener('input', nedenAramaFiltrele);
+            aramaInput.addEventListener('keyup', nedenAramaFiltrele);
+        }
+
+        if (temizleBtn) {
+            temizleBtn.addEventListener('click', function () {
+                aramaInput.value = '';
+                nedenAramaFiltrele();
+                aramaInput.focus();
+            });
+        }
+
+        // Tarih Filtresi Uygula
+        window.nedenTarihFiltreUygula = function() {
+            const baslangicInput = document.getElementById('filtreBaslangicTarih');
+            const bitisInput = document.getElementById('filtreBitisTarih');
+
+            nedenAktifFiltreler.baslangicTarih = baslangicInput.value || null;
+            nedenAktifFiltreler.bitisTarih = bitisInput.value || null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('tarihFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            nedenFiltreEtiketleriniGoster();
+            nedenFiltreleVeSirala();
+        };
+
+        // Tarih Filtresi Temizle
+        window.nedenTarihFiltreTemizle = function() {
+            document.getElementById('filtreBaslangicTarih').value = '';
+            document.getElementById('filtreBitisTarih').value = '';
+            nedenAktifFiltreler.baslangicTarih = null;
+            nedenAktifFiltreler.bitisTarih = null;
+            nedenFiltreEtiketleriniGoster();
+            nedenFiltreleVeSirala();
+        };
+
+        // Sıralama Uygula
+        window.nedenSiralamaUygula = function() {
+            const siralama = document.getElementById('siralamaFiltre').value;
+            nedenAktifFiltreler.siralama = siralama;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('siralamaFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            nedenFiltreEtiketleriniGoster();
+            nedenFiltreleVeSirala();
+        };
+
+        // Tüm Filtreleri Temizle
+        window.nedenTumFiltreleriTemizle = function() {
+            // Arama kutusunu temizle
+            document.getElementById('nedenArama').value = '';
+            document.getElementById('nedenAramaTemizle').style.display = 'none';
+
+            // Tarih filtrelerini temizle
+            document.getElementById('filtreBaslangicTarih').value = '';
+            document.getElementById('filtreBitisTarih').value = '';
+
+            // Sıralamayı varsayılana getir
+            document.getElementById('siralamaFiltre').value = 'yeni';
+
+            // Buton stillerini sıfırla
+            document.getElementById('tarihFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('siralamaFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+            // Filtre değişkenlerini sıfırla
+            nedenAktifFiltreler = {
+                arama: '',
+                baslangicTarih: null,
+                bitisTarih: null,
+                siralama: 'yeni'
+            };
+
+            // Filtre etiketlerini gizle
+            document.getElementById('aktifFiltreler').style.display = 'none';
+            document.getElementById('nedenFiltreTemizleBtn').style.display = 'none';
+
+            // Filtrelemeyi yeniden uygula
+            nedenFiltreleVeSirala();
+        };
+
+        // Filtre etiketlerini göster
+        function nedenFiltreEtiketleriniGoster() {
+            const etiketler = [];
+            const filtreTemizleBtn = document.getElementById('nedenFiltreTemizleBtn');
+
+            if (nedenAktifFiltreler.arama) {
+                etiketler.push(`<span class="badge bg-primary">Arama: ${nedenAktifFiltreler.arama}</span>`);
+            }
+
+            if (nedenAktifFiltreler.baslangicTarih) {
+                etiketler.push(`<span class="badge bg-primary">Başlangıç: ${formatNedenDate(nedenAktifFiltreler.baslangicTarih)}</span>`);
+            }
+            if (nedenAktifFiltreler.bitisTarih) {
+                etiketler.push(`<span class="badge bg-primary">Bitiş: ${formatNedenDate(nedenAktifFiltreler.bitisTarih)}</span>`);
+            }
+
+            if (nedenAktifFiltreler.siralama !== 'yeni') {
+                const siralamaMetin = {
+                    'eski': 'En Eski',
+                    'adi_az': 'İsim (A-Z)',
+                    'adi_za': 'İsim (Z-A)'
+                };
+                etiketler.push(`<span class="badge bg-info">Sıralama: ${siralamaMetin[nedenAktifFiltreler.siralama]}</span>`);
+            }
+
+            if (etiketler.length > 0) {
+                document.getElementById('filtreEtiketleri').innerHTML = etiketler.join(' ');
+                document.getElementById('aktifFiltreler').style.display = 'block';
+                filtreTemizleBtn.style.display = 'inline-block';
+
+                // Buton stillerini güncelle
+                document.getElementById('tarihFiltreBtn').className = nedenAktifFiltreler.baslangicTarih || nedenAktifFiltreler.bitisTarih
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            } else {
+                document.getElementById('aktifFiltreler').style.display = 'none';
+                filtreTemizleBtn.style.display = 'none';
+            }
+        }
+
+        // Tarih formatlama
+        function formatNedenDate(dateStr) {
+            if (!dateStr) return '';
+            const [yil, ay, gun] = dateStr.split('-');
+            return `${gun}.${ay}.${yil}`;
+        }
+
+        // Tarih parse (dd.MM.yyyy HH:mm formatı)
+        function nedenParseDate(dateStr) {
+            if (!dateStr) return null;
+            const [gun, ay, yilSaat] = dateStr.split('.');
+            const [yil, saat] = yilSaat.split(' ');
+            return new Date(`${yil}-${ay}-${gun}T${saat}`);
+        }
+
+        // Ana filtreleme ve sıralama fonksiyonu
+        function nedenFiltreleVeSirala() {
+            const tbody = document.getElementById('nedenTablosu');
+            if (!tbody) return;
+
+            const satirlar = Array.from(tbody.querySelectorAll('tr.neden-satiri'));
+
+            if (satirlar.length === 0) return;
+
+            // Filtreleme
+            let filtrelenmisSatirlar = satirlar.filter(satir => {
+                let goster = true;
+
+                // Arama filtresi (Neden Adı - 3. sütun)
+                if (nedenAktifFiltreler.arama) {
+                    const adi = satir.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
+                    if (!adi.includes(nedenAktifFiltreler.arama.toLowerCase())) {
+                        goster = false;
                     }
-                });
+                }
+
+                // Tarih filtresi (4. sütun - Eklenme Tarihi)
+                if (goster && (nedenAktifFiltreler.baslangicTarih || nedenAktifFiltreler.bitisTarih)) {
+                    const tarihTd = satir.querySelector('td:nth-child(4)')?.textContent.trim();
+                    if (tarihTd) {
+                        const tarih = nedenParseDate(tarihTd);
+
+                        if (nedenAktifFiltreler.baslangicTarih) {
+                            const filtreBaslangic = new Date(nedenAktifFiltreler.baslangicTarih + 'T00:00:00');
+                            if (tarih < filtreBaslangic) {
+                                goster = false;
+                            }
+                        }
+
+                        if (goster && nedenAktifFiltreler.bitisTarih) {
+                            const filtreBitis = new Date(nedenAktifFiltreler.bitisTarih + 'T23:59:59');
+                            if (tarih > filtreBitis) {
+                                goster = false;
+                            }
+                        }
+                    }
+                }
+
+                return goster;
             });
 
-            // Modal kapandığında formları temizle
-            ['ekleModal', 'duzenleModal'].forEach(modalId => {
-                const modalEl = document.getElementById(modalId);
-                modalEl.addEventListener('hidden.bs.modal', function () {
-                    this.querySelector('form')?.reset();
-                });
+            // Sıralama
+            switch(nedenAktifFiltreler.siralama) {
+                case 'yeni':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const tarihA = nedenParseDate(a.querySelector('td:nth-child(4)')?.textContent.trim() || '');
+                        const tarihB = nedenParseDate(b.querySelector('td:nth-child(4)')?.textContent.trim() || '');
+                        return (tarihB || 0) - (tarihA || 0);
+                    });
+                    break;
+
+                case 'eski':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const tarihA = nedenParseDate(a.querySelector('td:nth-child(4)')?.textContent.trim() || '');
+                        const tarihB = nedenParseDate(b.querySelector('td:nth-child(4)')?.textContent.trim() || '');
+                        return (tarihA || 0) - (tarihB || 0);
+                    });
+                    break;
+
+                case 'adi_az':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const adiA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        const adiB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        return adiA.localeCompare(adiB, 'tr');
+                    });
+                    break;
+
+                case 'adi_za':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const adiA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        const adiB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        return adiB.localeCompare(adiA, 'tr');
+                    });
+                    break;
+            }
+
+            // Tüm satırları gizle
+            satirlar.forEach(satir => {
+                satir.style.display = 'none';
             });
 
-            // Alert 5 saniye sonra otomatik kapan
-            setTimeout(() => {
-                document.querySelectorAll('.alert').forEach(alert => {
-                    bootstrap.Alert.getOrCreateInstance(alert).close();
+            // Filtrelenmiş satırları göster ve tbody'ye yeniden ekle (sıralama için)
+            filtrelenmisSatirlar.forEach((satir, index) => {
+                satir.style.display = '';
+                // Sıra numarasını güncelle (2. sütun)
+                const siraHucresi = satir.querySelector('td:nth-child(2)');
+                if (siraHucresi) {
+                    siraHucresi.textContent = index + 1;
+                }
+                tbody.appendChild(satir);
+            });
+
+            // "Gösterilecek kayıt yok" mesajı
+            let bosSatir = tbody.querySelector('.filtre-bos-satir');
+
+            if (filtrelenmisSatirlar.length === 0) {
+                if (!bosSatir) {
+                    bosSatir = document.createElement('tr');
+                    bosSatir.className = 'filtre-bos-satir';
+                    bosSatir.innerHTML = '<td colspan="6" class="text-center py-5"><i class="fas fa-filter fa-3x text-muted mb-3"></i><p class="text-muted">Filtreleme kriterlerine uygun neden bulunamadı.</p><button class="btn btn-sm btn-outline-secondary" onclick="nedenTumFiltreleriTemizle()">Filtreleri Temizle</button></td>';
+                    tbody.appendChild(bosSatir);
+                }
+            } else if (bosSatir) {
+                bosSatir.remove();
+            }
+        }
+
+        // Enter tuşu ile filtreleme
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const aktifElement = document.activeElement;
+                if (aktifElement.id === 'nedenArama' ||
+                    aktifElement.id === 'filtreBaslangicTarih' ||
+                    aktifElement.id === 'filtreBitisTarih') {
+                    e.preventDefault();
+                    nedenFiltreleVeSirala();
+                }
+            }
+        });
+            let suAnSeciliNedenId = null;
+            const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
+            const $seciliSilBtn = $('#seciliSilBtn');
+            const $seciliBilgiDiv = $('#seciliKayitBilgi');
+
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
+
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#nedenTablosu tr[data-neden-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button')) {
+                    const $radio = $(this).find('.neden-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
+                }
+            });
+
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.neden-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliNedenId = $(this).val();
+                    const $seciliSatir = $(this).closest('tr');
+                    const nedenAdi = $seciliSatir.data('neden-adi');
+
+                    // Tüm satırlardan active class'ı kaldır
+                    $('#nedenTablosu tr').removeClass('table-active');
+                    // Seçili satıra active class ekle
+                    $seciliSatir.addClass('table-active');
+
+                    // Bilgiyi güncelle
+                    $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${nedenAdi}`);
+
+                    // Butonları aktif et
+                    $seciliDuzenleBtn.prop('disabled', false);
+                    $seciliSilBtn.prop('disabled', false);
+                }
+            });
+
+            // Üstteki "Düzenle" butonu
+            $seciliDuzenleBtn.click(function() {
+                if (suAnSeciliNedenId) {
+                    duzenleGetir(suAnSeciliNedenId);
+                } else {
+                    toastr.warning('Lütfen önce bir neden seçin.');
+                }
+            });
+
+            // Üstteki "Sil" butonu
+            $seciliSilBtn.click(function() {
+                if (suAnSeciliNedenId) {
+                    const $seciliSatir = $(`tr[data-neden-id="${suAnSeciliNedenId}"]`);
+                    const nedenAdi = $seciliSatir.data('neden-adi');
+
+                    $('#silId').val(suAnSeciliNedenId);
+                    $('#silAdi').text(nedenAdi);
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    toastr.warning('Lütfen önce bir neden seçin.');
+                }
+            });
+
+            // Silme modalı kapandıktan sonra seçimi temizleme
+            $('#silModal').on('hidden.bs.modal', function() {
+                if (suAnSeciliNedenId) {
+                    const $satir = $(`tr[data-neden-id="${suAnSeciliNedenId}"]`);
+                    if ($satir.length === 0) {
+                        // Satır silinmiş, seçimi temizle
+                        suAnSeciliNedenId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    } else {
+                        // İptal edildi, radio'yu temizle
+                        $(`.neden-sec-radio[value="${suAnSeciliNedenId}"]`).prop('checked', false);
+                        $('#nedenTablosu tr').removeClass('table-active');
+                        suAnSeciliNedenId = null;
+                        $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $seciliDuzenleBtn.prop('disabled', true);
+                        $seciliSilBtn.prop('disabled', true);
+                    }
+                }
+            });
+
+            // ============= MEVCUT FONKSİYONLAR (AYNEN KORUNDU) =============
+
+            // Silme onay fonksiyonu
+            window.silOnay = function(id, adi) {
+                $('#silId').val(id);
+                $('#silAdi').text(adi);
+                new bootstrap.Modal(document.getElementById('silModal')).show();
+            };
+
+            // Düzenleme fonksiyonu (API'den veri çeken)
+            window.duzenleGetir = async function(id) {
+                try {
+                    const btn = event.target;
+                    const originalHtml = btn.innerHTML;
+
+                    // Loading state
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    btn.disabled = true;
+
+                    const response = await fetch('@Url.Action("Getir", "AdminNedenler")?id=' + id);
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => null);
+                        throw new Error(errorData?.error || `HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+
+                    // Modalı doldur
+                    document.getElementById('editId').value = data.id;
+                    document.getElementById('editAdi').value = data.adi;
+
+                    // Modalı göster
+                    new bootstrap.Modal(document.getElementById('duzenleModal')).show();
+
+                } catch (error) {
+                    console.error('Hata:', error);
+                    toastr.error('Neden bilgileri yüklenirken hata oluştu: ' + error.message);
+                } finally {
+                    // Butonu eski haline getir
+                    btn.innerHTML = originalHtml;
+                    btn.disabled = false;
+                }
+            };
+
+            document.addEventListener('DOMContentLoaded', function () {
+                // Form validasyonları
+                const forms = document.querySelectorAll('#ekleForm, #duzenleForm');
+                forms.forEach(form => {
+                    form.addEventListener('submit', function (e) {
+                        const adiInput = this.querySelector('input[name="Adi"]');
+                        if (!adiInput.value.trim()) {
+                            e.preventDefault();
+                            toastr.error('Neden adı gereklidir.');
+                            adiInput.focus();
+                        }
+                    });
                 });
-            }, 5000);
+
+                // Modal kapandığında formları temizle
+                ['ekleModal', 'duzenleModal'].forEach(modalId => {
+                    const modalEl = document.getElementById(modalId);
+                    modalEl.addEventListener('hidden.bs.modal', function () {
+                        this.querySelector('form')?.reset();
+                    });
+                });
+
+                // Alert 5 saniye sonra otomatik kapan
+                setTimeout(() => {
+                    document.querySelectorAll('.alert').forEach(alert => {
+                        bootstrap.Alert.getOrCreateInstance(alert).close();
+                    });
+                }, 5000);
+            });
         });
     </script>
 }

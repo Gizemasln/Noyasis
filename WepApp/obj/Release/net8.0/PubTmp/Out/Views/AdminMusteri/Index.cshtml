@@ -4,530 +4,10 @@
     ViewData["Title"] = "Müşteri Yönetimi";
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+<link href="/WebAdminTheme/assets/css/adminmusteri.css" rel="stylesheet" />
 
-<style>
-    /* Şifre yenile butonu için özel stil */
-    #sifreYenileBtn {
-        transition: all 0.3s ease;
-    }
 
-        #sifreYenileBtn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
-        }
-
-        #sifreYenileBtn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-    /* Şifre input alanı için */
-    #editSifre {
-        transition: all 0.3s ease;
-    }
-
-        #editSifre[type="text"] {
-            background-color: #f8f9fa;
-            font-weight: 500;
-            letter-spacing: 2px;
-        }
-    /* Sözleşme Dosyaları Stilleri */ .sozlesme-dosya-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 15px;
-        margin-top: 15px;
-    }
-
-    .sozlesme-dosya-item {
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        padding: 15px;
-        background: white;
-        transition: all 0.3s ease;
-        position: relative;
-    }
-
-        .sozlesme-dosya-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-    .sozlesme-dosya-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #eee;
-    }
-
-    .sozlesme-dosya-no {
-        font-weight: bold;
-        color: #2c3e50;
-        font-size: 0.9rem;
-    }
-
-    .sozlesme-dosya-badge {
-        font-size: 0.7rem;
-        padding: 3px 8px;
-    }
-
-    .sozlesme-dosya-bilgi {
-        font-size: 0.8rem;
-        color: #6c757d;
-        margin-bottom: 10px;
-    }
-
-    .sozlesme-dosyalar-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-        margin-top: 10px;
-    }
-
-    .sozlesme-dosya-tipi {
-        text-align: center;
-        padding: 8px;
-        border-radius: 6px;
-        background: #f8f9fa;
-        transition: all 0.2s;
-    }
-
-        .sozlesme-dosya-tipi:hover {
-            background: #e9ecef;
-        }
-
-    .sozlesme-dosya-icon {
-        font-size: 20px;
-        margin-bottom: 5px;
-        display: block;
-    }
-
-    .sozlesme-dosya-adi {
-        font-size: 0.7rem;
-        font-weight: 500;
-        margin-bottom: 5px;
-    }
-
-    .sozlesme-dosya-actions {
-        display: flex;
-        gap: 5px;
-        justify-content: center;
-    }
-
-    .sozlesme-dosya-btn {
-        padding: 3px 8px;
-        font-size: 0.7rem;
-        border-radius: 4px;
-        transition: all 0.2s;
-    }
-
-        .sozlesme-dosya-btn:hover {
-            transform: translateY(-1px);
-        }
-
-    .sozlesme-dosya-btn-goster {
-        background: #007bff;
-        color: white;
-        border: none;
-    }
-
-    .sozlesme-dosya-btn-indir {
-        background: #28a745;
-        color: white;
-        border: none;
-    }
-
-    .sozlesme-dosya-btn-goster:hover {
-        background: #0056b3;
-    }
-
-    .sozlesme-dosya-btn-indir:hover {
-        background: #1e7e34;
-    }
-
-    .sozlesme-dosya-yok {
-        text-align: center;
-        padding: 20px;
-        color: #6c757d;
-        font-style: italic;
-        background: #f8f9fa;
-        border-radius: 6px;
-        grid-column: 1 / -1;
-    }
-    /* Büyük Göster Modal için */
-
-    .sozlesme-dosya-modal-img {
-        max-width: 100%;
-        max-height: 80vh;
-        object-fit: contain;
-        border-radius: 8px;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-    }
-
-    .sozlesme-dosya-modal-actions {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin-top: 20px;
-    }
-
-    media
-
-    (max-width: 768px) {
-        .sozlesme-dosya-container
-
-    {
-        grid-template-columns: 1fr;
-    }
-
-    .sozlesme-dosyalar-grid {
-        grid-template-columns: 1fr;
-    }
-
-    } /* Sözleşme Dosyaları Tablosu */
-
-    .sozlesme-dosya-tablosu {
-        font-size: 0.85rem;
-    }
-
-        .sozlesme-dosya-tablosu th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-        }
-
-    .sozlesme-dosya-btn {
-        min-width: 36px;
-        height: 36px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin: 2px;
-    }
-
-        .sozlesme-dosya-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-    /* Dosya tipi renkleri */
-
-    .btn-outline-primary {
-        border-color: #007bff;
-        color: #007bff;
-    }
-
-    .btn-outline-success {
-        border-color: #28a745;
-        color: #28a745;
-    }
-
-    .btn-outline-warning {
-        border-color: #ffc107;
-        color: #ffc107;
-    }
-
-    .btn-outline-danger {
-        border-color: #dc3545;
-        color: #dc3545;
-    }
-
-    .btn-outline-primary:hover {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .btn-outline-success:hover {
-        background-color: #28a745;
-        color: white;
-    }
-
-    .btn-outline-warning:hover {
-        background-color: #ffc107;
-        color: black;
-    }
-
-    .btn-outline-danger:hover {
-        background-color: #dc3545;
-        color: white;
-    }
-    /* Responsive */
-
-    media (max-width: 768px) {
-        .sozlesme-dosya-tablosu
-
-    {
-        font-size: 0.75rem;
-    }
-
-    .sozlesme-dosya-btn {
-        min-width: 32px;
-        height: 32px;
-        font-size: 0.75rem;
-    }
-
-    } /* Temel Stiller */
-
-    .table-seviye-badge {
-        display: inline-block;
-        padding: 3px 10px;
-        border-radius: 12px;
-        font-size: 11px;
-        font-weight: bold;
-        color: white;
-    }
-
-    .table-seviye-0 {
-        background: #667eea;
-    }
-
-    .table-seviye-1 {
-        background: #f5576c;
-    }
-
-    .table-seviye-2 {
-        background: #00f2fe;
-        color: #333;
-    }
-
-    .table-seviye-3 {
-        background: #38f9d7;
-        color: #333;
-    }
-
-    .table-seviye-4 {
-        background: #fee140;
-        color: #333;
-    }
-
-    .nav-tabs .nav-link.active {
-        font-weight: bold;
-        border-bottom: 3px solid #007bff;
-    }
-
-    .detail-row {
-        margin-bottom: 10px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #eee;
-    }
-
-    .detail-label {
-        font-weight: bold;
-        color: #495057;
-    }
-
-    .detail-value {
-        color: #6c757d;
-    }
-
-    .loading-spinner {
-        display: none;
-        text-align: center;
-        padding: 20px;
-    }
-
-    .yetkili-item {
-        background: #f8f9fa;
-        border-left: 4px solid #007bff;
-        transition: all 0.3s ease;
-    }
-
-        .yetkili-item:hover {
-            background: #e9ecef;
-            border-left-color: #0056b3;
-        }
-
-    .remove-yetkili {
-        opacity: 0.7;
-        transition: opacity 0.3s ease;
-    }
-
-        .remove-yetkili:hover {
-            opacity: 1;
-            background: #dc3545 !important;
-            color: white !important;
-        }
-    /* Dosya Yükleme Stilleri */
-
-    .file-upload-container {
-        border: 2px dashed #dee2e6;
-        border-radius: 10px;
-        padding: 20px;
-        text-align: center;
-        transition: all 0.3s ease;
-        background-color: #f8f9fa;
-        cursor: pointer;
-        position: relative;
-        min-height: 200px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-
-        .file-upload-container:hover {
-            border-color: #007bff;
-            background-color: #e9f7fe;
-        }
-
-        .file-upload-container.dragover {
-            border-color: #28a745;
-            background-color: #e8f5e9;
-        }
-
-    .upload-prompt i {
-        font-size: 48px;
-        margin-bottom: 15px;
-        color: #6c757d;
-    }
-
-    .upload-prompt p {
-        margin: 0;
-        color: #6c757d;
-    }
-
-    .file-preview {
-        margin-top: 15px;
-        max-width: 100%;
-        text-align: center;
-    }
-
-        .file-preview img {
-            max-width: 200px;
-            max-height: 200px;
-            object-fit: contain;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 5px;
-            background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-    .file-info {
-        font-size: 12px;
-        color: #6c757d;
-        margin-top: 5px;
-    }
-
-    .remove-file-btn {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background: #dc3545;
-        color: white;
-        border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        opacity: 0.8;
-        transition: opacity 0.3s;
-        z-index: 10;
-        font-size: 14px;
-    }
-
-        .remove-file-btn:hover {
-            opacity: 1;
-            background: #c82333;
-        }
-
-    .file-upload-progress {
-        height: 6px;
-        background-color: #e9ecef;
-        border-radius: 3px;
-        margin-top: 15px;
-        overflow: hidden;
-        display: none;
-        width: 100%;
-    }
-
-    .file-upload-progress-bar {
-        height: 100%;
-        background-color: #007bff;
-        width: 0%;
-        transition: width 0.3s ease;
-        border-radius: 3px;
-    }
-    /* Büyük Göster Modal */
-
-    .file-preview-modal img {
-        max-width: 100%;
-        max-height: 70vh;
-        object-fit: contain;
-    }
-    /* Dosya Grid */
-
-    .file-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 15px;
-        margin-top: 15px;
-    }
-
-    .file-item {
-        position: relative;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        padding: 10px;
-        text-align: center;
-        background: white;
-        transition: transform 0.2s;
-    }
-
-        .file-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-    .file-icon {
-        font-size: 40px;
-        color: #007bff;
-        margin-bottom: 10px;
-    }
-
-    .file-name {
-        font-size: 12px;
-        word-break: break-all;
-        margin-bottom: 5px;
-        font-weight: 500;
-    }
-
-    .file-size {
-        font-size: 11px;
-        color: #6c757d;
-    }
-    /* Responsive Tablo */
-
-    media (max-width: 768px) {
-        .table-responsive
-
-    {
-        font-size: 14px;
-    }
-
-    .btn-sm {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.75rem;
-    }
-
-    .modal-dialog {
-        margin: 0.5rem;
-    }
-
-    } /* Arama Sonuçları */
-
-    .arama-bos-mesaj {
-        background-color: #f8f9fa;
-    }
-
-        .arama-bos-mesaj td {
-            padding: 50px !important;
-        }
-</style>
 <div class="row">
     <div class="col-md-12">
         @if (TempData["Success"] != null)
@@ -538,11 +18,210 @@
             <div class="alert alert-danger alert-dismissible fade show" role="alert"> @TempData["Error"] <button type="button" class="btn-close" data-bs-dismiss="alert"></button> </div>
         }
         <div class="card" style="margin-top: 70px;">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
                 <span>Müşteriler</span>
-                <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                    <i class="fas fa-plus"></i> Yeni Müşteri Ekle
-                </button>
+
+                <!-- FİLTRELEME ALANI - Diğer sayfalarla uyumlu -->
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Arama Kutusu (Mevcut arama kutusu burada kalacak) -->
+                    <div class="search-box">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-light border-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" id="musteriArama" class="form-control form-control-sm border-0 bg-light"
+                                   placeholder="Müşteri ara..." style="box-shadow: none;">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" id="musteriAramaTemizle" style="display:none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Müşteri Tipi Filtresi -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="musteriTipFiltreBtn">
+                            <i class="fas fa-tag me-1"></i> Müşteri Tipi
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
+                            <div class="mb-2">
+                                <select class="form-select form-select-sm" id="musteriTipFiltre">
+                                    <option value="">Tüm Müşteri Tipleri</option>
+                                    @foreach (var tip in ViewBag.MusteriTipleri as List<MusteriTipi> ?? new List<MusteriTipi>())
+                                    {
+                                        <option value="@tip.Id">@tip.Adi</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-primary" onclick="musteriTipFiltreUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Müşteri Durumu Filtresi -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="musteriDurumFiltreBtn">
+                            <i class="fas fa-circle me-1"></i> Müşteri Durumu
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 250px;">
+                            <div class="mb-2">
+                                <select class="form-select form-select-sm" id="musteriDurumFiltre">
+                                    <option value="">Tüm Durumlar</option>
+                                    @foreach (var durum in ViewBag.MusteriDurumu as List<MusteriDurumu> ?? new List<MusteriDurumu>())
+                                    {
+                                        <option value="@durum.Id">@durum.Adi</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-primary" onclick="musteriDurumFiltreUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bayi Filtresi -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="bayiFiltreBtn">
+                            <i class="fas fa-store me-1"></i> Bayi
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 300px; max-height: 400px; overflow-y: auto;">
+                            <div class="mb-2">
+                                <select class="form-select form-select-sm" id="bayiFiltre" size="10">
+                                    <option value="">Tüm Bayiler</option>
+                                    @if (ViewBag.TumBayiler != null)
+                                    {
+                                        foreach (var bayi in (List<Bayi>)ViewBag.TumBayiler)
+                                        {
+                                            var prefix = string.Concat(Enumerable.Repeat("└─ ", bayi.Seviye ?? 0));
+                                            <option value="@bayi.Id">@prefix @bayi.Unvan</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-primary" onclick="musteriBayiFiltreUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tarih Filtresi (Müşteri Olma Tarihi) -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="tarihFiltreBtn">
+                            <i class="fas fa-calendar-alt me-1"></i> Müşteri Olma T.
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 300px;">
+                            <div class="mb-2">
+                                <label class="form-label small">Başlangıç Tarihi</label>
+                                <input type="date" id="filtreBaslangicTarih" class="form-control form-control-sm">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label small">Bitiş Tarihi</label>
+                                <input type="date" id="filtreBitisTarih" class="form-control form-control-sm">
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="musteriTarihFiltreTemizle()">Temizle</button>
+                                <button class="btn btn-sm btn-primary" onclick="musteriTarihFiltreUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aday/Müşteri Filtresi -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="adayFiltreBtn">
+                            <i class="fas fa-user-clock me-1"></i> Aday/Müşteri
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 200px;">
+                            <div class="mb-2">
+                                <select class="form-select form-select-sm" id="adayFiltre">
+                                    <option value="">Tümü</option>
+                                    <option value="musteri">Müşteri (Müşteri Olma Tarihi Var)</option>
+                                    <option value="aday">Aday (Sadece Aday Olma Tarihi Var)</option>
+                                    <option value="hem">Hem Aday Hem Müşteri</option>
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-primary" onclick="musteriAdayFiltreUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sıralama -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" id="siralamaFiltreBtn">
+                            <i class="fas fa-sort-amount-down me-1"></i> Sıralama
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3" style="min-width: 200px;">
+                            <div class="mb-2">
+                                <select class="form-select form-select-sm" id="siralamaFiltre">
+                                    <option value="yeni">En Yeni → En Eski</option>
+                                    <option value="eski">En Eski → En Yeni</option>
+                                    <option value="adi_az">İsim (A-Z)</option>
+                                    <option value="adi_za">İsim (Z-A)</option>
+                                    <option value="unvan_az">Unvan (A-Z)</option>
+                                    <option value="unvan_za">Unvan (Z-A)</option>
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-primary" onclick="musteriSiralamaUygula()">Uygula</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtre Temizleme Butonu -->
+                    <button class="btn btn-sm btn-outline-danger" onclick="musteriTumFiltreleriTemizle()"
+                            title="Tüm filtreleri temizle" id="musteriFiltreTemizleBtn" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Seçili Kayıt Bilgisi ve İşlem Butonları (mevcut kod) -->
+                <div class="d-flex align-items-center gap-3">
+                    <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                        <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                            <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-info btn-sm" id="seciliDetayGoster" title="Detaylarını Gör" data-button-permission="detay" disabled style="margin-right:5px;">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button type="button" class="btn btn-warning btn-sm" id="seciliDuzenleBtn" title="Düzenle" disabled data-button-permission="duzenle" style="margin-right:5px;">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" class="btn btn-success btn-sm" id="seciliTekliflerBtn" data-button-permission="teklifler" title="Tekliflerini Gör" disabled style="margin-right:5px;">
+                                <i class="fas fa-file-alt"></i>
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm" id="seciliSozlesmelerBtn" data-button-permission="sozlesmeler" title="Sözleşmelerini Gör" disabled style="margin-right:5px;">
+                                <i class="fas fa-file-contract"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" id="seciliSilBtn" data-button-permission="sil" title="Seçili Müşteriyi Sil" disabled>
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Yeni Müşteri Ekle Butonu -->
+                    <button type="button" class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni Müşteri Ekle
+                    </button>
+                </div>
+            </div>
+
+            <!-- Aktif Filtreler -->
+            <div class="row mt-3" id="aktifFiltreler" style="display: none;">
+                <div class="col-12">
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-light text-dark me-2 p-2">
+                            <i class="fas fa-filter me-1"></i>Aktif Filtreler:
+                        </span>
+                        <div id="filtreEtiketleri" class="d-flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <div class="mb-3">
@@ -567,6 +246,8 @@
                     <table class="table table-bordered table-hover" id="musteriTablosu">
                         <thead class="table-head-bg-primary">
                             <tr>
+                                <th width="40">Seç</th>
+
                                 <th>#</th>
                                 <th>Ad Soyad</th>
                                 <th>Unvanı</th>
@@ -575,7 +256,8 @@
                                 <th>Telefon</th>
                                 <th>Bayi</th>
                                 <th>Müşteri Tipi</th>
-                                <th>İşlemler</th>
+                                <th>Müşteri Olma T.</th> <!-- YENİ SÜTUN -->
+                                <th>Aday Olma T.</th> <!-- YENİ SÜTUN -->
                             </tr>
                         </thead>
                         <tbody>
@@ -586,9 +268,14 @@
                                 {
                                     var seviye = item.Bayi?.Seviye ?? 0;
                                     var indent = string.Concat(Enumerable.Repeat("└─ ", seviye));
-                                    <tr>
+                                    <tr data-musteri-id="@item.Id" data-musteri-ad="@(item.AdSoyad)" data-musteri-unvan="@item.TicariUnvan">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input musteri-sec-radio" type="radio" name="seciliMusteriRadio" value="@item.Id" id="secim_@item.Id">
+                                            </div>
+                                        </td>
                                         <td>@counter</td>
-                                        <td><strong>@item.Ad @item.Soyad</strong></td>
+                                        <td><strong>@item.AdSoyad</strong></td>
                                         <td><strong>@item.TicariUnvan</strong></td>
                                         <td>@item.KullaniciAdi</td>
                                         <td>@item.Email</td>
@@ -609,22 +296,30 @@
                                             </span>
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-info btn-sm" data-button-permission="detay" onclick="detayGetir(@item.Id)" title="Detay">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id)" title="Düzenle">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@(item.Ad + " " + item.Soyad)')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-success btn-sm" data-button-permission="teklifler" onclick="musteriTeklifleriGetir(@item.Id)" title="Teklifler">
-                                                <i class="fas fa-file-alt"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-primary btn-sm" data-button-permission="sozlesmeler" onclick="musteriSozlesmeleriGetir(@item.Id)" title="Sözleşmeler">
-                                                <i class="fas fa-file-contract"></i>
-                                            </button>
+                                            @if (item.MOlmaTarihi.HasValue)
+                                            {
+                                                <span class="badge bg-success" title="@item.MOlmaTarihi.Value.ToString("dd MMMM yyyy HH:mm")">
+                                                    <i class="fas fa-calendar-check me-1"></i>@item.MOlmaTarihi.Value.ToString("dd.MM.yyyy")
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
                                         </td>
+                                        <td>
+                                            @if (item.AOlmaTarihi.HasValue)
+                                            {
+                                                <span class="badge bg-warning text-dark" title="@item.AOlmaTarihi.Value.ToString("dd MMMM yyyy HH:mm")">
+                                                    <i class="fas fa-calendar-alt me-1"></i>@item.AOlmaTarihi.Value.ToString("dd.MM.yyyy")
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <!-- İşlemler sütunu KALDIRILDI -->
                                     </tr>
                                     counter++;
                                 }
@@ -632,7 +327,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="9" class="text-center">
+                                    <td colspan="10" class="text-center">
                                         Henüz müşteri eklenmemiş.
                                         <a href="#" data-bs-toggle="modal" data-button-permission="ekle" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">Yeni Müşteri Ekle</a>
                                     </td>
@@ -650,9 +345,41 @@
             <form id="ekleForm" method="post" action="@Url.Action("Ekle", "AdminMusteri")" enctype="multipart/form-data">
                 @Html.AntiForgeryToken() <div class="modal-header"> <h5 class="modal-title" id="ekleModalLabel">Yeni Müşteri Ekle</h5> <button type="button" class="btn-close" data-bs-dismiss="modal"></button> </div> <div class="modal-body">
                     <ul class="nav nav-tabs" id="ekleTab" role="tablist"> <li class="nav-item" role="presentation"> <button class="nav-link active" id="temel-tab" data-bs-toggle="tab" data-bs-target="#temel" type="button">Temel Bilgiler</button> </li> <li class="nav-item" role="presentation"> <button class="nav-link" id="iletisim-tab" data-bs-toggle="tab" data-bs-target="#iletisim" type="button">İletişim & Adres</button> </li> <li class="nav-item" role="presentation"> <button class="nav-link" id="vergi-tab" data-bs-toggle="tab" data-bs-target="#vergi" type="button">Vergi & Resmi</button> </li> <li class="nav-item" role="presentation"> <button class="nav-link" id="alpemix-tab" data-bs-toggle="tab" data-bs-target="#alpemix" type="button">Alpemix</button> </li> <li class="nav-item" role="presentation"> <button class="nav-link" id="dosyalar-tab" data-bs-toggle="tab" data-bs-target="#dosyalar" type="button">Dosyalar</button> </li> <li class="nav-item" role="presentation"> <button class="nav-link" id="yetkililer-tab" data-bs-toggle="tab" data-bs-target="#yetkililer" type="button">Yetkililer</button> </li> </ul> <div class="tab-content p-3" id="ekleTabContent">
-                        <!-- TEMEL BİLGİLER --> <div class="tab-pane fade show active" id="temel" role="tabpanel">
+                        <!-- TEMEL BİLGİLER --> 
+                        <div class="tab-pane fade show active" id="temel" role="tabpanel">
                             <div class="row">
-                                <div class="col-md-6 mb-3"> <div class="form-floating"> <input type="text" class="form-control" id="TicariUnvan" name="TicariUnvan" placeholder="Ticari Unvan" required maxlength="100"> <label for="TicariUnvan">Ticari Unvan *</label> </div> </div> <div class="col-md-6 mb-3"> <div class="form-floating"> <input type="text" class="form-control" id="Ad" name="Ad" placeholder="Ad" required maxlength="50"> <label for="Ad">Ad *</label> </div> </div> <div class="col-md-6 mb-3"> <div class="form-floating"> <input type="text" class="form-control" id="Soyad" name="Soyad" placeholder="Soyad" required maxlength="50"> <label for="Soyad">Soyad *</label> </div> </div> <div class="col-md-6 mb-3"> <div class="form-floating"> <input type="text" class="form-control" id="KullaniciAdi" name="KullaniciAdi" placeholder="Kullanıcı Adı" required maxlength="50"> <label for="KullaniciAdi">Kullanıcı Adı *</label> <div class="form-text text-danger" id="kullaniciAdiKontrol"></div> </div> </div> <div class="col-md-6 mb-3"> <div class="form-floating"> <input type="password" class="form-control" id="Sifre" name="Sifre" placeholder="Şifre" required>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="TicariUnvan" name="TicariUnvan" placeholder="Ticari Unvan" required maxlength="100">
+                                        <label for="TicariUnvan">Ticari Unvan *</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="AdSoyad" name="AdSoyad" placeholder="Adı Soyadı" required maxlength="50">
+                                        <label for="Ad">Ad Soyadı *</label>
+                                    </div> 
+                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Kullanıcı Adı *</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="KullaniciAdi" name="KullaniciAdi"
+                                               placeholder="Kullanıcı adı oluşturmak için butona tıklayın"
+                                               readonly required
+                                               style="background-color: #f8f9fa; cursor: default;">
+                                        <button type="button" class="btn btn-primary" onclick="kullaniciAdiOluştur('ekle')"
+                                                id="kullaniciAdiOluşturBtn" title="Seçilen il ve ilçeye göre kullanıcı adı oluştur">
+                                            <i class="fas fa-sync-alt me-1"></i> Kullanıcı Adı Oluştur
+                                        </button>
+                                    </div>
+                                    <div class="form-text" id="kullaniciAdiUyariEkle">
+                                        <i class="fas fa-info-circle text-info"></i> Kullanıcı adı otomatik oluşturulur, elle yazılamaz.
+                                    </div>
+                                    <!-- Kullanıcı adı uygunluk göstergesi -->
+                                    <div id="kullaniciAdiDurumEkle" class="mt-2" style="display: none;"></div>
+                                </div>                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <input type="password" class="form-control" id="Sifre" name="Sifre" placeholder="Şifre" required>
                                     <label for="Sifre">Şifre *</label>
                                     </div> </div> <div class="col-md-3 mb-3">
                                     <div class="form-floating">
@@ -699,37 +426,51 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="Telefon" name="Telefon" placeholder="Telefon" maxlength="20">
+                                        <input type="text" class="form-control" id="Telefon" name="Telefon" placeholder="Telefon" maxlength="20" data-optional="true">
                                         <label for="Telefon">Telefon</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="Bolge" name="Bolge" placeholder="Bölge" maxlength="50">
+                                        <input type="text" class="form-control" id="Bolge" name="Bolge" placeholder="Bölge" maxlength="50" data-optional="true">
                                         <label for="Bolge">Bölge</label>
                                     </div>
                                 </div>
+                                <!-- İL DROPDOWN -->
                                 <div class="col-md-6 mb-3">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="Il" name="Il" placeholder="İl" maxlength="50">
+                                        <select class="form-select" id="Il" name="Il" onchange="ilSecildi(this.value, 'Ilce', 'ekle')">
+                                            <option value="">Seçiniz</option>
+                                            @if (ViewBag.Iller != null)
+                                            {
+                                                foreach (var il in ViewBag.Iller)
+                                                {
+                                                    <option value="@il.Id">@il.sehiradi</option>
+                                                }
+                                            }
+                                        </select>
                                         <label for="Il">İl</label>
                                     </div>
                                 </div>
+
+                                <!-- İLÇE DROPDOWN -->
                                 <div class="col-md-6 mb-3">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="Ilce" name="Ilce" placeholder="İlçe" maxlength="50">
+                                        <select class="form-select" id="Ilce" name="Ilce" onchange="ilceSecildi('ekle')">
+                                            <option value="">Önce il seçiniz</option>
+                                        </select>
                                         <label for="Ilce">İlçe</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="Belde" name="Belde" placeholder="Belde" maxlength="50">
+                                        <input type="text" class="form-control" id="Belde" name="Belde" placeholder="Belde" maxlength="50" data-optional="true">
                                         <label for="Belde">Belde</label>
                                     </div>
                                 </div>
                                 <div class="col-12 mb-3">
                                     <div class="form-floating">
-                                        <textarea class="form-control" id="Adres" name="Adres" placeholder="Adres" style="height: 100px" maxlength="500"></textarea>
+                                        <textarea class="form-control" id="Adres" name="Adres" placeholder="Adres" style="height: 100px" data-optional="true" maxlength="500"></textarea>
                                         <label for="Adres">Adres</label>
                                     </div>
                                 </div>
@@ -741,7 +482,7 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="TCVNo" name="TCVNo" placeholder="TC/Vergi No" maxlength="20">
+                                        <input type="text" class="form-control" id="TCVNo" name="TCVNo" placeholder="TC/Vergi No" maxlength="11">
                                         <label for="TCVNo">TC/Vergi No</label>
                                     </div>
                                 </div>
@@ -886,7 +627,92 @@
         </div>
     </div>
 </div>
-<!-- DETAY MODAL --><div class="modal fade" id="detayModal" tabindex="-1" aria-labelledby="detayModalLabel" aria-hidden="true"> <div class="modal-dialog modal-xl"> <div class="modal-content"> <div class="modal-header"> <h5 class="modal-title" id="detayModalLabel">Müşteri Detayları</h5> <button type="button" class="btn-close" data-bs-dismiss="modal"></button> </div> <div class="modal-body"> <div class="loading-spinner" id="detayLoading"> <div class="spinner-border text-primary" role="status"> <span class="visually-hidden">Yükleniyor...</span> </div> </div> <div id="detayContent" style="display: none;"> <ul class="nav nav-tabs" id="detayTab" role="tablist"> <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#detayTemel">Temel Bilgiler</button></li> <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#detayIletisim">İletişim & Adres</button></li> <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#detayVergi">Vergi & Resmi</button></li> <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#detayAlpemix">Alpemix</button></li> <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#detayDosyalar">Dosyalar</button></li> <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#detayYetkililer">Yetkililer</button></li> </ul> <div class="tab-content p-3"> <div class="tab-pane fade show active" id="detayTemel"><div class="row" id="detayTemelContent"></div></div> <div class="tab-pane fade" id="detayIletisim"><div class="row" id="detayIletisimContent"></div></div> <div class="tab-pane fade" id="detayVergi"><div class="row" id="detayVergiContent"></div></div> <div class="tab-pane fade" id="detayAlpemix"><div class="row" id="detayAlpemixContent"></div></div> <div class="tab-pane fade" id="detayDosyalar"> <div class="row" id="detayDosyalarContent"> <!-- JS ile doldurulacak --> </div> </div> <div class="tab-pane fade" id="detayYetkililer"> <div class="table-responsive"> <table class="table table-sm table-bordered table-hover" id="detayYetkililerTablosu"> <thead class="table-light"> <tr> <th>Kod</th> <th>Adı</th> <th>Soyadı</th> <th>Görevi</th> <th>Departman</th> <th>Email</th> <th>Cep</th> <th>Durumu</th> </tr> </thead> <tbody> <!-- JS ile doldurulacak --> </tbody> </table> </div> </div> </div> </div> </div> <div class="modal-footer"> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button> </div> </div> </div> </div><!-- DÜZENLE MODAL --><div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
+<!-- DETAY MODAL --><div class="modal fade" id="detayModal" tabindex="-1" aria-labelledby="detayModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detayModalLabel">Müşteri Detayları</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="loading-spinner" id="detayLoading">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Yükleniyor...</span>
+                            </div>
+                            </div>
+                            <div id="detayContent" style="display: none;">
+                                <ul class="nav nav-tabs" id="detayTab" role="tablist">
+                                    <li class="nav-item">
+                                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#detayTemel">Temel Bilgiler</button>
+                                        </li> <li class="nav-item">
+                                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#detayIletisim">İletişim & Adres</button>
+                                            </li>
+                                            <li class="nav-item">
+                                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#detayVergi">Vergi & Resmi</button>
+                                                </li> 
+                                                <li class="nav-item">
+                                                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#detayAlpemix">Alpemix</button>
+                                                    </li> <li class="nav-item">
+                                                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#detayDosyalar">Dosyalar</button>
+                                                        </li> 
+                                                        <li class="nav-item">
+                                                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#detayYetkililer">Yetkililer</button>
+                                                            </li> 
+                                                            </ul> <div class="tab-content p-3">
+                                                                <div class="tab-pane fade show active" id="detayTemel">
+                                                                    <div class="row" id="detayTemelContent">
+                                                                        </div>
+                                                                        </div> 
+                                                                        <div class="tab-pane fade" id="detayIletisim">
+                                                                            <div class="row" id="detayIletisimContent">
+                                                                                </div>
+                                                                                </div>
+                                                                                <div class="tab-pane fade" id="detayVergi">
+                                                                                    <div class="row" id="detayVergiContent">
+
+                                                                                    </div>
+                                                                                    </div> 
+                                                                                    <div class="tab-pane fade" id="detayAlpemix">
+                                                                                        <div class="row" id="detayAlpemixContent">
+
+                                                                                        </div>
+                                                                                        </div>
+                                                                                        <div class="tab-pane fade" id="detayDosyalar">
+                                                                                            <div class="row" id="detayDosyalarContent"> 
+                                                                                               
+                                                                                            </div>
+                                                                                            </div>
+                                                                                            <div class="tab-pane fade" id="detayYetkililer">
+                                                                                                <div class="table-responsive">
+                                                                                                    <table class="table table-sm table-bordered table-hover" id="detayYetkililerTablosu"> 
+                                                                                                        <thead class="table-light">
+                                                                                                            <tr>
+                                                                                                                <th>Kod</th>
+                                                                                                                <th>Adı</th> 
+                                                                                                                <th>Soyadı</th> 
+                                                                                                                <th>Görevi</th>
+                                                                                                                <th>Departman</th> 
+                                                                                                                <th>Email</th>
+                                                                                                                <th>Cep</th>
+                                                                                                                <th>Durumu</th>
+                                                                                                            </tr> 
+                                                                                                            </thead> 
+                                                                                                            <tbody> <!-- JS ile doldurulacak -->
+
+                                                                                                            </tbody> 
+                                                                                                            </table>
+                                                                                                            </div>
+                                                                                                            </div>
+                                                                                                            </div> 
+                                                                                                            </div> 
+                                                                                                            </div> 
+                                                                                                            <div class="modal-footer">
+                                                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                                                                                                </div>
+                                                                                                                </div> 
+                                                                                                                </div> 
+                                                                                                                </div><!-- DÜZENLE MODAL -->
+                                                                                                                <div class="modal fade" id="duzenleModal" tabindex="-1" aria-labelledby="duzenleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <form id="duzenleForm" method="post" action="@Url.Action("Guncelle", "AdminMusteri")" enctype="multipart/form-data">
@@ -900,22 +726,29 @@
                                             </div>
                                             </div>
                                             <div class="col-md-6 mb-3">
-                                                <div class="form-floating"><input type="text" class="form-control" id="editAd" name="Ad" required maxlength="50"><label>Ad *</label>
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="editAdSoyad" name="AdSoyad" required maxlength="50"><label>Adı Soyad *</label>
                                                     </div>
                                                     </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <div class="form-floating"><input type="text" class="form-control" id="editSoyad" name="Soyad" required maxlength="50">
-                                                        <label>Soyad *</label>
-                                                        </div>
-                                                        </div> 
-                                                        <div class="col-md-6 mb-3"><div class="form-floating">
-                                                            <input type="text" class="form-control" id="editKullaniciAdi" name="KullaniciAdi" required maxlength="50">
-                                                            <label>Kullanıcı Adı *</label>
-                                                            <div class="form-text text-danger" id="editKullaniciAdiKontrol">
-
-                                                            </div>
-                                                            </div>
-                                                            </div>
+                                                
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Kullanıcı Adı *</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="editKullaniciAdi" name="KullaniciAdi"
+                                                   placeholder="Kullanıcı adı düzenlenemez"
+                                                   readonly required
+                                                   style="background-color: #f8f9fa; cursor: default;">
+                                            <button type="button" class="btn btn-warning" onclick="kullaniciAdiYenileDuzenle()"
+                                                    id="editKullaniciAdiOluşturBtn" title="Yeni kullanıcı adı oluştur">
+                                                <i class="fas fa-sync-alt me-1"></i> Yenile
+                                            </button>
+                                        </div>
+                                        <div class="form-text" id="kullaniciAdiUyariDuzenle">
+                                            <i class="fas fa-info-circle text-info"></i> Kullanıcı adı otomatik oluşturulur, elle yazılamaz.
+                                        </div>
+                                        <!-- Kullanıcı adı uygunluk göstergesi -->
+                                        <div id="kullaniciAdiDurumDuzenle" class="mt-2" style="display: none;"></div>
+                                    </div>
                                     <!-- Düzenleme Modalı - Şifre Alanı -->
                                     <div class="col-md-6 mb-3">
                                         <div class="form-floating">
@@ -967,20 +800,48 @@
                             <!-- İletişim & Adres -->
                             <div class="tab-pane fade" id="editIletisim">
                                 <div class="row">
-                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="email" class="form-control" id="editEmail" name="Email"><label>Email</label></div></div>
-                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editTelefon" name="Telefon"><label>Telefon</label></div></div>
-                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editBolge" name="Bolge"><label>Bölge</label></div></div>
-                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editIl" name="Il"><label>İl</label></div></div>
-                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editIlce" name="Ilce"><label>İlçe</label></div></div>
-                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editBelde" name="Belde"><label>Belde</label></div></div>
-                                    <div class="col-12 mb-3"><div class="form-floating"><textarea class="form-control" id="editAdres" name="Adres" style="height:100px"></textarea><label>Adres</label></div></div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-floating">
+                                            <input type="email" class="form-control" id="editEmail" name="Email" placeholder="Email" maxlength="100">
+                                            <label for="editEmail">Email</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editTelefon" data-optional="true" name="Telefon"><label>Telefon</label></div></div>
+                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editBolge" data-optional="true" name="Bolge"><label>Bölge</label></div></div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-floating">
+                                            <select class="form-select" id="editIl" name="Il" onchange="ilSecildi(this.value, 'editIlce', 'duzenle')">
+                                                <option value="">Seçiniz</option>
+                                                @if (ViewBag.Iller != null)
+                                                {
+                                                    foreach (var il in ViewBag.Iller)
+                                                    {
+                                                        <option value="@il.Id">@il.sehiradi</option>
+                                                    }
+                                                }
+                                            </select>
+                                            <label for="editIl">İl</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- İLÇE DROPDOWN -->
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-floating">
+                                            <select class="form-select" id="editIlce" name="Ilce" onchange="ilceSecildi('duzenle')">
+                                                <option value="">Önce il seçiniz</option>
+                                            </select>
+                                            <label for="editIlce">İlçe</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editBelde"data-optional="true" name="Belde"><label>Belde</label></div></div>
+                                    <div class="col-12 mb-3"><div class="form-floating"><textarea class="form-control" id="editAdres" name="Adres" data-optional="true" style="height:100px"></textarea><label>Adres</label></div></div>
                                 </div>
                             </div>
 
                             <!-- Vergi & Resmi -->
                             <div class="tab-pane fade" id="editVergi">
                                 <div class="row">
-                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editTCVNo" name="TCVNo"><label>TC/Vergi No</label></div></div>
+                                    <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editTCVNo" name="TCVNo" maxlength="11"><label>TC/Vergi No</label></div></div>
                                     <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editVergiDairesi" name="VergiDairesi"><label>Vergi Dairesi</label></div></div>
                                     <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editKepAdresi" name="KepAdresi"><label>KEP Adresi</label></div></div>
                                     <div class="col-md-6 mb-3"><div class="form-floating"><input type="text" class="form-control" id="editWebAdresi" name="WebAdresi"><label>Web Adresi</label></div></div>
@@ -1209,10 +1070,34 @@
             </form>
         </div>
     </div>
-</div><!-- BÜYÜK GÖSTER MODAL --><div class="modal fade" id="buyukGosterModal" tabindex="-1"> <div class="modal-dialog modal-lg"> <div class="modal-content"> <div class="modal-header"> <h5 class="modal-title" id="buyukGosterModalLabel"></h5> <button type="button" class="btn-close" data-bs-dismiss="modal"></button> </div> <div class="modal-body text-center"> <img id="buyukGosterImg" src="" class="img-fluid rounded" alt=""> </div> <div class="modal-footer"> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button> <button type="button" class="btn btn-primary" onclick="indirBuyukResim()"> <i class="fas fa-download"></i> İndir </button> </div> </div> </div> </div><!-- DOSYA SİLME ONAY MODAL --><div class="modal fade" id="dosyaSilModal" tabindex="-1"> <div class="modal-dialog"> <div class="modal-content"> <div class="modal-header bg-danger text-white"> <h5 class="modal-title" id="dosyaSilModalLabel">Dosya Silme Onayı</h5> <button type="button" class="btn-close text-white" data-bs-dismiss="modal"></button> </div> <div class="modal-body"> <p><strong id="silinecekDosyaAdi"></strong> dosyasını silmek istediğinizden emin misiniz?</p> <p class="text-danger"> <i class="fas fa-exclamation-triangle"></i> Bu işlem geri alınamaz. Dosya hem veritabanından hem de sunucudan silinecektir. </p> </div> <div class="modal-footer"> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button> <button type="button" class="btn btn-danger" id="dosyaSilOnayBtn">Sil</button> </div> </div> </div> </div><!-- SİL ONAY MODAL --><div class="modal fade" id="silModal" tabindex="-1"> <div class="modal-dialog"> <div class="modal-content"> <form method="post" action="@Url.Action("Sil", "AdminMusteri")"> @Html.AntiForgeryToken() <input type="hidden" id="silId" name="Id"> <div class="modal-header"> <h5 class="modal-title">Silme Onayı</h5> <button type="button" class="btn-close" data-bs-dismiss="modal"></button> </div> <div class="modal-body"> <p><strong>"<span id="silAdi"></span>"</strong> adlı müşteri silmek istediğinizden emin misiniz?</p> <p class="text-danger"><small>Bu işlem geri alınamaz.</small></p> </div> <div class="modal-footer"> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button> <button type="submit" class="btn btn-danger">Sil</button> </div> </form> </div> </div> </div><!-- YETKİLİ DÜZENLEME MODAL --><div class="modal fade" id="yetkiliDuzenleModal" tabindex="-1"> <div class="modal-dialog modal-lg"> <div class="modal-content"> <form onsubmit="return false;"> <div class="modal-header bg-primary text-white"> <h5 class="modal-title">Yetkili Düzenle</h5> <button type="button" class="btn-close text-white" data-bs-dismiss="modal"></button> </div> <div class="modal-body"> <div class="row g-3"> <div class="col-md-6"> <label class="form-label">Adı *</label> <input type="text" class="form-control" id="yetkiliDuzenleAdi" required> </div> <div class="col-md-6"> <label class="form-label">Soyadı *</label> <input type="text" class="form-control" id="yetkiliDuzenleSoyadi" required> </div> <div class="col-md-6"> <label class="form-label">Görevi</label> <input type="text" class="form-control" id="yetkiliDuzenleGorevi"> </div> <div class="col-md-6"> <label class="form-label">Departman</label> <select class="form-select" id="yetkiliDuzenleDepartmanSelect"> <option value="">Seçiniz</option> </select> </div> <div class="col-md-6"> <label class="form-label">Email</label> <input type="email" class="form-control" id="yetkiliDuzenleEmail"> </div> <div class="col-md-6"> <label class="form-label">Cep Telefonu</label> <input type="text" class="form-control" id="yetkiliDuzenleCep"> </div> <div class="col-md-6"> <label class="form-label">Dahili No</label> <input type="text" class="form-control" id="yetkiliDuzenleDahiliNo"> </div> <div class="col-md-6"> <label class="form-label">Yetkili Kodu</label> <input type="text" class="form-control" id="yetkiliDuzenleKodu"> </div> <div class="col-md-6"> <label class="form-label">Durum</label> <div class="form-check form-switch"> <input class="form-check-input" type="checkbox" id="yetkiliDuzenleAktif" checked> <label class="form-check-label" for="yetkiliDuzenleAktif"> <span id="aktifText">Aktif</span> </label> </div> </div> <div class="col-md-6"> <label class="form-label">Cinsiyet</label> <select class="form-select" id="yetkiliDuzenleCinsiyet"> <option value="">Seçiniz</option> <option value="Erkek">Erkek</option> <option value="Kadın">Kadın</option> </select> </div> </div> </div> <div class="modal-footer"> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button> <button type="button" class="btn btn-success" onclick="kaydetYetkiliDuzenle()"> <i class="fas fa-save"></i> Güncelle </button> </div> </form> </div> </div> </div><!-- MÜŞTERİ TEKLİFLERİ MODAL --><div class="modal fade" id="musteriTeklifleriModal" tabindex="-1" aria-labelledby="musteriTeklifleriModalLabel" aria-hidden="true"> <div class="modal-dialog modal-xl"> <div class="modal-content"> <div class="modal-header bg-success text-white"> <h5 class="modal-title" id="musteriTeklifleriModalLabel"> <span id="musteriTeklifAdi">Müşterinin</span> Teklifleri </h5> <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Kapat"></button> </div> <div class="modal-body"> <div class="loading-spinner text-center py-4" id="tekliflerLoading"> <div class="spinner-border text-success" role="status"> <span class="visually-hidden">Yükleniyor...</span> </div> <p class="mt-2">Teklifler yükleniyor...</p> </div> <div id="tekliflerContent" style="display: none;"> <div class="table-responsive"> <table class="table table-bordered table-hover table-striped"> <thead class="table-success"> <tr> <th>#</th> <th>Teklif No</th> <th>Oluşturma Tarihi</th> <th>Geçerlilik Tarihi</th> <th>Durum</th> <th>Net Toplam</th> <th>PDF Rapor</th> </tr> </thead> <tbody id="tekliflerTablosu"></tbody> </table> </div> <div id="teklifYokMesaj" class="text-center text-muted py-5" style="display: none;"> <i class="fas fa-file-alt fa-3x mb-3"></i> <p>Bu müşteriye ait teklif bulunamadı.</p> </div> </div> </div> <div class="modal-footer"> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button> </div> </div> </div> </div><!-- MÜŞTERİ SÖZLEŞMELERİ MODAL --><div class="modal fade" id="musteriSozlesmeleriModal" tabindex="-1" aria-labelledby="musteriSozlesmeleriModalLabel" aria-hidden="true"> <div class="modal-dialog modal-xl modal-xxl-custom"> <div class="modal-content"> <div class="modal-header bg-info text-white"> <h5 class="modal-title" id="musteriSozlesmeleriModalLabel"> <span id="musteriSozlesmeAdi">Müşterinin</span> Sözleşmeleri </h5> <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Kapat"></button> </div> <div class="modal-body"> <div class="loading-spinner text-center py-4" id="sozlesmelerLoading"> <div class="spinner-border text-info" role="status"> <span class="visually-hidden">Yükleniyor...</span> </div> <p class="mt-2">Sözleşmeler yükleniyor...</p> </div> <div id="sozlesmelerContent" style="display: none;"> <div class="table-responsive"> <table class="table table-bordered table-hover table-striped"> <thead class="table-info"> <tr> <th>#</th> <th>Lisans No</th> <th>Doküman No</th> <th>Sözleşme Tipi</th> <th>Oluşturma Tarihi</th> <th>Yıllık Bakım</th> <th>Entegratör</th> <th>İşlemler</th> </tr> </thead> <tbody id="sozlesmelerTablosu"></tbody> </table> </div> <div id="sozlesmeYokMesaj" class="text-center text-muted py-5" style="display: none;"> <i class="fas fa-file-contract fa-3x mb-3"></i> <p>Bu müşteriye ait sözleşme bulunamadı.</p> </div> </div> </div> <div class="modal-footer"> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button> </div> </div> </div> </div>
+</div><!-- BÜYÜK GÖSTER MODAL --><div class="modal fade" id="buyukGosterModal" tabindex="-1">
+    <div class="modal-dialog modal-lg"> 
+        <div class="modal-content"> 
+            <div class="modal-header"> 
+                <h5 class="modal-title" id="buyukGosterModalLabel"></h5> 
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button> 
+                </div> <div class="modal-body text-center"> <img id="buyukGosterImg" src="" class="img-fluid rounded" alt=""> 
+                    </div> 
+                    <div class="modal-footer"> 
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                        <button type="button" class="btn btn-primary" onclick="indirBuyukResim()"> <i class="fas fa-download"></i> İndir </button>
+                        </div>
+                        </div>
+                        </div>
+                        </div>
+                        <!-- DOSYA SİLME ONAY MODAL -->
+                        <div class="modal fade" id="dosyaSilModal" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-danger text-white">
+                                        <h5 class="modal-title" id="dosyaSilModalLabel">Dosya Silme Onayı</h5>
+                                        <button type="button" class="btn-close text-white" data-bs-dismiss="modal"></button>
+                                        </div> 
+                                        <div class="modal-body">
+                                            <p><strong id="silinecekDosyaAdi"></strong> dosyasını silmek istediğinizden emin misiniz?</p> <p class="text-danger"> <i class="fas fa-exclamation-triangle"></i> Bu işlem geri alınamaz. Dosya hem veritabanından hem de sunucudan silinecektir. </p> </div> <div class="modal-footer"> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button> <button type="button" class="btn btn-danger" id="dosyaSilOnayBtn">Sil</button> </div> </div> </div> </div><!-- SİL ONAY MODAL --><div class="modal fade" id="silModal" tabindex="-1"> <div class="modal-dialog"> <div class="modal-content"> <form method="post" action="@Url.Action("Sil", "AdminMusteri")"> @Html.AntiForgeryToken() <input type="hidden" id="silId" name="Id"> <div class="modal-header"> <h5 class="modal-title">Silme Onayı</h5> <button type="button" class="btn-close" data-bs-dismiss="modal"></button> </div> <div class="modal-body"> <p><strong>"<span id="silAdi"></span>"</strong> adlı müşteri silmek istediğinizden emin misiniz?</p> <p class="text-danger"><small>Bu işlem geri alınamaz.</small></p> </div> <div class="modal-footer"> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button> <button type="submit" class="btn btn-danger">Sil</button> </div> </form> </div> </div> </div><!-- YETKİLİ DÜZENLEME MODAL --><div class="modal fade" id="yetkiliDuzenleModal" tabindex="-1"> <div class="modal-dialog modal-lg"> <div class="modal-content"> <form onsubmit="return false;"> <div class="modal-header bg-primary text-white"> <h5 class="modal-title">Yetkili Düzenle</h5> <button type="button" class="btn-close text-white" data-bs-dismiss="modal"></button> </div> <div class="modal-body"> <div class="row g-3"> <div class="col-md-6"> <label class="form-label">Adı *</label> <input type="text" class="form-control" id="yetkiliDuzenleAdi" required> </div> <div class="col-md-6"> <label class="form-label">Soyadı *</label> <input type="text" class="form-control" id="yetkiliDuzenleSoyadi" required> </div> <div class="col-md-6"> <label class="form-label">Görevi</label> <input type="text" class="form-control" id="yetkiliDuzenleGorevi"> </div> <div class="col-md-6"> <label class="form-label">Departman</label> <select class="form-select" id="yetkiliDuzenleDepartmanSelect"> <option value="">Seçiniz</option> </select> </div> <div class="col-md-6"> <label class="form-label">Email</label> <input type="email" class="form-control" id="yetkiliDuzenleEmail"> </div> <div class="col-md-6"> <label class="form-label">Cep Telefonu</label> <input type="text" class="form-control" id="yetkiliDuzenleCep"> </div> <div class="col-md-6"> <label class="form-label">Dahili No</label> <input type="text" class="form-control" id="yetkiliDuzenleDahiliNo"> </div> <div class="col-md-6"> <label class="form-label">Yetkili Kodu</label> <input type="text" class="form-control" id="yetkiliDuzenleKodu"> </div> <div class="col-md-6"> <label class="form-label">Durum</label> <div class="form-check form-switch"> <input class="form-check-input" type="checkbox" id="yetkiliDuzenleAktif" checked> <label class="form-check-label" for="yetkiliDuzenleAktif"> <span id="aktifText">Aktif</span> </label> </div> </div> <div class="col-md-6"> <label class="form-label">Cinsiyet</label> <select class="form-select" id="yetkiliDuzenleCinsiyet"> <option value="">Seçiniz</option> <option value="Erkek">Erkek</option> <option value="Kadın">Kadın</option> </select> </div> </div> </div> <div class="modal-footer"> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button> <button type="button" class="btn btn-success" onclick="kaydetYetkiliDuzenle()"> <i class="fas fa-save"></i> Güncelle </button> </div> </form> </div> </div> </div><!-- MÜŞTERİ TEKLİFLERİ MODAL --><div class="modal fade" id="musteriTeklifleriModal" tabindex="-1" aria-labelledby="musteriTeklifleriModalLabel" aria-hidden="true"> <div class="modal-dialog modal-xl"> <div class="modal-content"> <div class="modal-header bg-success text-white"> <h5 class="modal-title" id="musteriTeklifleriModalLabel"> <span id="musteriTeklifAdi">Müşterinin</span> Teklifleri </h5> <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Kapat"></button> </div> <div class="modal-body"> <div class="loading-spinner text-center py-4" id="tekliflerLoading"> <div class="spinner-border text-success" role="status"> <span class="visually-hidden">Yükleniyor...</span> </div> <p class="mt-2">Teklifler yükleniyor...</p> </div> <div id="tekliflerContent" style="display: none;"> <div class="table-responsive"> <table class="table table-bordered table-hover table-striped"> <thead class="table-success"> <tr> <th>#</th> <th>Teklif No</th> <th>Oluşturma Tarihi</th> <th>Geçerlilik Tarihi</th> <th>Durum</th> <th>Net Toplam</th> <th>PDF Rapor</th> </tr> </thead> <tbody id="tekliflerTablosu"></tbody> </table> </div> <div id="teklifYokMesaj" class="text-center text-muted py-5" style="display: none;"> <i class="fas fa-file-alt fa-3x mb-3"></i> <p>Bu müşteriye ait teklif bulunamadı.</p> </div> </div> </div> <div class="modal-footer"> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button> </div> </div> </div> </div><!-- MÜŞTERİ SÖZLEŞMELERİ MODAL --><div class="modal fade" id="musteriSozlesmeleriModal" tabindex="-1" aria-labelledby="musteriSozlesmeleriModalLabel" aria-hidden="true"> <div class="modal-dialog modal-xl modal-xxl-custom"> <div class="modal-content"> <div class="modal-header bg-info text-white"> <h5 class="modal-title" id="musteriSozlesmeleriModalLabel"> <span id="musteriSozlesmeAdi">Müşterinin</span> Sözleşmeleri </h5> <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Kapat"></button> </div> <div class="modal-body"> <div class="loading-spinner text-center py-4" id="sozlesmelerLoading"> <div class="spinner-border text-info" role="status"> <span class="visually-hidden">Yükleniyor...</span> </div> <p class="mt-2">Sözleşmeler yükleniyor...</p> </div> <div id="sozlesmelerContent" style="display: none;"> <div class="table-responsive"> <table class="table table-bordered table-hover table-striped"> <thead class="table-info"> <tr> <th>#</th> <th>Lisans No</th> <th>Doküman No</th> <th>Sözleşme Tipi</th> <th>Oluşturma Tarihi</th> <th>Yıllık Bakım</th> <th>Entegratör</th> <th>İşlemler</th> </tr> </thead> <tbody id="sozlesmelerTablosu"></tbody> </table> </div> <div id="sozlesmeYokMesaj" class="text-center text-muted py-5" style="display: none;"> <i class="fas fa-file-contract fa-3x mb-3"></i> <p>Bu müşteriye ait sözleşme bulunamadı.</p> </div> </div> </div> <div class="modal-footer"> <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button> </div> </div> </div> </div>
 @section Script {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script type="text/javascript">
             // ============= GLOBAL DEĞİŞKENLER =============
             let currentTeklifMusteriId = 0;
@@ -1386,7 +1271,17 @@
                 }
             });
         }
+                const optionalFields = document.querySelectorAll("[data-optional='true']");
 
+        optionalFields.forEach(field => {
+            const observer = new MutationObserver(() => {
+                if (field.hasAttribute("required")) {
+                    field.removeAttribute("required");
+                }
+            });
+
+            observer.observe(field, { attributes: true });
+        });
         // Şifre yenileme işlemi
         function sifreYenile() {
             // Butonu disable et
@@ -1969,8 +1864,7 @@
                                     <div class="modal-body">
                                         <form id="yeniYetkiliEkleForm">
                                             <div class="row g-3">
-                                                <div class="col-md-6"><label>Adı *</label><input type="text" class="form-control" name="Adi" required></div>
-                                                <div class="col-md-6"><label>Soyadı *</label><input type="text" class="form-control" name="Soyadi" required></div>
+                                                       <div class="col-md-6"><label>Ad Soyad *</label><input type="text" class="form-control" name="AdiSoyadi" required></div>
                                                 <div class="col-md-6"><label>Görevi</label><input type="text" class="form-control" name="Gorevi"></div>
                                                 <div class="col-md-6"><label>Departman</label>
                                                     <select class="form-select" name="DepartmanId" id="yetkiliDepartmanSelectEkle"><option value="">Seçiniz</option></select>
@@ -2002,7 +1896,198 @@
                     }
                     new bootstrap.Modal(document.getElementById('yeniYetkiliEkleModal')).show();
                 }
+                        // Kullanıcı adı oluştur (Ekle modalı için)
+        function kullaniciAdiOluştur(mod = 'ekle') {
+            const ilSelect = document.getElementById('Il');
+            const ilceSelect = document.getElementById('Ilce');
+            const kullaniciAdiInput = document.getElementById('KullaniciAdi');
+            const durumDiv = document.getElementById('kullaniciAdiDurumEkle');
+            const btn = document.getElementById('kullaniciAdiOluşturBtn');
 
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Oluşturuluyor...';
+
+            if (!ilSelect.value) {
+                durumDiv.style.display = 'block';
+                durumDiv.className = 'mt-2 alert alert-warning py-2';
+                durumDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> Lütfen önce il seçiniz.';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i> Kullanıcı Adı Oluştur';
+                return;
+            }
+
+            if (!ilceSelect.value) {
+                durumDiv.style.display = 'block';
+                durumDiv.className = 'mt-2 alert alert-warning py-2';
+                durumDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> Lütfen önce ilçe seçiniz.';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i> Kullanıcı Adı Oluştur';
+                return;
+            }
+
+            const ilId = ilSelect.value;
+            const ilceId = ilceSelect.value;
+            const rastgeleSayi = Math.floor(1000 + Math.random() * 9000);
+            let olusanKullaniciAdi = `${ilId}${ilceId}${rastgeleSayi}`;
+
+            kullaniciAdiInput.value = olusanKullaniciAdi;
+            kullaniciAdiKontrolEt(olusanKullaniciAdi, null, 'ekle');
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i> Kullanıcı Adı Oluştur';
+        }
+
+        // Düzenle modalı için kullanıcı adı yenile
+        function kullaniciAdiYenileDuzenle() {
+            const ilSelect = document.getElementById('editIl');
+            const ilceSelect = document.getElementById('editIlce');
+            const kullaniciAdiInput = document.getElementById('editKullaniciAdi');
+            const durumDiv = document.getElementById('kullaniciAdiDurumDuzenle');
+            const btn = document.getElementById('editKullaniciAdiOluşturBtn');
+            const musteriId = document.getElementById('editId').value;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Yenileniyor...';
+
+            if (!ilSelect.value) {
+                durumDiv.style.display = 'block';
+                durumDiv.className = 'mt-2 alert alert-warning py-2';
+                durumDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> Lütfen önce il seçiniz.';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i> Yenile';
+                return;
+            }
+
+            if (!ilceSelect.value) {
+                durumDiv.style.display = 'block';
+                durumDiv.className = 'mt-2 alert alert-warning py-2';
+                durumDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> Lütfen önce ilçe seçiniz.';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i> Yenile';
+                return;
+            }
+
+            const ilId = ilSelect.value;
+            const ilceId = ilceSelect.value;
+            const rastgeleSayi = Math.floor(1000 + Math.random() * 9000);
+            let olusanKullaniciAdi = `${ilId}${ilceId}${rastgeleSayi}`;
+
+            kullaniciAdiInput.value = olusanKullaniciAdi;
+            kullaniciAdiKontrolEt(olusanKullaniciAdi, musteriId, 'duzenle');
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i> Yenile';
+        }
+
+        // Kullanıcı adı benzersizlik kontrolü
+        function kullaniciAdiKontrolEt(kullaniciAdi, musteriId = null, modal = 'ekle') {
+            if (!kullaniciAdi) return;
+
+            const durumDiv = document.getElementById(modal === 'ekle' ? 'kullaniciAdiDurumEkle' : 'kullaniciAdiDurumDuzenle');
+            const submitBtn = document.getElementById(modal === 'ekle' ? 'ekleBtn' : 'duzenleSubmitBtn');
+
+            let url = `/AdminMusteri/KullaniciAdiKontrol?kullaniciAdi=${encodeURIComponent(kullaniciAdi)}`;
+            if (musteriId) url += `&musteriId=${musteriId}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(res => {
+                    durumDiv.style.display = 'block';
+
+                    if (res.success) {
+                        durumDiv.className = 'mt-2 alert alert-success py-2';
+                        durumDiv.innerHTML = `<i class="fas fa-check-circle me-1"></i> Kullanılabilir.`;
+                        if (submitBtn) submitBtn.disabled = false;
+                    } else {
+                        durumDiv.className = 'mt-2 alert alert-danger py-2';
+                        durumDiv.innerHTML = `<i class="fas fa-times-circle me-1"></i> ${res.message}`;
+                        if (submitBtn) submitBtn.disabled = true;
+
+                        // 2 saniye sonra otomatik yeni kullanıcı adı oluştur
+                        setTimeout(() => {
+                            if (modal === 'ekle') {
+                                kullaniciAdiOluştur('ekle');
+                            } else {
+                                kullaniciAdiYenileDuzenle();
+                            }
+                        }, 2000);
+                    }
+                })
+                .catch(err => {
+                    durumDiv.style.display = 'block';
+                    durumDiv.className = 'mt-2 alert alert-danger py-2';
+                    durumDiv.innerHTML = `<i class="fas fa-exclamation-triangle me-1"></i> Kontrol sırasında hata oluştu.`;
+                });
+        }
+           // İl seçildiğinde
+        function ilSecildi(ilId, hedefSelectId, modalTipi) {
+            ilceleriGetir(ilId, hedefSelectId).then(() => {
+                const ilceSelect = document.getElementById(hedefSelectId);
+                if (ilceSelect.value && modalTipi === 'ekle') {
+                    kullaniciAdiOluştur('ekle');
+                } else if (ilceSelect.value && modalTipi === 'duzenle') {
+                    kullaniciAdiYenileDuzenle();
+                }
+            }).catch(err => {
+                console.error('İlçeler yüklenirken hata:', err);
+            });
+        }
+             function ilceleriGetir(ilId, hedefSelectId) {
+            return new Promise((resolve, reject) => {
+                const ilceSelect = document.getElementById(hedefSelectId);
+                if (!ilceSelect) {
+                    reject('Hedef select bulunamadı');
+                    return;
+                }
+
+                ilceSelect.innerHTML = '<option value="">Yükleniyor...</option>';
+                ilceSelect.disabled = true;
+
+                if (!ilId) {
+                    ilceSelect.innerHTML = '<option value="">Önce il seçiniz</option>';
+                    ilceSelect.disabled = false;
+                    resolve();
+                    return;
+                }
+
+                fetch(`/AdminMusteri/GetIlcelerByIlId?ilId=${ilId}`)
+                    .then(response => response.json())
+                    .then(res => {
+                        ilceSelect.innerHTML = '<option value="">Seçiniz</option>';
+                        if (res.success && res.data && res.data.length > 0) {
+                            res.data.forEach(ilce => {
+                                ilceSelect.innerHTML += `<option value="${ilce.id}">${escapeHtml(ilce.ilceadi)}</option>`;
+                            });
+                        } else {
+                            ilceSelect.innerHTML = '<option value="">İlçe bulunamadı</option>';
+                        }
+                        ilceSelect.disabled = false;
+                        resolve();
+                    })
+                    .catch(err => {
+                        console.error('İlçeler yüklenirken hata:', err);
+                        ilceSelect.innerHTML = '<option value="">Hata oluştu</option>';
+                        ilceSelect.disabled = false;
+                        reject(err);
+                    });
+            });
+        }
+           // İlçe seçildiğinde
+        function ilceSecildi(modalTipi) {
+            if (modalTipi === 'ekle') {
+                const ilSelect = document.getElementById('Il');
+                const ilceSelect = document.getElementById('Ilce');
+                if (ilSelect.value && ilceSelect.value) {
+                    kullaniciAdiOluştur('ekle');
+                }
+            } else if (modalTipi === 'duzenle') {
+                const ilSelect = document.getElementById('editIl');
+                const ilceSelect = document.getElementById('editIlce');
+                if (ilSelect.value && ilceSelect.value) {
+                    kullaniciAdiYenileDuzenle();
+                }
+            }
+        }
                 function yukleDepartmanlarEkle() {
                     fetch('@Url.Action("GetDepartmanlar", "AdminMusteri")')
                         .then(r => r.json())
@@ -2014,27 +2099,25 @@
                             }
                         });
                 }
-
-                function yeniYetkiliListeyeEkle() {
-                    const form = document.getElementById('yeniYetkiliEkleForm');
-                    const fd = new FormData(form);
-                    const y = {
-                        Adi: fd.get('Adi')?.trim(),
-                        Soyadi: fd.get('Soyadi')?.trim(),
-                        Gorevi: fd.get('Gorevi')?.trim() || '',
-                        Email: fd.get('Email')?.trim() || '',
-                        Cep: fd.get('Cep')?.trim() || '',
-                        DahiliNo: fd.get('DahiliNo')?.trim() || '',
-                        DepartmanId: fd.get('DepartmanId') || null,
-                        Cinsiyet: fd.get('Cinsiyet') || '',
-                        Kodu: fd.get('Kodu')?.trim() || ''
-                    };
-                    if (!y.Adi || !y.Soyadi) return alert('Ad ve Soyad zorunludur!');
-                    ekleYetkiliListesi.push(y);
-                    guncelleEkleYetkiliListesi();
-                    bootstrap.Modal.getInstance(document.getElementById('yeniYetkiliEkleModal')).hide();
-                    form.reset();
-                }
+        function yeniYetkiliListeyeEkle() {
+            const form = document.getElementById('yeniYetkiliEkleForm');
+            const fd = new FormData(form);
+            const y = {
+                AdiSoyadi: fd.get('AdiSoyadi')?.trim(),
+                Gorevi: fd.get('Gorevi')?.trim() || '',
+                Email: fd.get('Email')?.trim() || '',
+                Cep: fd.get('Cep')?.trim() || '',
+                DahiliNo: fd.get('DahiliNo')?.trim() || '',
+                DepartmanId: fd.get('DepartmanId') || null,
+                Cinsiyet: fd.get('Cinsiyet') || '',
+                Kodu: fd.get('Kodu')?.trim() || ''
+            };
+            if (!y.AdiSoyadi) return alert('Ad Soyad zorunludur!');
+            ekleYetkiliListesi.push(y);
+            guncelleEkleYetkiliListesi();
+            bootstrap.Modal.getInstance(document.getElementById('yeniYetkiliEkleModal')).hide();
+            form.reset();
+        }
 
                 function guncelleEkleYetkiliListesi() {
                     const c = document.getElementById('ekleYetkiliListesi');
@@ -2047,16 +2130,16 @@
                         html += `
                             <div class="yetkili-item p-3 mb-2 border rounded position-relative shadow-sm bg-light">
                                 <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2" onclick="yetkiliyiListedenSil(${i})"><i class="fas fa-times"></i></button>
-                                <div class="row"><div class="col-md-4"><strong>${escapeHtml(y.Adi)} ${escapeHtml(y.Soyadi)}</strong></div>
-                                    <div class="col-md-4"><small>Görevi: ${escapeHtml(y.Gorevi || '-')}</small></div>
+            <div class="row"><div class="col-md-4"><strong>${escapeHtml(y.AdiSoyadi)}</strong></div>
+                                            <div class="col-md-4"><small>Görevi: ${escapeHtml(y.Gorevi || '-')}</small></div>
                                     <div class="col-md-4"><small>Email: ${escapeHtml(y.Email || '-')}</small></div>
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-md-6"><small>Cep: ${escapeHtml(y.Cep || '-')}</small></div>
                                     <div class="col-md-6"><small>Kod: ${escapeHtml(y.Kodu || '-')}</small></div>
                                 </div>
-                                <input type="hidden" name="Yetkililer[${i}].Adi" value="${escapeHtml(y.Adi)}">
-                                <input type="hidden" name="Yetkililer[${i}].Soyadi" value="${escapeHtml(y.Soyadi)}">
+                                          <input type="hidden" name="Yetkililer[${i}].AdiSoyadi" value="${escapeHtml(y.AdiSoyadi)}">
+
                                 <input type="hidden" name="Yetkililer[${i}].Gorevi" value="${escapeHtml(y.Gorevi)}">
                                 <input type="hidden" name="Yetkililer[${i}].Email" value="${escapeHtml(y.Email)}">
                                 <input type="hidden" name="Yetkililer[${i}].Cep" value="${escapeHtml(y.Cep)}">
@@ -2089,8 +2172,7 @@
                                     <div class="modal-body">
                                         <form id="yeniYetkiliFormToplu">
                                             <div class="row g-3">
-                                                <div class="col-md-6"><label>Adı *</label><input type="text" class="form-control" name="Adi" required></div>
-                                                <div class="col-md-6"><label>Soyadı *</label><input type="text" class="form-control" name="Soyadi" required></div>
+                                                       <div class="col-md-6"><label>Ad Soyad *</label><input type="text" class="form-control" name="AdiSoyadi" required></div>
                                                 <div class="col-md-6"><label>Görevi</label><input type="text" class="form-control" name="Gorevi"></div>
                                                 <div class="col-md-6"><label>Departman</label><select class="form-select" name="DepartmanId" id="yetkiliDepartmanSelectToplu"><option value="">Seçiniz</option></select></div>
                                                 <div class="col-md-6"><label>Email</label><input type="email" class="form-control" name="Email"></div>
@@ -2131,26 +2213,25 @@
                         });
                 }
 
-                function duzenleYetkiliListeyeEkle() {
-                    const form = document.getElementById('yeniYetkiliFormToplu');
-                    const fd = new FormData(form);
-                    const y = {
-                        Adi: fd.get('Adi')?.trim(),
-                        Soyadi: fd.get('Soyadi')?.trim(),
-                        Gorevi: fd.get('Gorevi')?.trim() || '',
-                        Email: fd.get('Email')?.trim() || '',
-                        Cep: fd.get('Cep')?.trim() || '',
-                        DahiliNo: fd.get('DahiliNo')?.trim() || '',
-                        DepartmanId: fd.get('DepartmanId') || null,
-                        Cinsiyet: fd.get('Cinsiyet') || '',
-                        Kodu: fd.get('Kodu')?.trim() || ''
-                    };
-                    if (!y.Adi || !y.Soyadi) return alert('Ad ve Soyad zorunludur!');
-                    duzenleYetkiliListesi.push(y);
-                    guncelleDuzenleYetkiliListesi();
-                    bootstrap.Modal.getInstance(document.getElementById('yeniYetkiliTopluModal')).hide();
-                    form.reset();
-                }
+                  function duzenleYetkiliListeyeEkle() {
+            const form = document.getElementById('yeniYetkiliFormToplu');
+            const fd = new FormData(form);
+            const y = {
+                AdiSoyadi: fd.get('AdiSoyadi')?.trim(),
+                Gorevi: fd.get('Gorevi')?.trim() || '',
+                Email: fd.get('Email')?.trim() || '',
+                Cep: fd.get('Cep')?.trim() || '',
+                DahiliNo: fd.get('DahiliNo')?.trim() || '',
+                DepartmanId: fd.get('DepartmanId') || null,
+                Cinsiyet: fd.get('Cinsiyet') || '',
+                Kodu: fd.get('Kodu')?.trim() || ''
+            };
+            if (!y.AdiSoyadi) return alert('Ad Soyad zorunludur!');
+            duzenleYetkiliListesi.push(y);
+            guncelleDuzenleYetkiliListesi();
+            bootstrap.Modal.getInstance(document.getElementById('yeniYetkiliTopluModal')).hide();
+            form.reset();
+        }
 
                 function guncelleDuzenleYetkiliListesi() {
                     const c = document.getElementById('duzenleYetkiliListesiContainer');
@@ -2164,16 +2245,16 @@
                             <div class="yetkili-item p-3 mb-2 border rounded position-relative bg-light">
                                 <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2" onclick="duzenleYetkiliListedenSil(${i})"><i class="fas fa-times"></i></button>
                                 <div class="row">
-                                    <div class="col-md-4"><strong>${escapeHtml(y.Adi)} ${escapeHtml(y.Soyadi)}</strong></div>
-                                    <div class="col-md-4"><small>Görevi: ${escapeHtml(y.Gorevi || '-')}</small></div>
+                <div class="col-md-4"><strong>${escapeHtml(y.AdiSoyadi)}</strong></div>
+                                            <div class="col-md-4"><small>Görevi: ${escapeHtml(y.Gorevi || '-')}</small></div>
                                     <div class="col-md-4"><small>Email: ${escapeHtml(y.Email || '-')}</small></div>
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-md-6"><small>Cep: ${escapeHtml(y.Cep || '-')}</small></div>
                                     <div class="col-md-6"><small>Kod: ${escapeHtml(y.Kodu || '-')}</small></div>
                                 </div>
-                                <input type="hidden" name="YeniYetkililer[${i}].Adi" value="${escapeHtml(y.Adi)}">
-                                <input type="hidden" name="YeniYetkililer[${i}].Soyadi" value="${escapeHtml(y.Soyadi)}">
+                                         <input type="hidden" name="YeniYetkililer[${i}].AdiSoyadi" value="${escapeHtml(y.AdiSoyadi)}">
+
                                 <input type="hidden" name="YeniYetkililer[${i}].Gorevi" value="${escapeHtml(y.Gorevi)}">
                                 <input type="hidden" name="YeniYetkililer[${i}].Email" value="${escapeHtml(y.Email)}">
                                 <input type="hidden" name="YeniYetkililer[${i}].Cep" value="${escapeHtml(y.Cep)}">
@@ -2299,10 +2380,10 @@
                         const detayTemelContent = document.getElementById('detayTemelContent');
                         if (detayTemelContent) {
                             let temelHtml = `
-                                <div class="col-md-6 detail-row">
-                                    <div class="detail-label">Ad Soyad</div>
-                                    <div class="detail-value">${escapeHtml(data.ad)} ${escapeHtml(data.soyad)}</div>
-                                </div>
+                                  <div class="col-md-6 detail-row">
+                        <div class="detail-label">Ad Soyad</div>
+                        <div class="detail-value">${escapeHtml(data.adSoyad)}</div>
+                    </div>
                                 <div class="col-md-6 detail-row">
                                     <div class="detail-label">Ticari Unvan</div>
                                     <div class="detail-value">${escapeHtml(data.ticariUnvan)}</div>
@@ -2473,98 +2554,453 @@
                         }
                     }
                 }
+              // Ekle formu submit
+        $('#ekleForm').on('submit', function(e) {
+            e.preventDefault();
 
-                // ============= DÜZENLE GETİR =============
-                async function duzenleGetir(id) {
-                    currentMusteriId = id;
-                    duzenleYetkiliListesi = [];
-                    guncelleDuzenleYetkiliListesi();
+            const formData = new FormData(this);
+            const submitBtn = $(this).find('button[type="submit"]');
+            submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Kaydediliyor...');
 
-                    document.getElementById('duzenleLoading').style.display = 'block';
-                    document.getElementById('duzenleContent').style.display = 'none';
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    console.log('Ekle response:', response); // Debug için
 
+                    // Response bir string mi kontrol et (bazen redirect dönebilir)
+                    if (typeof response === 'string') {
+                        // HTML sayfası döndüyse, sayfayı yenile
+                        if (response.includes('<!DOCTYPE html>')) {
+                            window.location.reload();
+                            return;
+                        }
+                    }
+
+                    // JSON response kontrolü
+                    if (response && typeof response === 'object') {
+                        if (response.success) {
+                            if (response.redirectUrl) {
+                                window.location.href = response.redirectUrl;
+                            } else {
+                                window.location.reload();
+                            }
+                        } else {
+                            // Hata mesajını göster - modal kapanmaz
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata!',
+                                text: response.message || 'Bilinmeyen bir hata oluştu.',
+                                confirmButtonText: 'Tamam'
+                            });
+                            submitBtn.prop('disabled', false).html('Kaydet');
+                        }
+                    } else {
+                        // Beklenmeyen response, sayfayı yenile
+                        window.location.reload();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', xhr.responseText);
+
+                    let errorMessage = 'Bir hata oluştu: ' + error;
                     try {
-                        const res = await fetch('@Url.Action("Getir", "AdminMusteri")?id=' + id);
-                        const data = await res.json();
-                        if (!data.success) throw new Error(data.message);
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.message) {
+                            errorMessage = response.message;
+                        }
+                    } catch(e) {}
 
-                        // Form alanlarını doldur
-                        document.getElementById('editId').value = data.id;
-                        document.getElementById('editTicariUnvan').value = data.ticariUnvan || '';
-                        document.getElementById('editAd').value = data.ad || '';
-                        document.getElementById('editSoyad').value = data.soyad || '';
-                        document.getElementById('editKullaniciAdi').value = data.kullaniciAdi || '';
-                        document.getElementById('editEmail').value = data.email || '';
-                        document.getElementById('editTelefon').value = data.telefon || '';
-                        document.getElementById('editMusteriTipiId').value = data.musteriTipiId || '';
-                        document.getElementById('editMusteriDurumuId').value = data.musteriDurumuId || '';
-                        document.getElementById('editBayiId').value = data.bayiId || '';
-                        document.getElementById('editDiger').value = (data.musteriTipiId == digerTipId ? data.diger : '') || '';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata!',
+                        text: errorMessage,
+                        confirmButtonText: 'Tamam'
+                    });
+                    submitBtn.prop('disabled', false).html('Kaydet');
+                }
+            });
+        });
 
-                        // Adres bilgileri
-                        document.getElementById('editBolge').value = data.bolge || '';
-                        document.getElementById('editIl').value = data.il || '';
-                        document.getElementById('editIlce').value = data.ilce || '';
-                        document.getElementById('editBelde').value = data.belde || '';
-                        document.getElementById('editAdres').value = data.adres || '';
+        // Düzenle formu submit
+        $('#duzenleForm').on('submit', function(e) {
+            e.preventDefault();
 
-                        // Vergi bilgileri
-                        document.getElementById('editTCVNo').value = data.tcvNo || '';
-                        document.getElementById('editVergiDairesi').value = data.vergiDairesi || '';
-                        document.getElementById('editKepAdresi').value = data.kepAdresi || '';
-                        document.getElementById('editWebAdresi').value = data.webAdresi || '';
-                        document.getElementById('editAciklama').value = data.aciklama || '';
+            const formData = new FormData(this);
+            const submitBtn = $(this).find('button[type="submit"]');
+            submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Güncelleniyor...');
 
-                        // Alpemix bilgileri
-                        document.getElementById('editAlpemixFirmaAdi').value = data.alpemixFirmaAdi || '';
-                        document.getElementById('editAlpemixGrupAdi').value = data.alpemixGrupAdi || '';
-                        document.getElementById('editAlpemixSifre').value = data.alpemixSifre || '';
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    console.log('Düzenle response:', response); // Debug için
 
-                        toggleDigerInput('#editMusteriTipiId', '#editDigerTipiContainer', '#editDiger');
+                    // Response bir string mi kontrol et (bazen redirect dönebilir)
+                    if (typeof response === 'string') {
+                        // HTML sayfası döndüyse, sayfayı yenile
+                        if (response.includes('<!DOCTYPE html>')) {
+                            window.location.reload();
+                            return;
+                        }
+                    }
 
-                        // Dosya bilgilerini yükle
-                        yukleDosyaBilgileri(id);
+                    // JSON response kontrolü
+                    if (response && typeof response === 'object') {
+                        if (response.success) {
+                            if (response.redirectUrl) {
+                                window.location.href = response.redirectUrl;
+                            } else {
+                                window.location.reload();
+                            }
+                        } else {
+                            // Hata mesajını göster - modal kapanmaz
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Hata!',
+                                text: response.message || 'Bilinmeyen bir hata oluştu.',
+                                confirmButtonText: 'Tamam'
+                            });
+                            submitBtn.prop('disabled', false).html('Güncelle');
+                        }
+                    } else {
+                        // Beklenmeyen response, sayfayı yenile
+                        window.location.reload();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', xhr.responseText);
 
-                        // Yetkili bilgilerini yükle
-                        yukleMusteriYetkilileri(id);
-                                 // Şifre alanını temizle (güvenlik için)
-            document.getElementById('editSifre').value = '';
+                    let errorMessage = 'Bir hata oluştu: ' + error;
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.message) {
+                            errorMessage = response.message;
+                        }
+                    } catch(e) {}
 
-            // Butonu aktif et
-            const btn = document.getElementById('sifreYenileBtn');
-            if (btn) {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-key"></i> Şifre Yenile';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata!',
+                        text: errorMessage,
+                        confirmButtonText: 'Tamam'
+                    });
+                    submitBtn.prop('disabled', false).html('Güncelle');
+                }
+            });
+        });
+
+
+              // Müşteri durumuna göre alanları aktif/pasif yap
+        function toggleAdayMusteriAlanları(durumId, modalTipi = 'ekle') {
+            const prefix = modalTipi === 'ekle' ? '' : 'edit';
+            const adayMi = durumId == 2; // Aday müşteri durum ID'si 2
+
+            // Temel bilgiler - her zaman aktif
+            const temelAktifAlanlar = ['TicariUnvan', 'AdSoyad'];
+
+            // İletişim alanları (Email hariç hepsi)
+            const iletisimAlanlari = ['Telefon', 'Bolge', 'Il', 'Ilce', 'Belde', 'Adres'];
+
+            // Email her zaman aktif ama zorunlu değil
+            const emailInput = document.getElementById(prefix + 'Email');
+            if (emailInput) {
+                emailInput.readOnly = false;
+                emailInput.required = false;
+                emailInput.style.backgroundColor = '#ffffff';
+                if (adayMi) emailInput.removeAttribute('required');
             }
-                        document.getElementById('duzenleLoading').style.display = 'none';
-                        document.getElementById('duzenleContent').style.display = 'block';
 
-                        // Form submit event'ini ayarla
-                        const duzenleSubmitBtn = document.getElementById('duzenleSubmitBtn') || document.querySelector('#duzenleModal .btn-primary');
-                        const duzenleForm = document.getElementById('duzenleForm');
+            // Kullanıcı adı alanı
+            const kullaniciAdiInput = document.getElementById(prefix + 'KullaniciAdi');
+            const kullaniciAdiBtn = document.getElementById(modalTipi === 'ekle' ? 'kullaniciAdiOluşturBtn' : 'editKullaniciAdiOluşturBtn');
 
-                        // Önceki event listener'ları temizle
-                        duzenleSubmitBtn.onclick = null;
+            if (kullaniciAdiInput) {
+                kullaniciAdiInput.readOnly = adayMi;
+                kullaniciAdiInput.required = !adayMi;
+                kullaniciAdiInput.style.backgroundColor = adayMi ? '#e9ecef' : '#f8f9fa';
+                if (adayMi) {
+                    kullaniciAdiInput.value = '';
+                    kullaniciAdiInput.removeAttribute('required');
+                } else {
+                    kullaniciAdiInput.setAttribute('required', 'required');
+                }
+            }
 
-                        // Yeni event listener ekle
-                        duzenleSubmitBtn.onclick = function(e) {
-                            e.preventDefault();
-                            duzenleFormuGonder();
-                            return false;
-                        };
+            if (kullaniciAdiBtn) {
+                kullaniciAdiBtn.disabled = adayMi;
+                kullaniciAdiBtn.style.opacity = adayMi ? '0.5' : '1';
+            }
 
-                        // Tab değişikliklerinde submit olmaması için tab butonlarının type'ını "button" yap
-                        const tabButtons = document.querySelectorAll('#duzenleTab button[data-bs-toggle="tab"]');
-                        tabButtons.forEach(btn => {
-                            btn.type = 'button';
-                        });
+            // Şifre alanı
+            const sifreInput = document.getElementById(prefix + 'Sifre');
+            const sifreYenileBtn = document.getElementById('sifreYenileBtn');
 
-                        new bootstrap.Modal(document.getElementById('duzenleModal')).show();
-                    } catch (err) {
-                        alert('Hata: ' + err.message);
-                        document.getElementById('duzenleLoading').style.display = 'none';
+            if (sifreInput) {
+                sifreInput.readOnly = adayMi;
+                sifreInput.required = !adayMi;
+                sifreInput.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                if (adayMi) {
+                    sifreInput.value = '';
+                    sifreInput.removeAttribute('required');
+                } else {
+                    sifreInput.setAttribute('required', 'required');
+                }
+            }
+
+            if (sifreYenileBtn) {
+                sifreYenileBtn.disabled = adayMi;
+                sifreYenileBtn.style.opacity = adayMi ? '0.5' : '1';
+            }
+
+            // Temel alanları aktif tut
+            temelAktifAlanlar.forEach(alan => {
+                const input = document.getElementById(prefix + alan);
+                if (input) {
+                    input.readOnly = false;
+                    input.required = true;
+                    input.style.backgroundColor = '#ffffff';
+                    if (!adayMi) input.setAttribute('required', 'required');
+                }
+            });
+
+            // İletişim alanlarını düzenle
+            iletisimAlanlari.forEach(alan => {
+                const input = document.getElementById(prefix + alan);
+                if (input) {
+                    input.readOnly = adayMi;
+                    input.required = !adayMi;
+                    input.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                    if (adayMi) {
+                        input.value = '';
+                        input.removeAttribute('required');
+                    } else {
+                        input.setAttribute('required', 'required');
                     }
                 }
+            });
+
+            // Vergi bilgileri
+            const vergiAlanlari = ['TCVNo', 'VergiDairesi', 'KepAdresi', 'WebAdresi', 'Aciklama'];
+            vergiAlanlari.forEach(alan => {
+                const input = document.getElementById(prefix + alan);
+                if (input) {
+                    input.readOnly = adayMi;
+                    input.required = false;
+                    input.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                    if (adayMi) {
+                        input.value = '';
+                        input.removeAttribute('required');
+                    }
+                }
+            });
+
+            // Alpemix bilgileri
+            const alpemixAlanlari = ['AlpemixFirmaAdi', 'AlpemixGrupAdi', 'AlpemixSifre'];
+            alpemixAlanlari.forEach(alan => {
+                const input = document.getElementById(prefix + alan);
+                if (input) {
+                    input.readOnly = adayMi;
+                    input.required = false;
+                    input.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                    if (adayMi) {
+                        input.value = '';
+                        input.removeAttribute('required');
+                    }
+                }
+            });
+
+            // Bayi select
+            const bayiSelect = document.getElementById(prefix + 'BayiId');
+            if (bayiSelect) {
+                bayiSelect.disabled = false;
+                bayiSelect.style.backgroundColor = '#ffffff';
+                if (adayMi) bayiSelect.value = '';
+            }
+
+            // Müşteri tipi select
+            const musteriTipiSelect = document.getElementById(prefix + 'MusteriTipiId');
+            if (musteriTipiSelect) {
+                musteriTipiSelect.disabled = false;
+                musteriTipiSelect.style.backgroundColor = '#ffffff';
+            }
+
+            // İl/İlçe dropdown'ları
+            const ilSelect = document.getElementById(prefix + 'Il');
+            const ilceSelect = document.getElementById(prefix + 'Ilce');
+
+            if (ilSelect) {
+                ilSelect.disabled = adayMi;
+                ilSelect.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                if (adayMi) {
+                    ilSelect.value = '';
+                    ilSelect.removeAttribute('required');
+                }
+            }
+
+            if (ilceSelect) {
+                ilceSelect.disabled = adayMi;
+                ilceSelect.style.backgroundColor = adayMi ? '#e9ecef' : '#ffffff';
+                if (adayMi) {
+                    ilceSelect.value = '';
+                    ilceSelect.removeAttribute('required');
+                    if (ilceSelect.options.length > 0) {
+                        ilceSelect.innerHTML = '<option value="">Önce il seçiniz</option>';
+                    }
+                }
+            }
+
+            // Aday müşteri için bilgi notu
+            const uyariDivId = modalTipi === 'ekle' ? 'adayMusteriUyariEkle' : 'adayMusteriUyariDuzenle';
+            let uyariDiv = document.getElementById(uyariDivId);
+
+            if (adayMi) {
+                if (!uyariDiv) {
+                    uyariDiv = document.createElement('div');
+                    uyariDiv.id = uyariDivId;
+                    uyariDiv.className = 'alert alert-info mt-3';
+                    uyariDiv.innerHTML = `
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Aday Müşteri:</strong> Sadece temel bilgiler ve email alanları doldurulabilir.
+                        İl/İlçe, logo, imza ve yetkili ekleme işlemleri yapılamaz.
+                        Diğer alanlar müşteri kaydedildikten sonra düzenlenebilir.
+                    `;
+
+                    const tabContent = document.querySelector(`#${modalTipi === 'ekle' ? 'temel' : 'editTemel'}`);
+                    if (tabContent) tabContent.appendChild(uyariDiv);
+                }
+            } else {
+                if (uyariDiv) uyariDiv.remove();
+            }
+        }
+        // Müşteri durumu değiştiğinde
+        $(document).on('change', '#MusteriDurumuId', function() {
+            toggleAdayMusteriAlanları($(this).val(), 'ekle');
+        });
+
+        $(document).on('change', '#editMusteriDurumuId', function() {
+            toggleAdayMusteriAlanları($(this).val(), 'duzenle');
+        });
+                      // ============= DÜZENLE GETİR =============
+        async function duzenleGetir(id) {
+            currentMusteriId = id;
+            duzenleYetkiliListesi = [];
+            guncelleDuzenleYetkiliListesi();
+
+            document.getElementById('duzenleLoading').style.display = 'block';
+            document.getElementById('duzenleContent').style.display = 'none';
+
+            try {
+                const res = await fetch('@Url.Action("Getir", "AdminMusteri")?id=' + id);
+                const data = await res.json();
+                if (!data.success) throw new Error(data.message);
+
+                console.log('Gelen veri:', data); // Debug için
+
+                // Form alanlarını doldur
+                document.getElementById('editId').value = data.id;
+                document.getElementById('editTicariUnvan').value = data.ticariUnvan || '';
+                document.getElementById('editAdSoyad').value = data.adSoyad || ''; // AdSoyad TEK ALAN
+                document.getElementById('editKullaniciAdi').value = data.kullaniciAdi || '';
+                document.getElementById('editEmail').value = data.email || '';
+                document.getElementById('editTelefon').value = data.telefon || '';
+                document.getElementById('editMusteriTipiId').value = data.musteriTipiId || '';
+                document.getElementById('editMusteriDurumuId').value = data.musteriDurumuId || '';
+                document.getElementById('editBayiId').value = data.bayiId || '';
+                document.getElementById('editDiger').value = (data.musteriTipiId == digerTipId ? data.diger : '') || '';
+
+                toggleAdayMusteriAlanları(data.musteriDurumuId, 'duzenle');
+
+                // Adres bilgileri
+                document.getElementById('editBolge').value = data.bolge || '';
+
+                // İl ve ilçe dropdown'larını ayarla
+                const ilSelect = document.getElementById('editIl');
+                const ilceSelect = document.getElementById('editIlce');
+
+                if (data.ilId) {
+                    ilSelect.value = data.ilId;
+
+                    // İl seçildikten sonra ilçeleri getir
+                    await ilceleriGetir(data.ilId, 'editIlce');
+
+                    // İlçe seçimini yap
+                    if (data.ilceId) {
+                        ilceSelect.value = data.ilceId;
+                    }
+                } else {
+                    ilceSelect.innerHTML = '<option value="">Önce il seçiniz</option>';
+                }
+
+                document.getElementById('editBelde').value = data.belde || '';
+                document.getElementById('editAdres').value = data.adres || '';
+
+                // Vergi bilgileri
+                document.getElementById('editTCVNo').value = data.tcvNo || '';
+                document.getElementById('editVergiDairesi').value = data.vergiDairesi || '';
+                document.getElementById('editKepAdresi').value = data.kepAdresi || '';
+                document.getElementById('editWebAdresi').value = data.webAdresi || '';
+                document.getElementById('editAciklama').value = data.aciklama || '';
+
+                // Alpemix bilgileri
+                document.getElementById('editAlpemixFirmaAdi').value = data.alpemixFirmaAdi || '';
+                document.getElementById('editAlpemixGrupAdi').value = data.alpemixGrupAdi || '';
+                document.getElementById('editAlpemixSifre').value = data.alpemixSifre || '';
+
+                toggleDigerInput(document.getElementById('editMusteriTipiId'), '#editDigerTipiContainer', '#editDiger');
+
+                // Dosya bilgilerini yükle
+                yukleDosyaBilgileri(id);
+
+                // Yetkili bilgilerini yükle
+                yukleMusteriYetkilileri(id);
+
+                // Şifre alanını temizle (güvenlik için)
+                document.getElementById('editSifre').value = '';
+
+                // Butonu aktif et
+                const btn = document.getElementById('sifreYenileBtn');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-key"></i> Şifre Yenile';
+                }
+
+                document.getElementById('duzenleLoading').style.display = 'none';
+                document.getElementById('duzenleContent').style.display = 'block';
+
+                // Form submit event'ini ayarla
+                const duzenleSubmitBtn = document.getElementById('duzenleSubmitBtn') || document.querySelector('#duzenleModal .btn-primary');
+                const duzenleForm = document.getElementById('duzenleForm');
+
+                // Önceki event listener'ları temizle
+                duzenleSubmitBtn.onclick = null;
+
+                // Yeni event listener ekle
+                duzenleSubmitBtn.onclick = function(e) {
+                    e.preventDefault();
+                    duzenleFormuGonder();
+                    return false;
+                };
+
+                // Tab değişikliklerinde submit olmaması için tab butonlarının type'ını "button" yap
+                const tabButtons = document.querySelectorAll('#duzenleTab button[data-bs-toggle="tab"]');
+                tabButtons.forEach(btn => {
+                    btn.type = 'button';
+                });
+
+                new bootstrap.Modal(document.getElementById('duzenleModal')).show();
+            } catch (err) {
+                console.error('Düzenleme hatası:', err);
+                alert('Hata: ' + err.message);
+                document.getElementById('duzenleLoading').style.display = 'none';
+            }
+        }
 
                 // ============= SİL ONAY =============
                 function silOnay(id, adi) {
@@ -2587,19 +3023,19 @@
                     } catch { }
                 }
 
-                // "Diğer" tipi input göster/gizle
-                function toggleDigerInput(select, containerId, inputId) {
-                    const val = parseInt(select.value) || 0;
-                    const container = $(containerId);
-                    const input = $(inputId);
-                    if (val === digerTipId && digerTipId !== 0) {
-                        container.show(300);
-                        input.prop('required', true);
-                    } else {
-                        container.hide(300);
-                        input.prop('required', false).val('');
-                    }
-                }
+               // "Diğer" tipi input göster/gizle
+        function toggleDigerInput(select, containerId, inputId) {
+            const val = parseInt($(select).val()) || 0;
+            const container = $(containerId);
+            const input = $(inputId);
+            if (val === digerTipId && digerTipId !== 0) {
+                container.show(300);
+                input.prop('required', true);
+            } else {
+                container.hide(300);
+                input.prop('required', false).val('');
+            }
+        }
 
                 // ============= MÜŞTERİ ARAMA =============
                 function initMusteriArama() {
@@ -2682,8 +3118,8 @@
                         .then(r => r.json())
                         .then(data => {
                             if (data.success) {
-                                document.getElementById('musteriTeklifAdi').textContent =
-                                    `${escapeHtml(data.ad)} ${escapeHtml(data.soyad)} - ${escapeHtml(data.ticariUnvan || '')}`.trim() || 'Müşterinin';
+                                      document.getElementById('musteriTeklifAdi').textContent =
+            `${escapeHtml(data.ad)} - ${escapeHtml(data.ticariUnvan || '')}`.trim() || 'Müşterinin';
                             }
                         })
                         .catch(() => {
@@ -2747,8 +3183,8 @@
                         .then(r => r.json())
                         .then(data => {
                             if (data.success) {
-                                document.getElementById('musteriSozlesmeAdi').textContent =
-                                    `${escapeHtml(data.ad)} ${escapeHtml(data.soyad)} - ${escapeHtml(data.ticariUnvan || '')}`.trim() || 'Müşterinin';
+                                       document.getElementById('musteriSozlesmeAdi').textContent =
+            `${escapeHtml(data.ad)} - ${escapeHtml(data.ticariUnvan || '')}`.trim() || 'Müşterinin';
                             }
                         })
                         .catch(() => {
@@ -2828,6 +3264,649 @@
 
                 // ============= SAYFA YÜKLENDİĞİNDE =============
                 $(document).ready(function () {
+                            // ============= MÜŞTERİ FİLTRELEME SİSTEMİ =============
+        let musteriAktifFiltreler = {
+            arama: '',
+            musteriTipId: null,
+            musteriDurumId: null,
+            bayiId: null,
+            baslangicTarih: null,
+            bitisTarih: null,
+            adayFiltre: null, // 'musteri', 'aday', 'hem'
+            siralama: 'yeni'
+        };
+
+        // Arama fonksiyonu (mevcut arama ile uyumlu)
+        function musteriAramaFiltrele() {
+            const aramaInput = document.getElementById('musteriArama');
+            const temizleBtn = document.getElementById('musteriAramaTemizle');
+
+            if (aramaInput && temizleBtn) {
+                const kelime = aramaInput.value.trim().toLowerCase();
+
+                // Temizle butonunu göster/gizle
+                temizleBtn.style.display = kelime ? 'block' : 'none';
+
+                musteriAktifFiltreler.arama = kelime;
+                musteriFiltreEtiketleriniGoster();
+                musteriFiltreleVeSirala();
+            }
+        }
+
+        // Arama inputuna event listener ekle
+        const musteriAramaInput = document.getElementById('musteriArama');
+        const musteriTemizleBtn = document.getElementById('musteriAramaTemizle');
+
+        if (musteriAramaInput) {
+            musteriAramaInput.addEventListener('input', musteriAramaFiltrele);
+            musteriAramaInput.addEventListener('keyup', musteriAramaFiltrele);
+        }
+
+        if (musteriTemizleBtn) {
+            musteriTemizleBtn.addEventListener('click', function () {
+                musteriAramaInput.value = '';
+                musteriAramaFiltrele();
+                musteriAramaInput.focus();
+            });
+        }
+
+        // Müşteri Tipi Filtresi Uygula
+        window.musteriTipFiltreUygula = function() {
+            const musteriTipId = document.getElementById('musteriTipFiltre').value;
+            musteriAktifFiltreler.musteriTipId = musteriTipId || null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('musteriTipFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            musteriFiltreEtiketleriniGoster();
+            musteriFiltreleVeSirala();
+        };
+
+        // Müşteri Durumu Filtresi Uygula
+        window.musteriDurumFiltreUygula = function() {
+            const musteriDurumId = document.getElementById('musteriDurumFiltre').value;
+            musteriAktifFiltreler.musteriDurumId = musteriDurumId || null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('musteriDurumFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            musteriFiltreEtiketleriniGoster();
+            musteriFiltreleVeSirala();
+        };
+
+        // Bayi Filtresi Uygula
+        window.musteriBayiFiltreUygula = function() {
+            const bayiId = document.getElementById('bayiFiltre').value;
+            musteriAktifFiltreler.bayiId = bayiId || null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('bayiFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            musteriFiltreEtiketleriniGoster();
+            musteriFiltreleVeSirala();
+        };
+
+        // Tarih Filtresi Uygula
+        window.musteriTarihFiltreUygula = function() {
+            const baslangicInput = document.getElementById('filtreBaslangicTarih');
+            const bitisInput = document.getElementById('filtreBitisTarih');
+
+            musteriAktifFiltreler.baslangicTarih = baslangicInput.value || null;
+            musteriAktifFiltreler.bitisTarih = bitisInput.value || null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('tarihFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            musteriFiltreEtiketleriniGoster();
+            musteriFiltreleVeSirala();
+        };
+
+        // Tarih Filtresi Temizle
+        window.musteriTarihFiltreTemizle = function() {
+            document.getElementById('filtreBaslangicTarih').value = '';
+            document.getElementById('filtreBitisTarih').value = '';
+            musteriAktifFiltreler.baslangicTarih = null;
+            musteriAktifFiltreler.bitisTarih = null;
+            musteriFiltreEtiketleriniGoster();
+            musteriFiltreleVeSirala();
+        };
+
+        // Aday/Müşteri Filtresi Uygula
+        window.musteriAdayFiltreUygula = function() {
+            const adayFiltre = document.getElementById('adayFiltre').value;
+            musteriAktifFiltreler.adayFiltre = adayFiltre || null;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('adayFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            musteriFiltreEtiketleriniGoster();
+            musteriFiltreleVeSirala();
+        };
+
+        // Sıralama Uygula
+        window.musteriSiralamaUygula = function() {
+            const siralama = document.getElementById('siralamaFiltre').value;
+            musteriAktifFiltreler.siralama = siralama;
+
+            // Dropdown'u kapat
+            const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('siralamaFiltreBtn'));
+            if (dropdown) dropdown.hide();
+
+            musteriFiltreEtiketleriniGoster();
+            musteriFiltreleVeSirala();
+        };
+
+        // Tüm Filtreleri Temizle
+        window.musteriTumFiltreleriTemizle = function() {
+            // Arama kutusunu temizle
+            document.getElementById('musteriArama').value = '';
+            document.getElementById('musteriAramaTemizle').style.display = 'none';
+
+            // Müşteri tipi filtresini temizle
+            document.getElementById('musteriTipFiltre').value = '';
+
+            // Müşteri durumu filtresini temizle
+            document.getElementById('musteriDurumFiltre').value = '';
+
+            // Bayi filtresini temizle
+            document.getElementById('bayiFiltre').value = '';
+
+            // Tarih filtrelerini temizle
+            document.getElementById('filtreBaslangicTarih').value = '';
+            document.getElementById('filtreBitisTarih').value = '';
+
+            // Aday filtresini temizle
+            document.getElementById('adayFiltre').value = '';
+
+            // Sıralamayı varsayılana getir
+            document.getElementById('siralamaFiltre').value = 'yeni';
+
+            // Buton stillerini sıfırla
+            document.getElementById('musteriTipFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('musteriDurumFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('bayiFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('tarihFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('adayFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            document.getElementById('siralamaFiltreBtn').className = 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+            // Filtre değişkenlerini sıfırla
+            musteriAktifFiltreler = {
+                arama: '',
+                musteriTipId: null,
+                musteriDurumId: null,
+                bayiId: null,
+                baslangicTarih: null,
+                bitisTarih: null,
+                adayFiltre: null,
+                siralama: 'yeni'
+            };
+
+            // Filtre etiketlerini gizle
+            document.getElementById('aktifFiltreler').style.display = 'none';
+            document.getElementById('musteriFiltreTemizleBtn').style.display = 'none';
+
+            // Filtrelemeyi yeniden uygula
+            musteriFiltreleVeSirala();
+        };
+
+        // Filtre etiketlerini göster
+        function musteriFiltreEtiketleriniGoster() {
+            const etiketler = [];
+            const filtreTemizleBtn = document.getElementById('musteriFiltreTemizleBtn');
+
+            if (musteriAktifFiltreler.arama) {
+                etiketler.push(`<span class="badge bg-primary">Arama: ${musteriAktifFiltreler.arama}</span>`);
+            }
+
+            if (musteriAktifFiltreler.musteriTipId) {
+                const tipAdi = document.getElementById('musteriTipFiltre').options[document.getElementById('musteriTipFiltre').selectedIndex]?.text || 'Seçili';
+                etiketler.push(`<span class="badge bg-primary">Müşteri Tipi: ${tipAdi}</span>`);
+            }
+
+            if (musteriAktifFiltreler.musteriDurumId) {
+                const durumAdi = document.getElementById('musteriDurumFiltre').options[document.getElementById('musteriDurumFiltre').selectedIndex]?.text || 'Seçili';
+                etiketler.push(`<span class="badge bg-primary">Durum: ${durumAdi}</span>`);
+            }
+
+            if (musteriAktifFiltreler.bayiId) {
+                const bayiAdi = document.getElementById('bayiFiltre').options[document.getElementById('bayiFiltre').selectedIndex]?.text || 'Seçili';
+                etiketler.push(`<span class="badge bg-primary">Bayi: ${bayiAdi}</span>`);
+            }
+
+            if (musteriAktifFiltreler.baslangicTarih) {
+                etiketler.push(`<span class="badge bg-success">Başlangıç: ${formatMusteriDate(musteriAktifFiltreler.baslangicTarih)}</span>`);
+            }
+            if (musteriAktifFiltreler.bitisTarih) {
+                etiketler.push(`<span class="badge bg-success">Bitiş: ${formatMusteriDate(musteriAktifFiltreler.bitisTarih)}</span>`);
+            }
+
+            if (musteriAktifFiltreler.adayFiltre) {
+                const adayMetin = {
+                    'musteri': 'Müşteri (Müşteri Olma T.)',
+                    'aday': 'Aday (Aday Olma T.)',
+                    'hem': 'Hem Aday Hem Müşteri'
+                };
+                etiketler.push(`<span class="badge bg-info">${adayMetin[musteriAktifFiltreler.adayFiltre]}</span>`);
+            }
+
+            if (musteriAktifFiltreler.siralama !== 'yeni') {
+                const siralamaMetin = {
+                    'eski': 'En Eski',
+                    'adi_az': 'İsim (A-Z)',
+                    'adi_za': 'İsim (Z-A)',
+                    'unvan_az': 'Unvan (A-Z)',
+                    'unvan_za': 'Unvan (Z-A)'
+                };
+                etiketler.push(`<span class="badge bg-secondary">Sıralama: ${siralamaMetin[musteriAktifFiltreler.siralama]}</span>`);
+            }
+
+            if (etiketler.length > 0) {
+                document.getElementById('filtreEtiketleri').innerHTML = etiketler.join(' ');
+                document.getElementById('aktifFiltreler').style.display = 'block';
+                filtreTemizleBtn.style.display = 'inline-block';
+
+                // Buton stillerini güncelle
+                document.getElementById('musteriTipFiltreBtn').className = musteriAktifFiltreler.musteriTipId
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+                document.getElementById('musteriDurumFiltreBtn').className = musteriAktifFiltreler.musteriDurumId
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+                document.getElementById('bayiFiltreBtn').className = musteriAktifFiltreler.bayiId
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+                document.getElementById('tarihFiltreBtn').className = musteriAktifFiltreler.baslangicTarih || musteriAktifFiltreler.bitisTarih
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+
+                document.getElementById('adayFiltreBtn').className = musteriAktifFiltreler.adayFiltre
+                    ? 'btn btn-sm btn-primary dropdown-toggle'
+                    : 'btn btn-sm btn-outline-secondary dropdown-toggle';
+            } else {
+                document.getElementById('aktifFiltreler').style.display = 'none';
+                filtreTemizleBtn.style.display = 'none';
+            }
+        }
+
+        // Tarih formatlama
+        function formatMusteriDate(dateStr) {
+            if (!dateStr) return '';
+            const [yil, ay, gun] = dateStr.split('-');
+            return `${gun}.${ay}.${yil}`;
+        }
+
+        // Tarih parse (dd.MM.yyyy formatı)
+        function musteriParseDate(dateStr) {
+            if (!dateStr) return null;
+            const [gun, ay, yil] = dateStr.split('.');
+            return new Date(yil, ay - 1, gun);
+        }
+
+        // Ana filtreleme ve sıralama fonksiyonu
+        function musteriFiltreleVeSirala() {
+            const tbody = document.querySelector('#musteriTablosu tbody');
+            if (!tbody) return;
+
+            const satirlar = Array.from(tbody.querySelectorAll('tr[data-musteri-id]'));
+
+            if (satirlar.length === 0) return;
+
+            // Filtreleme
+            let filtrelenmisSatirlar = satirlar.filter(satir => {
+                let goster = true;
+                const $satir = $(satir);
+
+                // Arama filtresi (tüm sütunlarda)
+                if (musteriAktifFiltreler.arama) {
+                    const rowText = satir.textContent.toLowerCase();
+                    if (!rowText.includes(musteriAktifFiltreler.arama.toLowerCase())) {
+                        goster = false;
+                    }
+                }
+
+                // Müşteri Tipi filtresi (9. sütun)
+                if (goster && musteriAktifFiltreler.musteriTipId) {
+                    const tipSpan = satir.querySelector('td:nth-child(9) .table-seviye-badge');
+                    if (tipSpan) {
+                        const tipAdi = tipSpan.textContent.trim();
+                        const seciliTipAdi = document.getElementById('musteriTipFiltre').options[document.getElementById('musteriTipFiltre').selectedIndex]?.text;
+
+                        if (tipAdi !== seciliTipAdi) {
+                            goster = false;
+                        }
+                    }
+                }
+
+                // Müşteri Durumu filtresi (mevcut değil, ama ileride eklenebilir)
+                // Şimdilik atlıyoruz
+
+                // Bayi filtresi (8. sütun)
+                if (goster && musteriAktifFiltreler.bayiId) {
+                    const bayiTd = satir.querySelector('td:nth-child(8)');
+                    if (bayiTd) {
+                        const bayiText = bayiTd.textContent.trim();
+                        const seciliBayiAdi = document.getElementById('bayiFiltre').options[document.getElementById('bayiFiltre').selectedIndex]?.text;
+
+                        // Bağımsız müşteri kontrolü
+                        if (seciliBayiAdi === 'Tüm Bayiler' && (bayiText.includes('Bağımsız') || !bayiText.includes('└─'))) {
+                            // Her durumda göster
+                        } else if (!bayiText.includes(seciliBayiAdi)) {
+                            goster = false;
+                        }
+                    }
+                }
+
+                // Tarih filtresi (10. sütun - Müşteri Olma Tarihi)
+                if (goster && (musteriAktifFiltreler.baslangicTarih || musteriAktifFiltreler.bitisTarih)) {
+                    const tarihTd = satir.querySelector('td:nth-child(10) .badge');
+                    if (tarihTd) {
+                        const tarihText = tarihTd.textContent.trim();
+                        // Tarih formatı dd.MM.yyyy
+                        if (tarihText !== '-') {
+                            const tarih = musteriParseDate(tarihText);
+
+                            if (musteriAktifFiltreler.baslangicTarih) {
+                                const filtreBaslangic = new Date(musteriAktifFiltreler.baslangicTarih + 'T00:00:00');
+                                if (tarih < filtreBaslangic) {
+                                    goster = false;
+                                }
+                            }
+
+                            if (goster && musteriAktifFiltreler.bitisTarih) {
+                                const filtreBitis = new Date(musteriAktifFiltreler.bitisTarih + 'T23:59:59');
+                                if (tarih > filtreBitis) {
+                                    goster = false;
+                                }
+                            }
+                        } else {
+                            // Tarih yoksa, filtrelemede gösterilmesin
+                            if (musteriAktifFiltreler.baslangicTarih || musteriAktifFiltreler.bitisTarih) {
+                                goster = false;
+                            }
+                        }
+                    }
+                }
+
+                // Aday/Müşteri filtresi
+                if (goster && musteriAktifFiltreler.adayFiltre) {
+                    const musteriTarihTd = satir.querySelector('td:nth-child(10) .badge');
+                    const adayTarihTd = satir.querySelector('td:nth-child(11) .badge');
+
+                    const musteriTarihVar = musteriTarihTd && musteriTarihTd.textContent.trim() !== '-';
+                    const adayTarihVar = adayTarihTd && adayTarihTd.textContent.trim() !== '-';
+
+                    switch(musteriAktifFiltreler.adayFiltre) {
+                        case 'musteri':
+                            if (!musteriTarihVar) goster = false;
+                            break;
+                        case 'aday':
+                            if (!adayTarihVar) goster = false;
+                            break;
+                        case 'hem':
+                            if (!musteriTarihVar && !adayTarihVar) goster = false;
+                            break;
+                    }
+                }
+
+                return goster;
+            });
+
+            // Sıralama
+            switch(musteriAktifFiltreler.siralama) {
+                case 'yeni':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const tarihA = musteriParseDate(a.querySelector('td:nth-child(10) .badge')?.textContent.trim() || '');
+                        const tarihB = musteriParseDate(b.querySelector('td:nth-child(10) .badge')?.textContent.trim() || '');
+                        return (tarihB || 0) - (tarihA || 0);
+                    });
+                    break;
+
+                case 'eski':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const tarihA = musteriParseDate(a.querySelector('td:nth-child(10) .badge')?.textContent.trim() || '');
+                        const tarihB = musteriParseDate(b.querySelector('td:nth-child(10) .badge')?.textContent.trim() || '');
+                        return (tarihA || 0) - (tarihB || 0);
+                    });
+                    break;
+
+                case 'adi_az':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const adiA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        const adiB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        return adiA.localeCompare(adiB, 'tr');
+                    });
+                    break;
+
+                case 'adi_za':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const adiA = a.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        const adiB = b.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+                        return adiB.localeCompare(adiA, 'tr');
+                    });
+                    break;
+
+                case 'unvan_az':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const unvanA = a.querySelector('td:nth-child(4)')?.textContent.trim() || '';
+                        const unvanB = b.querySelector('td:nth-child(4)')?.textContent.trim() || '';
+                        return unvanA.localeCompare(unvanB, 'tr');
+                    });
+                    break;
+
+                case 'unvan_za':
+                    filtrelenmisSatirlar.sort((a, b) => {
+                        const unvanA = a.querySelector('td:nth-child(4)')?.textContent.trim() || '';
+                        const unvanB = b.querySelector('td:nth-child(4)')?.textContent.trim() || '';
+                        return unvanB.localeCompare(unvanA, 'tr');
+                    });
+                    break;
+            }
+
+            // Tüm satırları gizle
+            satirlar.forEach(satir => {
+                satir.style.display = 'none';
+            });
+
+            // Filtrelenmiş satırları göster
+            filtrelenmisSatirlar.forEach((satir, index) => {
+                satir.style.display = '';
+                // Sıra numarasını güncelle (2. sütun)
+                const siraHucresi = satir.querySelector('td:nth-child(2)');
+                if (siraHucresi) {
+                    siraHucresi.textContent = index + 1;
+                }
+            });
+
+            // "Gösterilecek kayıt yok" mesajı
+            let bosSatir = tbody.querySelector('.filtre-bos-satir');
+
+            if (filtrelenmisSatirlar.length === 0) {
+                if (!bosSatir) {
+                    bosSatir = document.createElement('tr');
+                    bosSatir.className = 'filtre-bos-satir';
+                    bosSatir.innerHTML = '<td colspan="11" class="text-center py-5"><i class="fas fa-filter fa-3x text-muted mb-3"></i><p class="text-muted">Filtreleme kriterlerine uygun müşteri bulunamadı.</p><button class="btn btn-sm btn-outline-secondary" onclick="musteriTumFiltreleriTemizle()">Filtreleri Temizle</button></td>';
+                    tbody.appendChild(bosSatir);
+                }
+
+                // "Henüz müşteri eklenmemiş" satırını gizle
+                const noDataRow = tbody.querySelector('tr td[colspan="10"] a');
+                if (noDataRow) {
+                    noDataRow.closest('tr').style.display = 'none';
+                }
+            } else {
+                if (bosSatir) bosSatir.remove();
+            }
+        }
+
+        // Enter tuşu ile filtreleme
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const aktifElement = document.activeElement;
+                if (aktifElement.id === 'musteriArama' ||
+                    aktifElement.id === 'filtreBaslangicTarih' ||
+                    aktifElement.id === 'filtreBitisTarih') {
+                    e.preventDefault();
+                    musteriFiltreleVeSirala();
+                }
+            }
+        });
+                            // Sayfa yüklendiğinde varsayılan müşteri durumunu kontrol et
+        setTimeout(function() {
+            const ekleDurumSelect = document.getElementById('MusteriDurumuId');
+            if (ekleDurumSelect && ekleDurumSelect.value == 2) {
+                toggleAdayMusteriAlanları(2, 'ekle');
+            }
+        }, 500);
+                          setTimeout(function() {
+            const ekleDurumSelect = document.getElementById('MusteriDurumuId');
+            if (ekleDurumSelect && ekleDurumSelect.value == 2) {
+                toggleAdayMusteriAlanları(2, 'ekle');
+            }
+        }, 500);
+                            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
+        let suAnSeciliMusteriId = null;
+        let suAnSeciliMusteriAd = null;
+        let suAnSeciliMusteriUnvan = null;
+        let suAnSeciliSatir = null;
+
+        const $seciliDetayBtn = $('#seciliDetayGoster');
+        const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
+        const $seciliTekliflerBtn = $('#seciliTekliflerBtn');
+        const $seciliSozlesmelerBtn = $('#seciliSozlesmelerBtn');
+        const $seciliSilBtn = $('#seciliSilBtn');
+        const $seciliBilgiDiv = $('#seciliKayitBilgi');
+
+        // Tablo satırına tıklandığında radio'yu seç
+        $(document).on('click', '#musteriTablosu tbody tr[data-musteri-id]', function(e) {
+            // Eğer tıklanan element radio butonunun kendisi değilse
+            if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button') && !$(e.target).is('a')) {
+                const $radio = $(this).find('.musteri-sec-radio');
+                $radio.prop('checked', true).trigger('change');
+            }
+        });
+
+        // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+        $(document).on('change', '.musteri-sec-radio', function() {
+            if ($(this).is(':checked')) {
+                suAnSeciliMusteriId = $(this).val();
+                suAnSeciliSatir = $(this).closest('tr');
+                suAnSeciliMusteriAd = suAnSeciliSatir.data('musteri-ad');
+                suAnSeciliMusteriUnvan = suAnSeciliSatir.data('musteri-unvan');
+
+                // Tüm satırlardan active class'ı kaldır
+                $('#musteriTablosu tbody tr').removeClass('table-active');
+                // Seçili satıra active class ekle
+                suAnSeciliSatir.addClass('table-active');
+
+                // Bilgiyi güncelle
+                const displayInfo = suAnSeciliMusteriUnvan || suAnSeciliMusteriAd || 'Müşteri';
+                $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${displayInfo.substring(0, 30)}${displayInfo.length > 30 ? '...' : ''}`);
+
+                // Butonları aktif et
+                $seciliDetayBtn.prop('disabled', false);
+                $seciliDuzenleBtn.prop('disabled', false);
+                $seciliTekliflerBtn.prop('disabled', false);
+                $seciliSozlesmelerBtn.prop('disabled', false);
+                $seciliSilBtn.prop('disabled', false);
+            }
+        });
+
+        // Üstteki "Detay Göster" butonu
+        $seciliDetayBtn.click(function() {
+            if (suAnSeciliMusteriId) {
+                detayGetir(suAnSeciliMusteriId);
+            } else {
+                toastr.warning('Lütfen önce bir müşteri seçin.');
+            }
+        });
+
+        // Üstteki "Düzenle" butonu
+        $seciliDuzenleBtn.click(function() {
+            if (suAnSeciliMusteriId) {
+                duzenleGetir(suAnSeciliMusteriId);
+            } else {
+                toastr.warning('Lütfen önce bir müşteri seçin.');
+            }
+        });
+
+        // Üstteki "Teklifler" butonu
+        $seciliTekliflerBtn.click(function() {
+            if (suAnSeciliMusteriId) {
+                musteriTeklifleriGetir(suAnSeciliMusteriId);
+            } else {
+                toastr.warning('Lütfen önce bir müşteri seçin.');
+            }
+        });
+
+        // Üstteki "Sözleşmeler" butonu
+        $seciliSozlesmelerBtn.click(function() {
+            if (suAnSeciliMusteriId) {
+                musteriSozlesmeleriGetir(suAnSeciliMusteriId);
+            } else {
+                toastr.warning('Lütfen önce bir müşteri seçin.');
+            }
+        });
+
+        // Üstteki "Sil" butonu
+        $seciliSilBtn.click(function() {
+            if (suAnSeciliMusteriId) {
+                $('#silId').val(suAnSeciliMusteriId);
+                $('#silAdi').text(suAnSeciliMusteriAd || 'Müşteri');
+                new bootstrap.Modal('#silModal').show();
+            } else {
+                toastr.warning('Lütfen önce bir müşteri seçin.');
+            }
+        });
+
+        // Silme modalı kapandıktan sonra seçimi temizleme
+        $('#silModal').on('hidden.bs.modal', function() {
+            if (suAnSeciliMusteriId) {
+                const $satir = $(`tr[data-musteri-id="${suAnSeciliMusteriId}"]`);
+                if ($satir.length === 0) {
+                    // Satır silinmiş, seçimi temizle
+                    clearSelection();
+                } else {
+                    // İptal edildi, radio'yu temizle
+                    $(`.musteri-sec-radio[value="${suAnSeciliMusteriId}"]`).prop('checked', false);
+                    clearSelection();
+                }
+            }
+        });
+
+        // Arama sonrası seçimi temizle
+        $('#musteriAramaInput').on('input', function() {
+            setTimeout(function() {
+                if (suAnSeciliMusteriId) {
+                    $(`.musteri-sec-radio[value="${suAnSeciliMusteriId}"]`).prop('checked', false);
+                    clearSelection();
+                }
+            }, 100);
+        });
+
+        // Seçimi temizleme yardımcı fonksiyonu
+        function clearSelection() {
+            $('#musteriTablosu tbody tr').removeClass('table-active');
+            suAnSeciliMusteriId = null;
+            suAnSeciliMusteriAd = null;
+            suAnSeciliMusteriUnvan = null;
+            suAnSeciliSatir = null;
+            $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+
+            // Tüm butonları devre dışı bırak
+            $seciliDetayBtn.prop('disabled', true);
+            $seciliDuzenleBtn.prop('disabled', true);
+            $seciliTekliflerBtn.prop('disabled', true);
+            $seciliSozlesmelerBtn.prop('disabled', true);
+            $seciliSilBtn.prop('disabled', true);
+        }
                     setTimeout(() => $('.alert').fadeOut('slow'), 5000);
 
                     // Kullanıcı adı kontrol event'leri
@@ -2839,24 +3918,29 @@
                         kontrolKullaniciAdi(this.value.trim(), document.getElementById('editId').value, 'editKullaniciAdiKontrol');
                     });
 
-                    // "Diğer" tipi kontrolleri
-                    $('#MusteriTipiId').on('change', function () {
-                        toggleDigerInput(this, '#digerTipiContainer', '#Diger');
-                    });
+                        // "Diğer" tipi kontrolleri
+        $('#MusteriTipiId').on('change', function () {
+            toggleDigerInput(this, '#digerTipiContainer', '#Diger');
+        });
 
-                    $('#editMusteriTipiId').on('change', function () {
-                        toggleDigerInput(this, '#editDigerTipiContainer', '#editDiger');
-                    });
+        $('#editMusteriTipiId').on('change', function () {
+            toggleDigerInput(this, '#editDigerTipiContainer', '#editDiger');
+        });
 
-                    $('#duzenleModal').on('shown.bs.modal', function () {
-                        toggleDigerInput('#editMusteriTipiId', '#editDigerTipiContainer', '#editDiger');
-                    });
+        $('#duzenleModal').on('shown.bs.modal', function () {
+            toggleDigerInput($('#editMusteriTipiId'), '#editDigerTipiContainer', '#editDiger');
+        });
 
                     // Modal event'leri
                     $('#ekleModal').on('show.bs.modal', function () {
                         ekleYetkiliListesi = [];
                         guncelleEkleYetkiliListesi();
                         $('#digerTipiContainer').hide();
+                               // YENİ EKLENEN - Aday müşteri kontrolü
+        const durumSelect = document.getElementById('MusteriDurumuId');
+        if (durumSelect && durumSelect.value == 2) {
+            toggleAdayMusteriAlanları(2, 'ekle');
+        }
                     });
 
                     $('#duzenleModal').on('hidden.bs.modal', function () {
@@ -2891,6 +3975,11 @@
                     // Arama fonksiyonunu başlat
                     initMusteriArama();
                 });
+
+
+
+      
+
                         // Sözleşme dosyalarını yükle
                 async function yukleSozlesmeDosyalari(musteriId) {
                     try {

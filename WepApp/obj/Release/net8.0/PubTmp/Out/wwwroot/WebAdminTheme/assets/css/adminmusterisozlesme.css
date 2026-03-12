@@ -1,0 +1,500 @@
+﻿
+.belgeler-eksik-row {
+    background-color: #fff3cd !important;
+    border-left: 4px solid #ffc107 !important;
+    /* animation: pulse 2s infinite; KALDIRILDI */
+}
+
+.belgeler-eksik-badge {
+    background-color: #ffc107 !important;
+    color: #856404 !important;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 12px;
+    margin-left: 5px;
+}
+
+/* Toastr özel stili */
+.toast-bg-warning {
+    background-color: #ffc107 !important;
+    color: #856404 !important;
+}
+
+.satir-onaylandi {
+    background-color: #d4edda !important;
+    border-left: 4px solid #28a745;
+}
+
+.durum-onaylandi {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+    border-color: #c3e6cb !important;
+}
+
+.lisans-iptal-btn {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+    font-size: 0.7rem;
+    padding: 3px 6px;
+    margin-top: 3px;
+    width: 100%;
+}
+
+    .lisans-iptal-btn:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+
+/* Lisanslandı durumundaki butonlar için düzenleme */
+.satir-lisanslandi .durum-hucresi .btn {
+    margin-top: 2px;
+}
+
+.dokuman-yukleme-alani {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #dee2e6;
+}
+
+.dokuman-check-group {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+}
+
+.dokuman-check-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.dokuman-check-label {
+    font-weight: 500;
+    color: #2e2e5d;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dokuman-durum {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.dokuman-yuklu {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.dokuman-yuksuz {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.dokuman-dosya-info {
+    background-color: #e9ecef;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-top: 8px;
+    font-size: 0.85rem;
+}
+
+.dokuman-aksiyonlar {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.dokuman-aksiyon-btn {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+}
+
+.file-input-preview {
+    border: 2px dashed #dee2e6;
+    border-radius: 6px;
+    padding: 15px;
+    text-align: center;
+    background-color: #f8f9fa;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+    .file-input-preview:hover {
+        border-color: #86b7fe;
+        background-color: #e7f3ff;
+    }
+
+.file-preview {
+    max-width: 200px;
+    max-height: 150px;
+    margin-top: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    display: none;
+}
+
+    .file-preview.active {
+        display: inline-block;
+    }
+
+.zorunlu-dokuman-section {
+    background-color: #fff3cd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-left: 4px solid #ffc107;
+}
+
+.zorunlu-dokuman-title {
+    font-weight: 600;
+    color: #856404;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dokuman-var-icon {
+    color: #28a745;
+}
+
+.dokuman-yok-icon {
+    color: #dc3545;
+}
+
+.dokuman-badge {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    margin-left: 5px;
+}
+
+/* Diğer stiller mevcut halinde kalacak */
+.sozlesme-container {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f8f9fa;
+    min-height: calc(100vh - 80px);
+    padding: 20px;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #2e2e5d, #4a4a8a);
+    color: white;
+    padding: 15px 20px;
+}
+
+.table th {
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    color: #2e2e5d;
+    padding: 12px 8px;
+    font-size: 0.85rem;
+}
+
+.table td {
+    padding: 10px 8px;
+    vertical-align: middle;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.dokuman-no {
+    font-weight: 600;
+    color: #2e2e5d;
+}
+
+.musteri-adi {
+    font-weight: 500;
+    color: #495057;
+}
+
+.yillik-bakim {
+    font-weight: 600;
+    color: #28a745;
+}
+
+.durum-select {
+    font-size: 0.75rem;
+    padding: 5px 8px;
+    border-radius: 6px;
+    min-width: 130px;
+    cursor: pointer;
+    border: 1px solid #ced4da;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+    .durum-select:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    .durum-select:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        outline: none;
+    }
+
+/* Durum stilleri */
+.satir-sms-onay {
+    background-color: #e7f3fe !important;
+    border-left: 4px solid #0dcaf0;
+}
+
+.satir-bayi-onay {
+    background-color: #fff3cd !important;
+    border-left: 4px solid #ffc107;
+}
+
+.satir-distributor-onay {
+    background-color: #d1ecf1 !important;
+    border-left: 4px solid #17a2b8;
+}
+
+.satir-lisanslandi {
+    background-color: #d4edda !important;
+    border-left: 4px solid #28a745;
+}
+
+.satir-muhasebelendi {
+    background-color: #e2e3e5 !important;
+    border-left: 4px solid #6c757d;
+}
+
+.satir-iptal {
+    background-color: #f8d7da !important;
+    border-left: 4px solid #dc3545;
+}
+
+.durum-sms-onay {
+    background-color: #e7f3fe !important;
+    color: #0c5460 !important;
+    border-color: #bee5eb !important;
+}
+
+.durum-bayi-onay {
+    background-color: #fff3cd !important;
+    color: #856404 !important;
+    border-color: #ffeaa7 !important;
+}
+
+.durum-distributor-onay {
+    background-color: #d1ecf1 !important;
+    color: #0c5460 !important;
+    border-color: #bee5eb !important;
+}
+
+.durum-lisanslandi {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+    border-color: #c3e6cb !important;
+}
+
+.durum-muhasebelendi {
+    background-color: #e2e3e5 !important;
+    color: #383d41 !important;
+    border-color: #d6d8db !important;
+}
+
+.durum-iptal {
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+    border-color: #f5c6cb !important;
+}
+
+.durum-belirtilmemis {
+    background-color: #f8f7da !important;
+    color: #856404 !important;
+    border-color: #f5f3c1 !important;
+}
+
+.aksiyon-btn {
+    padding: 4px 8px;
+    margin: 0 2px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+    .aksiyon-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+.search-box {
+    max-width: 300px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+}
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #dee2e6;
+    }
+
+/* Loading spinner */
+.durum-loading {
+    position: relative;
+    opacity: 0.7;
+}
+
+    .durum-loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 16px;
+        height: 16px;
+        margin: -8px 0 0 -8px;
+        border: 2px solid #007bff;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+@@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.durum-hucresi {
+    min-width: 150px;
+    max-width: 180px;
+}
+
+.lisans-btn, .muhasebe-btn, .geri-al-btn {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+    margin-top: 3px;
+    width: 100%;
+}
+
+.lisans-btn {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.muhasebe-btn {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+.geri-al-btn {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+}
+
+/* Arama inputu için özel stiller */
+.search-box {
+    max-width: 300px;
+}
+
+    .search-box .input-group {
+        border-radius: 6px;
+        border: 1px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+
+        .search-box .input-group:focus-within {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+
+    .search-box .input-group-text {
+        background-color: #f8f9fa;
+        border: none;
+        color: #6c757d;
+    }
+
+    .search-box .form-control {
+        border: none;
+        box-shadow: none;
+        font-size: 0.85rem;
+    }
+
+        .search-box .form-control:focus {
+            box-shadow: none;
+        }
+
+/* Responsive */
+@@media (max-width: 768px) {
+    .aksiyon-btn {
+        display: block;
+        margin: 3px 0;
+        width: 100%;
+    }
+
+    .table td, .table th {
+        padding: 8px 5px;
+        font-size: 0.75rem;
+    }
+
+    .durum-select {
+        min-width: 110px;
+        font-size: 0.7rem;
+    }
+
+    .card-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-box {
+        max-width: 100%;
+    }
+
+    .dokuman-aksiyonlar {
+        flex-wrap: wrap;
+    }
+}
+
+.badge-sm {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+}
+
+.option-disabled {
+    color: #adb5bd;
+    background-color: #f8f9fa;
+    font-style: italic;
+}
+
+.btn-icon {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
+.islem-btns {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+    flex-wrap: wrap;
+}

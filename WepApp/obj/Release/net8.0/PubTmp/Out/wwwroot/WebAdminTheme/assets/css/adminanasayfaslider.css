@@ -1,0 +1,180 @@
+﻿
+.slider-gorsel-preview {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 2px solid #e9ecef;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.slider-gorsel-preview:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.slider-video-preview {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 2px solid #e9ecef;
+    cursor: pointer;
+    position: relative;
+}
+
+.video-play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 24px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.modal-gorsel-preview {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 2px solid #dee2e6;
+    margin-top: 10px;
+}
+
+.modal-video-preview {
+    width: 100%;
+    max-height: 400px;
+    border-radius: 8px;
+}
+
+.gorsel-upload-area, .video-upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+    .gorsel-upload-area:hover, .video-upload-area:hover {
+        border-color: #0d6efd;
+        background-color: #e7f1ff;
+    }
+
+    .gorsel-upload-area i, .video-upload-area i {
+        font-size: 48px;
+        color: #6c757d;
+    }
+
+.current-image-container, .current-video-container {
+    position: relative;
+    display: inline-block;
+    margin: 10px 0;
+}
+
+.remove-image-btn, .remove-video-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+    .remove-image-btn:hover, .remove-video-btn:hover {
+        background-color: #bb2d3b;
+    }
+
+.sira-badge {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #3498db;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.video-badge {
+    background-color: #e74c3c;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+    .video-badge i {
+        font-size: 12px;
+    }
+
+.file-type-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: #6c757d;
+    color: white;
+    margin-left: 5px;
+}
+
+/* Seçim satırı için cursor pointer */
+tr[data-slider-id] {
+    cursor: pointer;
+}
+
+/* Seçili satır efekti */
+tr.table-active {
+    background-color: rgba(0, 123, 255, 0.1) !important;
+}
+
+/* İşlem butonları alanı */
+.islem-butonlari-alani {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+}
+
+.secili-bilgi {
+    font-size: 0.85rem;
+    color: #28a745;
+    font-weight: 500;
+}
+
+    .secili-bilgi i {
+        font-size: 1rem;
+    }
+
+/* Buton stilleri */
+.aksiyon-btn {
+    transition: all 0.2s;
+}
+
+    .aksiyon-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .aksiyon-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+

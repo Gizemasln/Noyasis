@@ -3,6 +3,65 @@
     ViewData["Title"] = "Ürün Yönetimi";
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
+
+<style>
+    /* Seçim satırı için cursor pointer */
+    tr[data-urun-id] {
+        cursor: pointer;
+    }
+
+    /* Seçili satır efekti */
+    tr.table-active {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+
+    /* İşlem butonları alanı */
+    .islem-butonlari-alani {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .secili-bilgi {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+
+    .secili-bilgi i {
+        font-size: 1rem;
+    }
+
+    /* Buton stilleri */
+    .aksiyon-btn {
+        transition: all 0.2s;
+    }
+
+    .aksiyon-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .aksiyon-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Buton grupları için */
+    .btn-group .btn {
+        margin: 0 2px;
+    }
+
+    .btn-group .btn:first-child {
+        margin-left: 0;
+    }
+
+    .btn-group .btn:last-child {
+        margin-right: 0;
+    }
+</style>
+
 <div class="row">
     <div class="col-md-12">
         @if (TempData["Success"] != null)
@@ -24,10 +83,28 @@
             @if (ViewBag.Kullanici != null)
             {
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Ürünler</span>
-                    <button class="btn btn-secondary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
-                        <i class="fas fa-plus"></i> Yeni Ürün Ekle
-                    </button>
+                    <h5 class="mb-0">Ürünler</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Seçili Kayıt Bilgisi ve İşlem Butonları -->
+                        <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                            <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                                <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                            </div>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button type="button" class="btn btn-warning btn-sm" id="seciliDuzenleBtn" data-button-permission="duzenle" title="Seçili Ürünü Düzenle" disabled style="margin-right:5px;">
+                                    <i class="fas fa-edit"></i> 
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm" id="seciliSilBtn" data-button-permission="sil" title="Seçili Ürünü Sil" disabled>
+                                    <i class="fas fa-trash"></i> 
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Yeni Ekle Butonu -->
+                        <button class="btn btn-primary" data-button-permission="ekle" data-bs-toggle="modal" data-bs-target="#ekleModal">
+                            <i class="fas fa-plus"></i> Yeni Ürün Ekle
+                        </button>
+                    </div>
                 </div>
             }
 
@@ -36,6 +113,7 @@
                     <table class="table table-bordered table-hover">
                         <thead class="table-head-bg-primary">
                             <tr>
+                                <th width="40">Seç</th>
                                 <th>#</th>
                                 <th>Adı</th>
                                 <th>Kategori</th>
@@ -46,11 +124,11 @@
                                 <th>Son Fiyat</th>
                                 @if (ViewBag.Kullanici != null)
                                 {
-                                    <th>İşlemler</th>
+                                    <!-- İşlemler sütunu kaldırıldı -->
                                 }
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="urunTablosu">
                             @if (ViewBag.UrunList != null && ((List<Urun>)ViewBag.UrunList).Count > 0)
                             {
                                 var urunList = ViewBag.UrunList as List<Urun>;
@@ -58,9 +136,14 @@
                                 foreach (var item in urunList)
                                 {
                                     var suresizIndirim = item.SureSizIndirimYuzdesi ?? 0;
-                                    <tr>
+                                    <tr data-urun-id="@item.Id" data-urun-adi="@item.Adi" class="urun-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input urun-sec-radio" type="radio" name="seciliUrunRadio" value="@item.Id" id="secim_@item.Id">
+                                            </div>
+                                        </td>
                                         <td>@counter</td>
-                                        <td>@item.Adi</td>
+                                        <td><strong>@item.Adi</strong></td>
                                         <td>@(item.Kategori?.Adi ?? "")</td>
                                         <td>
                                             <span class="badge @(item.Stok == 1 ? "bg-success" : "bg-danger")">
@@ -87,17 +170,7 @@
                                                 @item.Fiyat <span>TL</span>
                                             }
                                         </td>
-                                        @if (ViewBag.Kullanici != null)
-                                        {
-                                            <td>
-                                                <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id)">
-                                                    <i class="fas fa-edit"></i> 
-                                                </button>
-                                                <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.Adi')">
-                                                    <i class="fas fa-trash"></i> 
-                                                </button>
-                                            </td>
-                                        }
+                                        <!-- İşlemler sütunundaki butonlar KALDIRILDI -->
                                     </tr>
                                     counter++;
                                 }
@@ -107,7 +180,7 @@
                                 @if (ViewBag.Kullanici != null)
                                 {
                                     <tr>
-                                        <td colspan="8" class="text-center">
+                                        <td colspan="10" class="text-center">
                                             Henüz ürün eklenmemiş.
                                             <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-button-permission="ekle" data-bs-target="#ekleModal">Yeni Ürün Ekle</button>
                                         </td>
@@ -242,7 +315,7 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="Id" id="silId" />
                 <div class="modal-body">
-                    "<span id="silAdi"></span>"Silinsin mi?
+                    "<span id="silAdi"></span>" ürününü silmek istediğinizden emin misiniz?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
@@ -255,6 +328,10 @@
 
 @section Script {
     <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <!-- Toastr için gerekli script ve CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
         let ekleEditor = null, duzenleEditor = null;
 
@@ -328,6 +405,103 @@
             }
         }
 
+        $(document).ready(function () {
+            // Toastr ayarları
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
+            let suAnSeciliUrunId = null;
+            let suAnSeciliUrunAdi = null;
+            let suAnSeciliSatir = null;
+
+            const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
+            const $seciliSilBtn = $('#seciliSilBtn');
+            const $seciliBilgiDiv = $('#seciliKayitBilgi');
+
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#urunTablosu tr[data-urun-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button') && !$(e.target).is('a') && !$(e.target).is('span')) {
+                    const $radio = $(this).find('.urun-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
+                }
+            });
+
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.urun-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliUrunId = $(this).val();
+                    suAnSeciliSatir = $(this).closest('tr');
+                    suAnSeciliUrunAdi = suAnSeciliSatir.data('urun-adi');
+
+                    // Tüm satırlardan active class'ı kaldır
+                    $('#urunTablosu tr').removeClass('table-active');
+                    // Seçili satıra active class ekle
+                    suAnSeciliSatir.addClass('table-active');
+
+                    // Bilgiyi güncelle
+                    $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${suAnSeciliUrunAdi}`);
+
+                    // Butonları aktif et
+                    $seciliDuzenleBtn.prop('disabled', false);
+                    $seciliSilBtn.prop('disabled', false);
+                }
+            });
+
+            // Üstteki "Düzenle" butonu
+            $seciliDuzenleBtn.click(function() {
+                if (suAnSeciliUrunId) {
+                    duzenleGetir(suAnSeciliUrunId);
+                } else {
+                    toastr.warning('Lütfen önce bir ürün seçin.');
+                }
+            });
+
+            // Üstteki "Sil" butonu
+            $seciliSilBtn.click(function() {
+                if (suAnSeciliUrunId) {
+                    $('#silId').val(suAnSeciliUrunId);
+                    $('#silAdi').text(suAnSeciliUrunAdi);
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    toastr.warning('Lütfen önce bir ürün seçin.');
+                }
+            });
+
+            // Silme modalı kapandıktan sonra seçimi temizleme
+            $('#silModal').on('hidden.bs.modal', function() {
+                if (suAnSeciliUrunId) {
+                    const $satir = $(`tr[data-urun-id="${suAnSeciliUrunId}"]`);
+                    if ($satir.length === 0) {
+                        // Satır silinmiş, seçimi temizle
+                        clearSelection();
+                    } else {
+                        // İptal edildi, radio'yu temizle
+                        $(`.urun-sec-radio[value="${suAnSeciliUrunId}"]`).prop('checked', false);
+                        clearSelection();
+                    }
+                }
+            });
+
+            // Seçimi temizleme yardımcı fonksiyonu
+            function clearSelection() {
+                $('#urunTablosu tr').removeClass('table-active');
+                suAnSeciliUrunId = null;
+                suAnSeciliUrunAdi = null;
+                suAnSeciliSatir = null;
+                $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+
+                // Tüm butonları devre dışı bırak
+                $seciliDuzenleBtn.prop('disabled', true);
+                $seciliSilBtn.prop('disabled', true);
+            }
+        });
+
         function duzenleGetir(id) {
             fetch(`@Url.Action("Getir", "AdminUrun")?id=${id}`)
                 .then(r => {
@@ -357,7 +531,7 @@
                 })
                 .catch(err => {
                     console.error(err);
-                    alert('Ürün getirilirken hata oluştu.');
+                    toastr.error('Ürün getirilirken hata oluştu.');
                 });
         }
 

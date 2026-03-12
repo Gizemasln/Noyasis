@@ -3,6 +3,64 @@
     Layout = "~/Views/Shared/_LayoutWebAdmin.cshtml";
 }
 
+<style>
+    /* Seçim satırı için cursor pointer */
+    tr[data-makale-id] {
+        cursor: pointer;
+    }
+
+    /* Seçili satır efekti */
+    tr.table-active {
+        background-color: rgba(0, 123, 255, 0.1) !important;
+    }
+
+    /* İşlem butonları alanı */
+    .islem-butonlari-alani {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    .secili-bilgi {
+        font-size: 0.85rem;
+        color: #28a745;
+        font-weight: 500;
+    }
+
+        .secili-bilgi i {
+            font-size: 1rem;
+        }
+
+    /* Buton stilleri */
+    .aksiyon-btn {
+        transition: all 0.2s;
+    }
+
+        .aksiyon-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .aksiyon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    /* Buton grupları için */
+    .btn-group .btn {
+        margin: 0 2px;
+    }
+
+        .btn-group .btn:first-child {
+            margin-left: 0;
+        }
+
+        .btn-group .btn:last-child {
+            margin-right: 0;
+        }
+</style>
+
 <div class="row">
     <div class="col-md-12">
         <!-- Başarı/Hata Mesajları -->
@@ -22,14 +80,28 @@
         }
 
         <div class="card" style="margin-top:70px;">
-            <div class="card-header">
-                <div class="card-title d-flex justify-content-between align-items-center">
-                    <span>Makale Bilgileri</span>
-                    <div class="mb-3">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-button-permission="ekle" data-bs-target="#ekleModal">
-                            <i class="fas fa-plus"></i> Yeni Makale Ekle
-                        </button>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Makale Bilgileri</h5>
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Seçili Kayıt Bilgisi ve İşlem Butonları -->
+                    <div class="islem-butonlari-alani d-flex align-items-center gap-2">
+                        <div id="seciliKayitBilgi" class="secili-bilgi me-2">
+                            <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button type="button" class="btn btn-warning btn-sm" id="seciliDuzenleBtn" data-button-permission="duzenle" title="Seçili Makaleyi Düzenle" disabled style="margin-right:5px;">
+                                <i class="fas fa-edit"></i> 
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" id="seciliSilBtn" data-button-permission="sil" title="Seçili Makaleyi Sil" disabled>
+                                <i class="fas fa-trash"></i> 
+                            </button>
+                        </div>
                     </div>
+
+                    <!-- Yeni Ekle Butonu -->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-button-permission="ekle" data-bs-target="#ekleModal">
+                        <i class="fas fa-plus"></i> Yeni Makale Ekle
+                    </button>
                 </div>
             </div>
             <div class="card-body">
@@ -37,23 +109,29 @@
                     <table class="table table-bordered table-hover">
                         <thead class="table-head-bg-primary">
                             <tr>
+                                <th width="40">Seç</th>
                                 <th scope="col">#</th>
                                 <th scope="col">Başlık</th>
                                 <th scope="col">Metin</th>
                                 <th scope="col">Fotoğraf</th>
                                 <th scope="col">Eklenme Tarihi</th>
-                                <th scope="col">İşlemler</th>
+                                <!-- İşlemler sütunu kaldırıldı -->
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="makaleTablosu">
                             @if (ViewBag.MakaleList != null && ViewBag.MakaleList.Count > 0)
                             {
                                 var counter = 1;
                                 foreach (var item in ViewBag.MakaleList)
                                 {
-                                    <tr>
+                                    <tr data-makale-id="@item.Id" data-makale-baslik="@item.Baslik" class="makale-satiri">
+                                        <td class="text-center">
+                                            <div class="form-check" onclick="event.stopPropagation();">
+                                                <input class="form-check-input makale-sec-radio" type="radio" name="seciliMakaleRadio" value="@item.Id" id="secim_@item.Id">
+                                            </div>
+                                        </td>
                                         <td>@counter</td>
-                                        <td>@item.Baslik</td>
+                                        <td><strong>@item.Baslik</strong></td>
                                         <td>
                                             @{
                                                 string metin = item.Metin?.ToString() ?? "";
@@ -70,14 +148,16 @@
                                         <td>
                                             @if (!string.IsNullOrEmpty(item.Fotograf))
                                             {
-                                                <img src="@item.Fotograf" alt="Fotoğraf" style="width: 50px; height: 50px; object-fit: cover;" />
-                                                <a href="@item.Fotograf" target="_blank" class="btn btn-info btn-sm" data-button-permission="detay">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="@item.Fotograf" alt="Fotoğraf" style="width: 50px; height: 50px; object-fit: cover; border-radius:4px;" class="me-2">
+                                                    <a href="@item.Fotograf" target="_blank" class="btn btn-info btn-sm" data-button-permission="detay" title="Fotoğrafı Görüntüle">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                </div>
                                             }
                                             else
                                             {
-                                                <span>Fotoğraf yok</span>
+                                                <span class="text-muted">Fotoğraf yok</span>
                                             }
                                         </td>
                                         <td>
@@ -86,14 +166,7 @@
                                                 @(tarih?.ToString("dd.MM.yyyy HH:mm") ?? "")
                                             }
                                         </td>
-                                        <td>
-                                            <button type="button" class="btn btn-warning btn-sm" data-button-permission="duzenle" onclick="duzenleGetir(@item.Id)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-sm" data-button-permission="sil" onclick="silOnay(@item.Id, '@item.Baslik')">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
+                                        <!-- İşlemler sütunundaki butonlar KALDIRILDI -->
                                     </tr>
                                     counter++;
                                 }
@@ -101,7 +174,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="6" class="text-center">
+                                    <td colspan="7" class="text-center">
                                         Henüz makale eklenmemiş.
                                         <a href="#" data-bs-toggle="modal" data-bs-target="#ekleModal" class="btn btn-primary btn-sm">
                                             Yeni Makale Ekle
@@ -210,6 +283,10 @@
 </div>
 
 @section Script {
+    <!-- Toastr için gerekli script ve CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <script>
         var ekleEditor, duzenleEditor;
 
@@ -229,33 +306,135 @@
             }
         }
 
-        // Sayfa yüklendiğinde
-        document.addEventListener('DOMContentLoaded', function() {
+        $(document).ready(function () {
+            // Toastr ayarları
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+
             initEditors();
-        });
 
-        // Düzenleme modalı gösterildiğinde
-        $('#duzenleModal').on('shown.bs.modal', function() {
-            if (duzenleEditor) {
-                setTimeout(function() {
-                    duzenleEditor.focus();
-                }, 200);
-            }
-        });
+            // ============= SATIR SEÇME VE ÜST BUTONLAR =============
+            let suAnSeciliMakaleId = null;
+            let suAnSeciliMakaleBaslik = null;
+            let suAnSeciliSatir = null;
 
-        // Modal kapandığında
-        $('#ekleModal').on('hidden.bs.modal', function() {
-            if (ekleEditor) {
-                ekleEditor.setData('');
-            }
-            document.getElementById('ekleModal').querySelector('form').reset();
-        });
+            const $seciliDuzenleBtn = $('#seciliDuzenleBtn');
+            const $seciliSilBtn = $('#seciliSilBtn');
+            const $seciliBilgiDiv = $('#seciliKayitBilgi');
 
-        $('#duzenleModal').on('hidden.bs.modal', function() {
-            if (duzenleEditor) {
-                duzenleEditor.setData('');
+            // Tablo satırına tıklandığında radio'yu seç
+            $(document).on('click', '#makaleTablosu tr[data-makale-id]', function(e) {
+                // Eğer tıklanan element radio butonunun kendisi değilse
+                if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button') && !$(e.target).is('a')) {
+                    const $radio = $(this).find('.makale-sec-radio');
+                    $radio.prop('checked', true).trigger('change');
+                }
+            });
+
+            // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
+            $(document).on('change', '.makale-sec-radio', function() {
+                if ($(this).is(':checked')) {
+                    suAnSeciliMakaleId = $(this).val();
+                    suAnSeciliSatir = $(this).closest('tr');
+                    suAnSeciliMakaleBaslik = suAnSeciliSatir.data('makale-baslik');
+
+                    // Tüm satırlardan active class'ı kaldır
+                    $('#makaleTablosu tr').removeClass('table-active');
+                    // Seçili satıra active class ekle
+                    suAnSeciliSatir.addClass('table-active');
+
+                    // Bilgiyi güncelle
+                    $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${suAnSeciliMakaleBaslik.substring(0, 30)}${suAnSeciliMakaleBaslik.length > 30 ? '...' : ''}`);
+
+                    // Butonları aktif et
+                    $seciliDuzenleBtn.prop('disabled', false);
+                    $seciliSilBtn.prop('disabled', false);
+                }
+            });
+
+            // Üstteki "Düzenle" butonu
+            $seciliDuzenleBtn.click(function() {
+                if (suAnSeciliMakaleId) {
+                    duzenleGetir(suAnSeciliMakaleId);
+                } else {
+                    toastr.warning('Lütfen önce bir makale seçin.');
+                }
+            });
+
+            // Üstteki "Sil" butonu
+            $seciliSilBtn.click(function() {
+                if (suAnSeciliMakaleId) {
+                    $('#silId').val(suAnSeciliMakaleId);
+                    $('#silBaslik').text(suAnSeciliMakaleBaslik);
+                    new bootstrap.Modal(document.getElementById('silModal')).show();
+                } else {
+                    toastr.warning('Lütfen önce bir makale seçin.');
+                }
+            });
+
+            // Silme modalı kapandıktan sonra seçimi temizleme
+            $('#silModal').on('hidden.bs.modal', function() {
+                if (suAnSeciliMakaleId) {
+                    const $satir = $(`tr[data-makale-id="${suAnSeciliMakaleId}"]`);
+                    if ($satir.length === 0) {
+                        // Satır silinmiş, seçimi temizle
+                        clearSelection();
+                    } else {
+                        // İptal edildi, radio'yu temizle
+                        $(`.makale-sec-radio[value="${suAnSeciliMakaleId}"]`).prop('checked', false);
+                        clearSelection();
+                    }
+                }
+            });
+
+            // Seçimi temizleme yardımcı fonksiyonu
+            function clearSelection() {
+                $('#makaleTablosu tr').removeClass('table-active');
+                suAnSeciliMakaleId = null;
+                suAnSeciliMakaleBaslik = null;
+                suAnSeciliSatir = null;
+                $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+
+                // Tüm butonları devre dışı bırak
+                $seciliDuzenleBtn.prop('disabled', true);
+                $seciliSilBtn.prop('disabled', true);
             }
-            document.getElementById('mevcutFotograf').innerHTML = '';
+
+            // Düzenleme modalı gösterildiğinde
+            $('#duzenleModal').on('shown.bs.modal', function() {
+                if (duzenleEditor) {
+                    setTimeout(function() {
+                        duzenleEditor.focus();
+                    }, 200);
+                }
+            });
+
+            // Modal kapandığında
+            $('#ekleModal').on('hidden.bs.modal', function() {
+                if (ekleEditor) {
+                    ekleEditor.setData('');
+                }
+                this.querySelector('form').reset();
+            });
+
+            $('#duzenleModal').on('hidden.bs.modal', function() {
+                if (duzenleEditor) {
+                    duzenleEditor.setData('');
+                }
+                document.getElementById('mevcutFotograf').innerHTML = '';
+            });
+
+            // Alertleri otomatik kapat
+            setTimeout(function() {
+                document.querySelectorAll('.alert').forEach(function(alert) {
+                    var bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
         });
 
         // Düzenleme için veri getir
@@ -274,8 +453,8 @@
 
                     if (data.fotograf) {
                         document.getElementById('mevcutFotograf').innerHTML =
-                            '<img src="' + data.fotograf + '" style="max-width: 200px; max-height: 100px;" class="mt-2"/>' +
-                            '<div><small>Mevcut fotoğraf</small></div>';
+                            '<img src="' + data.fotograf + '" style="max-width: 200px; max-height: 100px; border-radius:4px;" class="mt-2 border p-1"/>' +
+                            '<div><small class="text-muted">Mevcut fotoğraf</small></div>';
                     } else {
                         document.getElementById('mevcutFotograf').innerHTML = '';
                     }
@@ -284,7 +463,7 @@
                     modal.show();
                 })
                 .catch(error => {
-                    alert('Kayıt getirilirken hata oluştu.');
+                    toastr.error('Kayıt getirilirken hata oluştu.');
                 });
         }
 
@@ -295,13 +474,5 @@
             var modal = new bootstrap.Modal(document.getElementById('silModal'));
             modal.show();
         }
-
-        // Alertleri otomatik kapat
-        setTimeout(function() {
-            document.querySelectorAll('.alert').forEach(function(alert) {
-                var bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            });
-        }, 5000);
     </script>
 }
