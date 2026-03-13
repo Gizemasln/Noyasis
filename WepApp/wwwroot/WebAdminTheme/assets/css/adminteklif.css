@@ -520,3 +520,71 @@ tr.table-active {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 15px;
 }
+/* Tarih filtresi stilleri */
+.tarih-filtre .input-group-text {
+    border-right: none;
+}
+
+.tarih-filtre input {
+    border-left: none;
+    border-right: none;
+}
+
+    .tarih-filtre input:focus {
+        box-shadow: none;
+        border-color: #ced4da;
+    }
+
+.tarih-filtre .btn-outline-secondary {
+    border-left: none;
+}
+
+    .tarih-filtre .btn-outline-secondary:hover {
+        background-color: #f8f9fa;
+        color: #dc3545;
+        border-color: #ced4da;
+    }
+
+/* Aktif filtre badge */
+.filtre-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    background-color: #e9ecef;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: #495057;
+    border: 1px solid #dee2e6;
+}
+
+    .filtre-badge i {
+        margin-right: 6px;
+        font-size: 0.8rem;
+        color: #0d6efd;
+    }
+
+    .filtre-badge .filtre-temizle {
+        margin-left: 8px;
+        cursor: pointer;
+        color: #6c757d;
+        transition: color 0.2s;
+    }
+
+        .filtre-badge .filtre-temizle:hover {
+            color: #dc3545;
+        }
+
+/* Sıralama select stilleri */
+.siralama-filtre select {
+    background-color: white;
+    cursor: pointer;
+}
+
+    .siralama-filtre select:hover {
+        border-color: #86b7fe;
+    }
+
+    .siralama-filtre select:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
+    }

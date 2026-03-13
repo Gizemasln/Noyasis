@@ -28,9 +28,41 @@
                     <div class="card-body p-0">
 
                         <div class="card-body border-bottom">
-                            <div class="row g-3">
-                                <div class="row g-3 align-items-end">
-                                    <div class="col-md-6">
+                            <div class="row">
+                                    <div class="col-md-2">
+                                        <!-- TARİH ARALIĞI FİLTRESİ -->
+                                        <div class="justify-content-end align-items-center gap-2">
+                                            <div class="tarih-filtre" >
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text bg-white">
+                                                        <i class="fas fa-calendar-alt text-muted"></i>
+                                                    </span>
+                                                    <input type="text"
+                                                           id="tarihAraligi"
+                                                           class="form-control"
+                                                           placeholder="Oluşturulma Tarihi Aralığı">
+                                                    <button class="btn btn-outline-secondary" type="button" id="tarihFiltreTemizle" title="Filtreyi Temizle">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            </div>
+                                            </div>
+                                    <div class="col-md-2">
+
+                                            <div class="siralama-filtre" style="min-width: 150px;">
+                                                <select id="siralamaSecenek" class="form-select form-select-sm">
+                                                    <option value="tarih_azalan">En Yeni → En Eski</option>
+                                                    <option value="tarih_artan">En Eski → En Yeni</option>
+                                                    <option value="no_azalan">Teklif No (Büyükten Küçüğe)</option>
+                                                    <option value="no_artan">Teklif No (Küçükten Büyüğe)</option>
+                                                    <option value="tutar_azalan">Tutar (Yüksekten Düşüğe)</option>
+                                                    <option value="tutar_artan">Tutar (Düşükten Yükseğe)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                              
+                                    <div class="col-md-4">
                                         <div class="d-flex align-items-center gap-3">
                                             <!-- Aktif sütun göstergesi -->
                                             <div id="aktifSutunGosterge" class="small text-muted mt-1" style="display: none;">
@@ -51,8 +83,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="islem-butonlari-alani align-items-center justify-content-end">
+                                    <div class="col-md-4">
+                                        <div class="islem-butonlari-alani align-items-center justify-content-end" style="display:flex;">
                                             <div id="seciliKayitBilgi" class="secili-bilgi me-2" style="font-size: 0.85rem; color: #28a745; font-weight: 500;">
                                                 <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
                                             </div>
@@ -80,7 +112,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -159,7 +190,7 @@
                                                     break;
                                             }
 
-                                            <tr data-teklif-id="@teklif.Id" class="@satirCss" data-durum-id="@durumId">
+                                            <tr data-teklif-id="@teklif.Id" class="@satirCss" data-durum-id="@durumId" data-olusma-tarihi="@(teklif.EklenmeTarihi?.ToString("dd.MM.yyyy"))">
                                             
                                                 <td><span class="teklif-no">@teklif.TeklifNo</span></td>
                                                 <td>
@@ -2140,5 +2171,251 @@
         function scheduleArchiveAfterOneMonth(teklifId) {
             console.log(`Teklif ${teklifId} için 1 ay sonra Arşiv kontrolü yapılacak`);
         }
+                // ============= TARİH ARALIĞI FİLTRESİ =============
+        // Flatpickr kütüphanesini ekleyelim (eğer yoksa)
+        if (typeof flatpickr === 'undefined') {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css';
+            document.head.appendChild(link);
+
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/flatpickr';
+            document.head.appendChild(script);
+        }
+
+        // Tarih aralığı state'i
+        let tarihFiltre = {
+            baslangic: null,
+            bitis: null,
+            aktif: false
+        };
+
+        let geciciTarihAraligi = null;
+
+        // Flatpickr başlatıldığında çalışacak
+        function initTarihFiltresi() {
+            if (typeof flatpickr !== 'undefined') {
+                flatpickr("#tarihAraligi", {
+                    mode: "range",
+                    dateFormat: "d.m.Y",
+                    locale: {
+                        rangeSeparator: " - ",
+                        firstDayOfWeek: 1,
+                        weekdays: {
+                            shorthand: ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'],
+                            longhand: ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi']
+                        },
+                        months: {
+                            shorthand: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
+                            longhand: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık']
+                        }
+                    },
+                    onChange: function(selectedDates, dateStr, instance) {
+                        if (selectedDates.length === 2) {
+                            // Tarihler seçildiğinde filtreyi hemen uygula
+                            tarihFiltre.baslangic = selectedDates[0];
+                            tarihFiltre.bitis = selectedDates[1];
+                            tarihFiltre.bitis.setHours(23, 59, 59, 999); // Gün sonuna ayarla
+                            tarihFiltre.aktif = true;
+
+                            // Aktif filtre badge'ini göster
+                            gosterAktifFiltreler();
+
+                            // Tabloyu filtrele
+                            filtreleVeSirala();
+                        } else if (selectedDates.length === 0) {
+                            // Tarih seçimi temizlendiğinde
+                            tarihFiltre.baslangic = null;
+                            tarihFiltre.bitis = null;
+                            tarihFiltre.aktif = false;
+
+                            // Aktif filtre badge'ini güncelle
+                            gosterAktifFiltreler();
+
+                            // Tabloyu filtrele
+                            filtreleVeSirala();
+                        }
+                    },
+                    onClose: function(selectedDates, dateStr, instance) {
+                        // Modal kapanırken otomatik filtreleme yap
+                        if (selectedDates.length === 2) {
+                            filtreleVeSirala();
+                        }
+                    }
+                });
+            } else {
+                // Flatpickr henüz yüklenmediyse bekle
+                setTimeout(initTarihFiltresi, 100);
+            }
+        }
+
+        // Tarih filtre temizle butonu
+        $('#tarihFiltreTemizle').on('click', function() {
+            if (typeof flatpickr !== 'undefined') {
+                const fp = $("#tarihAraligi").flatpickr();
+                if (fp) {
+                    fp.clear();
+                }
+            }
+            $('#tarihAraligi').val('');
+            tarihFiltre.baslangic = null;
+            tarihFiltre.bitis = null;
+            tarihFiltre.aktif = false;
+
+            gosterAktifFiltreler();
+            filtreleVeSirala();
+        });
+
+        // Sıralama değişikliği
+        let mevcutSiralama = 'tarih_azalan';
+
+        $('#siralamaSecenek').on('change', function() {
+            mevcutSiralama = $(this).val();
+            filtreleVeSirala();
+        });
+
+        // Aktif filtreleri göster
+        function gosterAktifFiltreler() {
+            const $aktifFiltreler = $('#aktifFiltreler');
+            $aktifFiltreler.empty();
+
+            if (tarihFiltre.aktif && tarihFiltre.baslangic && tarihFiltre.bitis) {
+                const baslangicStr = formatDateForDisplay(tarihFiltre.baslangic);
+                const bitisStr = formatDateForDisplay(tarihFiltre.bitis);
+
+                $aktifFiltreler.append(`
+                    <div class="filtre-badge">
+                        <i class="fas fa-calendar-alt"></i>
+                        ${baslangicStr} - ${bitisStr}
+                        <span class="filtre-temizle" onclick="$('#tarihFiltreTemizle').click()">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </div>
+                `);
+            }
+        }
+
+        // Tarihi formatla (gösterim için)
+        function formatDateForDisplay(date) {
+            if (!date) return '';
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}.${month}.${year}`;
+        }
+
+        // Tarihi parse et (tablodaki tarih formatından)
+        function parseTableDate(dateStr) {
+            if (!dateStr || dateStr === '-') return null;
+
+            // dd.MM.yyyy formatını parse et
+            const parts = dateStr.split('.');
+            if (parts.length === 3) {
+                const day = parseInt(parts[0]);
+                const month = parseInt(parts[1]) - 1;
+                const year = parseInt(parts[2]);
+                return new Date(year, month, day);
+            }
+            return null;
+        }
+
+        // Filtrele ve sırala fonksiyonu
+        function filtreleVeSirala() {
+            const $satirlar = $('#teklifTablosu tr:not(.empty-state)');
+            if ($satirlar.length === 0) return;
+
+            let gosterilecekSatirlar = [];
+
+            // Filtreleme
+            $satirlar.each(function() {
+                const $satir = $(this);
+                let goster = true;
+
+                // Tarih filtresi
+                if (tarihFiltre.aktif && tarihFiltre.baslangic && tarihFiltre.bitis) {
+                    // Tablodan oluşturulma tarihini al (burada data attribute olarak eklenmesi gerekiyor)
+                    // Not: Tabloda oluşturulma tarihi görünmüyor. View'da data-olusma-tarihi attribute'u eklenmeli
+                    const olusmaTarihiStr = $satir.data('olusma-tarihi');
+
+                    if (olusmaTarihiStr) {
+                        const olusmaTarihi = parseTableDate(olusmaTarihiStr);
+                        if (olusmaTarihi) {
+                            if (olusmaTarihi < tarihFiltre.baslangic || olusmaTarihi > tarihFiltre.bitis) {
+                                goster = false;
+                            }
+                        }
+                    }
+                }
+
+                if (goster) {
+                    gosterilecekSatirlar.push({
+                        element: $satir,
+                        tarih: parseTableDate($satir.data('olusma-tarihi')),
+                        no: parseInt($satir.find('.teklif-no').text().replace(/[^0-9]/g, '')) || 0,
+                        tutar: parseFloat($satir.find('.tutar').text().replace(/[^0-9,-]/g, '').replace(',', '.')) || 0
+                    });
+                }
+            });
+
+            // Sıralama
+            gosterilecekSatirlar.sort((a, b) => {
+                switch(mevcutSiralama) {
+                    case 'tarih_azalan':
+                        return (b.tarih || 0) - (a.tarih || 0);
+                    case 'tarih_artan':
+                        return (a.tarih || 0) - (b.tarih || 0);
+                    case 'no_azalan':
+                        return b.no - a.no;
+                    case 'no_artan':
+                        return a.no - b.no;
+                    case 'tutar_azalan':
+                        return b.tutar - a.tutar;
+                    case 'tutar_artan':
+                        return a.tutar - b.tutar;
+                    default:
+                        return (b.tarih || 0) - (a.tarih || 0);
+                }
+            });
+
+            // Tüm satırları gizle
+            $satirlar.hide();
+
+            // Sıralanmış satırları tabloya yeniden ekle
+            const $tbody = $('#teklifTablosu');
+            gosterilecekSatirlar.forEach(item => {
+                $tbody.append(item.element);
+                item.element.show();
+            });
+
+            // Boş durum kontrolü
+            if (gosterilecekSatirlar.length === 0) {
+                if ($('#teklifTablosu .empty-state').length === 0) {
+                    $('#teklifTablosu').append(`
+                        <tr class="empty-state">
+                            <td colspan="9" class="text-center text-muted py-5">
+                                <i class="fas fa-calendar-times fa-3x mb-3 opacity-50"></i><br>
+                                Seçilen tarih aralığında teklif bulunamadı.
+                            </td>
+                        </tr>
+                    `);
+                }
+            } else {
+                $('#teklifTablosu .empty-state').remove();
+            }
+
+            // Arama sonuçları ile birlikte çalışıyorsa aramayı da tekrar uygula
+            if ($('#akilliArama').val().trim()) {
+                akilliAramaYap();
+            }
+        }
+
+        // Mevcut akilliAramaYap fonksiyonunu güncelle (eğer gerekirse)
+        // Not: Mevcut akilliAramaYap fonksiyonu zaten satırları show/hide yapıyor.
+        // Tarih filtresi ile karışmaması için akilliAramaYap fonksiyonunun sonuna şu kontrolü ekleyebilirsiniz:
+        // (İsteğe bağlı - mevcut fonksiyonun sonunda)
+
+        // Flatpickr'ı başlat
+        setTimeout(initTarihFiltresi, 500);
     </script>
 }
