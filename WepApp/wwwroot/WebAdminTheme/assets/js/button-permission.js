@@ -10,10 +10,6 @@ class ButtonPermissionManager {
         this.currentPage = this.getCurrentPageName();
         this.initialized = false;
 
-        console.log('🟢 ButonPermissionManager başlatıldı:', {
-            userType: this.currentUserType,
-            page: this.currentPage
-        });
     }
 
     // Kullanıcı tipini al
@@ -42,7 +38,6 @@ class ButtonPermissionManager {
     // İzinleri backend'den yükle
     async loadPermissions() {
         try {
-            console.log('📡 İzinler yükleniyor...');
 
             const response = await fetch('/AdminButton/TumIzinleriGetirJson', {
                 method: 'GET',
@@ -51,16 +46,13 @@ class ButtonPermissionManager {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('✅ İzinler alındı:', data);
 
                 this.permissions = data;
                 this.initialized = true;
                 this.applyPermissions();
             } else {
-                console.error('❌ İzinler yüklenemedi:', response.status);
             }
         } catch (error) {
-            console.error('❌ İzinler yüklenirken hata:', error);
         }
     }
 
@@ -77,11 +69,9 @@ class ButtonPermissionManager {
             this.permissions[this.currentUserType][key] !== undefined) {
 
             const result = this.permissions[this.currentUserType][key];
-            console.log(`🔍 ${key}: ${result ? '✅' : '❌'}`);
             return result;
         }
 
-        console.log(`❓ İzin bulunamadı: ${key} -> false`);
         return false;
     }
 
@@ -89,8 +79,7 @@ class ButtonPermissionManager {
     applyPermissions() {
         if (!this.initialized) return;
 
-        console.log('🎯 Buton izinleri uygulanıyor...');
-        console.log(`👤 Kullanıcı: ${this.currentUserType}, Sayfa: ${this.currentPage}`);
+  
 
         // 1. data-button-permission attribute'u olanları kontrol et
         document.querySelectorAll('[data-button-permission]').forEach(element => {
@@ -98,7 +87,6 @@ class ButtonPermissionManager {
             const hasPermission = this.hasPermission(permission);
 
             if (!hasPermission) {
-                console.log(`👻 Gizleniyor: ${permission}`);
                 element.style.display = 'none';
                 element.classList.add('d-none');
             }
@@ -115,12 +103,10 @@ class ButtonPermissionManager {
             }
         });
 
-        console.log('✅ Buton izinleri uygulandı');
     }
 
     // Manuel yenileme
     refresh() {
-        console.log('🔄 Manuel yenileme...');
         this.currentPage = this.getCurrentPageName();
         this.currentUserType = this.getCurrentUserType();
 
@@ -155,7 +141,6 @@ class ButtonPermissionManager {
 
     // Başlat
     initialize() {
-        console.log('🚀 ButonPermissionManager başlatılıyor...');
         this.loadPermissions();
         this.observeDynamicContent();
 
@@ -187,8 +172,3 @@ window.addEventListener('popstate', () => {
 document.addEventListener('shown.bs.modal', () => {
     setTimeout(() => window.buttonPermissionManager.refresh(), 300);
 });
-
-// Console'dan test için
-console.log('📝 Test komutları:');
-console.log('window.buttonPermissionManager.refresh() - Manuel yenile');
-console.log('window.buttonPermissionManager.hasPermission("bayi-duyuru-detay") - İzin kontrolü');

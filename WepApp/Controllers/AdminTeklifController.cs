@@ -1045,6 +1045,8 @@ namespace WepApp.Controllers
                     netToplam = teklif.NetToplam,
                     olusturmaTarihi = teklif.EklenmeTarihi?.ToString("dd.MM.yyyy HH:mm"),
                     gecerlilikTarihi = teklif.GecerlilikTarihi?.ToString("dd.MM.yyyy HH:mm"),
+                    guncellenmeTarihi = teklif.GuncellenmeTarihi?.ToString("dd.MM.yyyy HH:mm") ?? "-",
+
                     durumId = teklif.TeklifDurumId ?? 0,
                     durumAdi = teklif.TeklifDurum?.Adi ?? "Belirtilmemiş",
                     nedenId = teklif.NedenlerId ?? 0,

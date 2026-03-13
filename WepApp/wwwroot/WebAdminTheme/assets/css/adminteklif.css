@@ -1,100 +1,111 @@
-﻿
+﻿/* Sütun bazlı arama stilleri */
+.search-box .input-group {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+}
+
+    .search-box .input-group:focus-within {
+        box-shadow: 0 4px 8px rgba(0,123,255,0.15);
+        border-color: #80bdff;
+    }
+
+.search-box .input-group-text {
+    background-color: white;
+    border-right: none;
+}
+
+.search-box .form-control {
+    border-left: none;
+    border-right: none;
+}
+
+    .search-box .form-control:focus {
+        box-shadow: none;
+        border-color: #ced4da;
+    }
+
+#akilliAramaTemizle {
+    border-radius: 0 20px 20px 0 !important;
+    background-color: white;
+}
+
+/* Sütun başlıkları hover efekti */
+th {
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.2s ease;
+}
+
+    th:hover {
+        background-color: #e9ecef !important;
+    }
+
+    th.sutun-aktif {
+        background-color: #cfe2ff !important;
+        border-bottom: 2px solid #0d6efd;
+    }
+
+/* Arama sonuçlarında vurgulama */
+.arama-vurgula {
+    background-color: #fff3cd !important;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+/* Aktif sütun göstergesi */
+#aktifSutunGosterge {
+    padding: 4px 8px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @media (max-width: 768px) {
-    .bilgilendirme-tercihleri, .musteri-bilgileri-grid
-
-{
-    grid-template-columns: 1fr;
-}
-
-.aksiyon-btn {
-    display: block;
-    margin: 3px 0;
-    width: 100%;
-}
-
-.table td, .table th {
-    padding: 8px 5px;
-    font-size: 0.75rem;
-}
-
-.durum-select {
-    min-width: 110px;
-    font-size: 0.7rem;
-}
-
-.card-header {
-    flex-direction: column;
-    gap: 10px;
-}
-
-.search-box {
-    max-width: 100%;
-}
-
-}
-
-/* Diğer CSS kurallarınız aynı kalacak */
-.sozlesme-section {
-    background: #fff;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 1px 8px rgba(0,0,0,0.08);
-    border: 1px solid #e0e0e0;
-}
-
-    .sozlesme-section h6 {
-        color: #2c3e50 !important;
-        font-weight: 600;
-        font-size: 1.05rem;
+    .bilgilendirme-tercihleri, .musteri-bilgileri-grid {
+        grid-template-columns: 1fr;
     }
 
-    .sozlesme-section label {
-        font-weight: 500;
-        font-size: 0.85rem;
-        margin-bottom: 5px;
-        color: #495057;
+    .aksiyon-btn {
+        display: block;
+        margin: 3px 0;
+        width: 100%;
     }
 
-    .sozlesme-section .form-control,
-    .sozlesme-section .form-select {
-        font-size: 0.85rem;
-        padding: 8px 12px;
-        border-radius: 6px;
+    .table td, .table th {
+        padding: 8px 5px;
+        font-size: 0.75rem;
     }
 
-        .sozlesme-section .form-control:disabled,
-        .sozlesme-section .form-select:disabled {
-            background-color: #e9ecef;
-            opacity: 0.8;
-        }
-
-    .sozlesme-section .form-check {
-        margin-bottom: 10px;
+    .durum-select {
+        min-width: 110px;
+        font-size: 0.7rem;
     }
 
-    .sozlesme-section .form-check-input {
-        width: 18px;
-        height: 18px;
-        margin-top: 0.2rem;
+    .card-header {
+        flex-direction: column;
+        gap: 10px;
     }
 
-    .sozlesme-section .form-check-label {
-        font-size: 0.85rem;
-        cursor: pointer;
+    .search-box {
+        max-width: 100%;
     }
-
-.bilgilendirme-tercihleri {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 10px;
 }
 
-.musteri-bilgileri-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px;
-}
-
+/* Ana container ve kart stilleri */
 .teklif-container {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #f8f9fa;
@@ -116,6 +127,7 @@
     padding: 15px 20px;
 }
 
+/* Tablo stilleri */
 .table th {
     background: #f8f9fa;
     border-bottom: 2px solid #dee2e6;
@@ -147,6 +159,7 @@
     color: #28a745;
 }
 
+/* Durum dropdown stilleri */
 .durum-select {
     font-size: 0.75rem;
     padding: 5px 8px;
@@ -169,43 +182,43 @@
         outline: none;
     }
 
-/* Durum 6: Kaybedildi - Gri */
+/* Satır durum stilleri */
 .satir-kaybedildi {
     background-color: #f8f9fa !important;
     border-left: 4px solid #6c757d;
 }
 
-/* Durum 7: Ertelendi - Turuncu */
 .satir-ertelendi {
     background-color: #fff3cd !important;
     border-left: 4px solid #ffc107;
 }
 
-/* Durum 2,3: Onaylandı/Muhasebelendi - Yeşil */
 .satir-onayli {
     background-color: #d4edda !important;
     border-left: 4px solid #28a745;
 }
 
-/* Durum 8: Muhasebelendi - Mavi */
 .satir-muhasebelendi {
     background-color: #d1ecf1 !important;
     border-left: 4px solid #17a2b8;
 }
 
-/* Durum 9: Sözleşmede - Mor */
 .satir-sozlesmede {
     background-color: #e6e6ff !important;
     border-left: 4px solid #6f42c1;
 }
 
-/* Durum 12: Arşiv - Koyu Gri */
 .satir-arsiv {
     background-color: #f1f3f4 !important;
     border-left: 4px solid #5f6368;
 }
 
-/* Durum stilleri */
+.satir-revize {
+    background-color: #fff8e1 !important;
+    border-left: 4px solid #ffb300;
+}
+
+/* Dropdown durum stilleri */
 .durum-beklemede {
     background-color: #fff3cd !important;
     color: #856404 !important;
@@ -260,6 +273,13 @@
     border-color: #dee2e6 !important;
 }
 
+.durum-revize {
+    background-color: #fff8e1 !important;
+    color: #856404 !important;
+    border-color: #ffeaa7 !important;
+}
+
+/* Neden bilgisi */
 .durum-neden-bilgi {
     margin-top: 4px;
     font-size: 0.7rem;
@@ -279,6 +299,7 @@
     border: 1px solid #dee2e6;
 }
 
+/* Buton stilleri */
 .aksiyon-btn {
     padding: 4px 8px;
     margin: 0 2px;
@@ -287,9 +308,9 @@
     transition: all 0.2s;
 }
 
-    .aksiyon-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    .aksiyon-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
     .aksiyon-btn:disabled {
@@ -388,19 +409,7 @@
     max-width: 180px;
 }
 
-/* Durum 10: Revize - Sarı */
-.satir-revize {
-    background-color: #fff8e1 !important;
-    border-left: 4px solid #ffb300;
-}
-
-.durum-revize {
-    background-color: #fff8e1 !important;
-    color: #856404 !important;
-    border-color: #ffeaa7 !important;
-}
-
-/* Yeni eklenen dosya yükleme stilleri */
+/* Dosya yükleme stilleri */
 .dosya-yukleme-alani {
     display: none;
     padding: 10px;
@@ -428,6 +437,7 @@
     .dosya-onizleme.active {
         display: block;
     }
+
 /* Seçim satırı için cursor pointer */
 tr[data-teklif-id] {
     cursor: pointer;
@@ -438,7 +448,7 @@ tr.table-active {
     background-color: rgba(0, 123, 255, 0.1) !important;
 }
 
-/* İşlem butonları alanı stilleri - yukarıda inline style ile eklendi */
+/* İşlem butonları alanı stilleri */
 .secili-bilgi {
     font-size: 0.85rem;
     color: #28a745;
@@ -449,17 +459,64 @@ tr.table-active {
         font-size: 1rem;
     }
 
-/* Buton stilleri */
-.aksiyon-btn {
-    transition: all 0.2s;
+/* Sözleşme bölümü stilleri */
+.sozlesme-section {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.08);
+    border: 1px solid #e0e0e0;
 }
 
-    .aksiyon-btn:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    .sozlesme-section h6 {
+        color: #2c3e50 !important;
+        font-weight: 600;
+        font-size: 1.05rem;
     }
 
-    .aksiyon-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
+    .sozlesme-section label {
+        font-weight: 500;
+        font-size: 0.85rem;
+        margin-bottom: 5px;
+        color: #495057;
     }
+
+    .sozlesme-section .form-control,
+    .sozlesme-section .form-select {
+        font-size: 0.85rem;
+        padding: 8px 12px;
+        border-radius: 6px;
+    }
+
+        .sozlesme-section .form-control:disabled,
+        .sozlesme-section .form-select:disabled {
+            background-color: #e9ecef;
+            opacity: 0.8;
+        }
+
+    .sozlesme-section .form-check {
+        margin-bottom: 10px;
+    }
+
+    .sozlesme-section .form-check-input {
+        width: 18px;
+        height: 18px;
+        margin-top: 0.2rem;
+    }
+
+    .sozlesme-section .form-check-label {
+        font-size: 0.85rem;
+        cursor: pointer;
+    }
+
+.bilgilendirme-tercihleri {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.musteri-bilgileri-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}

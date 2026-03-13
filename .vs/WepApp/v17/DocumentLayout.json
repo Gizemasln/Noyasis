@@ -1,12 +1,71 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "D:\\PROJELER\\Noyasis\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\views\\adminteklif\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\views\\adminteklif\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\wwwroot\\webadmintheme\\assets\\css\\adminteklif.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\wwwroot\\webadmintheme\\assets\\css\\adminteklif.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\controllers\\adminteklifcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\controllers\\adminteklifcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "adminteklif.css",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\assets\\css\\adminteklif.css",
+              "RelativeDocumentMoniker": "WepApp\\wwwroot\\WebAdminTheme\\assets\\css\\adminteklif.css",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\wwwroot\\WebAdminTheme\\assets\\css\\adminteklif.css",
+              "RelativeToolTip": "WepApp\\wwwroot\\WebAdminTheme\\assets\\css\\adminteklif.css",
+              "ViewState": "AgIAAOIBAAAAAAAAAAAQwOIBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-03-13T12:05:14.275Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminTeklif\\Index.cshtml",
+              "RelativeDocumentMoniker": "WepApp\\Views\\AdminTeklif\\Index.cshtml",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminTeklif\\Index.cshtml",
+              "RelativeToolTip": "WepApp\\Views\\AdminTeklif\\Index.cshtml",
+              "ViewState": "AgIAAEQHAAAAAAAAAAAwwFMHAABaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-03-13T09:00:56.198Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AdminTeklifController.cs",
+              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\AdminTeklifController.cs",
+              "RelativeDocumentMoniker": "WepApp\\Controllers\\AdminTeklifController.cs",
+              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\AdminTeklifController.cs",
+              "RelativeToolTip": "WepApp\\Controllers\\AdminTeklifController.cs",
+              "ViewState": "AgIAAAAEAAAAAAAAAAAIwBUEAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-13T08:55:25.598Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }

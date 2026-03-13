@@ -56,29 +56,8 @@
         <div class="container-fluid">
             <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
                 <li class="nav-item topbar-user dropdown hidden-caret">
-                    <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
-                        <div class="avatar-sm"></div>
-                        <span class="profile-username">
-                            <span class="fw-bold">
-                                @(
-                                    !string.IsNullOrWhiteSpace(ViewBag.Bayi?.Unvan)
-                                    ? ViewBag.Bayi.Unvan
-                                    : !string.IsNullOrWhiteSpace(ViewBag.Musteri?.TicariUnvan ?? ViewBag.Musteri?.Ad)
-                                                                ? (ViewBag.Musteri.TicariUnvan ?? ViewBag.Musteri.AdSoyad)
-                                    : "Admin"
-                                    )
-                            </span>
-                        </span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user animated fadeIn">
-                        <div class="dropdown-user-scroll scrollbar-outer">
-                        <li>
-                            <div class="user-box">
-                                <div class="u-text">
-                                    <a href="/Login/Logout" class="btn btn-xs btn-secondary btn-sm">Çıkış Yap</a>
-                                </div>
-                            </div>
-                        </li>
+                  
+
         </div>
         </ul>
         </li>
@@ -146,7 +125,22 @@
                         .OrderBy(m => m.Siralama)
                         .ToList();
                     }
+                    <!-- KULLANICI BİLGİSİ - LOGO ALTINA EKLENECEK -->
+                    <div style="padding:15px; color:white; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:15px;">
 
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+
+                            <strong style="font-size:14px;">@displayName</strong>
+
+                            <a href="/Login/Logout"
+                               class="btn btn-sm btn-secondary"
+                               style="padding:4px 10px; font-size:12px;">
+                                Çıkış Yap
+                            </a>
+
+                        </div>
+
+                    </div>
                     <ul class="nav nav-secondary">
                         @if (anaMenuler.Any())
                         {
