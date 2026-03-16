@@ -39,11 +39,8 @@ namespace WepApp.Controllers
             _ilcelerRepo = new ilcelerRepository();
             _environment = environment;
         }
-
         public IActionResult Index(int musteriId)
         {
-        
-
             try
             {
                 ViewBag.MusteriDurumu = _musteriDurumuRepository.Listele() ?? new List<MusteriDurumu>();
@@ -55,10 +52,34 @@ namespace WepApp.Controllers
 
                 // Bayi listesini hazırla (üst kısım için)
                 List<Bayi> bayiList;
-                if (currentBayi != null)
-                    bayiList = _bayiRepository.GetBayiVeAltBayiler(currentBayi.Id) ?? new List<Bayi>();
-                else
+
+                if (kullanici != null)
+                {
+                    // ADMIN GİRİŞİ - Tüm bayiler gelsin
                     bayiList = _bayiRepository.GetirList(x => x.Durumu == 1)?.ToList() ?? new List<Bayi>();
+                }
+                else if (currentBayi != null)
+                {
+                    // BAYI GİRİŞİ - Sadece kendi bayisi gelsin
+                    bayiList = new List<Bayi> { currentBayi };
+                }
+                else if (musteris != null)
+                {
+                    // MÜŞTERİ GİRİŞİ - Bağlı olduğu bayi gelsin
+                    if (musteris.BayiId.HasValue)
+                    {
+                        var bayi = _bayiRepository.Getir(musteris.BayiId.Value);
+                        bayiList = bayi != null ? new List<Bayi> { bayi } : new List<Bayi>();
+                    }
+                    else
+                    {
+                        bayiList = new List<Bayi>();
+                    }
+                }
+                else
+                {
+                    bayiList = new List<Bayi>();
+                }
 
                 // Seviye null olmasın diye garanti
                 foreach (Bayi b in bayiList)
@@ -89,7 +110,8 @@ namespace WepApp.Controllers
                 {
                     // BAYI GİRİŞİ - Kendisi ve alt bayilerinin müşterileri
                     // Önce bu bayi ve alt bayilerinin ID'lerini al
-                    var bayiVeAltBayiIds = bayiList.Select(b => b.Id).ToList();
+                    var altBayiler = _bayiRepository.GetBayiVeAltBayiler(currentBayi.Id) ?? new List<Bayi>();
+                    var bayiVeAltBayiIds = altBayiler.Select(b => b.Id).ToList();
 
                     List<Musteri> musteriler = _musteriRepository.GetirList(
                         x => x.Durum == 1 && bayiVeAltBayiIds.Contains(x.BayiId ?? 0),
@@ -507,45 +529,50 @@ namespace WepApp.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+  
         public async Task<IActionResult> Ekle(
-     string AdSoyad, string KullaniciAdi, string Sifre,
-     string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,
-     string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
-     string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
-     int? MusteriTipiId, int MusteriDurumuId, int? BayiId, string TicariUnvan,
-     string Diger,
-     IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> Yetkililer = null)
+    string AdSoyad, string KullaniciAdi, string Sifre, string TabelaAdi,
+    string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,
+    string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
+    string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
+    int? MusteriTipiId, int MusteriDurumuId, int? BayiId, string TicariUnvan,
+    string Diger,
+    IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> Yetkililer = null)
         {
             try
             {
-                // ============= 1. KİLİT AYARLARINI KONTROL ET (Madde 21) =============
+                // ============= 1. KİLİT AYARLARINI KONTROL ET =============
                 KilitRepository kilitRepo = new KilitRepository();
                 Kilit kilitAyari = kilitRepo.Getir(x => x.Durumu == 1);
-
-                bool registerSistemiAktif = kilitAyari?.Aktif ?? true; // Varsayılan: Aktif
-                int registerGunSayisi = kilitAyari?.Gun ?? 15; // Varsayılan: 15 gün
+                bool registerSistemiAktif = kilitAyari?.Aktif ?? true;
 
                 // Register sistemi kapalıysa direkt normal ekleme yap
                 if (!registerSistemiAktif)
                 {
                     return await NormalMusteriEkle(
-                        AdSoyad, KullaniciAdi, Sifre, Email, Telefon, Adres, Il, Ilce, Belde, Bolge,
+                        AdSoyad, KullaniciAdi, Sifre, TabelaAdi,
+                        Email, Telefon, Adres, Il, Ilce, Belde, Bolge,
                         TCVNo, VergiDairesi, KepAdresi, WebAdresi, Aciklama,
                         AlpemixFirmaAdi, AlpemixGrupAdi, AlpemixSifre,
-                        MusteriTipiId, MusteriDurumuId, BayiId, TicariUnvan, Diger,
+                        MusteriTipiId, MusteriDurumuId, BayiId, TicariUnvan,
+                        Diger,
                         Logo, Imza, Yetkililer);
                 }
 
-                // ============= 2. MÜŞTERİ TİPİ KONTROLÜ =============
-                var musteriTipleri = ViewBag.MusteriTipleri as IEnumerable<MusteriTipi>;
-                var digerTipiId = musteriTipleri?
-                    .FirstOrDefault(x => x.Adi.ToLower() == "diğer" || x.Adi.ToLower() == "diger")
-                    ?.Id;
-
-                if (MusteriTipiId == digerTipiId && string.IsNullOrWhiteSpace(Diger))
+                // ============= 2. MÜŞTERİ TİPİ KONTROLÜ (SADECE DİĞER SEÇİLDİYSE) =============
+                if (MusteriTipiId.HasValue)
                 {
-                    TempData["Error"] = "Müşteri tipi 'Diğer' seçildiyse, lütfen diğer tipi belirtin.";
-                    return RedirectToAction("Index");
+                    var musteriTipleri = ViewBag.MusteriTipleri as IEnumerable<MusteriTipi>;
+                    var digerTipiId = musteriTipleri?
+                        .FirstOrDefault(x => x.Adi.ToLower() == "diğer" || x.Adi.ToLower() == "diger")
+                        ?.Id;
+
+                    // Sadece "Diğer" seçildiyse ve Diger alanı boşsa uyarı ver
+                    if (MusteriTipiId == digerTipiId && string.IsNullOrWhiteSpace(Diger))
+                    {
+                        TempData["Error"] = "Müşteri tipi 'Diğer' seçildiyse, lütfen diğer tipi belirtin.";
+                        return RedirectToAction("Index");
+                    }
                 }
 
                 // ============= 3. VKN KONTROLÜ (Madde 22) =============
@@ -575,6 +602,7 @@ namespace WepApp.Controllers
                             mevcutMusteri.AdSoyad = AdSoyad ?? "";
                             mevcutMusteri.TicariUnvan = TicariUnvan ?? "";
                             mevcutMusteri.KullaniciAdi = KullaniciAdi ?? "";
+                            mevcutMusteri.TabelaAdi = TabelaAdi ?? "";
                             if (!string.IsNullOrEmpty(Sifre)) mevcutMusteri.Sifre = Sifre;
                             mevcutMusteri.Email = Email ?? "";
                             mevcutMusteri.Telefon = Telefon ?? "";
@@ -721,7 +749,19 @@ namespace WepApp.Controllers
                     model.MOlmaTarihi = DateTime.Now;
                 }
                 else if (MusteriDurumuId == 2) // Aday Müşteri (A)
-                {
+                {// Kullanıcı adı zaten geldiyse kullan, yoksa üret
+                    if (string.IsNullOrWhiteSpace(KullaniciAdi))
+                    {
+                        KullaniciAdi = await GenerateUniqueKullaniciAdi(Il, Ilce); // senin mantığına göre
+                    }
+
+                    if (string.IsNullOrWhiteSpace(Sifre))
+                    {
+                        Sifre = GenerateRandomPassword(10); // veya senin ürettiğin mantık
+                    }
+
+                    // Bayi null olmalı
+                    BayiId = null;
                     model.AOlmaTarihi = DateTime.Now;
                 }
 
@@ -785,15 +825,14 @@ namespace WepApp.Controllers
         
         }
 
-        // ============= YARDIMCI METOD - NORMAL MÜŞTERİ EKLE (Register Kontrolü Olmadan) =============
         private async Task<IActionResult> NormalMusteriEkle(
-            string AdSoyad, string KullaniciAdi, string Sifre,
-            string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,
-            string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
-            string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
-            int? MusteriTipiId, int MusteriDurumuId, int? BayiId, string TicariUnvan,
-            string Diger,
-            IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> Yetkililer)
+        string AdSoyad, string KullaniciAdi, string Sifre, string TabelaAdi,  // Sıra doğru
+        string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,
+        string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
+        string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
+        int? MusteriTipiId, int MusteriDurumuId, int? BayiId, string TicariUnvan,
+        string Diger,
+        IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> Yetkililer)
         {
             try
             {
@@ -826,6 +865,8 @@ namespace WepApp.Controllers
                     Email = Email ?? "",
                     Telefon = Telefon ?? "",
                     Adres = Adres ?? "",
+                    TabelaAdi = TabelaAdi ?? "",  // <--- YENİ EKLENECEK SATIR
+
                     illerId = Il,
                     ilcelerId = Ilce,
                     Belde = Belde ?? "",
@@ -863,6 +904,18 @@ namespace WepApp.Controllers
                 }
                 else if (MusteriDurumuId == 2) // Aday Müşteri (A)
                 {
+                    if (string.IsNullOrWhiteSpace(KullaniciAdi))
+                    {
+                        KullaniciAdi = await GenerateUniqueKullaniciAdi(Il, Ilce); // senin mantığına göre
+                    }
+
+                    if (string.IsNullOrWhiteSpace(Sifre))
+                    {
+                        Sifre = GenerateRandomPassword(10); // veya senin ürettiğin mantık
+                    }
+
+                    // Bayi null olmalı
+                    BayiId = null;
                     model.AOlmaTarihi = DateTime.Now;
                 }
 
@@ -912,7 +965,7 @@ namespace WepApp.Controllers
                 TempData["Success"] = "Müşteri ve yetkililer başarıyla eklendi. (Register sistemi kapalı)";
                 TempData["YeniMusteriId"] = model.Id;
 
-                return RedirectToAction("Index");
+                return Json(new { success = true, redirectUrl = Url.Action("Index") });
             }
             catch (Exception ex)
             {
@@ -920,16 +973,44 @@ namespace WepApp.Controllers
                 return RedirectToAction("Index");
             }
         }
+        private async Task<string> GenerateUniqueKullaniciAdi(int? ilId, int? ilceId)
+        {
+            if (!ilId.HasValue || !ilceId.HasValue)
+            {
+                // İl veya ilçe yoksa fallback olarak rastgele üret
+                return "KULL" + Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
+            }
+
+            string baseKullaniciAdi;
+            int deneme = 0;
+            const int maxDeneme = 20;
+
+            do
+            {
+                int rastgele = new Random().Next(1000, 9999);
+                baseKullaniciAdi = $"{ilId:D2}{ilceId:D3}{rastgele}";
+
+                // Benzersiz mi kontrol et
+                var mevcut = _musteriRepository.GetirList(x => x.KullaniciAdi == baseKullaniciAdi && x.Durum == 1);
+                if (!mevcut.Any())
+                    return baseKullaniciAdi;
+
+                deneme++;
+            } while (deneme < maxDeneme);
+
+            // En kötü durumda GUID fallback
+            return "KULL" + Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Guncelle(
-       int Id, string AdSoyad, string KullaniciAdi, string Sifre,
-       string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,
-       string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
-       string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
-       int? MusteriTipiId, int? MusteriDurumuId, int? BayiId, string TicariUnvan,
-       string Diger,
-       IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> YeniYetkililer = null)
+    int Id, string AdSoyad, string KullaniciAdi, string Sifre, string TabelaAdi,  // TabelaAdi buraya
+    string Email, string Telefon, string Adres, int? Il, int? Ilce, string Belde, string Bolge,
+    string TCVNo, string VergiDairesi, string KepAdresi, string WebAdresi, string Aciklama,
+    string AlpemixFirmaAdi, string AlpemixGrupAdi, string AlpemixSifre,
+    int? MusteriTipiId, int? MusteriDurumuId, int? BayiId, string TicariUnvan,
+    string Diger,
+    IFormFile Logo, IFormFile Imza, List<MusteriYetkiliEkleModel> YeniYetkililer = null)
         {
             try
             {
@@ -952,9 +1033,7 @@ namespace WepApp.Controllers
 
                 // ============= 3. MÜŞTERİ TİPİ KONTROLÜ =============
                 IEnumerable<MusteriTipi> musteriTipleri = ViewBag.MusteriTipleri as IEnumerable<MusteriTipi>;
-                int? digerTipiId = musteriTipleri?
-                    .FirstOrDefault(x => x.Adi.ToLower() == "diğer" || x.Adi.ToLower() == "diger")
-                    ?.Id;
+                int? digerTipiId = 26;
 
                 if (MusteriTipiId == digerTipiId && string.IsNullOrWhiteSpace(Diger))
                 {
@@ -1018,6 +1097,8 @@ namespace WepApp.Controllers
                 existing.AlpemixGrupAdi = AlpemixGrupAdi ?? "";
                 existing.AlpemixSifre = AlpemixSifre ?? "";
                 existing.MusteriTipiId = MusteriTipiId;
+                existing.TabelaAdi = TabelaAdi ?? "";  // <--- YENİ EKLENECEK SATIR
+
 
                 // ============= 8. MÜŞTERİ DURUMU VE TARİH KONTROLÜ =============
                 if (MusteriDurumuId.HasValue)
@@ -1175,6 +1256,8 @@ namespace WepApp.Controllers
                     email = item.Email ?? "",
                     telefon = item.Telefon ?? "",
                     adres = item.Adres ?? "",
+                    tabelaAdi = item.TabelaAdi ?? "",  // <--- YENİ EKLENEN SATIR
+
                     ilId = item.illerId,  // YENİ
                     ilceId = item.ilcelerId,  // YENİ
                     il = item.iller?.sehiradi ?? "",  // İl adı
@@ -1189,7 +1272,7 @@ namespace WepApp.Controllers
                     alpemixFirmaAdi = item.AlpemixFirmaAdi ?? "",
                     alpemixGrupAdi = item.AlpemixGrupAdi ?? "",
                     alpemixSifre = item.AlpemixSifre ?? "",
-                    musteriTipiId = item.MusteriTipiId ?? 0,
+                    musteriTipiId = item.MusteriTipiId,
                     musteriDurumuId = item.MusteriDurumuId ?? 0,
                     bayiId = item.BayiId,
                     diger = item.Diger ?? "",
@@ -1622,19 +1705,26 @@ namespace WepApp.Controllers
             }
         }
 
-        // Rastgele şifre oluşturma metodu
         private string GenerateRandomPassword(int length)
         {
             const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%";
             StringBuilder result = new StringBuilder();
             Random random = new Random();
 
-            for (int i = 0; i < length; i++)
+            // En az bir büyük harf, bir küçük harf, bir rakam ve bir özel karakter garantisi
+            result.Append("A"); // Büyük harf
+            result.Append("z"); // Küçük harf
+            result.Append("9"); // Rakam
+            result.Append("!"); // Özel karakter
+
+            // Kalan karakterleri rastgele ekle
+            for (int i = 4; i < length; i++)
             {
                 result.Append(validChars[random.Next(validChars.Length)]);
             }
 
-            return result.ToString();
+            // Karakterleri karıştır
+            return new string(result.ToString().ToCharArray().OrderBy(x => random.Next()).ToArray());
         }
         private string GetContentType(string fileName)
         {

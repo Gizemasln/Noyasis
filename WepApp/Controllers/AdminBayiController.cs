@@ -2040,6 +2040,7 @@ string TCVNo, string VergiDairesi, string KepAdresi,
         public int Id { get; set; }
         public string Unvan { get; set; } = string.Empty;
         public bool Distributor { get; set; }
+        public DateTime EklenmeTarihi { get; set; }
 
         public string Kodu { get; set; } = string.Empty;
         public string KullaniciAdi { get; set; } = string.Empty;

@@ -13,6 +13,7 @@ namespace WepApp.Models
         // Temel bilgiler
         public string AdSoyad { get; set; } = string.Empty;
         public string? TicariUnvan { get; set; } = string.Empty;
+        public string? TabelaAdi { get; set; } = string.Empty;
         public string KullaniciAdi { get; set; } = string.Empty; // Sisteme giriş için
         public string Sifre { get; set; } = string.Empty; // Sisteme giriş için
 

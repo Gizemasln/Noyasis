@@ -50,7 +50,7 @@ namespace WepApp.Controllers
                         .ToList();
 
                     sozlesmeler = query
-                        .Where(s => altBayiIds.Contains(s.BayiId))
+                        .Where(s => altBayiIds.Contains(s.BayiId ??0))
                         .OrderByDescending(s => s.EklenmeTarihi)
                         .ToList();
                 }
@@ -130,8 +130,8 @@ namespace WepApp.Controllers
                 id = sozlesme.Id,
                 bayiId = sozlesme.BayiId,
                 dokumanNo = sozlesme.DokumanNo,
-                yayinTarihi = sozlesme.YayinTarihi.ToString("yyyy-MM-dd"),
-                revizeTarihi = sozlesme.RevizeTarihi.ToString("yyyy-MM-dd") ?? "",
+                yayinTarihi = sozlesme.YayinTarihi.ToString(),
+                revizeTarihi = sozlesme.RevizeTarihi.ToString() ?? "",
                 revizyonNo = sozlesme.RevizyonNo ?? "",
                 sozlesmeDurumuId = sozlesme.SozlesmeDurumuId,
                 gecerlilikSuresi = sozlesme.GecerlilikSuresi,
@@ -266,7 +266,7 @@ namespace WepApp.Controllers
                             .Select(b => b.Id)
                             .ToList();
 
-                        if (!yetkiliBayiIds.Contains(sozlesme.BayiId))
+                        if (!yetkiliBayiIds.Contains(sozlesme.BayiId ?? 0))
                         {
                             return Json(new { success = false, message = "Bu sözleşmeyi güncelleme yetkiniz bulunmamaktadır." });
                         }

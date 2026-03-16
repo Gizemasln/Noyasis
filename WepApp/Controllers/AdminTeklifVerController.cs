@@ -1160,7 +1160,10 @@ namespace WepApp.Controllers
                         Sifre = model.YeniMusteri.Sifre ?? "", // Hash'le! (gerçek projede)
                         Email = model.YeniMusteri.Email ?? "",
                         Telefon = model.YeniMusteri.Telefon ?? "",
-                        MusteriDurumuId = model.YeniMusteri.MusteriDurumuId ?? 1,
+
+                        // MÜŞTERİ DURUMU - TARİH KAYDI İÇİN ÖNEMLİ
+                        MusteriDurumuId = model.YeniMusteri.MusteriDurumuId ?? 1,  // Varsayılan: Normal Müşteri
+
                         MusteriTipiId = model.YeniMusteri.MusteriTipiId,
                         Diger = model.YeniMusteri.Diger ?? "",
                         BayiId = model.YeniMusteri.BayiId,
@@ -1190,6 +1193,17 @@ namespace WepApp.Controllers
                         EkleyenKullaniciId = kullanici?.Id ?? 0
                     };
 
+                    // MÜŞTERİ DURUMUNA GÖRE TARİHLERİ SET ET
+                    // Bu kısım eklenmeli (mevcut kodda eksik!)
+                    if (model.YeniMusteri.MusteriDurumuId == 1) // Normal Müşteri
+                    {
+                        yeniMusteri.MOlmaTarihi = DateTime.Now;
+                    }
+                    else if (model.YeniMusteri.MusteriDurumuId == 2) // Aday Müşteri
+                    {
+                        yeniMusteri.AOlmaTarihi = DateTime.Now;
+                    }
+
                     registerYapanBayiId = model.YeniMusteri.BayiId;
 
                     _musteriRepo.Ekle(yeniMusteri);
@@ -1216,7 +1230,6 @@ namespace WepApp.Controllers
                     _musteriRepo.Guncelle(yeniMusteri); // ID almak için
                     kullanilacakMusteriId = yeniMusteri.Id;
                 }
-
                 // ============= 5. TEKLİF OLUŞTUR =============
                 Teklif yeniTeklif = new Teklif
                 {
