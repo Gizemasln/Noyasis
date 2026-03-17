@@ -11,182 +11,124 @@
     var tumLisansTipleri = lisansTipRepo.GetirList(x => x.Durumu == 1).OrderBy(x => x.Adi).ToList();
 }
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
-<link href="/WebAdminTheme/assets/css/adminteklif.css" rel="stylesheet" />
+<link href="/WebAdminTheme/assets/css/admin.css" rel="stylesheet" />
 
 
 <div class="teklif-container">
     <div class="container-fluid">
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0">Teklif Listesi</h2>
-                    <a href="/AdminTeklifVer" class="btn btn-success">
-                        <i class="fas fa-plus me-2"></i>Yeni Teklif Oluştur
-                    </a>
-                </div>
-            </div>
-        </div>
+
 
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Tüm Teklifler</h5>
-                        <div class="d-flex align-items-center gap-3">
-                            <!-- Seçili Kayıt Bilgisi ve İşlem Butonları -->
-                      
-
-                            <!-- Arama kutusu -->
-                            <div class="search-box">
-                                <div class="input-group input-group-sm">
-                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                    <input type="text" id="teklifArama" class="form-control" placeholder="Teklif no veya müşteri ara...">
-                                </div>
-                            </div>
-                        </div>
+                    
                     </div>
                     <div class="card-body p-0">
-        
+
                         <div class="card-body border-bottom">
-                            <div class="row g-3">
-                                <div class="col-md-12">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h6 class="mb-0 text-primary">
-                                            <i class="fas fa-filter me-2"></i>Filtreleme Seçenekleri
-                                        </h6>
-                                        <div>
-                                            <button type="button" class="btn btn-sm btn-outline-secondary me-2" id="filtreleriTemizle">
-                                                <i class="fas fa-eraser me-1"></i>Temizle
-                                            </button>
+                            <div class="row">
+                                    <div class="col-md-2">
+                                        <!-- TARİH ARALIĞI FİLTRESİ -->
+                                        <div class="justify-content-end align-items-center gap-2">
+                                            <div class="tarih-filtre" >
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text bg-white">
+                                                        <i class="fas fa-calendar-alt text-muted"></i>
+                                                    </span>
+                                                    <input type="text"
+                                                           id="tarihAraligi"
+                                                           class="form-control"
+                                                           placeholder="Oluşturulma Tarihi Aralığı">
+                                                    <button class="btn btn-outline-secondary" type="button" id="tarihFiltreTemizle" title="Filtreyi Temizle">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            </div>
+                                            </div>
+                                    <div class="col-md-2">
+
+                                            <div class="siralama-filtre" style="min-width: 150px;">
+                                                <select id="siralamaSecenek" class="form-select form-select-sm">
+                                                    <option value="tarih_azalan">En Yeni → En Eski</option>
+                                                    <option value="tarih_artan">En Eski → En Yeni</option>
+                                                    <option value="no_azalan">Teklif No (Büyükten Küçüğe)</option>
+                                                    <option value="no_artan">Teklif No (Küçükten Büyüğe)</option>
+                                                    <option value="tutar_azalan">Tutar (Yüksekten Düşüğe)</option>
+                                                    <option value="tutar_artan">Tutar (Düşükten Yükseğe)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                              
+                                    <div class="col-md-4">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <!-- Aktif sütun göstergesi -->
+                                            <div id="aktifSutunGosterge" class="small text-muted mt-1" style="display: none;">
+                                                <i class="fas fa-filter"></i> <span id="aktifSutunAdi"></span>'da ara:
+                                            </div>
+                                            <!-- Arama kutusu - Akıllı sütun bazlı -->
+                                            <div class="search-box">
+                                                <div class="input-group input-group-sm" style="min-width: 400px;">
+                                                    <span class="input-group-text bg-white border-end-0">
+                                                        <i class="fas fa-search text-muted"></i>
+                                                    </span>
+                                                    <input type="text" id="akilliArama" class="form-control border-start-0"
+                                                           placeholder="Tabloda ara (sütun başlığına tıkla)">
+                                                    <button class="btn btn-outline-secondary" type="button" id="akilliAramaTemizle" title="Temizle">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-
-                                <!-- Tarih Filtreleri -->
-                                <div class="col-md-2">
-                                    <label class="form-label fw-bold small">Tarih Aralığı</label>
-                                    <div class="btn-group w-100" role="group">
-                                        <button type="button" class="btn btn-outline-primary btn-sm tarih-hizli" data-periyot="bugun">Bugün</button>
-                                        <button type="button" class="btn btn-outline-primary btn-sm tarih-hizli" data-periyot="hafta">Bu Hafta</button>
-                                        <button type="button" class="btn btn-outline-primary btn-sm tarih-hizli" data-periyot="ay">Bu Ay</button>
-                                    </div>
-                                </div>
-
-                                    <div class="col-md-2 d-flex gap-2">
-
-                                        <div>
-                                            <label class="form-label fw-bold small">Baş.</label>
-                                            <input type="date" class="form-control form-control-sm w-auto" id="baslangicTarih">
+                                    <div class="col-md-4">
+                                        <div class="islem-butonlari-alani align-items-center justify-content-end" style="display:flex;">
+                                            <div id="seciliKayitBilgi" class="secili-bilgi me-2" style="font-size: 0.85rem; color: #28a745; font-weight: 500;">
+                                                <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
+                                            </div>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <button type="button" class="btn btn-info aksiyon-btn btn-icon" id="seciliDetayGoster" title="Seçili Teklifin Detaylarını Gör" disabled data-button-permission="detay">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-secondary aksiyon-btn btn-icon" id="seciliPdfGoster" title="Seçili Teklifin PDF'ini Gör" disabled data-button-permission="pdf">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-light aksiyon-btn btn-icon" id="seciliRevizeGoster" title="Seçili Teklifi Revize Et" disabled data-button-permission="revize">
+                                                    <i class="fas fa-pen-alt"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-success aksiyon-btn btn-icon" id="seciliSozlesmeGoster" title="Seçili Teklif için Sözleşme Oluştur" disabled data-button-permission="sozlesmeolustur">
+                                                    <i class="fas fa-file-contract"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-danger aksiyon-btn btn-icon" id="seciliSil" title="Seçili Teklifi Sil" disabled data-button-permission="sil">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                                <a href="/AdminTeklifVer"
+                                                   class="btn btn-success aksiyon-btn btn-icon" data-button-permission="ekle"
+                                                   title="Yeni Teklif">
+                                                    <i class="fas fa-plus"></i>
+                                                </a>
+                                            </div>
                                         </div>
-
-                                        <div>
-                                            <label class="form-label fw-bold small">Bit.</label>
-                                            <input type="date" class="form-control form-control-sm w-auto" id="bitisTarih">
-                                        </div>
-
                                     </div>
-
-                                <!-- Durum Filtresi -->
-                                <div class="col-md-2">
-                                    <label class="form-label fw-bold small">Durumu</label>
-                                    <select class="form-select form-select-sm" id="durumFiltre">
-                                        <option value="0">Tüm Durumlar</option>
-                                        @if (durumlar != null)
-                                        {
-                                            foreach (var durum in durumlar.Where(d => d.Durumu == 1).OrderBy(d => d.Sıra))
-                                            {
-                                                <option value="@durum.Id">@durum.Adi</option>
-                                            }
-                                        }
-                                    </select>
-                                </div>
-
-                                <!-- Sıralama -->
-                                <div class="col-md-2">
-                                    <label class="form-label fw-bold small">Sıralama</label>
-                                    <select class="form-select form-select-sm" id="siralamaFiltre">
-                                        <option value="yeni">En Yeni → En Eski</option>
-                                        <option value="eski">En Eski → En Yeni</option>
-                                        <option value="tutar">Tutar (Yüksek → Düşük)</option>
-                                        <option value="tutar-dusuk">Tutar (Düşük → Yüksek)</option>
-                                        <option value="teklif-no">Teklif No (A-Z)</option>
-                                        <option value="musteri">Müşteri Adı (A-Z)</option>
-                                        <option value="durum">Duruma Göre</option>
-                                        <option value="lisans">Lisans Tipine Göre</option>
-                                    </select>
-                                </div>
-
-                
-
-                                <!-- Lisans Tipi Filtresi - Tüm lisans tipleri -->
-                                <div class="col-md-1">
-                                    <label class="form-label fw-bold small">Lisans T.</label>
-                                    <select class="form-select form-select-sm" id="lisansTipFiltre">
-                                        <option value="0">Tüm Lisans Tipleri</option>
-                                        @foreach (var lisansTip in tumLisansTipleri)
-                                        {
-                                            <option value="@lisansTip.Id">@lisansTip.Adi</option>
-                                        }
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-
-                                <div class="islem-butonlari-alani d-flex align-items-center gap-2" style="background-color: #f8f9fa; border-radius: 8px; padding: 8px 12px; border: 1px solid #dee2e6;">
-                                    <div id="seciliKayitBilgi" class="secili-bilgi me-2" style="font-size: 0.85rem; color: #28a745; font-weight: 500;">
-                                        <i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi
-                                    </div>
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <button type="button" class="btn btn-info aksiyon-btn btn-icon" id="seciliDetayGoster" title="Seçili Teklifin Detaylarını Gör" disabled data-button-permission="detay">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-secondary aksiyon-btn btn-icon" id="seciliPdfGoster" title="Seçili Teklifin PDF'ini Gör" disabled data-button-permission="pdf">
-                                            <i class="fas fa-file-pdf"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-light aksiyon-btn btn-icon" id="seciliRevizeGoster" title="Seçili Teklifi Revize Et" disabled data-button-permission="revize">
-                                            <i class="fas fa-pen-alt"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-success aksiyon-btn btn-icon" id="seciliSozlesmeGoster" title="Seçili Teklif için Sözleşme Oluştur" disabled data-button-permission="sozlesmeolustur">
-                                            <i class="fas fa-file-contract"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger aksiyon-btn btn-icon" id="seciliSil" title="Seçili Teklifi Sil" disabled data-button-permission="sil">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                </div>
-                                </div>
-                                <!-- Aktif Filtreler -->
-                                <div class="col-12 mt-3" id="aktifFiltreler" style="display: none;">
-                                    <div class="d-flex align-items-center">
-                                        <span class="badge bg-light text-dark me-2 p-2">
-                                            <i class="fas fa-filter me-1"></i>Aktif Filtreler:
-                                        </span>
-                                        <div id="filtreEtiketleri" class="d-flex flex-wrap gap-2"></div>
-                                    </div>
-                                </div>
                             </div>
-                  
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <thead>
-                                    <tr>
-                                        <th width="40">Seç</th>
+                                        <tr>
 
-                                        <th width="110">No</th>
-                                        <th width="180">Müşteri</th>
-                                        <th width="250">M. Durumu</th>
-                                        <th width="130">Bayi</th>
-                                        <th width="120">Lisans</th>
-                                        <th width="150">Net Tot.</th>
-                                        <th width="150">Tot. İnd.</th>
-                                        <th width="150">Ara Tot.</th>
-                                        <th width="110">KDV</th>
-                                        <th width="110">Ol. T.</th>
-                                        <th width="110">Geç. T.</th>
-                                        <th width="90" class="durum-hucresi">Durum</th>
+                                            <th style="width:15%;">No</th>
+                                            <th style="width:10%;">Müşteri</th>
+                                            <th style="width:10%;">M. Durumu</th>
+                                            <th style="width:25%;">Bayi</th>
+                                            <th style="width:10%;">Lisans</th>
+                                            <th style="width:15%;">Ara Tot.(KDV'SİZ)</th>
+                                            <th style="width:10%;">Geç. T.</th>
+                                            <th style="width:5%;" class="durum-hucresi">Durum</th>
 
-                                    </tr>
+                                        </tr>
                                 </thead>
                                 <tbody id="teklifTablosu">
                                     @if (teklifler != null && teklifler.Count > 0)
@@ -248,12 +190,8 @@
                                                     break;
                                             }
 
-                                            <tr data-teklif-id="@teklif.Id" class="@satirCss" data-durum-id="@durumId">
-                                                <td class="text-center">
-                                                    <div class="form-check" onclick="event.stopPropagation();">
-                                                        <input class="form-check-input teklif-sec-radio" type="radio" name="seciliTeklifRadio" value="@teklif.Id" id="secim_@teklif.Id">
-                                                    </div>
-                                                </td>
+                                            <tr data-teklif-id="@teklif.Id" class="@satirCss" data-durum-id="@durumId" data-olusma-tarihi="@(teklif.EklenmeTarihi?.ToString("dd.MM.yyyy"))">
+                                            
                                                 <td><span class="teklif-no">@teklif.TeklifNo</span></td>
                                                 <td>
                                                     @if (teklif.Musteri != null && teklif.Musteri.Id > 0)
@@ -266,7 +204,7 @@
                                                                 @(teklif.Musteri.AdSoyad ?? ""))
                                                             </a>
                                                         </div>
-                                                        <small class="text-muted">@teklif.Musteri.Email</small>
+
                                                     }
                                                     else
                                                     {
@@ -275,15 +213,18 @@
                                                 </td>
                                                     <td>@teklif.Musteri.MusteriDurumu.Adi</td>
                                                 <td>
-                                                    <div class="musteri-adi">@(teklif.Musteri?.Bayi?.Unvan ?? "-")</div>
-                                                    <small class="text-muted">@teklif.Musteri?.Bayi?.Telefon</small>
-                                                </td>
+                                                <div class="musteri-adi">
+                                                    @(
+                                                                                                        teklif.Musteri?.Bayi?.Unvan != null
+                                                                                                        ? (teklif.Musteri.Bayi.Unvan.Length > 35
+                                                                                                        ? teklif.Musteri.Bayi.Unvan.Substring(0, 35) + "..."
+                                                                                                        : teklif.Musteri.Bayi.Unvan)
+                                                                                                        : "-"
+                                                                                                        )
+                                                </div>
+                                            </td>
                                                 <td>@teklif.LisansTip?.Adi</td>
-                                                <td class="tutar">@teklif.NetToplam.ToString("N2") ₺</td>
-                                                <td class="tutar">@teklif.ToplamIndirim.ToString("N2") ₺ </td>
                                                 <td class="tutar">@teklif.AraToplam.ToString("N2") ₺ </td>
-                                                <td class="tutar">@teklif.KdvTutari.ToString("N2") ₺ </td>
-                                                <td><small>@teklif.EklenmeTarihi?.ToString("dd.MM.yyyy")</small></td>
                                                 <td><small>@teklif.GecerlilikTarihi?.ToString("dd.MM.yyyy")</small></td>
                                                 <td class="durum-hucresi">
                                                     @{
@@ -366,12 +307,12 @@
                             </table>
                         </div>
                     </div>
-                </div>
             </div>
         </div>
     </div>
 </div>
 </div>
+
 <!-- Teklif Detay Modal -->
 <div class="modal fade" id="teklifDetayModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen">
@@ -561,23 +502,6 @@
                 }
             });
 
-            // Sözleşme butonu event'i
-            $(document).on('click', '.sozlesme-btn', function() {
-                const teklifId = $(this).data('teklif-id');
-                sozlesmeModalAc(teklifId);
-            });
-
-            // Arama
-            $('#teklifArama').on('input', function () {
-                const term = $(this).val().toLowerCase().trim();
-                $('#teklifTablosu tr').each(function () {
-                    const $row = $(this);
-                    if ($row.find('.teklif-no').length === 0 && !$row.hasClass('empty-state')) return;
-                    const text = $row.text().toLowerCase();
-                    $row.toggle(text.includes(term));
-                });
-            });
-
             // Durum değişikliği event'i
             $(document).on('change', '.durum-select', async function () {
                 const $select = $(this);
@@ -636,36 +560,231 @@
 
             // Nedenleri önbelleğe al
             loadNedenler();
-        });
 
-        // Sözleşme butonu tıklanmadan önce kontrol
-        $(document).on('click', '.sozlesme-btn', async function() {
-            const teklifId = $(this).data('teklif-id');
-            const $btn = $(this);
+            // ============= AKILLI SÜTUN BAZLI ARAMA =============
+            let aktifAramaSutunu = null; // null = tüm sütunlarda ara
+            let aramaMetni = '';
+            let aramaZamanlayici = null;
 
-            // Önce aktif sözleşme var mı kontrol et
-            try {
-                $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+            // Sütun indekslerini ve adlarını tanımla
+            const sutunlar = [
+                { index: 0, ad: 'Teklif No', alan: 'teklifNo' },
+                { index: 1, ad: 'Müşteri', alan: 'musteri' },
+                { index: 2, ad: 'Müşteri Durumu', alan: 'musteriDurumu' },
+                { index: 3, ad: 'Bayi', alan: 'bayi' },
+                { index: 4, ad: 'Lisans Tipi', alan: 'lisans' },
+                { index: 5, ad: 'Tutar', alan: 'tutar' },
+                { index: 6, ad: 'Geçerlilik Tarihi', alan: 'gecerlilik' },
+                { index: 7, ad: 'Durum', alan: 'durum' }
+            ];
 
-                const response = await $.get('/AdminTeklif/CheckAktifSozlesme', { teklifId: teklifId });
+            // Sütun başlıklarına tıklama olayı ekle
+            $('thead th').each(function(index) {
+                if (index < sutunlar.length) {
+                    $(this).css('cursor', 'pointer')
+                           .attr('title', 'Bu sütunda ara')
+                           .data('sutun-index', index)
+                           .data('sutun-ad', sutunlar[index].ad)
+                           .data('sutun-alan', sutunlar[index].alan);
 
-                if (response.success) {
-                    if (response.aktifSozlesmeVar) {
-                        // Aktif sözleşme varsa uyarı göster ve butonu kapat
-                        toastr.warning('Bu teklife ait aktif bir sözleşme zaten mevcut. Yeni sözleşme oluşturamazsınız.');
-                        $btn.hide();
-                    } else {
-                        // Aktif sözleşme yoksa modal aç
-                        sozlesmeModalAc(teklifId);
-                    }
-                } else {
-                    toastr.error(response.message || 'Kontrol sırasında hata oluştu.');
+                    $(this).on('click', function(e) {
+                        if (!$(e.target).is('button') && !$(e.target).is('a') && !$(e.target).is('select') && !$(e.target).is('option')) {
+                            e.stopPropagation();
+
+                            const tiklananIndex = $(this).data('sutun-index');
+                            const tiklananAd = $(this).data('sutun-ad');
+                            const tiklananAlan = $(this).data('sutun-alan');
+
+                            if (aktifAramaSutunu === tiklananAlan) {
+                                sutunFiltresiniKaldir();
+                            } else {
+                                sutunFiltresiAktifEt(tiklananIndex, tiklananAd, tiklananAlan);
+                            }
+
+                            $('#akilliArama').focus();
+                        }
+                    });
                 }
-            } catch (err) {
-                console.error(err);
-                toastr.error('Sunucu ile bağlantı kurulamadı.');
-            } finally {
-                $btn.prop('disabled', false).html('<i class="fas fa-file-contract"></i>');
+            });
+
+            // Çift tıklama ile sütun filtresini kaldır
+            $('thead th').on('dblclick', function(e) {
+                e.stopPropagation();
+                sutunFiltresiniKaldir();
+            });
+
+            // Arama inputu olayları
+            $('#akilliArama').on('input', function() {
+                aramaMetni = $(this).val().toLowerCase().trim();
+
+                if (aramaZamanlayici) {
+                    clearTimeout(aramaZamanlayici);
+                }
+
+                aramaZamanlayici = setTimeout(function() {
+                    akilliAramaYap();
+                }, 300);
+            });
+
+            // Enter tuşu ile anında arama
+            $('#akilliArama').on('keypress', function(e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    if (aramaZamanlayici) {
+                        clearTimeout(aramaZamanlayici);
+                    }
+                    akilliAramaYap();
+                }
+            });
+
+            // Temizle butonu
+            $('#akilliAramaTemizle').on('click', function() {
+                $('#akilliArama').val('');
+                aramaMetni = '';
+                sutunFiltresiniKaldir();
+            });
+
+            // Başlangıçta aktif sütun göstergesini gizle
+            $('#aktifSutunGosterge').hide();
+
+            // Klavye kısayolu: ESC tuşu ile temizle
+            $(document).on('keydown', function(e) {
+                if (e.key === 'Escape' && $('#akilliArama').is(':focus')) {
+                    $('#akilliAramaTemizle').click();
+                }
+            });
+
+            // Sütun filtresini aktif et
+            function sutunFiltresiAktifEt(index, ad, alan) {
+                $('thead th').removeClass('sutun-aktif');
+                $(`thead th:eq(${index})`).addClass('sutun-aktif');
+                aktifAramaSutunu = alan;
+                $('#aktifSutunAdi').text(ad);
+                $('#aktifSutunGosterge').fadeIn(200);
+
+                if (aramaMetni) {
+                    akilliAramaYap();
+                }
+            }
+
+            // Sütun filtresini kaldır
+            function sutunFiltresiniKaldir() {
+                $('thead th').removeClass('sutun-aktif');
+                aktifAramaSutunu = null;
+                $('#aktifSutunGosterge').fadeOut(200);
+
+                if (aramaMetni) {
+                    akilliAramaYap();
+                } else {
+                    tumSatirlariGoster();
+                }
+            }
+
+            // Akıllı arama yap
+            function akilliAramaYap() {
+                const $satirlar = $('#teklifTablosu tr:not(.empty-state)');
+
+                if (!aramaMetni) {
+                    tumSatirlariGoster();
+                    return;
+                }
+
+                let bulunanSayisi = 0;
+
+                $satirlar.each(function() {
+                    const $satir = $(this);
+                    let eslesmeVar = false;
+
+                    $satir.find('td').removeClass('arama-vurgula');
+
+                    if (aktifAramaSutunu) {
+                        const sutunIndex = getSutunIndex(aktifAramaSutunu);
+                        if (sutunIndex !== -1) {
+                            const $hucre = $satir.find(`td:eq(${sutunIndex})`);
+                            const hucreMetni = hucreMetniniAl($hucre, aktifAramaSutunu);
+
+                            if (hucreMetni.includes(aramaMetni)) {
+                                eslesmeVar = true;
+                                $hucre.addClass('arama-vurgula');
+                            }
+                        }
+                    } else {
+                        $satir.find('td').each(function(index) {
+                            const $hucre = $(this);
+                            const sutunAlani = getSutunAlani(index);
+                            const hucreMetni = hucreMetniniAl($hucre, sutunAlani);
+
+                            if (hucreMetni.includes(aramaMetni)) {
+                                eslesmeVar = true;
+                                $hucre.addClass('arama-vurgula');
+                            }
+                        });
+                    }
+
+                    if (eslesmeVar) {
+                        $satir.show();
+                        bulunanSayisi++;
+                    } else {
+                        $satir.hide();
+                    }
+                });
+
+                sonucMesajiniGoster(bulunanSayisi);
+            }
+
+            // Tüm satırları göster
+            function tumSatirlariGoster() {
+                $('#teklifTablosu tr:not(.empty-state)').each(function() {
+                    $(this).show();
+                    $(this).find('td').removeClass('arama-vurgula');
+                });
+                $('#teklifTablosu .arama-bos-mesaj').remove();
+                $('.arama-sonuc-bilgi').remove();
+            }
+
+            // Hücre metnini al
+            function hucreMetniniAl($hucre, sutunAlani) {
+                if (sutunAlani === 'bayi') {
+                    return $hucre.find('.musteri-adi').text().toLowerCase().trim() || $hucre.text().toLowerCase().trim();
+                } else if (sutunAlani === 'durum') {
+                    const selectText = $hucre.find('.durum-select option:selected').text().toLowerCase().trim();
+                    const nedenText = $hucre.find('.neden-badge').text().toLowerCase().trim();
+                    return selectText + ' ' + nedenText;
+                } else if (sutunAlani === 'tutar') {
+                    return $hucre.text().toLowerCase().trim().replace(/[₺\s]/g, '');
+                } else {
+                    return $hucre.text().toLowerCase().trim();
+                }
+            }
+
+            // Sütun indeksini bul
+            function getSutunIndex(sutunAlani) {
+                const bulunan = sutunlar.find(s => s.alan === sutunAlani);
+                return bulunan ? bulunan.index : -1;
+            }
+
+            // İndekse göre sütun alanını bul
+            function getSutunAlani(index) {
+                const bulunan = sutunlar.find(s => s.index === index);
+                return bulunan ? bulunan.alan : null;
+            }
+
+            // Sonuç mesajını göster
+            function sonucMesajiniGoster(bulunanSayisi) {
+                $('#teklifTablosu .arama-bos-mesaj').remove();
+                $('.arama-sonuc-bilgi').remove();
+
+                if (bulunanSayisi === 0 && aramaMetni) {
+                    $('#teklifTablosu').append(`
+                        <tr class="arama-bos-mesaj">
+                            <td colspan="8" class="text-center text-muted py-5">
+                                <i class="fas fa-search fa-3x mb-3 opacity-50"></i><br>
+                                <strong>"${aramaMetni}"</strong> için sonuç bulunamadı.
+                                ${aktifAramaSutunu ? `<br><small class="text-muted">Aranan sütun: ${$('thead th.sutun-aktif').data('sutun-ad')}</small>` : ''}
+                            </td>
+                        </tr>
+                    `);
+                }
             }
         });
 
@@ -695,7 +814,6 @@
 
             $('#nedenListesi').html(html);
 
-            // Modal kapatıldığında eski duruma geri dön
             $('#nedenSecimModal').off('hidden.bs.modal').on('hidden.bs.modal', function () {
                 $select.val(eskiDurumId);
                 $('#nedenKaydetBtn').prop('disabled', true);
@@ -719,7 +837,6 @@
                 updateDurum($select, teklifId, 5, selectedNedenId, eskiDurumId, selectedNedenAdi, '');
             });
 
-            // İptal butonuna tıklanınca eski duruma geri dön
             $('#nedenIptalBtn').off('click').on('click', function() {
                 $select.val(eskiDurumId);
             });
@@ -762,7 +879,6 @@
         }
 
         // Ana durum güncelleme fonksiyonu
-        // Ana durum güncelleme fonksiyonu
         async function updateDurum($select, teklifId, yeniDurumId, nedenId = null, eskiDurumId, nedenAdi = '', ertelenmeNedeni = '') {
             try {
                 const response = await $.ajax({
@@ -785,11 +901,9 @@
                     const $row = $select.closest('tr');
                     $row.attr('data-durum-id', yeniDurumId);
 
-                    // Tüm renk sınıflarını temizle
                     $row.removeClass('satir-onayli satir-muhasebelendi satir-sozlesmede satir-ertelendi satir-kaybedildi satir-arsiv satir-revize');
                     $select.removeClass('durum-beklemede durum-onaylandi durum-muhasebelendi durum-sozlesmede durum-ertelendi durum-kaybedildi durum-reddedildi durum-belirtilmemis durum-arsiv durum-revize');
 
-                    // Yeni sınıfları ekle
                     const cssMap = {
                         1: { select: 'durum-beklemede' },
                         2: { row: 'satir-onayli', select: 'durum-onaylandi' },
@@ -808,37 +922,22 @@
                     if (css.row) $row.addClass(css.row);
                     if (css.select) $select.addClass(css.select);
 
-                    // Duruma göre butonları güncelle
-                    updateActionButtons($row, yeniDurumId);
-
-                    // Durum 5 (Kaybedildi) ise dropdown'u hemen kilitle
                     if (yeniDurumId === 5) {
-                        // 1. Dropdown'u kilitle
                         $select.prop('disabled', true).addClass('bg-light text-muted').css('cursor', 'not-allowed');
-
-                        // 2. Sadece "Kaybedildi" seçeneğini göster, diğerlerini kaldır
                         $select.html(`<option value="5" selected disabled>Kaybedildi</option>`);
-
-                        // 3. Satırı güncelle
                         $row.addClass('satir-kaybedildi');
-
-                        // 4. Mevcut durum adını bul ve göster
                         const durumAdi = $select.find('option:selected').text() || 'Kaybedildi';
                         $select.attr('title', durumAdi);
-
-                        // 5. Güncellenen dropdown'u tabloda görmek için satırı yeniden oluştur
                         $row.find('.durum-select').replaceWith($select);
                     } else if (yeniDurumId === 8 || yeniDurumId === 9 || yeniDurumId === 10 || yeniDurumId === 12) {
-                        // Diğer kilitli durumlar
                         $select.prop('disabled', true).addClass('bg-light text-muted').css('cursor', 'not-allowed');
                         $select.html(`<option value="${yeniDurumId}" selected disabled>${response.yeniDurum || 'Kilitli'}</option>`);
                     } else {
                         $select.prop('disabled', false).removeClass('bg-light text-muted').css('cursor', 'pointer');
                     }
 
-                    // Neden/ertelenme nedeni göster
                     const $nedenDiv = $select.siblings('.durum-neden-bilgi');
-                    $nedenDiv.remove(); // Önceki nedenleri temizle
+                    $nedenDiv.remove();
 
                     if (yeniDurumId === 5 && nedenAdi) {
                         $select.after(`<div class="durum-neden-bilgi mt-2">
@@ -851,11 +950,8 @@
                     }
 
                     toastr.success(response.message || `Durum "${response.yeniDurum}" olarak güncellendi.`);
+                    location.reload();
 
-                location.reload(); // Hemen yenile, bekleme yok
-
-
-                    // Durum 9 (Sözleşmede) ise 1 ay sonra Arşiv'e çekme zamanlayıcısı
                     if (yeniDurumId === 9) {
                         scheduleArchiveAfterOneMonth(teklifId);
                     }
@@ -869,225 +965,7 @@
                 $select.val(eskiDurumId);
             }
         }
-
-        // Butonları duruma göre güncelle
-        function updateActionButtons($row, durumId) {
-           const $buttonsCell = $row.find('td:last-child');
-           const teklifId = $row.data('teklif-id');
-           const teklifNo = $row.find('.teklif-no').text();
-
-           // Kilitli durumlar
-           const kilitliDurumlar = [5, 8, 9, 10, 12];
-
-           let buttonsHtml = '';
-
-           // KİLİTLİ DURUMLAR (5, 8, 9, 10, 12)
-           if (kilitliDurumlar.includes(durumId)) {
-               // Kaybedildi durumunda
-               if (durumId === 5) {
-                   buttonsHtml = `
-                       <!-- Kaybedildi durumunda: PDF, Detay ve Sil butonları -->
-                       <button class="btn btn-info btn-sm aksiyon-btn detay-goster" data-button-permission="sozlesme-detay"
-                               data-teklif-id="${teklifId}"
-                               title="Detayları Gör">
-                           <i class="fas fa-eye"></i>
-                       </button>
-                       <a href="/AdminTeklifVer/TeklifPdf?teklifId=${teklifId}"
-                          target="_blank"
-                          class="btn btn-secondary btn-sm aksiyon-btn"
-                          title="PDF İndir">
-                           <i class="fas fa-file-pdf"></i>
-                       </a>
-                       <button class="btn btn-danger btn-sm aksiyon-btn sil-teklif" data-button-permission="sil"
-                               data-teklif-id="${teklifId}"
-                               data-teklif-no="${teklifNo}"
-                               title="Sil">
-                           <i class="fas fa-trash"></i>
-                       </button>`;
-               } 
-           } 
-
-            $buttonsCell.html(buttonsHtml);
-        }
-
-        // Sözleşmeden 1 ay sonra Arşiv'e çekme fonksiyonu
-        function scheduleArchiveAfterOneMonth(teklifId) {
-            console.log(`Teklif ${teklifId} için 1 ay sonra Arşiv kontrolü yapılacak`);
-        }
-
-        // Nedenleri yükle (önbellekli)
-        async function loadNedenler() {
-            if (nedenlerCache) return nedenlerCache;
-
-            try {
-                const res = await fetch('/AdminTeklif/GetirNedenler');
-                const data = await res.json();
-                if (data.success && data.nedenler) {
-                    nedenlerCache = data.nedenler;
-                    return data.nedenler;
-                }
-            } catch (e) {
-                console.error('Nedenler yüklenemedi:', e);
-            }
-            return [];
-        }
-
-        // Teklif detaylarını getir
-        async function detaylariGetir(id) {
-            try {
-                $('#teklifDetayIcerik').html(`
-                    <div class="text-center py-5">
-                        <div class="spinner-border text-primary" role="status"></div>
-                        <p class="mt-3">Teklif detayları yükleniyor...</p>
-                    </div>
-                `);
-                new bootstrap.Modal('#teklifDetayModal').show();
-
-                const response = await $.get('/AdminTeklif/GetirTeklifDetay', { id: id });
-
-                if (response.success) {
-                    const t = response.teklif;
-                    let html = `
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <div class="card border-0 shadow-sm mb-3">
-                                    <div class="card-header bg-light"><h6 class="mb-0">Teklif Bilgileri</h6></div>
-                                    <div class="card-body">
-                                        <table class="table table-sm table-borderless mb-0">
-                                            <tr><td class="text-muted">Teklif No:</td><td><strong>${t.teklifNo}</strong></td></tr>
-        <tr><td class="text-muted">Müşteri:</td><td>${t.musteriAdSoyad || '-'}</td></tr> 
-        <tr><td class="text-muted">Telefon:</td><td>${t.musteriTelefon || '-'}</td></tr>
-                                            <tr><td class="text-muted">E-posta:</td><td>${t.musteriEmail || '-'}</td></tr>
-                                            <tr><td class="text-muted">Lisans Tipi:</td><td>${t.lisansTipi || '-'}</td></tr>
-                                            <tr><td class="text-muted">Durum:</td><td><span class="badge ${getDurumBadgeCss(t.durumId)}" style="background-color: darkblue;">${t.durumAdi}</span></td></tr>
-                                            ${t.nedenAdi ? `<tr><td class="text-muted">Kaybedilme Nedeni:</td><td><span class="badge bg-secondary">${t.nedenAdi}</span></td></tr>` : ''}
-                                            ${t.ertelenmeNedeni ? `<tr><td class="text-muted">Ertelenme Nedeni:</td><td><span class="badge bg-warning">${t.ertelenmeNedeni}</span></td></tr>` : ''}
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card border-0 shadow-sm">
-                                    <div class="card-header bg-light"><h6 class="mb-0">Fiyat Bilgileri</h6></div>
-                                    <div class="card-body">
-                                        <table class="table table-sm table-borderless mb-0">
-                                            <tr><td class="text-muted">Net Toplam:</td><td><strong class="text-success">${formatTutar(t.netToplam)} ₺</strong></td></tr>
-                                            <tr><td class="text-muted">KDV Tutarı:</td><td>${formatTutar(t.kdvTutari)} ₺</td></tr>
-                                            <tr><td class="text-muted">Ara Toplam:</td><td>${formatTutar(t.araToplam)} ₺</td></tr>
-                                            <tr><td class="text-muted">Toplam İndirim:</td><td class="text-danger">${formatTutar(t.toplamIndirim)} ₺</td></tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>`;
-
-                    if (response.detaylar && response.detaylar.length > 0) {
-                        html += `<div class="card border-0 shadow-sm mt-3">
-                            <div class="card-header bg-light"><h6 class="mb-0">Teklif Kalemleri (${response.detaylar.length})</h6></div>
-                            <div class="card-body p-0">
-                                <div class="table-responsive">
-                                    <table class="table table-sm table-hover mb-0">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>#</th><th>Tip</th><th>Paket/Grup</th><th>Modül</th>
-                                                <th>Miktar</th><th>Liste</th><th>Kampanya</th><th>Net</th><th>Toplam</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>`;
-                        response.detaylar.forEach((d, i) => {
-                            const kampanya = d.kampanyaFiyati ? `${formatTutar(d.kampanyaFiyati)} ₺ (${d.kampanyaIndirimYuzdesi}%)` : '-';
-                            html += `<tr>
-                                <td>${i + 1}</td>
-                                <td><span class="badge bg-secondary">${d.tip || '-'}</span></td>
-                                <td>${d.paketGrupAdi || '-'}</td>
-                                <td>${d.itemAdi || '-'} ${d.bagimsizModulMu ? '<span class="badge bg-info ms-1">Bağımsız</span>' : ''}</td>
-                                <td class="text-center">${d.miktar || 1}</td>
-                                <td class="text-end">${formatTutar(d.listeFiyati)} ₺</td>
-                                <td class="text-end">${kampanya}</td>
-                                <td class="text-end">${formatTutar(d.birimFiyatNet)} ₺</td>
-                                <td class="text-end"><strong>${formatTutar(d.satirToplamNet)} ₺</strong></td>
-                            </tr>`;
-                        });
-                        html += `</tbody></table></div></div></div>`;
-                    }
-
-                    if (t.aciklama) {
-                        html += `<div class="card border-0 shadow-sm mt-3">
-                            <div class="card-header bg-light"><h6 class="mb-0">Açıklama</h6></div>
-                            <div class="card-body"><p class="mb-0">${t.aciklama}</p></div>
-                        </div>`;
-                    }
-
-                    html += `<div class="row mt-3 text-muted small">
-                        <div class="col-6">Oluşturulma: ${t.olusturmaTarihi || '-'}</div>
-                        <div class="col-6 text-end">Geçerlilik: ${t.gecerlilikTarihi || '-'}</div>
-                    </div>`;
-
-                    $('#teklifDetayIcerik').html(html);
-                } else {
-                    $('#teklifDetayIcerik').html(`<div class="alert alert-danger">${response.message}</div>`);
-                }
-            } catch (err) {
-                $('#teklifDetayIcerik').html('<div class="alert alert-danger">Teklif detayları yüklenirken hata oluştu.</div>');
-            }
-        }
-
-        async function teklifSil(id) {
-            try {
-                // Butonu kilitle ve yükleniyor durumuna getir
-                $('#silBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Siliniyor...');
-
-                // AJAX çağrısı
-                const response = await $.ajax({
-                    url: '/AdminTeklif/SilTeklif',
-                    type: 'POST',
-                    data: { id: id },
-                    dataType: 'json'
-                });
-
-                      if (response.success) {
-            // Başarılı mesaj göster
-            toastr.success(response.message);
-
-            // Seçili ID hala bu satırsa temizle
-            if (suAnSeciliTeklifId == id) {
-                suAnSeciliTeklifId = null;
-                suAnSeciliTeklifNo = null;
-                suAnSeciliDurumId = null;
-                suAnSeciliSatir = null;
-                $('#seciliKayitBilgi').html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
-                $('#seciliDetayGoster, #seciliPdfGoster, #seciliRevizeGoster, #seciliSozlesmeGoster, #seciliSil').prop('disabled', true);
-            }
-
-            // Modal'ı kapat
-            const modal = bootstrap.Modal.getInstance(document.getElementById('silModal'));
-            if (modal) {
-                modal.hide();
-            }
-
-            // Kısa bir gecikme ile sayfayı yenile
-            setTimeout(() => {
-                location.reload();
-            }, 1500);
-        } else {
-                    toastr.error(response.message);
-                    // Butonu tekrar aktif et
-                    $('#silBtn').prop('disabled', false).html('<i class="fas fa-trash me-2"></i>Sil');
-                }
-            } catch (error) {
-                console.error('Silme hatası:', error);
-                if (error.status === 401) {
-                    toastr.error('Oturum süresi doldu. Lütfen tekrar giriş yapın.');
-                } else if (error.status === 404) {
-                    toastr.error('Teklif bulunamadı.');
-                } else {
-                    toastr.error('Sunucu ile bağlantı kurulamadı.');
-                }
-                // Hata durumunda butonu tekrar aktif et
-                $('#silBtn').prop('disabled', false).html('<i class="fas fa-trash me-2"></i>Sil');
-            }
-        }
-
+                // Sözleşme modalını aç
         async function sozlesmeModalAc(teklifId) {
             try {
                 const modal = new bootstrap.Modal('#sozlesmeModal');
@@ -1151,9 +1029,7 @@
                     $('#sozlesmeKaydetBtn').off('click').on('click', function () {
                         sozlesmeKaydet(teklifId);
                     });
-                }
-                else
-                {
+                } else {
                     // Sözleşme zaten varsa uyarı göster ve modalı kapat
                     if (response.sozlesmeVar) {
                         $('#sozlesmeIcerik').html(`
@@ -1224,9 +1100,6 @@
 
             // Oranı yüzde cinsinden hesapla
             const oranYuzde = (parsedOrani <= 1) ? parsedOrani * 100 : parsedOrani;
-
-            // Hesaplama formülünü göster
-            const uybHesaplamaDetay = `${formatTutar(parsedTutarKdvsiz)} ₺ × %${oranYuzde} = ${formatTutar(parsedUYBTutari)} ₺`;
 
             return `
                 <form id="sozlesmeForm">
@@ -1329,7 +1202,6 @@
                                                    title="Bu alan otomatik hesaplanır ve değiştirilemez">
                                             <span class="input-group-text">₺</span>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -1409,7 +1281,6 @@
                                         </div>
                                     </div>
                                 </div>
-                             
                             </div>
 
                             <!-- Sözleşme Tipi ve Durumu -->
@@ -1468,9 +1339,9 @@
                                                 <input type="text" class="form-control form-control-sm" disabled name="TicariUnvan" value="${data.musteri?.ticariUnvan || ''}">
                                             </div>
                                            <div class="col-md-6">
-                                <label class="form-label small fw-medium">Ad Soyad <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control form-control-sm" disabled name="AdSoyad" value="${data.musteri?.adSoyad || ''}" required>
-                            </div>
+                                                <label class="form-label small fw-medium">Ad Soyad <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control form-control-sm" disabled name="AdSoyad" value="${data.musteri?.adSoyad || ''}" required>
+                                            </div>
                                             <div class="col-md-6">
                                                 <label class="form-label small fw-medium">Telefon <span class="text-danger">*</span></label>
                                                 <input type="tel" class="form-control form-control-sm" disabled name="Telefon" value="${data.musteri?.telefon || ''}" required>
@@ -1566,6 +1437,7 @@
             return `<select class="form-select" name="EntegratorId">${options}</select>`;
         }
 
+        // Sözleşme kaydet
         async function sozlesmeKaydet(teklifId) {
             try {
                 // Müşteri verisi gelmiş mi?
@@ -1660,7 +1532,7 @@
 
                 // Müşteri bilgileri
                 formData.append('TicariUnvan', m.ticariUnvan?.trim() || '');
-                formData.append('AdSoyad', adSoyad); // AdSoyad TEK ALAN - DÜZELTİLDİ
+                formData.append('AdSoyad', adSoyad);
                 formData.append('Telefon', m.telefon?.trim() || '');
                 formData.append('CepTelefon', $('[name="CepTelefon"]').val()?.trim() || '');
                 formData.append('Adres1', m.adres1?.trim() || '');
@@ -1710,7 +1582,7 @@
 
                 // 2. Müşteri tarafı zorunlu alanlar
                 if (!m.ticariUnvan?.trim()) hatalar.push('Ticari Ünvan');
-                if (!adSoyad?.trim()) hatalar.push('Ad Soyad'); // Ad + Soyad yerine AdSoyad
+                if (!adSoyad?.trim()) hatalar.push('Ad Soyad');
                 if (!m.telefon?.trim()) hatalar.push('Telefon');
                 if (!m.adres1?.trim()) hatalar.push('Adres - 1');
                 if (!m.il?.trim()) hatalar.push('İl');
@@ -1773,90 +1645,6 @@
             }
         }
 
-        function formatTutar(val, decimals = 2) {
-            if (val === null || val === undefined || val === '') return '0,00';
-
-            let num;
-            if (typeof val === 'string') {
-                const cleaned = val
-                    .replace(/\./g, '')
-                    .replace(',', '.')
-                    .trim();
-                num = parseFloat(cleaned);
-            } else {
-                num = val;
-            }
-
-            if (isNaN(num)) return '0,00';
-
-            return new Intl.NumberFormat('tr-TR', {
-                minimumFractionDigits: decimals,
-                maximumFractionDigits: decimals
-            }).format(num);
-        }
-
-        function parseTutar(tutarStr) {
-            if (tutarStr === null || tutarStr === undefined) return 0;
-
-            if (typeof tutarStr === 'number') return tutarStr;
-            if (typeof tutarStr === 'boolean') return tutarStr ? 1 : 0;
-
-            if (typeof tutarStr === 'string') {
-                const cleaned = tutarStr
-                    .toString()
-                    .replace(/\./g, '')
-                    .replace(',', '.')
-                    .replace(/[^\d.-]/g, '')
-                    .trim();
-
-                const num = parseFloat(cleaned);
-                return isNaN(num) ? 0 : num;
-            }
-
-            return 0;
-        }
-
-        function getDurumBadgeCss(id) {
-            const map = {
-                1: 'bg-warning text-dark',
-                2: 'bg-success',
-                3: 'bg-success',
-                4: 'bg-danger',
-                5: 'bg-secondary',
-                6: 'bg-success',
-                7: 'bg-warning text-dark',
-                8: 'bg-info',
-                9: 'bg-purple text-white',
-                10: 'bg-warning text-dark',
-                12: 'bg-secondary'
-            };
-            return map[id] || 'bg-light text-dark';
-        }
-
-        function musteriDuzenleAc(musteriId) {
-            const url = `/AdminMusteri/Index?musteriId=${musteriId}`;
-            window.open(url, '_blank');
-        }
-
-        // AdminMusteri sayfasında çalışacak kısım: URL'den musteriId oku ve düzenleme modalını aç
-        $(document).ready(function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            const musteriId = urlParams.get('musteriId');
-
-            if (musteriId && parseInt(musteriId) > 0) {
-                duzenleGetir(parseInt(musteriId));
-            }
-                    // Çarpı butonuna tıklandığında sayfayı yenile
-        $(document).on('click', '#sozlesmeModal .btn-close, #sozlesmeModal [data-bs-dismiss="modal"]', function() {
-            location.reload();
-        });
-
-        // İptal butonuna tıklandığında sayfayı yenile
-        $(document).on('click', '#sozlesmeModal .btn-secondary', function() {
-            location.reload();
-        });
-        });
-
         // Datepicker initialization ve otomatik hesaplama fonksiyonu
         function initDatePickers() {
             // Basit tarih formatı kontrolü için input mask ekleyelim
@@ -1911,7 +1699,6 @@
                             const month = parseInt(parts[1]) - 1;
                             const year = parseInt(parts[2]);
 
-                            // Geçerli tarih kontrolü
                             if (day >= 1 && day <= 31 && month >= 0 && month <= 11 && year >= 1900 && year <= 2100) {
                                 const yayinTarihi = new Date(year, month, day);
                                 if (!isNaN(yayinTarihi.getTime())) {
@@ -1935,7 +1722,6 @@
                     }
                 }
 
-                // Tarih geçersizse varsayılan değerleri kullan
                 const today = new Date();
                 const oneYearLater = new Date(today);
                 oneYearLater.setFullYear(today.getFullYear() + 1);
@@ -1972,18 +1758,11 @@
                 const formattedUYB = formatTutar(parsedUYBTutari);
                 const oranYuzde = parsedOrani.toFixed(0);
 
-                // Hesaplama formülünü göster
-                const uybHesaplamaDetay = `${formattedKdvsiz} ₺ × %${oranYuzde} = ${formattedUYB} ₺`;
-
-                // Input'ları güncelle (elementlerin mevcut olup olmadığını kontrol et)
-                const uybHesaplamaDetayEl = document.getElementById('uybHesaplamaDetay');
+                // Input'ları güncelle
                 const uybTutariInputEl = document.getElementById('uybTutariInput');
-                const uybOraniInputEl = document.getElementById('uybOraniInput');
                 const kdvsizTutarInputEl = document.getElementById('kdvsizTutarInput');
 
-                if (uybHesaplamaDetayEl) uybHesaplamaDetayEl.textContent = uybHesaplamaDetay;
                 if (uybTutariInputEl) uybTutariInputEl.value = formattedUYB;
-                if (uybOraniInputEl) uybOraniInputEl.value = `%${oranYuzde}`;
                 if (kdvsizTutarInputEl) kdvsizTutarInputEl.value = `${formattedKdvsiz} ₺`;
 
                 // Hidden field'ları güncelle
@@ -1996,367 +1775,245 @@
             }
         }
 
-        // Yardımcı fonksiyonlar
-        function formatTutar(val) {
-            if (!val && val !== 0) return '0,00';
-            const num = typeof val === 'string' ? parseFloat(val.replace(',', '.')) : val;
+        function parseTutar(tutarStr) {
+            if (tutarStr === null || tutarStr === undefined) return 0;
+
+            if (typeof tutarStr === 'number') return tutarStr;
+            if (typeof tutarStr === 'boolean') return tutarStr ? 1 : 0;
+
+            if (typeof tutarStr === 'string') {
+                const cleaned = tutarStr
+                    .toString()
+                    .replace(/\./g, '')
+                    .replace(',', '.')
+                    .replace(/[^\d.-]/g, '')
+                    .trim();
+
+                const num = parseFloat(cleaned);
+                return isNaN(num) ? 0 : num;
+            }
+
+            return 0;
+        }
+        // Nedenleri yükle
+        async function loadNedenler() {
+            if (nedenlerCache) return nedenlerCache;
+
+            try {
+                const res = await fetch('/AdminTeklif/GetirNedenler');
+                const data = await res.json();
+                if (data.success && data.nedenler) {
+                    nedenlerCache = data.nedenler;
+                    return data.nedenler;
+                }
+            } catch (e) {
+                console.error('Nedenler yüklenemedi:', e);
+            }
+            return [];
+        }
+
+        // Teklif detaylarını getir
+        async function detaylariGetir(id) {
+            try {
+                $('#teklifDetayIcerik').html(`
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-3">Teklif detayları yükleniyor...</p>
+                    </div>
+                `);
+                new bootstrap.Modal('#teklifDetayModal').show();
+
+                const response = await $.get('/AdminTeklif/GetirTeklifDetay', { id: id });
+
+                if (response.success) {
+                    const t = response.teklif;
+                    let html = `
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="card border-0 shadow-sm mb-3">
+                                    <div class="card-header bg-light"><h6 class="mb-0">Teklif Bilgileri</h6></div>
+                                    <div class="card-body">
+                                        <table class="table table-sm table-borderless mb-0">
+                                            <tr><td class="text-muted">Teklif No:</td><td><strong>${t.teklifNo}</strong></td></tr>
+                                            <tr><td class="text-muted">Müşteri:</td><td>${t.musteriAdSoyad || '-'}</td></tr>
+                                            <tr><td class="text-muted">Telefon:</td><td>${t.musteriTelefon || '-'}</td></tr>
+                                            <tr><td class="text-muted">E-posta:</td><td>${t.musteriEmail || '-'}</td></tr>
+                                            <tr><td class="text-muted">Lisans Tipi:</td><td>${t.lisansTipi || '-'}</td></tr>
+                                            <tr><td class="text-muted">Durum:</td><td><span class="badge ${getDurumBadgeCss(t.durumId)}" style="background-color: darkblue;">${t.durumAdi}</span></td></tr>
+                                            ${t.nedenAdi ? `<tr><td class="text-muted">Kaybedilme Nedeni:</td><td><span class="badge bg-secondary">${t.nedenAdi}</span></td></tr>` : ''}
+                                            ${t.ertelenmeNedeni ? `<tr><td class="text-muted">Ertelenme Nedeni:</td><td><span class="badge bg-warning">${t.ertelenmeNedeni}</span></td></tr>` : ''}
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-0 shadow-sm mb-3">
+                                    <div class="card-header bg-light"><h6 class="mb-0">Fiyat Bilgileri</h6></div>
+                                    <div class="card-body">
+                                        <table class="table table-sm table-borderless mb-0">
+                                            <tr><td class="text-muted">Net Toplam:</td><td><strong class="text-success">${formatTutar(t.netToplam)} ₺</strong></td></tr>
+                                            <tr><td class="text-muted">KDV Tutarı:</td><td>${formatTutar(t.kdvTutari)} ₺</td></tr>
+                                            <tr><td class="text-muted">Ara Toplam:</td><td>${formatTutar(t.araToplam)} ₺</td></tr>
+                                            <tr><td class="text-muted">Toplam İndirim:</td><td class="text-danger">${formatTutar(t.toplamIndirim)} ₺</td></tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-light"><h6 class="mb-0">Tarih Bilgileri</h6></div>
+                                    <div class="card-body">
+                                        <table class="table table-sm table-borderless mb-0">
+                                            <tr><td class="text-muted">Eklenme Tarihi:</td><td><strong>${t.olusturmaTarihi || '-'}</strong></td></tr>
+                                            <tr><td class="text-muted">Geçerlilik Tarihi:</td><td><strong>${t.gecerlilikTarihi || '-'}</strong></td></tr>
+                                            <tr><td class="text-muted">Son Güncelleme:</td><td>${t.guncellenmeTarihi || '-'}</td></tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+
+                    if (response.detaylar && response.detaylar.length > 0) {
+                        html += `<div class="card border-0 shadow-sm mt-3">
+                            <div class="card-header bg-light"><h6 class="mb-0">Teklif Kalemleri (${response.detaylar.length})</h6></div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>#</th><th>Tip</th><th>Paket/Grup</th><th>Modül</th>
+                                                <th>Miktar</th><th>Liste</th><th>Kampanya</th><th>Net</th><th>Toplam</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>`;
+                        response.detaylar.forEach((d, i) => {
+                            const kampanya = d.kampanyaFiyati ? `${formatTutar(d.kampanyaFiyati)} ₺ (${d.kampanyaIndirimYuzdesi}%)` : '-';
+                            html += `<tr>
+                                <td>${i + 1}</td>
+                                <td><span class="badge bg-secondary">${d.tip || '-'}</span></td>
+                                <td>${d.paketGrupAdi || '-'}</td>
+                                <td>${d.itemAdi || '-'} ${d.bagimsizModulMu ? '<span class="badge bg-info ms-1">Bağımsız</span>' : ''}</td>
+                                <td class="text-center">${d.miktar || 1}</td>
+                                <td class="text-end">${formatTutar(d.listeFiyati)} ₺</td>
+                                <td class="text-end">${kampanya}</td>
+                                <td class="text-end">${formatTutar(d.birimFiyatNet)} ₺</td>
+                                <td class="text-end"><strong>${formatTutar(d.satirToplamNet)} ₺</strong></td>
+                            </tr>`;
+                        });
+                        html += `</tbody></table></div></div></div>`;
+                    }
+
+                    if (t.aciklama) {
+                        html += `<div class="card border-0 shadow-sm mt-3">
+                            <div class="card-header bg-light"><h6 class="mb-0">Açıklama</h6></div>
+                            <div class="card-body"><p class="mb-0">${t.aciklama}</p></div>
+                        </div>`;
+                    }
+
+                    html += `<div class="row mt-3 text-muted small">
+                    </div>`;
+
+                    $('#teklifDetayIcerik').html(html);
+                } else {
+                    $('#teklifDetayIcerik').html(`<div class="alert alert-danger">${response.message}</div>`);
+                }
+            } catch (err) {
+                console.error('Detay getirme hatası:', err);
+                $('#teklifDetayIcerik').html('<div class="alert alert-danger">Teklif detayları yüklenirken hata oluştu.</div>');
+            }
+        }
+
+        async function teklifSil(id) {
+            try {
+                $('#silBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Siliniyor...');
+
+                const response = await $.ajax({
+                    url: '/AdminTeklif/SilTeklif',
+                    type: 'POST',
+                    data: { id: id },
+                    dataType: 'json'
+                });
+
+                if (response.success) {
+                    toastr.success(response.message);
+
+                    if (suAnSeciliTeklifId == id) {
+                        suAnSeciliTeklifId = null;
+                        suAnSeciliTeklifNo = null;
+                        suAnSeciliDurumId = null;
+                        suAnSeciliSatir = null;
+                        $('#seciliKayitBilgi').html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+                        $('#seciliDetayGoster, #seciliPdfGoster, #seciliRevizeGoster, #seciliSozlesmeGoster, #seciliSil').prop('disabled', true);
+                    }
+
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('silModal'));
+                    if (modal) {
+                        modal.hide();
+                    }
+
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    toastr.error(response.message);
+                    $('#silBtn').prop('disabled', false).html('<i class="fas fa-trash me-2"></i>Sil');
+                }
+            } catch (error) {
+                console.error('Silme hatası:', error);
+                if (error.status === 401) {
+                    toastr.error('Oturum süresi doldu. Lütfen tekrar giriş yapın.');
+                } else if (error.status === 404) {
+                    toastr.error('Teklif bulunamadı.');
+                } else {
+                    toastr.error('Sunucu ile bağlantı kurulamadı.');
+                }
+                $('#silBtn').prop('disabled', false).html('<i class="fas fa-trash me-2"></i>Sil');
+            }
+        }
+
+        function formatTutar(val, decimals = 2) {
+            if (val === null || val === undefined || val === '') return '0,00';
+
+            let num;
+            if (typeof val === 'string') {
+                const cleaned = val
+                    .replace(/\./g, '')
+                    .replace(',', '.')
+                    .trim();
+                num = parseFloat(cleaned);
+            } else {
+                num = val;
+            }
+
+            if (isNaN(num)) return '0,00';
+
             return new Intl.NumberFormat('tr-TR', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals
             }).format(num);
         }
-                // ============= TEKLİF FİLTRELEME SİSTEMİ =============
-        let aktifFiltreler = {
-            baslangicTarih: null,
-            bitisTarih: null,
-            durumId: 0,
-            siralama: 'yeni',
-            lisansTipId: 0
-        };
 
-        // Tarih hızlı seçimler
-        $('.tarih-hizli').click(function() {
-            const periyot = $(this).data('periyot');
-            const bugun = new Date();
-            let baslangic = new Date();
-            let bitis = new Date();
-
-            // Bugün için saatleri sıfırla
-            baslangic.setHours(0, 0, 0, 0);
-            bitis.setHours(23, 59, 59, 999);
-
-            switch(periyot) {
-                case 'bugun':
-                    // Zaten bugün
-                    break;
-                case 'hafta':
-                    // Pazartesi'den bugüne
-                    const gun = bugun.getDay(); // 0: Pazar, 1: Pazartesi, ...
-                    const pazartesiFarki = gun === 0 ? 6 : gun - 1; // Pazar ise 6 gün geri, değilse gun-1
-                    baslangic = new Date(bugun);
-                    baslangic.setDate(bugun.getDate() - pazartesiFarki);
-                    baslangic.setHours(0, 0, 0, 0);
-                    bitis = new Date(bugun);
-                    bitis.setHours(23, 59, 59, 999);
-                    break;
-                case 'ay':
-                    baslangic = new Date(bugun.getFullYear(), bugun.getMonth(), 1);
-                    baslangic.setHours(0, 0, 0, 0);
-                    bitis = new Date(bugun.getFullYear(), bugun.getMonth() + 1, 0);
-                    bitis.setHours(23, 59, 59, 999);
-                    break;
-            }
-
-            $('#baslangicTarih').val(formatDateForInput(baslangic));
-            $('#bitisTarih').val(formatDateForInput(bitis));
-
-            filtreUygula();
-        });
-
-        // Filtre uygula butonu (HTML'de olmadığı için kaldırdık)
-        // $('#filtreUygula').click(function() {
-        //     filtreUygula();
-        // });
-
-        // Filtreleri temizle
-        $('#filtreleriTemizle').click(function() {
-            $('#baslangicTarih').val('');
-            $('#bitisTarih').val('');
-            $('#durumFiltre').val('0');
-            $('#siralamaFiltre').val('yeni');
-            $('#lisansTipFiltre').val('0');
-            $('#teklifArama').val('');
-
-            aktifFiltreler = {
-                baslangicTarih: null,
-                bitisTarih: null,
-                durumId: 0,
-                siralama: 'yeni',
-                lisansTipId: 0
+        function getDurumBadgeCss(id) {
+            const map = {
+                1: 'bg-warning text-dark',
+                2: 'bg-success',
+                3: 'bg-success',
+                4: 'bg-danger',
+                5: 'bg-secondary',
+                6: 'bg-success',
+                7: 'bg-warning text-dark',
+                8: 'bg-info',
+                9: 'bg-purple text-white',
+                10: 'bg-warning text-dark',
+                12: 'bg-secondary'
             };
-
-            $('#aktifFiltreler').hide();
-            $('#filtreEtiketleri').empty();
-
-            // Tüm satırları göster
-            $('#teklifTablosu tr').show();
-
-            // Sadece sıralamayı uygula (filtresiz)
-            filtreleVeSirala('');
-        });
-
-        // Ana filtreleme fonksiyonu
-        function filtreUygula() {
-            // Filtre değerlerini al
-            const baslangicTarih = $('#baslangicTarih').val();
-            const bitisTarih = $('#bitisTarih').val();
-            const durumId = parseInt($('#durumFiltre').val()) || 0;
-            const siralama = $('#siralamaFiltre').val() || 'yeni';
-            const lisansTipId = parseInt($('#lisansTipFiltre').val()) || 0;
-            const aramaKelime = $('#teklifArama').val().toLowerCase().trim();
-
-            // Aktif filtreleri güncelle
-            aktifFiltreler = {
-                baslangicTarih: baslangicTarih || null,
-                bitisTarih: bitisTarih || null,
-                durumId: durumId,
-                siralama: siralama,
-                lisansTipId: lisansTipId
-            };
-
-            // Filtre etiketlerini göster
-            filtreEtiketleriniGoster();
-
-            // Filtrele ve sırala
-            filtreleVeSirala(aramaKelime);
+            return map[id] || 'bg-light text-dark';
         }
 
-        // Filtre etiketlerini göster
-        function filtreEtiketleriniGoster() {
-            const etiketler = [];
-
-            if (aktifFiltreler.baslangicTarih) {
-                etiketler.push(`<span class="badge bg-primary">Başlangıç: ${formatDateForDisplay(aktifFiltreler.baslangicTarih)}</span>`);
-            }
-            if (aktifFiltreler.bitisTarih) {
-                etiketler.push(`<span class="badge bg-primary">Bitiş: ${formatDateForDisplay(aktifFiltreler.bitisTarih)}</span>`);
-            }
-            if (aktifFiltreler.durumId && aktifFiltreler.durumId !== 0) {
-                const durumAdi = $('#durumFiltre option:selected').text();
-                etiketler.push(`<span class="badge bg-success">Durum: ${durumAdi}</span>`);
-            }
-            if (aktifFiltreler.lisansTipId && aktifFiltreler.lisansTipId !== 0) {
-                const lisansAdi = $('#lisansTipFiltre option:selected').text();
-                etiketler.push(`<span class="badge bg-secondary">Lisans: ${lisansAdi}</span>`);
-            }
-            if (aktifFiltreler.siralama !== 'yeni') {
-                const siralamaMetin = {
-                    'eski': 'En Eski',
-                    'tutar': 'Tutar (Yüksek)',
-                    'tutar-dusuk': 'Tutar (Düşük)',
-                    'teklif-no': 'Teklif No',
-                    'musteri': 'Müşteri Adı',
-                    'durum': 'Durum',
-                    'lisans': 'Lisans Tipi'
-                };
-                etiketler.push(`<span class="badge bg-info">Sıralama: ${siralamaMetin[aktifFiltreler.siralama]}</span>`);
-            }
-
-            if (etiketler.length > 0) {
-                $('#filtreEtiketleri').html(etiketler.join(' '));
-                $('#aktifFiltreler').show();
-            } else {
-                $('#aktifFiltreler').hide();
-            }
+        function musteriDuzenleAc(musteriId) {
+            const url = `/AdminMusteri/Index?musteriId=${musteriId}`;
+            window.open(url, '_blank');
         }
 
-        // Filtrele ve sırala
-        function filtreleVeSirala(aramaKelime = '') {
-            const $tablo = $('#teklifTablosu');
-            const $tbody = $tablo;
-            const $satirlar = $tbody.find('tr:not(.empty-state):not(.arama-bos-mesaj)');
-
-            // Eğer hiç satır yoksa çık
-            if ($satirlar.length === 0) return;
-
-            let gorunenSatirlar = [];
-
-            // Önce tüm satırları göster (gizleme işlemini temizle)
-            $satirlar.show();
-
-            // Filtreleme işlemi
-            $satirlar.each(function() {
-                const $satir = $(this);
-                const durumId = parseInt($satir.data('durum-id'));
-
-                // DOĞRU SÜTUN INDEX'LERİ:
-                // Oluşturulma Tarihi - 10. sütun (index 10, 0-based index 9)
-                const olusturmaTarihiStr = $satir.find('td:eq(9) small').text().trim();
-                const olusturmaTarihi = parseDate(olusturmaTarihiStr);
-
-                // Lisans tipi - 5. sütun (index 5, 0-based index 4)
-                const lisansTipi = $satir.find('td:eq(4)').text().trim();
-
-                // Arama için tüm metin
-                const satirMetni = $satir.text().toLowerCase();
-
-                let goster = true;
-
-                // TARİH FİLTRESİ - Düzeltildi
-                if (aktifFiltreler.baslangicTarih && olusturmaTarihi) {
-                    const baslangic = new Date(aktifFiltreler.baslangicTarih);
-                    baslangic.setHours(0, 0, 0, 0);
-
-                    // Tarihleri karşılaştır (sadece gün bazında)
-                    const baslangicTime = baslangic.getTime();
-                    const olusturmaTime = olusturmaTarihi.getTime();
-
-                    if (olusturmaTime < baslangicTime) {
-                        goster = false;
-                    }
-                }
-
-                if (goster && aktifFiltreler.bitisTarih && olusturmaTarihi) {
-                    const bitis = new Date(aktifFiltreler.bitisTarih);
-                    bitis.setHours(23, 59, 59, 999);
-
-                    const bitisTime = bitis.getTime();
-                    const olusturmaTime = olusturmaTarihi.getTime();
-
-                    if (olusturmaTime > bitisTime) {
-                        goster = false;
-                    }
-                }
-
-                // Durum filtresi
-                if (goster && aktifFiltreler.durumId && aktifFiltreler.durumId !== 0) {
-                    if (durumId !== aktifFiltreler.durumId) {
-                        goster = false;
-                    }
-                }
-
-                // Lisans tipi filtresi
-                if (goster && aktifFiltreler.lisansTipId && aktifFiltreler.lisansTipId !== 0) {
-                    const seciliLisansId = aktifFiltreler.lisansTipId;
-                    // Lisans tipi ID'sini bulmak zor, bu yüzden text karşılaştırması yapıyoruz
-                    // Daha doğru bir yöntem: data-lisans-id eklemek
-                    const seciliLisansAdi = $('#lisansTipFiltre option:selected').text().toLowerCase();
-                    if (!lisansTipi.toLowerCase().includes(seciliLisansAdi)) {
-                        goster = false;
-                    }
-                }
-
-                // Arama filtresi
-                if (goster && aramaKelime) {
-                    if (!satirMetni.includes(aramaKelime)) {
-                        goster = false;
-                    }
-                }
-
-                if (!goster) {
-                    $satir.hide();
-                } else {
-                    gorunenSatirlar.push($satir);
-                }
-            });
-
-            // Hiç sonuç yoksa mesaj göster
-            if (gorunenSatirlar.length === 0) {
-                $tbody.find('.arama-bos-mesaj').remove();
-                $tbody.append(`
-                    <tr class="arama-bos-mesaj">
-                        <td colspan="12" class="text-center text-muted py-5">
-                            <i class="fas fa-filter fa-2x mb-3"></i><br>
-                            Filtreleme kriterlerine uygun teklif bulunamadı.
-                        </td>
-                    </tr>
-                `);
-            } else {
-                $tbody.find('.arama-bos-mesaj').remove();
-                // Sıralama işlemi
-                siralaVeGoster(gorunenSatirlar, $tbody);
-            }
-        }
-
-        // Sıralama ve gösterme
-        function siralaVeGoster(satirlar, $tbody) {
-            const siralamaliSatirlar = [...satirlar];
-
-            switch(aktifFiltreler.siralama) {
-                case 'yeni':
-                    siralamaliSatirlar.sort((a, b) => {
-                        const tarihA = parseDate($(a).find('td:eq(9) small').text().trim());
-                        const tarihB = parseDate($(b).find('td:eq(9) small').text().trim());
-                        return (tarihB?.getTime() || 0) - (tarihA?.getTime() || 0);
-                    });
-                    break;
-
-                case 'eski':
-                    siralamaliSatirlar.sort((a, b) => {
-                        const tarihA = parseDate($(a).find('td:eq(9) small').text().trim());
-                        const tarihB = parseDate($(b).find('td:eq(9) small').text().trim());
-                        return (tarihA?.getTime() || 0) - (tarihB?.getTime() || 0);
-                    });
-                    break;
-
-                case 'tutar':
-                    siralamaliSatirlar.sort((a, b) => {
-                        const tutarA = parseFloat($(a).find('td:eq(5)').text().replace('₺', '').replace(/\./g, '').replace(',', '.')) || 0;
-                        const tutarB = parseFloat($(b).find('td:eq(5)').text().replace('₺', '').replace(/\./g, '').replace(',', '.')) || 0;
-                        return tutarB - tutarA;
-                    });
-                    break;
-
-                case 'tutar-dusuk':
-                    siralamaliSatirlar.sort((a, b) => {
-                        const tutarA = parseFloat($(a).find('td:eq(5)').text().replace('₺', '').replace(/\./g, '').replace(',', '.')) || 0;
-                        const tutarB = parseFloat($(b).find('td:eq(5)').text().replace('₺', '').replace(/\./g, '').replace(',', '.')) || 0;
-                        return tutarA - tutarB;
-                    });
-                    break;
-
-                case 'teklif-no':
-                    siralamaliSatirlar.sort((a, b) => {
-                        const teklifNoA = $(a).find('.teklif-no').text().trim();
-                        const teklifNoB = $(b).find('.teklif-no').text().trim();
-                        return teklifNoA.localeCompare(teklifNoB, 'tr');
-                    });
-                    break;
-
-                case 'musteri':
-                    siralamaliSatirlar.sort((a, b) => {
-                        const musteriA = $(a).find('td:eq(2) .musteri-adi').text().trim() || $(a).find('td:eq(2)').text().trim();
-                        const musteriB = $(b).find('td:eq(2) .musteri-adi').text().trim() || $(b).find('td:eq(2)').text().trim();
-                        return musteriA.localeCompare(musteriB, 'tr');
-                    });
-                    break;
-
-                case 'durum':
-                    siralamaliSatirlar.sort((a, b) => {
-                        const durumA = parseInt($(a).data('durum-id'));
-                        const durumB = parseInt($(b).data('durum-id'));
-                        return durumA - durumB;
-                    });
-                    break;
-
-                case 'lisans':
-                    siralamaliSatirlar.sort((a, b) => {
-                        const lisansA = $(a).find('td:eq(4)').text().trim();
-                        const lisansB = $(b).find('td:eq(4)').text().trim();
-                        return lisansA.localeCompare(lisansB, 'tr');
-                    });
-                    break;
-            }
-
-            // Mevcut satırları tbody'den kaldır
-            $tbody.find('tr:not(.arama-bos-mesaj)').remove();
-
-            // Sıralanmış satırları tbody'ye ekle
-            siralamaliSatirlar.forEach(satir => {
-                $tbody.append(satir);
-            });
-        }
-
-        // Tarih formatlama yardımcı fonksiyonları
-        function formatDateForInput(date) {
-            const yil = date.getFullYear();
-            const ay = String(date.getMonth() + 1).padStart(2, '0');
-            const gun = String(date.getDate()).padStart(2, '0');
-            return `${yil}-${ay}-${gun}`;
-        }
-
-        function formatDateForDisplay(dateStr) {
-            if (!dateStr) return '';
-            const [yil, ay, gun] = dateStr.split('-');
-            return `${gun}.${ay}.${yil}`;
-        }
-
-        function parseDate(dateStr) {
-            if (!dateStr) return null;
-            const [gun, ay, yil] = dateStr.split('.');
-            return new Date(parseInt(yil), parseInt(ay) - 1, parseInt(gun));
-        }
-                // ============= SATIR SEÇME VE ÜST BUTONLAR =============
+        // ============= SATIR SEÇME VE ÜST BUTONLAR =============
         let suAnSeciliTeklifId = null;
         let suAnSeciliTeklifNo = null;
         let suAnSeciliDurumId = null;
@@ -2369,72 +2026,74 @@
         const $seciliSilBtn = $('#seciliSil');
         const $seciliBilgiDiv = $('#seciliKayitBilgi');
 
-        // Kilitli durumlar listesi
-        const kilitliDurumlar = [5, 8, 9, 10, 12]; // Kaybedildi, Muhasebelendi, Sözleşmede, Revize, Arşiv
-        const sozlesmeAktifDurumlar = [6]; // Müşteri Onaylandı
-        const revizeAktifDurumlar = [1]; // Revize edilebilir durumlar
+        const kilitliDurumlar = [5, 8, 9, 10, 12];
+        const sozlesmeAktifDurumlar = [6];
+        const revizeAktifDurumlar = [1];
 
-        // Tablo satırına tıklandığında radio'yu seç
+        // Tablo satırına tıklandığında seçimi yap
         $(document).on('click', '#teklifTablosu tr[data-teklif-id]', function(e) {
-            // Eğer tıklanan element radio butonunun kendisi değilse
-            if (!$(e.target).is('input[type=radio]') && !$(e.target).is('button') && !$(e.target).is('select')) {
-                const $radio = $(this).find('.teklif-sec-radio');
-                $radio.prop('checked', true).trigger('change');
+            if (!$(e.target).is('button') && !$(e.target).is('select') && !$(e.target).is('a')) {
+                satirSec($(this));
             }
         });
 
-        // Radio butonu değiştiğinde (seçildiğinde) üst butonları ve bilgiyi güncelle
-        $(document).on('change', '.teklif-sec-radio', function() {
-            if ($(this).is(':checked')) {
-                suAnSeciliTeklifId = $(this).val();
-                suAnSeciliSatir = $(this).closest('tr');
-                suAnSeciliTeklifNo = suAnSeciliSatir.find('.teklif-no').text().trim();
-                suAnSeciliDurumId = parseInt(suAnSeciliSatir.data('durum-id'));
+        // Satır seçme fonksiyonu
+        function satirSec($satir) {
+            const teklifId = $satir.data('teklif-id');
 
-                // Tüm satırlardan active class'ı kaldır
+            if (suAnSeciliTeklifId === teklifId) {
+                suAnSeciliTeklifId = null;
+                suAnSeciliTeklifNo = null;
+                suAnSeciliDurumId = null;
+                suAnSeciliSatir = null;
+
                 $('#teklifTablosu tr').removeClass('table-active');
-                // Seçili satıra active class ekle
-                suAnSeciliSatir.addClass('table-active');
+                $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
 
-                // Bilgiyi güncelle
+                $seciliDetayBtn.prop('disabled', true);
+                $seciliPdfBtn.prop('disabled', true);
+                $seciliRevizeBtn.prop('disabled', true);
+                $seciliSozlesmeBtn.prop('disabled', true);
+                $seciliSilBtn.prop('disabled', true);
+            } else {
+                suAnSeciliTeklifId = teklifId;
+                suAnSeciliSatir = $satir;
+                suAnSeciliTeklifNo = $satir.find('.teklif-no').text().trim();
+                suAnSeciliDurumId = parseInt($satir.data('durum-id'));
+
+                $('#teklifTablosu tr').removeClass('table-active');
+                $satir.addClass('table-active');
+
                 $seciliBilgiDiv.html(`<i class="fas fa-check-circle text-success me-1"></i> Seçili: ${suAnSeciliTeklifNo}`);
 
-                // Duruma göre butonları güncelle
                 updateSeciliButtonStates();
             }
-        });
+        }
 
-        // Seçili teklifin durumuna göre butonları güncelle
         function updateSeciliButtonStates() {
-            // Tüm butonları varsayılan olarak aktif et
             $seciliDetayBtn.prop('disabled', false);
             $seciliPdfBtn.prop('disabled', false);
             $seciliRevizeBtn.prop('disabled', false);
             $seciliSozlesmeBtn.prop('disabled', false);
             $seciliSilBtn.prop('disabled', false);
 
-            // Kilitli durumlar için revize ve sil butonlarını devre dışı bırak
             if (kilitliDurumlar.includes(suAnSeciliDurumId)) {
                 $seciliRevizeBtn.prop('disabled', true);
 
-                // Kaybedildi (5) durumunda sil butonu aktif, diğer kilitli durumlarda sil butonu devre dışı
                 if (suAnSeciliDurumId !== 5) {
                     $seciliSilBtn.prop('disabled', true);
                 }
             }
 
-            // Sözleşme butonu sadece Müşteri Onaylandı (6) durumunda aktif
             if (!sozlesmeAktifDurumlar.includes(suAnSeciliDurumId)) {
                 $seciliSozlesmeBtn.prop('disabled', true);
             }
 
-            // Revize butonu sadece revize edilebilir durumlarda aktif
             if (!revizeAktifDurumlar.includes(suAnSeciliDurumId)) {
                 $seciliRevizeBtn.prop('disabled', true);
             }
         }
 
-        // Üstteki "Detay Göster" butonu
         $seciliDetayBtn.click(function() {
             if (suAnSeciliTeklifId) {
                 detaylariGetir(suAnSeciliTeklifId);
@@ -2443,7 +2102,6 @@
             }
         });
 
-        // Üstteki "PDF Göster" butonu
         $seciliPdfBtn.click(function() {
             if (suAnSeciliTeklifId) {
                 window.open(`/AdminTeklifVer/TeklifPdf?teklifId=${suAnSeciliTeklifId}`, '_blank');
@@ -2452,7 +2110,6 @@
             }
         });
 
-        // Üstteki "Revize Et" butonu
         $seciliRevizeBtn.click(function() {
             if (suAnSeciliTeklifId && !kilitliDurumlar.includes(suAnSeciliDurumId)) {
                 window.open(`/AdminTeklifVer?teklifId=${suAnSeciliTeklifId}`, '_blank');
@@ -2461,7 +2118,6 @@
             }
         });
 
-        // Üstteki "Sözleşme Oluştur" butonu
         $seciliSozlesmeBtn.click(function() {
             if (suAnSeciliTeklifId && sozlesmeAktifDurumlar.includes(suAnSeciliDurumId)) {
                 sozlesmeModalAc(suAnSeciliTeklifId);
@@ -2470,7 +2126,6 @@
             }
         });
 
-        // Üstteki "Sil" butonu
         $seciliSilBtn.click(function() {
             if (suAnSeciliTeklifId) {
                 $('#silinecekTeklifNo').text(suAnSeciliTeklifNo);
@@ -2481,27 +2136,22 @@
             }
         });
 
-        // Silme modalı kapandıktan sonra seçimi temizleme
         $('#silModal').on('hidden.bs.modal', function() {
             if (suAnSeciliTeklifId) {
                 const $satir = $(`tr[data-teklif-id="${suAnSeciliTeklifId}"]`);
                 if ($satir.length === 0) {
-                    // Satır silinmiş, seçimi temizle
                     suAnSeciliTeklifId = null;
                     suAnSeciliTeklifNo = null;
                     suAnSeciliDurumId = null;
                     suAnSeciliSatir = null;
                     $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
 
-                    // Tüm butonları devre dışı bırak
                     $seciliDetayBtn.prop('disabled', true);
                     $seciliPdfBtn.prop('disabled', true);
                     $seciliRevizeBtn.prop('disabled', true);
                     $seciliSozlesmeBtn.prop('disabled', true);
                     $seciliSilBtn.prop('disabled', true);
                 } else {
-                    // İptal edildi, radio'yu temizle
-                    $(`.teklif-sec-radio[value="${suAnSeciliTeklifId}"]`).prop('checked', false);
                     $('#teklifTablosu tr').removeClass('table-active');
                     suAnSeciliTeklifId = null;
                     suAnSeciliTeklifNo = null;
@@ -2509,7 +2159,6 @@
                     suAnSeciliSatir = null;
                     $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
 
-                    // Tüm butonları devre dışı bırak
                     $seciliDetayBtn.prop('disabled', true);
                     $seciliPdfBtn.prop('disabled', true);
                     $seciliRevizeBtn.prop('disabled', true);
@@ -2519,50 +2168,254 @@
             }
         });
 
-        // Filtreleme sonrası seçimi temizle
-        $('#filtreleriTemizle, .tarih-hizli').click(function() {
-            setTimeout(function() {
-                if (suAnSeciliTeklifId) {
-                    $(`.teklif-sec-radio[value="${suAnSeciliTeklifId}"]`).prop('checked', false);
-                    $('#teklifTablosu tr').removeClass('table-active');
-                    suAnSeciliTeklifId = null;
-                    suAnSeciliTeklifNo = null;
-                    suAnSeciliDurumId = null;
-                    suAnSeciliSatir = null;
-                    $seciliBilgiDiv.html(`<i class="fas fa-info-circle text-muted me-1"></i>Kayıt seçilmedi`);
+        function scheduleArchiveAfterOneMonth(teklifId) {
+            console.log(`Teklif ${teklifId} için 1 ay sonra Arşiv kontrolü yapılacak`);
+        }
+                // ============= TARİH ARALIĞI FİLTRESİ =============
+        // Flatpickr kütüphanesini ekleyelim (eğer yoksa)
+        if (typeof flatpickr === 'undefined') {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = 'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css';
+            document.head.appendChild(link);
 
-                    // Tüm butonları devre dışı bırak
-                    $seciliDetayBtn.prop('disabled', true);
-                    $seciliPdfBtn.prop('disabled', true);
-                    $seciliRevizeBtn.prop('disabled', true);
-                    $seciliSozlesmeBtn.prop('disabled', true);
-                    $seciliSilBtn.prop('disabled', true);
-                }
-            }, 100);
-        });
-          // Enter tuşu ile filtreleme
-        $('#baslangicTarih, #bitisTarih, #durumFiltre, #siralamaFiltre, #lisansTipFiltre, #teklifArama').on('keyup change', function(e) {
-            if (e.type === 'change' || (e.type === 'keyup' && e.key === 'Enter')) {
-                filtreUygula();
-            }
-        });
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/flatpickr';
+            document.head.appendChild(script);
+        }
 
-        // Input anlık arama için
-        $('#teklifArama').on('input', function() {
-            filtreUygula();
-        });
-     
-        // Sayfa yüklendiğinde mevcut arama inputunu filtreleme sistemine entegre et
-        $(document).ready(function() {
-            // Mevcut arama inputu zaten varsa, onu da dinle
-            const originalArama = $('#teklifArama');
-            if (originalArama.length) {
-                originalArama.on('input', function() {
-                    filtreUygula();
+        // Tarih aralığı state'i
+        let tarihFiltre = {
+            baslangic: null,
+            bitis: null,
+            aktif: false
+        };
+
+        let geciciTarihAraligi = null;
+
+        // Flatpickr başlatıldığında çalışacak
+        function initTarihFiltresi() {
+            if (typeof flatpickr !== 'undefined') {
+                flatpickr("#tarihAraligi", {
+                    mode: "range",
+                    dateFormat: "d.m.Y",
+                    locale: {
+                        rangeSeparator: " - ",
+                        firstDayOfWeek: 1,
+                        weekdays: {
+                            shorthand: ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'],
+                            longhand: ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi']
+                        },
+                        months: {
+                            shorthand: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
+                            longhand: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık']
+                        }
+                    },
+                    onChange: function(selectedDates, dateStr, instance) {
+                        if (selectedDates.length === 2) {
+                            // Tarihler seçildiğinde filtreyi hemen uygula
+                            tarihFiltre.baslangic = selectedDates[0];
+                            tarihFiltre.bitis = selectedDates[1];
+                            tarihFiltre.bitis.setHours(23, 59, 59, 999); // Gün sonuna ayarla
+                            tarihFiltre.aktif = true;
+
+                            // Aktif filtre badge'ini göster
+                            gosterAktifFiltreler();
+
+                            // Tabloyu filtrele
+                            filtreleVeSirala();
+                        } else if (selectedDates.length === 0) {
+                            // Tarih seçimi temizlendiğinde
+                            tarihFiltre.baslangic = null;
+                            tarihFiltre.bitis = null;
+                            tarihFiltre.aktif = false;
+
+                            // Aktif filtre badge'ini güncelle
+                            gosterAktifFiltreler();
+
+                            // Tabloyu filtrele
+                            filtreleVeSirala();
+                        }
+                    },
+                    onClose: function(selectedDates, dateStr, instance) {
+                        // Modal kapanırken otomatik filtreleme yap
+                        if (selectedDates.length === 2) {
+                            filtreleVeSirala();
+                        }
+                    }
                 });
+            } else {
+                // Flatpickr henüz yüklenmediyse bekle
+                setTimeout(initTarihFiltresi, 100);
             }
-                filtreUygula();
+        }
 
+        // Tarih filtre temizle butonu
+        $('#tarihFiltreTemizle').on('click', function() {
+            if (typeof flatpickr !== 'undefined') {
+                const fp = $("#tarihAraligi").flatpickr();
+                if (fp) {
+                    fp.clear();
+                }
+            }
+            $('#tarihAraligi').val('');
+            tarihFiltre.baslangic = null;
+            tarihFiltre.bitis = null;
+            tarihFiltre.aktif = false;
+
+            gosterAktifFiltreler();
+            filtreleVeSirala();
         });
+
+        // Sıralama değişikliği
+        let mevcutSiralama = 'tarih_azalan';
+
+        $('#siralamaSecenek').on('change', function() {
+            mevcutSiralama = $(this).val();
+            filtreleVeSirala();
+        });
+
+        // Aktif filtreleri göster
+        function gosterAktifFiltreler() {
+            const $aktifFiltreler = $('#aktifFiltreler');
+            $aktifFiltreler.empty();
+
+            if (tarihFiltre.aktif && tarihFiltre.baslangic && tarihFiltre.bitis) {
+                const baslangicStr = formatDateForDisplay(tarihFiltre.baslangic);
+                const bitisStr = formatDateForDisplay(tarihFiltre.bitis);
+
+                $aktifFiltreler.append(`
+                    <div class="filtre-badge">
+                        <i class="fas fa-calendar-alt"></i>
+                        ${baslangicStr} - ${bitisStr}
+                        <span class="filtre-temizle" onclick="$('#tarihFiltreTemizle').click()">
+                            <i class="fas fa-times"></i>
+                        </span>
+                    </div>
+                `);
+            }
+        }
+
+        // Tarihi formatla (gösterim için)
+        function formatDateForDisplay(date) {
+            if (!date) return '';
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}.${month}.${year}`;
+        }
+
+        // Tarihi parse et (tablodaki tarih formatından)
+        function parseTableDate(dateStr) {
+            if (!dateStr || dateStr === '-') return null;
+
+            // dd.MM.yyyy formatını parse et
+            const parts = dateStr.split('.');
+            if (parts.length === 3) {
+                const day = parseInt(parts[0]);
+                const month = parseInt(parts[1]) - 1;
+                const year = parseInt(parts[2]);
+                return new Date(year, month, day);
+            }
+            return null;
+        }
+
+        // Filtrele ve sırala fonksiyonu
+        function filtreleVeSirala() {
+            const $satirlar = $('#teklifTablosu tr:not(.empty-state)');
+            if ($satirlar.length === 0) return;
+
+            let gosterilecekSatirlar = [];
+
+            // Filtreleme
+            $satirlar.each(function() {
+                const $satir = $(this);
+                let goster = true;
+
+                // Tarih filtresi
+                if (tarihFiltre.aktif && tarihFiltre.baslangic && tarihFiltre.bitis) {
+                    // Tablodan oluşturulma tarihini al (burada data attribute olarak eklenmesi gerekiyor)
+                    // Not: Tabloda oluşturulma tarihi görünmüyor. View'da data-olusma-tarihi attribute'u eklenmeli
+                    const olusmaTarihiStr = $satir.data('olusma-tarihi');
+
+                    if (olusmaTarihiStr) {
+                        const olusmaTarihi = parseTableDate(olusmaTarihiStr);
+                        if (olusmaTarihi) {
+                            if (olusmaTarihi < tarihFiltre.baslangic || olusmaTarihi > tarihFiltre.bitis) {
+                                goster = false;
+                            }
+                        }
+                    }
+                }
+
+                if (goster) {
+                    gosterilecekSatirlar.push({
+                        element: $satir,
+                        tarih: parseTableDate($satir.data('olusma-tarihi')),
+                        no: parseInt($satir.find('.teklif-no').text().replace(/[^0-9]/g, '')) || 0,
+                        tutar: parseFloat($satir.find('.tutar').text().replace(/[^0-9,-]/g, '').replace(',', '.')) || 0
+                    });
+                }
+            });
+
+            // Sıralama
+            gosterilecekSatirlar.sort((a, b) => {
+                switch(mevcutSiralama) {
+                    case 'tarih_azalan':
+                        return (b.tarih || 0) - (a.tarih || 0);
+                    case 'tarih_artan':
+                        return (a.tarih || 0) - (b.tarih || 0);
+                    case 'no_azalan':
+                        return b.no - a.no;
+                    case 'no_artan':
+                        return a.no - b.no;
+                    case 'tutar_azalan':
+                        return b.tutar - a.tutar;
+                    case 'tutar_artan':
+                        return a.tutar - b.tutar;
+                    default:
+                        return (b.tarih || 0) - (a.tarih || 0);
+                }
+            });
+
+            // Tüm satırları gizle
+            $satirlar.hide();
+
+            // Sıralanmış satırları tabloya yeniden ekle
+            const $tbody = $('#teklifTablosu');
+            gosterilecekSatirlar.forEach(item => {
+                $tbody.append(item.element);
+                item.element.show();
+            });
+
+            // Boş durum kontrolü
+            if (gosterilecekSatirlar.length === 0) {
+                if ($('#teklifTablosu .empty-state').length === 0) {
+                    $('#teklifTablosu').append(`
+                        <tr class="empty-state">
+                            <td colspan="9" class="text-center text-muted py-5">
+                                <i class="fas fa-calendar-times fa-3x mb-3 opacity-50"></i><br>
+                                Seçilen tarih aralığında teklif bulunamadı.
+                            </td>
+                        </tr>
+                    `);
+                }
+            } else {
+                $('#teklifTablosu .empty-state').remove();
+            }
+
+            // Arama sonuçları ile birlikte çalışıyorsa aramayı da tekrar uygula
+            if ($('#akilliArama').val().trim()) {
+                akilliAramaYap();
+            }
+        }
+
+        // Mevcut akilliAramaYap fonksiyonunu güncelle (eğer gerekirse)
+        // Not: Mevcut akilliAramaYap fonksiyonu zaten satırları show/hide yapıyor.
+        // Tarih filtresi ile karışmaması için akilliAramaYap fonksiyonunun sonuna şu kontrolü ekleyebilirsiniz:
+        // (İsteğe bağlı - mevcut fonksiyonun sonunda)
+
+        // Flatpickr'ı başlat
+        setTimeout(initTarihFiltresi, 500);
     </script>
 }

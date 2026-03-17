@@ -3,10 +3,6 @@
   "WorkspaceRootPath": "D:\\PROJELER\\Noyasis\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\controllers\\adminmustericontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\controllers\\adminmustericontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|d:\\projeler\\noyasis\\wepapp\\views\\adminmusteri\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{8BA43826-BE8D-4F5D-AEAB-B06F300026D2}|WepApp\\WepApp.csproj|solutionrelative:wepapp\\views\\adminmusteri\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
@@ -18,32 +14,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Index.cshtml",
               "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminMusteri\\Index.cshtml",
               "RelativeDocumentMoniker": "WepApp\\Views\\AdminMusteri\\Index.cshtml",
               "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Views\\AdminMusteri\\Index.cshtml",
               "RelativeToolTip": "WepApp\\Views\\AdminMusteri\\Index.cshtml",
-              "ViewState": "AgIAABIHAAAAAAAAAAAuwCQHAABLAAAAAAAAAA==",
+              "ViewState": "AgIAAHYFAAAAAAAAAAAwwI4FAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-03-16T11:07:29.714Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AdminMusteriController.cs",
-              "DocumentMoniker": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\AdminMusteriController.cs",
-              "RelativeDocumentMoniker": "WepApp\\Controllers\\AdminMusteriController.cs",
-              "ToolTip": "D:\\PROJELER\\Noyasis\\WepApp\\Controllers\\AdminMusteriController.cs",
-              "RelativeToolTip": "WepApp\\Controllers\\AdminMusteriController.cs",
-              "ViewState": "AgIAAOIDAAAAAAAAAAAowPQDAABIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-16T09:02:34.952Z",
+              "WhenOpened": "2026-03-17T10:28:31.524Z",
               "EditorCaption": ""
             }
           ]

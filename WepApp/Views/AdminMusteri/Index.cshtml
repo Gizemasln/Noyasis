@@ -109,16 +109,14 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 4%;">#</th>
-                                        <th style="width: 8%;">Ad Soyad</th>
-                                        <th style="width: 8%;">Tabela Adı</th>  <!-- YENİ SÜTUN -->
+                                        <th style="width: 12%;">Ad Soyad</th>
+                                        <th style="width: 8%;">Tab. Adı</th>  <!-- YENİ SÜTUN -->
 
                                         <th style="width: 10%;">Unvanı</th>
-                                        <th style="width: 10%;">Kul. Adı</th>
-                                        <th style="width: 8%;">Email</th>
                                         <th style="width: 8%;">Telefon</th>
                                         <th style="width: 15%;">Bayi</th>
                                         <th style="width: 18%;">Tip</th>
-                                        <th style="width: 8%;">Müş. Olma T.</th>
+                                        <th style="width: 12%;">Müş. Olma T.</th>
                                         <th style="width: 20%;">A. Müş. Olma T.</th>
                                     </tr>
                                 </thead>
@@ -154,8 +152,6 @@
                                                                                                         : item.TicariUnvan)
                                             </strong>
                                         </td>
-                                        <td>@item.KullaniciAdi</td>
-                                                <td>@item.Email</td>
                                                 <td>@item.Telefon</td>
                                         <td>
                                             @if (item.Bayi != null)
@@ -282,13 +278,20 @@
                                         <label for="TabelaAdi">Tabela Adı</label>
                                     </div>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Kullanıcı Adı *</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control bg-light" id="KullaniciAdi" name="KullaniciAdi"
+                                <div class="col-md-3 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text"
+                                               class="form-control bg-light"
+                                               id="KullaniciAdi"
+                                               name="KullaniciAdi"
                                                readonly
-                                               style="background-color: #f8f9fa; cursor: not-allowed;"
-                                               placeholder="İl ve ilçe seçildiğinde otomatik oluşturulacak">
+                                               disabled
+                                               style="background-color: #e9ecef; cursor: default; pointer-events: none; user-select: none;"
+                                               tabindex="-1"
+                                               onfocus="this.blur()"
+                                               onmousedown="return false;"
+                                               onkeydown="return false;">
+                                        <label class="form-label">Kullanıcı Adı *</label>
 
                                         <!-- hidden field ile gerçek değeri gönderiyoruz -->
                                         <input type="hidden" name="KullaniciAdi" id="KullaniciAdiHidden">
@@ -296,15 +299,40 @@
                                     </div>
 
                                     <div class="form-text" id="kullaniciAdiUyariEkle">
-                                        <i class="fas fa-info-circle text-info"></i> Kullanıcı adı otomatik oluşturulur, elle yazılamaz.
+                                        <i class="fas fa-info-circle text-info"></i>Kullanıcı adı ve şifre oluşması için Ticari Ünvan, İl ve ilçe bilgilerini giriniz.Kullanıcı adı ve şifre otomatik oluşturulur, elle yazılamaz.
                                     </div>
 
                                     <div id="kullaniciAdiDurumEkle" class="mt-2" style="display: none;"></div>
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-3 mb-3 position-relative">
+
                                     <div class="form-floating">
-                                        <input  type="password" class="form-control" id="Sifre" name="Sifre" placeholder="Şifre" required>
-                                        <label for="Sifre">Şifre *</label>
+                                        <input type="password"
+                                               class="form-control bg-light"
+                                               id="Sifre"
+                                               name="Sifre"
+                                               placeholder="••••••••••"
+                                               required
+                                               readonly
+                                               disabled
+                                               style="background-color: #e9ecef; cursor: default; pointer-events: none; user-select: none;"
+                                               tabindex="-1"
+                                               onfocus="this.blur()"
+                                               onmousedown="return false;"
+                                               onkeydown="return false;">
+                                        <label class="form-label">Şifre</label>
+
+                                    </div>
+
+                                    <!-- Göz ikonu -->
+                                    <span class="position-absolute top-50 end-0 translate-middle-y pe-3"
+                                          style="margin-top: -37px;margin-right: 18px;"
+                                          id="sifreGozEkle">
+                                        <i class="fas fa-eye-slash text-muted"></i>
+                                    </span>
+
+                                    <div class="form-text" id="kullaniciAdiUyariEkle">
+                                        <i class="fas fa-info-circle text-info"></i>Kullananı adı ve şifre oluşması için Ticari Ünvan, İl ve ilçe bilgilerini giriniz.Kullanıcı adı ve şifre otomatik oluşturulur, elle yazılamaz
                                     </div>
                                 </div>
                                 <div class="col-md-3 mb-3">
@@ -678,7 +706,7 @@
                             <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#editYetkililer" type="button">Yetkililer</button></li>
                         </ul>
                         <div class="tab-content p-3">
-                            <!-- Temel Bilgiler -->
+                            <!-- Temel Bilgiler --><!-- Düzenle modalı Temel Bilgiler bölümü (güncellenmiş) -->
                             <div class="tab-pane fade show active" id="editTemel">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
@@ -699,45 +727,57 @@
                                             <label>Tabela Adı</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Kullanıcı Adı *</label>
-                                        <div class="input-group">
-                                            <input 
-                                                   type="text"
-                                                   class="form-control"
+                                    <div class="col-md-3 mb-3">
+                                        <div class="form-floating">
+                                            <input type="text"
+                                                   class="form-control bg-light"
                                                    id="editKullaniciAdi"
                                                    name="KullaniciAdi"
-                                                   placeholder="Kullanıcı adı düzenlenemez"
+                                                   placeholder="İl ve ilçe seçildiğinde otomatik oluşturulacak"
                                                    readonly
-                                                   required
-                                                   style="background-color: #f8f9fa; cursor: not-allowed; pointer-events: none;">
+                                                   disabled
+                                                   style="background-color: #e9ecef; cursor: default; pointer-events: none; user-select: none;"
+                                                   tabindex="-1"
+                                                   onfocus="this.blur()"
+                                                   onmousedown="return false;"
+                                                   onkeydown="return false;">
+                                            <label class="form-label">Kullanıcı Adı *</label>
 
-                                          
+                                            <!-- hidden field ile gerçek değeri gönderiyoruz -->
+                                            <input type="hidden" name="KullaniciAdi" id="editKullaniciAdiHidden">
                                         </div>
-
                                         <div class="form-text" id="kullaniciAdiUyariDuzenle">
-                                            <i class="fas fa-info-circle text-info"></i> Kullanıcı adı otomatik oluşturulur, elle yazılamaz.
+                                            <i class="fas fa-info-circle text-info"></i>Kullanıcı adı ve şifre oluşması için Ticari Ünvan, İl ve ilçe bilgilerini giriniz.Kullanıcı adı ve şifre otomatik oluşturulur, elle yazılamaz.
                                         </div>
-
                                         <div id="kullaniciAdiDurumDuzenle" class="mt-2" style="display: none;"></div>
                                     </div>
-
-                                    <div class="col-md-6 mb-3">
+                                    <!-- Düzenle modalı Temel Bilgiler bölümü - Şifre alanı düzeltilmiş -->
+                                    <div class="col-md-3 mb-3 position-relative">
                                         <div class="form-floating">
-                                            <input  readonly
-                                                   type="password"
-                                                   class="form-control"
+                                            <input type="password"
+                                                   class="form-control bg-light"
                                                    id="editSifre"
                                                    name="Sifre"
-                                                   placeholder="Boş bırakın değiştirmemek için"
-                                                   style="background-color: #f8f9fa; cursor: not-allowed; pointer-events: none;">
-                                            <label for="editSifre">Şifre</label>
+                                                   placeholder="••••••••"
+                                                   readonly
+                                                   disabled
+                                                   style="background-color: #e9ecef; cursor: default; pointer-events: none; user-select: none;"
+                                                   tabindex="-1"
+                                                   onfocus="this.blur()"
+                                                   onmousedown="return false;"
+                                                   onkeydown="return false;">
+                                            <label for="editSifre">Şifre *</label>
                                         </div>
-                                        <div class="mt-2">
-                                            <button type="button" class="btn btn-sm btn-warning" onclick="sifreYenilePencere()" id="sifreYenileBtn">
-                                                <i class="fas fa-key"></i> Şifre Yenile
-                                            </button>
-                                            <small class="text-muted ms-2">Yeni şifre oluşturmak için tıklayın</small>
+
+                                        <!-- Göz ikonu - EKLEYELİM -->
+                                        <span class="position-absolute top-50 end-0 translate-middle-y pe-3"
+                                              style="margin-top: -37px; margin-right: 18px; cursor: pointer; z-index: 10;"
+                                              id="sifreGozDuzenle">
+                                            <i class="fas fa-eye-slash text-muted"></i>
+                                        </span>
+
+                                        <div class="form-text" id="sifreUyariDuzenle">
+                                            <i class="fas fa-info-circle text-info"></i> Kullanıcı adı ve şifre oluşması için Ticari Ünvan, İl ve ilçe bilgilerini giriniz. Kullanıcı adı ve şifre otomatik oluşturulur, elle yazılamaz.
                                         </div>
                                     </div>
                                     <div class="col-md-3 mb-3">
@@ -771,11 +811,10 @@
                                             <div class="form-text text-danger">Müşteri tipi "Diğer" ise bu alan zorunludur.</div>
                                         </div>
                                     </div>
-                                    <!-- Düzenle modalı Temel Bilgiler tab'ındaki bayi dropdown'ı -->
                                     <div class="col-md-3 mb-3">
                                         <div class="form-floating">
                                             <select class="form-select" id="editBayiId" name="BayiId" required>
-                                                <option value="">Seçiniz</option> <!-- Boş seçenek eklendi -->
+                                                <option value="">Seçiniz</option>
                                                 @if (ViewBag.TumBayiler != null)
                                                 {
                                                     foreach (var b in (List<Bayi>)ViewBag.TumBayiler)
@@ -814,7 +853,8 @@
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <div class="form-floating">
-                                            <select class="form-select" id="editIl" name="Il" onchange="ilSecildi(this.value, 'editIlce', 'duzenle')">
+                                            <select class="form-select" id="editIl" name="Il" onchange="ilSecildiDuzenle(this.value, 'editIlce')">
+
                                                 <option value="">Seçiniz</option>
                                                 @if (ViewBag.Iller != null)
                                                 {
@@ -831,7 +871,7 @@
                                     <!-- İLÇE DROPDOWN -->
                                     <div class="col-md-6 mb-3">
                                         <div class="form-floating">
-                                            <select class="form-select" id="editIlce" name="Ilce" onchange="ilceSecildi('duzenle')">
+                                            <select class="form-select" id="editIlce" name="Ilce" onchange="ilceSecildiDuzenle()">
                                                 <option value="">Önce il seçiniz</option>
                                             </select>
                                             <label for="editIlce">İlçe</label>
@@ -1387,22 +1427,20 @@
         let aramaMetni = '';
         let aramaZamanlayici = null;
 
-        // Sütun indekslerini ve adlarını tanımla (Seç sütunu kalktığı için)
+              // Sütun indekslerini ve adlarını tanımla (GÜNCELLENMİŞ)
         const sutunlar = [
             { index: 0, ad: 'Sıra', alan: 'sira' },
             { index: 1, ad: 'Ad Soyad', alan: 'adSoyad' },
-            { index: 2, ad: 'Unvan', alan: 'unvan' },
-            { index: 3, ad: 'Kullanıcı Adı', alan: 'kullaniciAdi' },
-            { index: 4, ad: 'Email', alan: 'email' },
-            { index: 5, ad: 'Telefon', alan: 'telefon' },
-            { index: 6, ad: 'Bayi', alan: 'bayi' },
-            { index: 7, ad: 'Müşteri Tipi', alan: 'tip' },
-            { index: 8, ad: 'Müş. Ol.Tarihi', alan: 'musteriTarih' },
-            { index: 9, ad: 'A. Müş. Olma Tarihi', alan: 'adayTarih' }
+            { index: 2, ad: 'Tab. Adı', alan: 'tabelaAdi' },  // YENİ SÜTUN
+            { index: 3, ad: 'Unvan', alan: 'unvan' },
+            { index: 4, ad: 'Telefon', alan: 'telefon' },
+            { index: 5, ad: 'Bayi', alan: 'bayi' },
+            { index: 6, ad: 'Tip', alan: 'tip' },
+            { index: 7, ad: 'Müş. Olma T.', alan: 'musteriTarih' },
+            { index: 8, ad: 'A. Müş. Olma T.', alan: 'adayTarih' }
         ];
         // Sütun başlıklarına tıklama olayı ekle
         $(document).ready(function () {
-                    document.getElementById("KullaniciAdi").disabled = true;
                 otomatikBayiSec();
 
             // Flatpickr'ı başlat
@@ -1672,15 +1710,6 @@
 
             setTimeout(() => $('.alert').fadeOut('slow'), 5000);
 
-            // Kullanıcı adı kontrol event'leri
-            $('#KullaniciAdi').on('input', function () {
-                kontrolKullaniciAdi(this.value.trim());
-            });
-
-            $('#editKullaniciAdi').on('input', function () {
-                kontrolKullaniciAdi(this.value.trim(), document.getElementById('editId').value, 'editKullaniciAdiKontrol');
-            });
-
             // "Diğer" tipi kontrolleri
             $('#MusteriTipiId').on('change', function () {
                 toggleDigerInput(this, '#digerTipiContainer', '#Diger');
@@ -1745,6 +1774,12 @@
             // Hata mesajlarını temizle
             $('.is-invalid').removeClass('is-invalid');
             $('.invalid-feedback').remove();
+                window.location.reload();
+
+        });
+                // Düzenle modalı kapandığında sayfayı yenile
+        $('#duzenleModal').on('hidden.bs.modal', function () {
+            window.location.reload();
         });
         // ============= DÜZENLE MODAL AÇILDIĞINDA =============
         $('#duzenleModal').on('show.bs.modal', function() {
@@ -1813,9 +1848,9 @@
             {
                         <text>
                         // MÜŞTERİ - Bağlı olduğu bayi (düzenleme yapamaz, sadece görebilir)
-                        @if (ViewBag.CurrentMusteri.BayiId.HasValue)
+                        @if (ViewBag.CurrentMusteri.BayiId != null)
                         {
-                                    var bayi = ((List<Bayi>)ViewBag.TumBayiler).FirstOrDefault(b => b.Id == ViewBag.CurrentMusteri.BayiId.Value);
+                                    var bayi = ((List<Bayi>)ViewBag.TumBayiler).FirstOrDefault(b => b.Id == ViewBag.CurrentMusteri.BayiId);
                                     if (bayi != null)
                                     {
                                                 <text>
@@ -1864,18 +1899,10 @@
                 }
             });
         });
-                function otomatikBayiSec() {
-            // Ekle modalı için
+        // Bayi seçimini otomatik yap - GÜNCELLENMİŞ VERSİYON
+        function otomatikBayiSec() {
             const bayiSelect = document.getElementById('BayiId');
             if (!bayiSelect) return;
-
-            // Tüm seçenekleri temizle
-            bayiSelect.innerHTML = '';
-
-            // Kullanıcı tipini belirle
-            const isAdmin = @((ViewBag.CurrentKullanici != null).ToString().ToLower());
-            const isBayi = @((ViewBag.CurrentBayi != null).ToString().ToLower());
-            const isMusteri = @((ViewBag.CurrentMusteri != null).ToString().ToLower());
 
             @if (ViewBag.CurrentKullanici != null)
             {
@@ -1892,24 +1919,35 @@
                             </text>
                     }
 
-                    // İlk opsiyonu seç (isteğe bağlı)
+                    // İlk bayi seçili olsun
                     if (bayiSelect.options.length > 0) {
                         bayiSelect.selectedIndex = 0;
                     }
+
+                    // Dropdown'ı aktif et (değiştirilebilir)
+                    bayiSelect.disabled = false;
                     </text>
             }
             else if (ViewBag.CurrentBayi != null)
             {
                     <text>
-                    // BAYI - Sadece kendi bayisini ekle ve seç
+                    // BAYI - Kendi bayisi seçili, ancak hidden input ile gönder
                     var option = document.createElement('option');
                     option.value = '@ViewBag.CurrentBayi.Id';
                     option.textContent = '@ViewBag.CurrentBayi.Unvan';
                     option.selected = true;
                     bayiSelect.appendChild(option);
 
-                    // Dropdown'u readonly gibi yap (opsiyonel)
+                    // Dropdown'ı görünürde devre dışı bırak ama değeri gönderilsin
                     bayiSelect.disabled = true;
+
+                    // Hidden input ekle (değerin gönderilmesi için)
+                    var hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'BayiId';
+                    hiddenInput.id = 'BayiIdHidden';
+                    hiddenInput.value = '@ViewBag.CurrentBayi.Id';
+                    bayiSelect.parentNode.appendChild(hiddenInput);
                     </text>
             }
             else if (ViewBag.CurrentMusteri != null)
@@ -1928,30 +1966,158 @@
                                     option.selected = true;
                                     bayiSelect.appendChild(option);
 
-                                    // Dropdown'u readonly gibi yap
+                                    // Dropdown'ı devre dışı bırak
                                     bayiSelect.disabled = true;
+
+                                    // Hidden input ekle
+                                    var hiddenInput = document.createElement('input');
+                                    hiddenInput.type = 'hidden';
+                                    hiddenInput.name = 'BayiId';
+                                    hiddenInput.id = 'BayiIdHidden';
+                                    hiddenInput.value = '@bayi.Id';
+                                    bayiSelect.parentNode.appendChild(hiddenInput);
                                     </text>
                             }
+                    }
+                    else
+                    {
+                            <text>
+                            var option = document.createElement('option');
+                            option.value = '';
+                            option.textContent = 'Bağımsız Müşteri';
+                            option.selected = true;
+                            bayiSelect.appendChild(option);
+                            bayiSelect.disabled = true;
+
+                            // Boş değer için hidden input
+                            var hiddenInput = document.createElement('input');
+                            hiddenInput.type = 'hidden';
+                            hiddenInput.name = 'BayiId';
+                            hiddenInput.id = 'BayiIdHidden';
+                            hiddenInput.value = '';
+                            bayiSelect.parentNode.appendChild(hiddenInput);
+                            </text>
                     }
                     </text>
             }
         }
-                // Modal her açıldığında bayi seçimini yeniden yap
+        // Bayi seçimini otomatik yap - GÜNCELLENMİŞ VERSİYON
+        function otomatikBayiSec() {
+            const bayiSelect = document.getElementById('BayiId');
+            if (!bayiSelect) return;
+
+            @if (ViewBag.CurrentKullanici != null)
+            {
+                    <text>
+                    // ADMIN - Tüm bayileri listele
+                    @foreach (var bayi in (List<Bayi>)ViewBag.TumBayiler)
+                    {
+                            var prefix = string.Concat(Enumerable.Repeat("└─ ", bayi.Seviye ?? 0));
+                            <text>
+                            var option = document.createElement('option');
+                            option.value = '@bayi.Id';
+                            option.textContent = '@prefix @bayi.Unvan';
+                            bayiSelect.appendChild(option);
+                            </text>
+                    }
+
+                    // İlk bayi seçili olsun
+                    if (bayiSelect.options.length > 0) {
+                        bayiSelect.selectedIndex = 0;
+                    }
+
+                    // Dropdown'ı aktif et (değiştirilebilir)
+                    bayiSelect.disabled = false;
+                    </text>
+            }
+            else if (ViewBag.CurrentBayi != null)
+            {
+                    <text>
+                    // BAYI - Kendi bayisi seçili, ancak hidden input ile gönder
+                    var option = document.createElement('option');
+                    option.value = '@ViewBag.CurrentBayi.Id';
+                    option.textContent = '@ViewBag.CurrentBayi.Unvan';
+                    option.selected = true;
+                    bayiSelect.appendChild(option);
+
+                    // Dropdown'ı görünürde devre dışı bırak ama değeri gönderilsin
+                    bayiSelect.disabled = true;
+
+                    // Hidden input ekle (değerin gönderilmesi için)
+                    var hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'BayiId';
+                    hiddenInput.id = 'BayiIdHidden';
+                    hiddenInput.value = '@ViewBag.CurrentBayi.Id';
+                    bayiSelect.parentNode.appendChild(hiddenInput);
+                    </text>
+            }
+            else if (ViewBag.CurrentMusteri != null)
+            {
+                    <text>
+                    // MÜŞTERİ - Bağlı olduğu bayi
+                    @if (ViewBag.CurrentMusteri.BayiId != null)
+                    {
+                            var bayi = ((List<Bayi>)ViewBag.TumBayiler).FirstOrDefault(b => b.Id == ViewBag.CurrentMusteri.BayiId);
+                            if (bayi != null)
+                            {
+                                    <text>
+                                    var option = document.createElement('option');
+                                    option.value = '@bayi.Id';
+                                    option.textContent = '@bayi.Unvan';
+                                    option.selected = true;
+                                    bayiSelect.appendChild(option);
+
+                                    // Dropdown'ı devre dışı bırak
+                                    bayiSelect.disabled = true;
+
+                                    // Hidden input ekle
+                                    var hiddenInput = document.createElement('input');
+                                    hiddenInput.type = 'hidden';
+                                    hiddenInput.name = 'BayiId';
+                                    hiddenInput.id = 'BayiIdHidden';
+                                    hiddenInput.value = '@bayi.Id';
+                                    bayiSelect.parentNode.appendChild(hiddenInput);
+                                    </text>
+                            }
+                    }
+                    else
+                    {
+                            <text>
+                            var option = document.createElement('option');
+                            option.value = '';
+                            option.textContent = 'Bağımsız Müşteri';
+                            option.selected = true;
+                            bayiSelect.appendChild(option);
+                            bayiSelect.disabled = true;
+
+                            // Boş değer için hidden input
+                            var hiddenInput = document.createElement('input');
+                            hiddenInput.type = 'hidden';
+                            hiddenInput.name = 'BayiId';
+                            hiddenInput.id = 'BayiIdHidden';
+                            hiddenInput.value = '';
+                            bayiSelect.parentNode.appendChild(hiddenInput);
+                            </text>
+                    }
+                    </text>
+            }
+        }
+
+        // Modal her açıldığında
         $('#ekleModal').on('show.bs.modal', function() {
-            // Bayi dropdown'ını sıfırla ve yeniden doldur
+            // Önceki hidden input'ları temizle
+            $('#BayiIdHidden').remove();
+
             const bayiSelect = document.getElementById('BayiId');
             if (bayiSelect) {
                 bayiSelect.innerHTML = '';
                 bayiSelect.disabled = false; // Varsayılan olarak aktif
 
-                const isAdmin = @((ViewBag.CurrentKullanici != null).ToString().ToLower());
-                const isBayi = @((ViewBag.CurrentBayi != null).ToString().ToLower());
-                const isMusteri = @((ViewBag.CurrentMusteri != null).ToString().ToLower());
-
                 @if (ViewBag.CurrentKullanici != null)
                 {
                         <text>
-                        // ADMIN - Tüm bayileri listele
+                        // ADMIN - Tüm bayiler
                         @foreach (var bayi in (List<Bayi>)ViewBag.TumBayiler)
                         {
                                 var prefix = string.Concat(Enumerable.Repeat("└─ ", bayi.Seviye ?? 0));
@@ -1962,8 +2128,6 @@
                                 bayiSelect.appendChild(option);
                                 </text>
                         }
-
-                        // İlk opsiyonu seç
                         if (bayiSelect.options.length > 0) {
                             bayiSelect.selectedIndex = 0;
                         }
@@ -1972,19 +2136,28 @@
                 else if (ViewBag.CurrentBayi != null)
                 {
                         <text>
-                        // BAYI - Sadece kendi bayisi
+                        // BAYI - Kendi bayisi
                         var option = document.createElement('option');
                         option.value = '@ViewBag.CurrentBayi.Id';
                         option.textContent = '@ViewBag.CurrentBayi.Unvan';
                         option.selected = true;
                         bayiSelect.appendChild(option);
-                        bayiSelect.disabled = true; // Değiştirilemesin
+
+                        // Dropdown'ı devre dışı bırak
+                        bayiSelect.disabled = true;
+
+                        // Hidden input ekle
+                        var hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'BayiId';
+                        hiddenInput.id = 'BayiIdHidden';
+                        hiddenInput.value = '@ViewBag.CurrentBayi.Id';
+                        bayiSelect.parentNode.appendChild(hiddenInput);
                         </text>
                 }
                 else if (ViewBag.CurrentMusteri != null)
                 {
                         <text>
-                        // MÜŞTERİ - Bağlı olduğu bayi
                         @if (ViewBag.CurrentMusteri.BayiId != null)
                         {
                                 var bayi = ((List<Bayi>)ViewBag.TumBayiler).FirstOrDefault(b => b.Id == ViewBag.CurrentMusteri.BayiId);
@@ -1996,25 +2169,472 @@
                                         option.textContent = '@bayi.Unvan';
                                         option.selected = true;
                                         bayiSelect.appendChild(option);
-                                        bayiSelect.disabled = true; // Değiştirilemesin
+
+                                        // Dropdown'ı devre dışı bırak
+                                        bayiSelect.disabled = true;
+
+                                        // Hidden input ekle
+                                        var hiddenInput = document.createElement('input');
+                                        hiddenInput.type = 'hidden';
+                                        hiddenInput.name = 'BayiId';
+                                        hiddenInput.id = 'BayiIdHidden';
+                                        hiddenInput.value = '@bayi.Id';
+                                        bayiSelect.parentNode.appendChild(hiddenInput);
                                         </text>
                                 }
+                        }
+                        else
+                        {
+                                <text>
+                                var option = document.createElement('option');
+                                option.value = '';
+                                option.textContent = 'Bağımsız Müşteri';
+                                option.selected = true;
+                                bayiSelect.appendChild(option);
+                                bayiSelect.disabled = true;
+
+                                var hiddenInput = document.createElement('input');
+                                hiddenInput.type = 'hidden';
+                                hiddenInput.name = 'BayiId';
+                                hiddenInput.id = 'BayiIdHidden';
+                                hiddenInput.value = '';
+                                bayiSelect.parentNode.appendChild(hiddenInput);
+                                </text>
                         }
                         </text>
                 }
             }
 
-            // Diğer ekle modalı işlemleri...
+            // Diğer işlemler...
             ekleYetkiliListesi = [];
             guncelleEkleYetkiliListesi();
             $('#digerTipiContainer').hide();
-        // Aday müşteri kontrolü
-        const durumSelect = document.getElementById('MusteriDurumuId');
-        if (durumSelect) {
-            // Varsayılan olarak Aday Müşteri seçili gelsin
-            durumSelect.value = '2'; // Aday müşteri ID'si 2
-            toggleAdayMusteriAlanları(2, 'ekle');
+
+            const durumSelect = document.getElementById('MusteriDurumuId');
+            if (durumSelect) {
+                durumSelect.value = '2';
+                toggleAdayMusteriAlanları(2, 'ekle');
+            }
+        });
+        // toggleAdayMusteriAlanları fonksiyonunu güncelle
+        function toggleAdayMusteriAlanları(durumId, modalTipi = 'ekle') {
+            const prefix = modalTipi === 'ekle' ? '' : 'edit';
+            const isAday = parseInt(durumId) === 2;
+
+            // Zorunlu alanlar
+            const zorunluAlanlar = ['TicariUnvan', 'AdSoyad', 'Email'];
+            zorunluAlanlar.forEach(field => {
+                const el = document.getElementById(prefix + field);
+                if (el) {
+                    el.disabled = false;
+                    el.readOnly = false;
+                    el.required = true;
+                    el.style.backgroundColor = '#ffffff';
+                }
+            });
+
+            // Bayi seçimini düzenle
+            const bayiSelect = document.getElementById(prefix + 'BayiId');
+
+            // Mevcut hidden input'u temizle
+            const eskiHidden = document.getElementById((prefix ? prefix + 'BayiIdHidden' : 'BayiIdHidden'));
+            if (eskiHidden) eskiHidden.remove();
+
+            // Mevcut uyarıyı kaldır
+            const eskiUyari = document.getElementById('bayiUyari' + prefix);
+            if (eskiUyari) eskiUyari.remove();
+
+            if (isAday) {
+                // ADAY MÜŞTERİ MODU - BAYİ SEÇİMİ AÇIK
+                if (bayiSelect) {
+                    // Bayi dropdown'ını temizle
+                    bayiSelect.innerHTML = '';
+                    bayiSelect.disabled = false; // Bayi seçimi AÇIK
+
+                    // Bayi listesini doldur
+                    @if (ViewBag.CurrentKullanici != null)
+                    {
+                            <text>
+                            // ADMIN - Tüm bayiler
+                            @foreach (var bayi in (List<Bayi>)ViewBag.TumBayiler)
+                            {
+                                    var prefix = string.Concat(Enumerable.Repeat("└─ ", bayi.Seviye ?? 0));
+                                    <text>
+                                    var option = document.createElement('option');
+                                    option.value = '@bayi.Id';
+                                    option.textContent = '@prefix @bayi.Unvan';
+                                    bayiSelect.appendChild(option);
+                                    </text>
+                            }
+                            if (bayiSelect.options.length > 0) {
+                                bayiSelect.selectedIndex = 0;
+                            }
+                            </text>
+                    }
+                    else if (ViewBag.CurrentBayi != null)
+                    {
+                            <text>
+                            // BAYI - Kendi bayisi
+                            var option = document.createElement('option');
+                            option.value = '@ViewBag.CurrentBayi.Id';
+                            option.textContent = '@ViewBag.CurrentBayi.Unvan';
+                            option.selected = true;
+                            bayiSelect.appendChild(option);
+
+                            // Bayi seçimi açık ama sadece kendi bayisi seçili
+                            bayiSelect.disabled = true;
+
+                            // Hidden input ekle (değerin gönderilmesi için)
+                            var hiddenInput = document.createElement('input');
+                            hiddenInput.type = 'hidden';
+                            hiddenInput.name = 'BayiId';
+                            hiddenInput.id = (prefix ? prefix + 'BayiIdHidden' : 'BayiIdHidden');
+                            hiddenInput.value = '@ViewBag.CurrentBayi.Id';
+                            bayiSelect.parentNode.appendChild(hiddenInput);
+                            </text>
+                    }
+                    else if (ViewBag.CurrentMusteri != null)
+                    {
+                            <text>
+                            // MÜŞTERİ - Bağlı olduğu bayi (eğer varsa)
+                            @if (ViewBag.CurrentMusteri.BayiId != null)
+                            {
+                                    var bayi = ((List<Bayi>)ViewBag.TumBayiler).FirstOrDefault(b => b.Id == ViewBag.CurrentMusteri.BayiId);
+                                    if (bayi != null)
+                                    {
+                                            <text>
+                                            var option = document.createElement('option');
+                                            option.value = '@bayi.Id';
+                                            option.textContent = '@bayi.Unvan';
+                                            option.selected = true;
+                                            bayiSelect.appendChild(option);
+
+                                            // Bayi seçimi kapalı
+                                            bayiSelect.disabled = true;
+
+                                            // Hidden input ekle
+                                            var hiddenInput = document.createElement('input');
+                                            hiddenInput.type = 'hidden';
+                                            hiddenInput.name = 'BayiId';
+                                            hiddenInput.id = (prefix ? prefix + 'BayiIdHidden' : 'BayiIdHidden');
+                                            hiddenInput.value = '@bayi.Id';
+                                            bayiSelect.parentNode.appendChild(hiddenInput);
+                                            </text>
+                                    }
+                            }
+                            else
+                            {
+                                    <text>
+                                    // Müşterinin bağlı olduğu bayi yoksa "Seçiniz" göster
+                                    var secinizOption = document.createElement('option');
+                                    secinizOption.value = '';
+                                    secinizOption.textContent = 'Seçiniz';
+                                    secinizOption.selected = true;
+                                    bayiSelect.appendChild(secinizOption);
+
+                                    bayiSelect.disabled = true;
+
+                                    // Boş değer için hidden input
+                                    var hiddenInput = document.createElement('input');
+                                    hiddenInput.type = 'hidden';
+                                    hiddenInput.name = 'BayiId';
+                                    hiddenInput.id = (prefix ? prefix + 'BayiIdHidden' : 'BayiIdHidden');
+                                    hiddenInput.value = '';
+                                    bayiSelect.parentNode.appendChild(hiddenInput);
+                                    </text>
+                            }
+                            </text>
+                    }
+
+                    bayiSelect.style.backgroundColor = '';
+                    bayiSelect.style.cursor = '';
+                }
+
+                // Diğer alanları kapat (bayi hariç)
+                const kapatilacakAlanlar = [
+                    'KullaniciAdi', 'Sifre', 'TabelaAdi',
+                    'Telefon', 'Bolge', 'Il', 'Ilce', 'Belde', 'Adres',
+                    'TCVNo', 'VergiDairesi', 'KepAdresi', 'WebAdresi',
+                    'Aciklama', 'AlpemixFirmaAdi', 'AlpemixGrupAdi', 'AlpemixSifre'
+                ];
+
+                kapatilacakAlanlar.forEach(field => {
+                    const el = document.getElementById(prefix + field);
+                    if (el) {
+                        el.value = '';
+                        el.disabled = true;
+                        el.readOnly = true;
+                        el.required = false;
+                        el.style.backgroundColor = '#e9ecef';
+                    }
+                });
+
+                const musteriTipi = document.getElementById(prefix + 'MusteriTipiId');
+                if (musteriTipi) {
+                    musteriTipi.disabled = true;
+                    musteriTipi.style.backgroundColor = '#e9ecef';
+                }
+
+            } else {
+                // NORMAL MÜŞTERİ MODU
+                if (bayiSelect) {
+                    bayiSelect.innerHTML = '';
+                    bayiSelect.disabled = false; // Varsayılan olarak aktif
+
+                    @if (ViewBag.CurrentKullanici != null)
+                    {
+                            <text>
+                            // ADMIN - Tüm bayiler
+                            @foreach (var bayi in (List<Bayi>)ViewBag.TumBayiler)
+                            {
+                                    var prefix = string.Concat(Enumerable.Repeat("└─ ", bayi.Seviye ?? 0));
+                                    <text>
+                                    var option = document.createElement('option');
+                                    option.value = '@bayi.Id';
+                                    option.textContent = '@prefix @bayi.Unvan';
+                                    bayiSelect.appendChild(option);
+                                    </text>
+                            }
+                            if (bayiSelect.options.length > 0) {
+                                bayiSelect.selectedIndex = 0;
+                            }
+                            </text>
+                    }
+                    else if (ViewBag.CurrentBayi != null)
+                    {
+                            <text>
+                            // BAYI - Kendi bayisi
+                            var option = document.createElement('option');
+                            option.value = '@ViewBag.CurrentBayi.Id';
+                            option.textContent = '@ViewBag.CurrentBayi.Unvan';
+                            option.selected = true;
+                            bayiSelect.appendChild(option);
+
+                            // Dropdown'ı devre dışı bırak
+                            bayiSelect.disabled = true;
+
+                            // Hidden input ekle
+                            var hiddenInput = document.createElement('input');
+                            hiddenInput.type = 'hidden';
+                            hiddenInput.name = 'BayiId';
+                            hiddenInput.id = (prefix ? prefix + 'BayiIdHidden' : 'BayiIdHidden');
+                            hiddenInput.value = '@ViewBag.CurrentBayi.Id';
+                            bayiSelect.parentNode.appendChild(hiddenInput);
+                            </text>
+                    }
+                    else if (ViewBag.CurrentMusteri != null)
+                    {
+                            <text>
+                            @if (ViewBag.CurrentMusteri.BayiId != null)
+                            {
+                                    var bayi = ((List<Bayi>)ViewBag.TumBayiler).FirstOrDefault(b => b.Id == ViewBag.CurrentMusteri.BayiId);
+                                    if (bayi != null)
+                                    {
+                                            <text>
+                                            var option = document.createElement('option');
+                                            option.value = '@bayi.Id';
+                                            option.textContent = '@bayi.Unvan';
+                                            option.selected = true;
+                                            bayiSelect.appendChild(option);
+
+                                            // Dropdown'ı devre dışı bırak
+                                            bayiSelect.disabled = true;
+
+                                            // Hidden input ekle
+                                            var hiddenInput = document.createElement('input');
+                                            hiddenInput.type = 'hidden';
+                                            hiddenInput.name = 'BayiId';
+                                            hiddenInput.id = (prefix ? prefix + 'BayiIdHidden' : 'BayiIdHidden');
+                                            hiddenInput.value = '@bayi.Id';
+                                            bayiSelect.parentNode.appendChild(hiddenInput);
+                                            </text>
+                                    }
+                            }
+                            else
+                            {
+                                    <text>
+                                    var option = document.createElement('option');
+                                    option.value = '';
+                                    option.textContent = 'Bağımsız Müşteri';
+                                    option.selected = true;
+                                    bayiSelect.appendChild(option);
+                                    bayiSelect.disabled = true;
+
+                                    var hiddenInput = document.createElement('input');
+                                    hiddenInput.type = 'hidden';
+                                    hiddenInput.name = 'BayiId';
+                                    hiddenInput.id = (prefix ? prefix + 'BayiIdHidden' : 'BayiIdHidden');
+                                    hiddenInput.value = '';
+                                    bayiSelect.parentNode.appendChild(hiddenInput);
+                                    </text>
+                            }
+                            </text>
+                    }
+
+                    bayiSelect.style.backgroundColor = '';
+                    bayiSelect.style.cursor = '';
+                }
+
+                // Diğer alanları normale döndür
+                const acilacakAlanlar = [
+                    'KullaniciAdi', 'Sifre', 'TabelaAdi',
+                    'Telefon', 'Bolge', 'Il', 'Ilce', 'Belde', 'Adres',
+                    'TCVNo', 'VergiDairesi', 'KepAdresi', 'WebAdresi',
+                    'Aciklama', 'AlpemixFirmaAdi', 'AlpemixGrupAdi', 'AlpemixSifre'
+                ];
+
+                acilacakAlanlar.forEach(field => {
+                    const el = document.getElementById(prefix + field);
+                    if (el) {
+                        el.disabled = false;
+                        el.readOnly = false;
+                        el.required = false;
+                        el.style.backgroundColor = '#ffffff';
+                    }
+                });
+
+                const musteriTipi = document.getElementById(prefix + 'MusteriTipiId');
+                if (musteriTipi) {
+                    musteriTipi.disabled = false;
+                    musteriTipi.style.backgroundColor = '';
+                }
+            }
         }
+
+        // Modal her açıldığında
+        $('#ekleModal').on('show.bs.modal', function() {
+            // Önceki hidden input'ları temizle
+            $('#BayiIdHidden').remove();
+
+            const bayiSelect = document.getElementById('BayiId');
+            if (bayiSelect) {
+                bayiSelect.innerHTML = '';
+                bayiSelect.disabled = false; // Varsayılan olarak aktif
+
+                @if (ViewBag.CurrentKullanici != null)
+                {
+                        <text>
+                        // ADMIN - Tüm bayiler
+                        @foreach (var bayi in (List<Bayi>)ViewBag.TumBayiler)
+                        {
+                                var prefix = string.Concat(Enumerable.Repeat("└─ ", bayi.Seviye ?? 0));
+                                <text>
+                                var option = document.createElement('option');
+                                option.value = '@bayi.Id';
+                                option.textContent = '@prefix @bayi.Unvan';
+                                bayiSelect.appendChild(option);
+                                </text>
+                        }
+                        if (bayiSelect.options.length > 0) {
+                            bayiSelect.selectedIndex = 0;
+                        }
+                        </text>
+                }
+                else if (ViewBag.CurrentBayi != null)
+                {
+                        <text>
+                        // BAYI - Kendi bayisi
+                        var option = document.createElement('option');
+                        option.value = '@ViewBag.CurrentBayi.Id';
+                        option.textContent = '@ViewBag.CurrentBayi.Unvan';
+                        option.selected = true;
+                        bayiSelect.appendChild(option);
+
+                        // Dropdown'ı devre dışı bırak
+                        bayiSelect.disabled = true;
+
+                        // Hidden input ekle
+                        var hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'BayiId';
+                        hiddenInput.id = 'BayiIdHidden';
+                        hiddenInput.value = '@ViewBag.CurrentBayi.Id';
+                        bayiSelect.parentNode.appendChild(hiddenInput);
+                        </text>
+                }
+                else if (ViewBag.CurrentMusteri != null)
+                {
+                        <text>
+                        @if (ViewBag.CurrentMusteri.BayiId != null)
+                        {
+                                var bayi = ((List<Bayi>)ViewBag.TumBayiler).FirstOrDefault(b => b.Id == ViewBag.CurrentMusteri.BayiId);
+                                if (bayi != null)
+                                {
+                                        <text>
+                                        var option = document.createElement('option');
+                                        option.value = '@bayi.Id';
+                                        option.textContent = '@bayi.Unvan';
+                                        option.selected = true;
+                                        bayiSelect.appendChild(option);
+
+                                        // Dropdown'ı devre dışı bırak
+                                        bayiSelect.disabled = true;
+
+                                        // Hidden input ekle
+                                        var hiddenInput = document.createElement('input');
+                                        hiddenInput.type = 'hidden';
+                                        hiddenInput.name = 'BayiId';
+                                        hiddenInput.id = 'BayiIdHidden';
+                                        hiddenInput.value = '@bayi.Id';
+                                        bayiSelect.parentNode.appendChild(hiddenInput);
+                                        </text>
+                                }
+                        }
+                        else
+                        {
+                                <text>
+                                var option = document.createElement('option');
+                                option.value = '';
+                                option.textContent = 'Bağımsız Müşteri';
+                                option.selected = true;
+                                bayiSelect.appendChild(option);
+                                bayiSelect.disabled = true;
+
+                                var hiddenInput = document.createElement('input');
+                                hiddenInput.type = 'hidden';
+                                hiddenInput.name = 'BayiId';
+                                hiddenInput.id = 'BayiIdHidden';
+                                hiddenInput.value = '';
+                                bayiSelect.parentNode.appendChild(hiddenInput);
+                                </text>
+                        }
+                        </text>
+                }
+            }
+
+            // Diğer işlemler...
+            ekleYetkiliListesi = [];
+            guncelleEkleYetkiliListesi();
+            $('#digerTipiContainer').hide();
+
+            const durumSelect = document.getElementById('MusteriDurumuId');
+            if (durumSelect) {
+                durumSelect.value = '2';
+                toggleAdayMusteriAlanları(2, 'ekle');
+            }
+        });
+
+
+        // Form submit öncesi kontrol
+        $('#ekleForm').on('submit', function(e) {
+            // Eğer hidden input varsa, onun değerini kullan
+            const hiddenBayiId = $('#BayiIdHidden').val();
+            const bayiSelect = $('#BayiId');
+
+            // Eğer hidden input varsa ve değeri varsa, select'i disabled olsa bile değer gönderilecek
+            if (hiddenBayiId !== undefined) {
+                // Zaten hidden input ile gönderiliyor
+                console.log('Hidden bayi ID:', hiddenBayiId);
+            } else if (bayiSelect.length && bayiSelect.prop('disabled')) {
+                // Select disabled ama hidden input yoksa - bu durumda select'in değeri gönderilmez
+                // Bu durumu önlemek için hidden input ekle
+                var hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'BayiId';
+                hiddenInput.id = 'BayiIdHidden';
+                hiddenInput.value = bayiSelect.val();
+                bayiSelect.parent().append(hiddenInput);
+            }
         });
         // ============= TARİH ARALIĞI FİLTRESİ =============
         let tarihFiltre = {
@@ -2081,11 +2701,23 @@
                 setTimeout(initTarihFiltresi, 100);
             }
         }
+                // Ekle modalı şifre göster/gizle
+        $(document).on('click', '#sifreGozEkle', function() {
+            const $sifreInput = $('#Sifre');
+            const $gozIkonu = $(this).find('i');
 
+            if ($sifreInput.attr('type') === 'password') {
+                $sifreInput.attr('type', 'text');
+                $gozIkonu.removeClass('fa-eye-slash').addClass('fa-eye');
+            } else {
+                $sifreInput.attr('type', 'password');
+                $gozIkonu.removeClass('fa-eye').addClass('fa-eye-slash');
+            }
+        });
           // Sütun filtresini aktif et
+          // Sütun filtresini aktif et - GÜNCELLENMİŞ
         function sutunFiltresiAktifEt(index, ad, alan) {
             $('thead th').removeClass('sutun-aktif');
-            // Doğrudan index'i kullan, +1 ekleme
             $(`thead th:eq(${index})`).addClass('sutun-aktif');
             aktifAramaSutunu = alan;
             $('#aktifSutunAdi').text(ad);
@@ -2117,31 +2749,47 @@
             $('#musteriTablosu .arama-bos-mesaj').remove();
         }
 
-        // Hücre metnini al
+        // Hücre metnini al - GÜNCELLENMİŞ VERSİYON
         function hucreMetniniAl($hucre, sutunAlani) {
             if (sutunAlani === 'bayi') {
+                // Bayi hücresi içindeki span'i bul
+                const bayiSpan = $hucre.find('span.text-primary');
+                if (bayiSpan.length) {
+                    return bayiSpan.text().toLowerCase().trim();
+                }
                 return $hucre.text().toLowerCase().trim();
-            } else if (sutunAlani === 'tip') {
+            }
+            else if (sutunAlani === 'tip') {
                 const tipSpan = $hucre.find('.table-seviye-badge');
                 return tipSpan.length ? tipSpan.text().toLowerCase().trim() : $hucre.text().toLowerCase().trim();
-            } else if (sutunAlani === 'musteriTarih' || sutunAlani === 'adayTarih') {
+            }
+            else if (sutunAlani === 'musteriTarih' || sutunAlani === 'adayTarih') {
                 const badge = $hucre.find('.badge');
-                return badge.length ? badge.text().toLowerCase().trim() : $hucre.text().toLowerCase().trim();
-            } else {
+                if (badge.length) {
+                    // Badge içindeki metni al (ikon hariç)
+                    return badge.clone().children().remove().end().text().toLowerCase().trim();
+                }
+                return $hucre.text().toLowerCase().trim();
+            }
+            else if (sutunAlani === 'tabelaAdi') {
+                // Tabela adı sütunu - direkt metin
+                return $hucre.text().toLowerCase().trim();
+            }
+            else {
                 return $hucre.text().toLowerCase().trim();
             }
         }
 
-        // Sütun indeksini bul
-        function getSutunIndex(sutunAlani) {
-            const bulunan = sutunlar.find(s => s.alan === sutunAlani);
-            return bulunan ? bulunan.index : -1;
-        }
-
-            // İndekse göre sütun alanını bul
+         // Sütun alanını bul (index'e göre) - GÜNCELLENMİŞ
         function getSutunAlani(index) {
             const bulunan = sutunlar.find(s => s.index === index);
             return bulunan ? bulunan.alan : null;
+        }
+
+        // Sütun indeksini bul (alan'a göre) - GÜNCELLENMİŞ
+        function getSutunIndex(sutunAlani) {
+            const bulunan = sutunlar.find(s => s.alan === sutunAlani);
+            return bulunan ? bulunan.index : -1;
         }
 
         // Tarihi parse et (dd.MM.yyyy formatı)
@@ -2189,7 +2837,7 @@
             }
         }
 
-        // Ana filtreleme ve sıralama fonksiyonu
+        // Ana filtreleme ve sıralama fonksiyonu - GÜNCELLENMİŞ
         function filtreleVeSirala() {
             const $satirlar = $('#musteriTablosu tbody tr:not(.empty-state)');
             if ($satirlar.length === 0) return;
@@ -2201,37 +2849,40 @@
                 const $satir = $(this);
                 let goster = true;
 
+                // Önce tüm vurgu sınıflarını temizle
+                $satir.find('td').removeClass('arama-vurgula');
+
                 // Arama filtresi
                 if (aramaMetni) {
                     let eslesmeVar = false;
 
-                        // Filtreleme kısmında:
-        if (aktifAramaSutunu) {
-            const sutunIndex = getSutunIndex(aktifAramaSutunu);
-            if (sutunIndex !== -1) {
-                // Doğrudan sutunIndex'i kullan, +1 ekleme
-                const $hucre = $satir.find(`td:eq(${sutunIndex})`);
-                const hucreMetni = hucreMetniniAl($hucre, aktifAramaSutunu);
-
-                if (hucreMetni.includes(aramaMetni)) {
-                    eslesmeVar = true;
-                    $hucre.addClass('arama-vurgula');
-                }
-            }
-        } else {
-            $satir.find('td').each(function (index) {
-                // Tüm sütunları tara
-                const $hucre = $(this);
-                const sutunAlani = getSutunAlani(index);
-                if (sutunAlani) {
-                    const hucreMetni = hucreMetniniAl($hucre, sutunAlani);
-                    if (hucreMetni.includes(aramaMetni)) {
-                        eslesmeVar = true;
-                        $hucre.addClass('arama-vurgula');
+                    if (aktifAramaSutunu) {
+                        // Belirli bir sütunda ara
+                        const sutunIndex = getSutunIndex(aktifAramaSutunu);
+                        if (sutunIndex !== -1) {
+                            const $hucre = $satir.find(`td:eq(${sutunIndex})`);
+                            if ($hucre.length) {
+                                const hucreMetni = hucreMetniniAl($hucre, aktifAramaSutunu);
+                                if (hucreMetni.includes(aramaMetni)) {
+                                    eslesmeVar = true;
+                                    $hucre.addClass('arama-vurgula');
+                                }
+                            }
+                        }
+                    } else {
+                        // Tüm sütunlarda ara
+                        $satir.find('td').each(function (index) {
+                            const $hucre = $(this);
+                            const sutunAlani = getSutunAlani(index);
+                            if (sutunAlani) {
+                                const hucreMetni = hucreMetniniAl($hucre, sutunAlani);
+                                if (hucreMetni.includes(aramaMetni)) {
+                                    eslesmeVar = true;
+                                    $hucre.addClass('arama-vurgula');
+                                }
+                            }
+                        });
                     }
-                }
-            });
-        }
 
                     if (!eslesmeVar) {
                         goster = false;
@@ -2240,7 +2891,7 @@
 
                 // Tarih filtresi
                 if (goster && tarihFiltre.aktif && tarihFiltre.baslangic && tarihFiltre.bitis) {
-                    const musteriTarihStr = $satir.find('td:nth-child(10) .badge').text().trim();
+                    const musteriTarihStr = $satir.find('td:nth-child(8) .badge').text().trim(); // 8. sütun Müş. Olma T.
                     if (musteriTarihStr && musteriTarihStr !== '-') {
                         const musteriTarih = parseTableDate(musteriTarihStr);
                         if (musteriTarih) {
@@ -2258,8 +2909,8 @@
                 if (goster) {
                     // Sıralama için verileri topla
                     const adSoyad = $satir.find('td:nth-child(2)').text().trim();
-                    const unvan = $satir.find('td:nth-child(3)').text().trim();
-                    const musteriTarihStr = $satir.find('td:nth-child(10) .badge').text().trim();
+                    const unvan = $satir.find('td:nth-child(4)').text().trim(); // Unvan 4. sütun
+                    const musteriTarihStr = $satir.find('td:nth-child(8) .badge').text().trim(); // Müş. Olma T. 8. sütun
                     const musteriTarih = parseTableDate(musteriTarihStr);
 
                     gosterilecekSatirlar.push({
@@ -2299,11 +2950,12 @@
             gosterilecekSatirlar.forEach((item, index) => {
                 $tbody.append(item.element);
                 item.element.show();
-                     // Sıra numarasını güncelle
-        const siraHucresi = item.element.find('td:nth-child(1)');
-        if (siraHucresi) {
-            siraHucresi.text(index + 1);
-        }
+
+                // Sıra numarasını güncelle
+                const siraHucresi = item.element.find('td:nth-child(1)');
+                if (siraHucresi) {
+                    siraHucresi.text(index + 1);
+                }
             });
 
             // Boş durum kontrolü
@@ -2319,7 +2971,7 @@
 
                     $tbody.append(`
                         <tr class="arama-bos-mesaj">
-                            <td colspan="11" class="text-center text-muted py-5">
+                            <td colspan="9" class="text-center text-muted py-5">
                                 <i class="fas fa-search fa-3x mb-3 opacity-50"></i><br>
                                 <strong>${mesaj}</strong>
                                 ${aktifAramaSutunu ? `<br><small class="text-muted">Aranan sütun: ${$('thead th.sutun-aktif').data('sutun-ad')}</small>` : ''}
@@ -2331,6 +2983,7 @@
                 $tbody.find('.arama-bos-mesaj').remove();
             }
         }
+
 
         // ============= DOSYA YÖNETİMİ FONKSİYONLARI =============
         function yukleDosyaBilgileri(musteriId) {
@@ -2793,7 +3446,30 @@
                 modal.hide();
             };
         }
+                // Düzenle modalı şifre göster/gizle
+        $(document).on('click', '#sifreGozDuzenle', function() {
+            const $sifreInput = $('#editSifre');
+            const $gozIkonu = $(this).find('i');
 
+            // readonly ve disabled özelliklerini geçici olarak kaldır
+            const wasReadOnly = $sifreInput.prop('readonly');
+            const wasDisabled = $sifreInput.prop('disabled');
+
+            if (wasReadOnly) $sifreInput.prop('readonly', false);
+            if (wasDisabled) $sifreInput.prop('disabled', false);
+
+            if ($sifreInput.attr('type') === 'password') {
+                $sifreInput.attr('type', 'text');
+                $gozIkonu.removeClass('fa-eye-slash').addClass('fa-eye');
+            } else {
+                $sifreInput.attr('type', 'password');
+                $gozIkonu.removeClass('fa-eye').addClass('fa-eye-slash');
+            }
+
+            // Eski haline geri getir
+            if (wasReadOnly) $sifreInput.prop('readonly', true);
+            if (wasDisabled) $sifreInput.prop('disabled', true);
+        });
         function silImzaOnay() {
             document.getElementById('silinecekDosyaAdi').textContent = 'İmza';
             currentDosyaTipi = 'imza';
@@ -3078,146 +3754,329 @@
             }
             new bootstrap.Modal(document.getElementById('yeniYetkiliEkleModal')).show();
         }
+                // ============= DÜZENLE MODAL İÇİN KULLANICI ADI VE ŞİFRE OLUŞTURMA =============
+        // Düzenle modalı için kullanıcı adı ve şifre değişkenleri
+        let duzenleOrijinalKullaniciAdi = '';
+        let duzenleOrijinalSifre = '';
 
-        // Kullanıcı adı oluştur (Ekle modalı için)
-        function kullaniciAdiOluştur(mod = 'ekle') {
-            const ilSelect = document.getElementById('Il');
-            const ilceSelect = document.getElementById('Ilce');
-            const kullaniciAdiInput = document.getElementById('KullaniciAdi');
-            const durumDiv = document.getElementById('kullaniciAdiDurumEkle');
-            const btn = document.getElementById('kullaniciAdiOluşturBtn');
-
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Oluşturuluyor...';
-
-            if (!ilSelect.value) {
-                durumDiv.style.display = 'block';
-                durumDiv.className = 'mt-2 alert alert-warning py-2';
-                durumDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> Lütfen önce il seçiniz.';
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i> Kullanıcı Adı Oluştur';
-                return;
-            }
-
-            if (!ilceSelect.value) {
-                durumDiv.style.display = 'block';
-                durumDiv.className = 'mt-2 alert alert-warning py-2';
-                durumDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> Lütfen önce ilçe seçiniz.';
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i> Kullanıcı Adı Oluştur';
-                return;
-            }
-
-            const ilId = ilSelect.value;
-            const ilceId = ilceSelect.value;
-            const rastgeleSayi = Math.floor(1000 + Math.random() * 9000);
-            let olusanKullaniciAdi = `${ilId}${ilceId}${rastgeleSayi}`;
-                document.getElementById('KullaniciAdi').value = olusan;
-        document.getElementById('KullaniciAdiHidden').value = olusan;   // ← önemli!
-            kullaniciAdiInput.value = olusanKullaniciAdi;
-            kullaniciAdiKontrolEt(olusanKullaniciAdi, null, 'ekle');
-
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i> Kullanıcı Adı Oluştur';
-        }
-
-        // Düzenle modalı için kullanıcı adı yenile
+        // Kullanıcı adı ve şifre yenileme fonksiyonu - GÜNCELLENMİŞ
         function kullaniciAdiYenileDuzenle() {
             const ilSelect = document.getElementById('editIl');
             const ilceSelect = document.getElementById('editIlce');
-            const kullaniciAdiInput = document.getElementById('editKullaniciAdi');
-            const durumDiv = document.getElementById('kullaniciAdiDurumDuzenle');
-            const btn = document.getElementById('editKullaniciAdiOluşturBtn');
-            const musteriId = document.getElementById('editId').value;
+            const ticariUnvan = document.getElementById('editTicariUnvan');
+            const kaInput = document.getElementById('editKullaniciAdi');
+            const sifreInput = document.getElementById('editSifre');
+            const hiddenInput = document.getElementById('editKullaniciAdiHidden');
 
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Yenileniyor...';
+            // Aday müşteri kontrolü
+            const musteriDurum = document.getElementById('editMusteriDurumuId');
+            if (musteriDurum?.value == "2") return false;
 
-            if (!ilSelect.value) {
-                durumDiv.style.display = 'block';
-                durumDiv.className = 'mt-2 alert alert-warning py-2';
-                durumDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> Lütfen önce il seçiniz.';
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i> Yenile';
-                return;
+            // Zorunlu alanlar eksikse çık
+            if (!ilSelect?.value || !ilceSelect?.value || !ticariUnvan?.value?.trim()) {
+                console.log('Zorunlu alanlar eksik:', {
+                    il: ilSelect?.value,
+                    ilce: ilceSelect?.value,
+                    ticariUnvan: ticariUnvan?.value?.trim()
+                });
+                return false;
             }
 
-            if (!ilceSelect.value) {
-                durumDiv.style.display = 'block';
-                durumDiv.className = 'mt-2 alert alert-warning py-2';
-                durumDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> Lütfen önce ilçe seçiniz.';
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i> Yenile';
-                return;
-            }
+            const ticariTrim = ticariUnvan.value.trim();
 
+            // Kullanıcı adı: ilId + ilceId + 4 rastgele sayı
             const ilId = ilSelect.value;
             const ilceId = ilceSelect.value;
-            const rastgeleSayi = Math.floor(1000 + Math.random() * 9000);
-            let olusanKullaniciAdi = `${ilId}${ilceId}${rastgeleSayi}`;
+            const rastgele = Math.floor(1000 + Math.random() * 9000);
+            const yeniKA = `${ilId}${ilceId}${rastgele}`;
 
-            kullaniciAdiInput.value = olusanKullaniciAdi;
-            kullaniciAdiKontrolEt(olusanKullaniciAdi, musteriId, 'duzenle');
+            // Şifre: Ticari unvandan ilk 5 karakter (sadece alfanumerik) + 3 rastgele sayı
+            let unvanTemiz = ticariTrim
+                .replace(/[^a-zA-Z0-9]/g, '')
+                .substring(0, 5)
+                .toUpperCase();
 
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-sync-alt me-1"></i> Yenile';
+            if (unvanTemiz.length < 3) {
+                unvanTemiz = 'MUS' + Math.floor(10 + Math.random() * 90);
+            }
+
+            const rastgeleEk = Math.floor(100 + Math.random() * 900);
+            const yeniSifre = unvanTemiz + rastgeleEk;
+
+            // Alanları güncelle
+            if (kaInput) {
+                kaInput.value = yeniKA;
+                console.log('Kullanıcı adı oluşturuldu:', yeniKA);
+            }
+            if (hiddenInput) {
+                hiddenInput.value = yeniKA;
+            }
+            if (sifreInput) {
+                sifreInput.value = yeniSifre;
+                console.log('Şifre oluşturuldu:', yeniSifre);
+            }
+
+            return true;
         }
 
-        // Kullanıcı adı benzersizlik kontrolü
-        function kullaniciAdiKontrolEt(kullaniciAdi, musteriId = null, modal = 'ekle') {
-            if (!kullaniciAdi) return;
+        // Düzenle modalı açıldığında orijinal değerleri kaydet
+        function duzenleOrijinalDegerleriKaydet() {
+            const kullaniciAdiInput = document.getElementById('editKullaniciAdi');
+            const sifreInput = document.getElementById('editSifre');
 
-            const durumDiv = document.getElementById(modal === 'ekle' ? 'kullaniciAdiDurumEkle' : 'kullaniciAdiDurumDuzenle');
-            const submitBtn = document.getElementById(modal === 'ekle' ? 'ekleBtn' : 'duzenleSubmitBtn');
+            if (kullaniciAdiInput) {
+                duzenleOrijinalKullaniciAdi = kullaniciAdiInput.value;
+            }
 
-            let url = `/AdminMusteri/KullaniciAdiKontrol?kullaniciAdi=${encodeURIComponent(kullaniciAdi)}`;
-            if (musteriId) url += `&musteriId=${musteriId}`;
+            if (sifreInput) {
+                duzenleOrijinalSifre = sifreInput.value;
+            }
 
-            fetch(url)
-                .then(response => response.json())
-                .then(res => {
-                    durumDiv.style.display = 'block';
+            console.log('Orijinal değerler kaydedildi:', duzenleOrijinalKullaniciAdi, duzenleOrijinalSifre);
+        }
+                // Düzenle modalı kapandığında orijinal değerleri geri yükle (iptal edildiyse)
+        function duzenleOrijinalDegerleriGeriYukle() {
+            const kullaniciAdiInput = document.getElementById('editKullaniciAdi');
+            const sifreInput = document.getElementById('editSifre');
+            const hiddenInput = document.getElementById('editKullaniciAdiHidden');
 
-                    if (res.success) {
-                        durumDiv.className = 'mt-2 alert alert-success py-2';
-                        durumDiv.innerHTML = `<i class="fas fa-check-circle me-1"></i> Kullanılabilir.`;
-                        if (submitBtn) submitBtn.disabled = false;
-                    } else {
-                        durumDiv.className = 'mt-2 alert alert-danger py-2';
-                        durumDiv.innerHTML = `<i class="fas fa-times-circle me-1"></i> ${res.message}`;
-                        if (submitBtn) submitBtn.disabled = true;
+            if (kullaniciAdiInput && duzenleOrijinalKullaniciAdi) {
+                kullaniciAdiInput.value = duzenleOrijinalKullaniciAdi;
+            }
 
-                        setTimeout(() => {
-                            if (modal === 'ekle') {
-                                kullaniciAdiOluştur('ekle');
-                            } else {
-                                kullaniciAdiYenileDuzenle();
-                            }
-                        }, 2000);
+            if (sifreInput && duzenleOrijinalSifre) {
+                sifreInput.value = duzenleOrijinalSifre;
+            }
+
+            if (hiddenInput && duzenleOrijinalKullaniciAdi) {
+                hiddenInput.value = duzenleOrijinalKullaniciAdi;
+            }
+        }
+         // Düzenle modalı için il seçildiğinde - ÇOK BASİT VERSİYON
+        function ilSecildiDuzenle(ilId, hedefSelectId) {
+            ilceleriGetir(ilId, hedefSelectId).then(() => {
+                // Dropdown dolsun, hemen dene
+                setTimeout(function() {
+                    const ilceSelect = document.getElementById('editIlce');
+                    const ticariUnvan = document.getElementById('editTicariUnvan')?.value?.trim();
+
+                    if (ilceSelect?.value && ticariUnvan?.length >= 2) {
+                        // Direkt oluştur, bekleme
+                        kullaniciAdiYenileDuzenle();
                     }
-                })
-                .catch(err => {
-                    durumDiv.style.display = 'block';
-                    durumDiv.className = 'mt-2 alert alert-danger py-2';
-                    durumDiv.innerHTML = `<i class="fas fa-exclamation-triangle me-1"></i> Kontrol sırasında hata oluştu.`;
-                });
+                }, 100);
+            });
         }
 
-        // İl seçildiğinde
+        // Düzenle modalı için ilçe seçildiğinde - ÇOK BASİT VERSİYON
+        function ilceSecildiDuzenle() {
+            const ilSelect = document.getElementById('editIl');
+            const ilceSelect = document.getElementById('editIlce');
+            const ticariUnvan = document.getElementById('editTicariUnvan')?.value?.trim();
+
+            if (ilSelect?.value && ilceSelect?.value && ticariUnvan?.length >= 2) {
+                // Direkt oluştur
+                kullaniciAdiYenileDuzenle();
+            }
+        }
+          $(document).on('input', '#editTicariUnvan', function() {
+            const val = this.value.trim(); // baştaki ve sondaki boşlukları temizle
+
+            // Çok kısa veya sadece boşluksa işlem yapma
+            if (val.length < 2) return;
+
+            const ilSelect   = document.getElementById('editIl');
+            const ilceSelect = document.getElementById('editIlce');
+            const durum      = document.getElementById('editMusteriDurumuId')?.value;
+
+            if (durum == "2") return; // aday müşteri → hiçbir şey yapma
+
+            if (ilSelect?.value && ilceSelect?.value) {
+                const kaInput = document.getElementById('editKullaniciAdi');
+
+                // Eğer kullanıcı adı alanı boşsa veya orijinal değerle aynıysa otomatik güncelle
+                if (!kaInput.value || kaInput.value === duzenleOrijinalKullaniciAdi) {
+                    kullaniciAdiYenileDuzenle();
+                }
+            }
+        });
+        // Düzenle modalı açıldığında
+        $('#duzenleModal').on('shown.bs.modal', function() {
+            const musteriDurumSelect = document.getElementById('editMusteriDurumuId');
+
+           // Orijinal değerleri kaydet (mevcut kodunuz)
+        duzenleOrijinalDegerleriKaydet();
+
+        // Aday değilse ve alanlar doluysa HEMEN oluştur
+        if (musteriDurumSelect && musteriDurumSelect.value != "2") {
+            const ilSelect    = document.getElementById('editIl');
+            const ilceSelect  = document.getElementById('editIlce');
+            const ticariUnvan = document.getElementById('editTicariUnvan')?.value?.trim();
+
+            if (ilSelect?.value && ilceSelect?.value && ticariUnvan?.length >= 2) {
+                // Mevcut kullanıcı adı boş veya orijinal değerle aynıysa → otomatik yenile
+                const kaInput = document.getElementById('editKullaniciAdi');
+                if (!kaInput.value || kaInput.value === duzenleOrijinalKullaniciAdi) {
+                    kullaniciAdiYenileDuzenle();
+                }
+            }
+        }
+        if (musteriDurumSelect && musteriDurumSelect.value != "2") {  // sadece normal müşteri ise
+            const ticariUnvanInput = document.getElementById('editTicariUnvan');
+            const ilSelect         = document.getElementById('editIl');
+            const ilceSelect       = document.getElementById('editIlce');
+            const kaInput          = document.getElementById('editKullaniciAdi');
+
+            // Şartlar uygunsa (il + ilçe dolu + ticari unvan dolu + kullanıcı adı henüz oluşmamış)
+            if (
+                ilSelect?.value &&
+                ilceSelect?.value &&
+                ticariUnvanInput?.value?.trim().length >= 2 &&
+                (!kaInput?.value || kaInput.value === duzenleOrijinalKullaniciAdi)
+            ) {
+                // 1. Input'a odaklan (focus gerekli, bazı tarayıcılarda input eventi için)
+                ticariUnvanInput.focus();
+
+                // 2. Mevcut değeri al, sonuna bir boşluk ekle
+                const mevcutDeger = ticariUnvanInput.value;
+                ticariUnvanInput.value = mevcutDeger + " ";  // ← sonuna boşluk
+
+                // 3. Hemen boşluğu sil (kullanıcı ekranında hiçbir değişiklik görünmez)
+                setTimeout(() => {
+                    ticariUnvanInput.value = mevcutDeger;     // eski haline getir
+                    // 4. input event'ini manuel tetikle (garanti olsun)
+                    ticariUnvanInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+                    // Opsiyonel: odaklanmayı kaldır ki kullanıcı etkilenmesin
+                    ticariUnvanInput.blur();
+                }, 10);  // çok küçük bir gecikme — tarayıcıların event sırasını garantilemek için
+            }
+        }
+        // Şifre göz ikonunu ekle (eğer yoksa)
+            if (!$('#sifreGozDuzenle').length) {
+                const sifreInput = $('#editSifre');
+                const sifreWrapper = sifreInput.closest('.col-md-3');
+
+                if (sifreWrapper.length) {
+                    sifreWrapper.css('position', 'relative');
+
+                    const gozIkonu = $(`
+                        <span class="position-absolute top-50 end-0 translate-middle-y pe-3"
+                              style="margin-top: -37px; margin-right: 18px; cursor: pointer; z-index: 10;"
+                              id="sifreGozDuzenle">
+                            <i class="fas fa-eye-slash text-muted"></i>
+                        </span>
+                    `);
+
+                    sifreWrapper.append(gozIkonu);
+
+                    // Göz ikonu tıklama olayı
+                    gozIkonu.on('click', function() {
+                        const $sifreInput = $('#editSifre');
+                        const $gozIkonu = $(this).find('i');
+
+                        if ($sifreInput.attr('type') === 'password') {
+                            $sifreInput.attr('type', 'text');
+                            $gozIkonu.removeClass('fa-eye-slash').addClass('fa-eye');
+                        } else {
+                            $sifreInput.attr('type', 'password');
+                            $gozIkonu.removeClass('fa-eye').addClass('fa-eye-slash');
+                        }
+                    });
+                }
+            }
+        });
+                // Düzenle modalı kapanırken (iptal edilirse) orijinal değerleri geri yükle
+        $('#duzenleModal').on('hide.bs.modal', function(e) {
+            // Eğer form submit edilmiyorsa (iptal edildiyse) orijinal değerleri geri yükle
+            const submitBtn = $('#duzenleSubmitBtn');
+            const isSubmitting = submitBtn.data('submitting');
+
+            if (!isSubmitting) {
+                duzenleOrijinalDegerleriGeriYukle();
+            }
+
+            // Temizlik
+            $('#sifreGozDuzenle').remove();
+        });
+
+        // Düzenle formu submit edildiğinde işaretle
+        $('#duzenleForm').on('submit', function() {
+            $('#duzenleSubmitBtn').data('submitting', true);
+        });
+
+        // Düzenle formu submit hatası durumunda
+        $(document).ajaxError(function() {
+            $('#duzenleSubmitBtn').data('submitting', false);
+        });
+        // Düzenle modalı kapandığında
+        $('#duzenleModal').on('hidden.bs.modal', function() {
+            $('#sifreGozDuzenle').remove();
+        });
+        // İl seçildiğinde (ana fonksiyon - güncellenmiş)
         function ilSecildi(ilId, hedefSelectId, modalTipi) {
             ilceleriGetir(ilId, hedefSelectId).then(() => {
-                const ilceSelect = document.getElementById(hedefSelectId);
-                if (ilceSelect.value && modalTipi === 'ekle') {
-                    kullaniciAdiOluştur('ekle');
-                } else if (ilceSelect.value && modalTipi === 'duzenle') {
-                    kullaniciAdiYenileDuzenle();
+                if (modalTipi === 'ekle') {
+                    const ilceSelect = document.getElementById('Ilce');
+                    const ticariUnvan = document.getElementById('TicariUnvan')?.value.trim();
+
+                    if (ilceSelect.value && ticariUnvan) {
+                        kullaniciAdiSifreOlustur();
+                    }
+                } else if (modalTipi === 'duzenle') {
+                    const ilceSelect = document.getElementById('editIlce');
+                    const ticariUnvan = document.getElementById('editTicariUnvan')?.value.trim();
+                    const musteriDurumSelect = document.getElementById('editMusteriDurumuId');
+
+                    if (!(musteriDurumSelect && musteriDurumSelect.value == 2)) {
+                        if (ilceSelect.value && ticariUnvan) {
+                            // Düzenle modalında değişiklik kontrolü yap
+                            const kullaniciAdiInput = document.getElementById('editKullaniciAdi');
+
+                            // Eğer mevcut değer orijinal değerle aynıysa veya boşsa güncelle
+                            if (kullaniciAdiInput && (!kullaniciAdiInput.value || kullaniciAdiInput.value === duzenleOrijinalKullaniciAdi)) {
+                                kullaniciAdiYenileDuzenle();
+                            }
+                        }
+                    }
                 }
             }).catch(err => {
                 console.error('İlçeler yüklenirken hata:', err);
             });
         }
 
-        function ilceleriGetir(ilId, hedefSelectId) {
+        // İlçe seçildiğinde (ana fonksiyon - güncellenmiş)
+        function ilceSecildi(modalTipi) {
+            if (modalTipi === 'ekle') {
+                const ilSelect = document.getElementById('Il');
+                const ilceSelect = document.getElementById('Ilce');
+                const ticariUnvan = document.getElementById('TicariUnvan')?.value.trim();
+
+                if (ilSelect.value && ilceSelect.value && ticariUnvan) {
+                    kullaniciAdiSifreOlustur();
+                }
+            } else if (modalTipi === 'duzenle') {
+                const ilSelect = document.getElementById('editIl');
+                const ilceSelect = document.getElementById('editIlce');
+                const ticariUnvan = document.getElementById('editTicariUnvan')?.value.trim();
+                const musteriDurumSelect = document.getElementById('editMusteriDurumuId');
+
+                if (!(musteriDurumSelect && musteriDurumSelect.value == 2)) {
+                    if (ilSelect.value && ilceSelect.value && ticariUnvan) {
+                        // Düzenle modalında değişiklik kontrolü yap
+                        const kullaniciAdiInput = document.getElementById('editKullaniciAdi');
+
+                        // Eğer mevcut değer orijinal değerle aynıysa veya boşsa güncelle
+                        if (kullaniciAdiInput && (!kullaniciAdiInput.value || kullaniciAdiInput.value === duzenleOrijinalKullaniciAdi)) {
+                            kullaniciAdiYenileDuzenle();
+                        }
+                    }
+                }
+            }
+        }
+                // ============= OTOMATİK KULLANICI ADI VE ŞİFRE OLUŞTURMA =============
+
+                     function ilceleriGetir(ilId, hedefSelectId) {
             return new Promise((resolve, reject) => {
                 const ilceSelect = document.getElementById(hedefSelectId);
                 if (!ilceSelect) {
@@ -3257,24 +4116,84 @@
                     });
             });
         }
+        // Kullanıcı adı oluştur (Ekle modalı için)
+        function kullaniciAdiSifreOlustur() {
+            const ilSelect = document.getElementById('Il');
+            const ilceSelect = document.getElementById('Ilce');
+            const ticariUnvanInput = document.getElementById('TicariUnvan');
+            const kullaniciAdiInput = document.getElementById('KullaniciAdi');
+            const sifreInput = document.getElementById('Sifre');
+            const hiddenInput = document.getElementById('KullaniciAdiHidden');
+
+            if (!ilSelect.value || !ilceSelect.value || !ticariUnvanInput.value.trim()) {
+                return false;
+            }
+
+            // Kullanıcı adı oluştur: ilId + ilceId + 4 haneli rastgele sayı
+            const ilId = ilSelect.value;
+            const ilceId = ilceSelect.value;
+            const rastgeleSayi = Math.floor(1000 + Math.random() * 9000);
+            const kullaniciAdi = `${ilId}${ilceId}${rastgeleSayi}`;
+
+            // Şifre oluştur: Ticari unvandan ilk 5 harf (sadece harf ve rakam) + 3 rastgele rakam
+            let unvanTemiz = ticariUnvanInput.value.trim()
+                .replace(/[^a-zA-Z0-9]/g, '')
+                .substring(0, 5)
+                .toUpperCase();
+
+            if (unvanTemiz.length < 3) {
+                unvanTemiz = 'MUS' + Math.floor(10 + Math.random() * 90);
+            }
+
+            const rastgeleEk = Math.floor(100 + Math.random() * 900);
+            const sifre = unvanTemiz + rastgeleEk;
+
+            // Inputları doldur
+            kullaniciAdiInput.value = kullaniciAdi;
+            hiddenInput.value = kullaniciAdi;
+            sifreInput.value = sifre;
+
+            return true;
+        }
+
+        // İl seçildiğinde
+        function ilSecildi(ilId, hedefSelectId, modalTipi) {
+            ilceleriGetir(ilId, hedefSelectId).then(() => {
+                if (modalTipi === 'ekle') {
+                    const ilceSelect = document.getElementById('Ilce');
+                    const ticariUnvan = document.getElementById('TicariUnvan')?.value.trim();
+
+                    if (ilceSelect.value && ticariUnvan) {
+                        kullaniciAdiSifreOlustur();
+                    }
+                }
+            }).catch(err => {
+                console.error('İlçeler yüklenirken hata:', err);
+            });
+        }
 
         // İlçe seçildiğinde
         function ilceSecildi(modalTipi) {
             if (modalTipi === 'ekle') {
                 const ilSelect = document.getElementById('Il');
                 const ilceSelect = document.getElementById('Ilce');
-                if (ilSelect.value && ilceSelect.value) {
-                    kullaniciAdiOluştur('ekle');
-                }
-            } else if (modalTipi === 'duzenle') {
-                const ilSelect = document.getElementById('editIl');
-                const ilceSelect = document.getElementById('editIlce');
-                if (ilSelect.value && ilceSelect.value) {
-                    kullaniciAdiYenileDuzenle();
+                const ticariUnvan = document.getElementById('TicariUnvan')?.value.trim();
+
+                if (ilSelect.value && ilceSelect.value && ticariUnvan) {
+                    kullaniciAdiSifreOlustur();
                 }
             }
         }
 
+        // Ticari unvan değiştiğinde şifreyi güncelle
+        $(document).on('input', '#TicariUnvan', function() {
+            const ilSelect = document.getElementById('Il');
+            const ilceSelect = document.getElementById('Ilce');
+
+            if (ilSelect?.value && ilceSelect?.value && $(this).val().trim()) {
+                kullaniciAdiSifreOlustur();
+            }
+        });
         function yukleDepartmanlarEkle() {
             fetch('@Url.Action("GetDepartmanlar", "AdminMusteri")')
                 .then(r => r.json())
@@ -3894,217 +4813,7 @@
                 }
             });
         });
-                 function toggleAdayMusteriAlanları(durumId, modalTipi = 'ekle') {
-            const prefix = modalTipi === 'ekle' ? '' : 'edit';
-            const isAday = parseInt(durumId) === 2;
-
-            // ────────────────────────────────────────────────
-            // A) HER ZAMAN AKTİF KALACAK ZORUNLU ALANLAR
-            // ────────────────────────────────────────────────
-            const zorunluAlanlar = ['TicariUnvan', 'AdSoyad', 'Email'];
-            zorunluAlanlar.forEach(field => {
-                const el = document.getElementById(prefix + field);
-                if (el) {
-                    el.disabled = false;
-                    el.readOnly = false;
-                    el.required = true;
-                    el.style.backgroundColor = '#ffffff';
-                }
-            });
-
-            if (isAday) {
-                // ────────────────────────────────────────────────
-                // B) ADAY MODUNDA KAPATILACAK ALANLAR
-                // ────────────────────────────────────────────────
-                const kapatilacakAlanlar = [
-                    'KullaniciAdi', 'Sifre', 'TabelaAdi',
-                    'Telefon', 'Bolge', 'Il', 'Ilce', 'Belde', 'Adres',
-                    'TCVNo', 'VergiDairesi', 'KepAdresi', 'WebAdresi',
-                    'Aciklama', 'AlpemixFirmaAdi', 'AlpemixGrupAdi', 'AlpemixSifre'
-                ];
-
-                kapatilacakAlanlar.forEach(field => {
-                    const el = document.getElementById(prefix + field);
-                    if (el) {
-                        el.value = '';
-                        el.disabled = true;
-                        el.readOnly = true;
-                        el.required = false;
-                        el.style.backgroundColor = '#e9ecef';
-                    }
-                });
-
-                // ────────────────────────────────────────────────
-                // BAYİ SEÇİMİNİ TAMAMEN KAPAT - DÜZELTİLMİŞ VERSİYON
-                // ────────────────────────────────────────────────
-                const bayiSelect = document.getElementById(prefix + 'BayiId');
-                if (bayiSelect) {
-                    // Dropdown'u devre dışı bırak
-                    bayiSelect.disabled = true;
-
-                    // Değeri temizle
-                    bayiSelect.value = '';
-
-                    // Tüm optionları devre dışı bırak (opsiyonel)
-                    Array.from(bayiSelect.options).forEach(option => {
-                        option.disabled = true;
-                    });
-
-                    // CSS ile de görsel olarak devre dışı olduğunu belirt
-                    bayiSelect.style.backgroundColor = '#e9ecef';
-                    bayiSelect.style.cursor = 'not-allowed';
-                    bayiSelect.style.pointerEvents = 'none'; // Bu çok önemli!
-
-                    // Mevcut uyarıyı kaldır
-                    const eskiUyari = document.getElementById('bayiUyari' + prefix);
-                    if (eskiUyari) eskiUyari.remove();
-
-                    // Yeni uyarı metni ekle
-                    const uyari = document.createElement('small');
-                    uyari.id = 'bayiUyari' + prefix;
-                    uyari.className = 'text-danger d-block mt-1 fw-bold';
-                    uyari.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i>Aday müşterilerde bayi seçimi yapılamaz';
-
-                    // Form-floating içine veya yanına ekle
-                    const floatingDiv = bayiSelect.closest('.form-floating');
-                    if (floatingDiv) {
-                        floatingDiv.appendChild(uyari);
-                    } else {
-                        bayiSelect.parentNode.appendChild(uyari);
-                    }
-                }
-
-                // ────────────────────────────────────────────────
-                // Kullanıcı adı ve şifre butonlarını gizle
-                // ────────────────────────────────────────────────
-                const butonlar = [
-                    'kullaniciAdiOluşturBtn',
-                    'editKullaniciAdiOluşturBtn',
-                    'sifreYenileBtn'
-                ];
-                butonlar.forEach(id => {
-                    const btn = document.getElementById(id);
-                    if (btn) btn.style.display = 'none';
-                });
-
-                // ────────────────────────────────────────────────
-                // Kullanıcı adı ve şifre alanlarının üstüne bilgi kutusu
-                // ────────────────────────────────────────────────
-                let infoBox = document.getElementById('kadiSifreInfo' + prefix);
-                if (!infoBox) {
-                    infoBox = document.createElement('div');
-                    infoBox.id = 'kadiSifreInfo' + prefix;
-                    infoBox.className = 'alert alert-info mt-3';
-                    infoBox.innerHTML = `
-                        <i class="fas fa-info-circle me-2"></i>
-                        <strong>Sistem tarafından otomatik oluşturulacak:</strong><br>
-                        • Kullanıcı Adı<br>
-                        • Şifre<br>
-                        <small>(Kayıt tamamlandıktan sonra görüntülenebilir / sıfırlanabilir)</small>
-                    `;
-
-                    // Kullanıcı adı alanının olduğu kolona ekle
-                    const kadiKolon = document.getElementById(prefix + 'KullaniciAdi')?.closest('.col-md-6');
-                    if (kadiKolon) kadiKolon.appendChild(infoBox);
-                }
-
-                // ────────────────────────────────────────────────
-                // Müşteri tipi seçeneğini de devre dışı bırak
-                // ────────────────────────────────────────────────
-                const musteriTipi = document.getElementById(prefix + 'MusteriTipiId');
-                if (musteriTipi) {
-                    musteriTipi.disabled = true;
-                    musteriTipi.style.backgroundColor = '#e9ecef';
-                    musteriTipi.style.cursor = 'not-allowed';
-                    musteriTipi.style.pointerEvents = 'none';
-                }
-
-                // ────────────────────────────────────────────────
-                // Yetkili ekleme butonlarını devre dışı bırak
-                // ────────────────────────────────────────────────
-                document.querySelectorAll(`#${modalTipi === 'ekle' ? 'ekleModal' : 'duzenleModal'} button[onclick*="yeniYetkiliEkle"]`)
-                    .forEach(btn => {
-                        btn.disabled = true;
-                        btn.style.opacity = '0.5';
-                        btn.style.cursor = 'not-allowed';
-                    });
-
-            } else {
-                // ────────────────────────────────────────────────
-                // C) NORMAL MÜŞTERİ MODU → HER ŞEYİ GERİ AÇ
-                // ────────────────────────────────────────────────
-
-                // Bayi seçimini aktif et - DÜZELTİLMİŞ VERSİYON
-                const bayiSelect = document.getElementById(prefix + 'BayiId');
-                if (bayiSelect) {
-                    bayiSelect.disabled = false;
-
-                    // Optionları aktif et
-                    Array.from(bayiSelect.options).forEach(option => {
-                        option.disabled = false;
-                    });
-
-                    // CSS'i normale döndür
-                    bayiSelect.style.backgroundColor = '';
-                    bayiSelect.style.cursor = '';
-                    bayiSelect.style.pointerEvents = '';
-
-                    // Uyarı metnini kaldır
-                    const uyari = document.getElementById('bayiUyari' + prefix);
-                    if (uyari) uyari.remove();
-                }
-
-                // Kullanıcı adı ve şifre butonlarını geri göster
-                const butonlar = [
-                    'kullaniciAdiOluşturBtn',
-                    'editKullaniciAdiOluşturBtn',
-                    'sifreYenileBtn'
-                ];
-                butonlar.forEach(id => {
-                    const btn = document.getElementById(id);
-                    if (btn) btn.style.display = '';
-                });
-
-                // Bilgi kutularını kaldır
-                const infoBox = document.getElementById('kadiSifreInfo' + prefix);
-                if (infoBox) infoBox.remove();
-
-                // Müşteri tipini aktif et
-                const musteriTipi = document.getElementById(prefix + 'MusteriTipiId');
-                if (musteriTipi) {
-                    musteriTipi.disabled = false;
-                    musteriTipi.style.backgroundColor = '';
-                    musteriTipi.style.cursor = '';
-                    musteriTipi.style.pointerEvents = '';
-                }
-
-                // Yetkili ekleme butonlarını aktif et
-                document.querySelectorAll(`#${modalTipi === 'ekle' ? 'ekleModal' : 'duzenleModal'} button[onclick*="yeniYetkiliEkle"]`)
-                    .forEach(btn => {
-                        btn.disabled = false;
-                        btn.style.opacity = '';
-                        btn.style.cursor = '';
-                    });
-
-                // Diğer alanları normale döndür
-                const acilacakAlanlar = [
-                    'KullaniciAdi', 'Sifre', 'TabelaAdi',
-                    'Telefon', 'Bolge', 'Il', 'Ilce', 'Belde', 'Adres',
-                    'TCVNo', 'VergiDairesi', 'KepAdresi', 'WebAdresi',
-                    'Aciklama', 'AlpemixFirmaAdi', 'AlpemixGrupAdi', 'AlpemixSifre'
-                ];
-
-                acilacakAlanlar.forEach(field => {
-                    const el = document.getElementById(prefix + field);
-                    if (el) {
-                        el.disabled = false;
-                        el.readOnly = false;
-                        el.required = false;
-                        el.style.backgroundColor = '#ffffff';
-                    }
-                });
-            }
-        }
+          
 
         // Müşteri durumu değiştiğinde
         $(document).on('change', '#MusteriDurumuId', function () {
@@ -4114,21 +4823,22 @@
         $(document).on('change', '#editMusteriDurumuId', function () {
             toggleAdayMusteriAlanları($(this).val(), 'duzenle');
         });
-        // Ekle modalı açıldığında
-        $('#ekleModal').on('show.bs.modal', function () {
+              $('#ekleModal').on('show.bs.modal', function () {
             ekleYetkiliListesi = [];
             guncelleEkleYetkiliListesi();
             $('#digerTipiContainer').hide();
 
-            // Varsayılan olarak Aday Müşteri seçili olsun
+            // Aday müşteri kontrolü
             const durumSelect = document.getElementById('MusteriDurumuId');
             if (durumSelect) {
                 durumSelect.value = '2'; // Aday müşteri
                 toggleAdayMusteriAlanları(2, 'ekle');
             }
 
-            // Zorunlu alanları vurgula
-            $('#TicariUnvan, #AdSoyad, #Email').attr('required', true);
+            // Kullanıcı adı ve şifre alanlarını temizle
+            document.getElementById('KullaniciAdi').value = '';
+            document.getElementById('KullaniciAdiHidden').value = '';
+            document.getElementById('Sifre').value = '';
         });
 
         // Ekle modalı kapandığında
@@ -4152,7 +4862,7 @@
             $('.invalid-feedback').remove();
         });
 
-              // ============= DÜZENLE GETİR - ŞİFREYİ YILDIZLI/NOKTALI GETİR (GÜNCELLENMİŞ) =============
+        // ============= DÜZENLE GETİR - MEVCUT ŞİFREYİ GETİR (GÜNCELLENMİŞ) =============
         async function duzenleGetir(id) {
             currentMusteriId = id;
             duzenleYetkiliListesi = [];
@@ -4298,19 +5008,13 @@
                 yukleDosyaBilgileri(id);
                 yukleMusteriYetkilileri(id);
 
-                // ŞİFRE ALANINI YILDIZLI/NOKTALI OLARAK DOLDUR
+                // ŞİFRE ALANINI MEVCUT ŞİFRE İLE DOLDUR (GÜVENLİK İÇİN YILDIZLI GÖSTER)
                 const sifreInput = document.getElementById('editSifre');
                 if (sifreInput) {
-                    // Gerçek şifreyi göstermiyoruz, sadece placeholder ile değiştirilebileceğini belirtiyoruz
-                    sifreInput.placeholder = '•••••••• (değiştirmek için yazın)';
-                    sifreInput.value = ''; // Güvenlik için boş bırak, placeholder göster
-                    sifreInput.type = 'password';
-                }
-
-                const btn = document.getElementById('sifreYenileBtn');
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-key"></i> Şifre Yenile';
+                    // Gerçek şifreyi göster (ama yıldızlı olarak)
+                    sifreInput.value = data.sifre || ''; // Şifreyi doldur
+                    sifreInput.type = 'password'; // Password tipinde göster
+                    sifreInput.placeholder = '••••••••'; // Placeholder ekle
                 }
 
                 document.getElementById('duzenleLoading').style.display = 'none';
@@ -4339,7 +5043,6 @@
                 document.getElementById('duzenleLoading').style.display = 'none';
             }
         }
-        // ============= SİL ONAY =============
         function silOnay(id, adi) {
             document.getElementById('silId').value = id;
             document.getElementById('silAdi').textContent = adi;

@@ -712,6 +712,7 @@ namespace WepApp.Controllers
                     Sifre = Sifre ?? "",
                     Email = Email ?? "",
                     Telefon = Telefon ?? "",
+                    TabelaAdi=TabelaAdi ?? "",
                     Adres = Adres ?? "",
                     illerId = Il,
                     ilcelerId = Ilce,
@@ -1257,6 +1258,7 @@ namespace WepApp.Controllers
                     telefon = item.Telefon ?? "",
                     adres = item.Adres ?? "",
                     tabelaAdi = item.TabelaAdi ?? "",  // <--- YENİ EKLENEN SATIR
+                    sifre = item.Sifre ?? "",  // <--- ŞİFRE ALANINI EKLE
 
                     ilId = item.illerId,  // YENİ
                     ilceId = item.ilcelerId,  // YENİ

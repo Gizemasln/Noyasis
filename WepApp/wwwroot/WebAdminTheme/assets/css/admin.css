@@ -1,4 +1,13 @@
-﻿/* ============= ANA STİLLER ============= */
+﻿#sifreGozEkle {
+    padding: 0 12px;
+    font-size: 1.1rem;
+}
+
+    #sifreGozEkle:hover i {
+        color: #6c757d !important;
+    }
+
+/* ============= ANA STİLLER ============= */
 .teklif-container {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #f8f9fa;
